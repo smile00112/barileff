@@ -1,0 +1,59 @@
+---
+description: Error handling and logging conventions
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Purpose
+
+Make failures diagnosable while preserving safe, user-friendly behavior.
+
+# Rules
+
+- Never swallow exceptions silently.
+- Log actionable context (`entity_id`, `channel_id`, `cart_rule_id`) without secrets.
+- Use proper log levels:
+  - `debug` for local diagnostics,
+  - `info` for business events,
+  - `warning` for recoverable issues,
+  - `error` for failed operations,
+  - `critical` for service-threatening failures.
+- Return user-safe messages; keep internal details in logs only.
+- Prefer domain-specific exceptions when failures are expected business outcomes.
+
+# Good Examples
+
+```php
+try {
+    $this->couponService->apply($couponCode, $cart);
+} catch (CouponExpiredException $exception) {
+    Log::warning('Coupon rejected: expired', [
+        'coupon_code' => $couponCode,
+        'cart_id' => $cart->id,
+    ]);
+
+    throw ValidationException::withMessages([
+        'coupon_code' => __('shop::app.checkout.cart.coupon.expired'),
+    ]);
+}
+```
+
+# Bad Examples
+
+```php
+try {
+    $this->couponService->apply($couponCode, $cart);
+} catch (\Throwable $e) {
+}
+```
+
+```php
+Log::error($e->getTraceAsString());
+```
+
+# Checklist
+
+- Are exceptions handled intentionally?
+- Is log level appropriate for the failure class?
+- Does the log include useful, non-sensitive context?
+- Are user-facing errors safe and clear?

@@ -1,0 +1,47 @@
+---
+description: Core guardrails for all code changes
+alwaysApply: true
+---
+
+# Purpose
+
+Define the non-negotiable project guardrails for all tasks.
+
+# Rules
+
+- Preserve existing architecture and package boundaries unless explicitly approved.
+- Do not add or upgrade dependencies without explicit user approval.
+- Every behavioral code change must include or update automated tests.
+- Follow existing repository conventions before introducing new patterns.
+- Prefer modular rule files in `.cursor/rules/` over adding large global instructions.
+
+# Good Examples
+
+```text
+User asks for a feature fix in CartRule package.
+- Update only related package files.
+- Add Pest test for the bug.
+- Keep dependency set unchanged.
+```
+
+```text
+Need new package? Ask first:
+"This requires adding package X. Please confirm dependency change."
+```
+
+# Bad Examples
+
+```text
+Silently introducing a new dependency to solve a small helper need.
+```
+
+```text
+Refactoring unrelated package layers during a small bugfix task.
+```
+
+# Checklist
+
+- Is scope limited to requested change?
+- Are dependencies unchanged (or explicitly approved)?
+- Is there a test proving behavior?
+- Do lower-level rules in `.cursor/rules/*.mdc` apply?

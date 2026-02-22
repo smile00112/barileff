@@ -1,0 +1,51 @@
+---
+description: Frontend style rules for Blade, Vue, JS, and TS
+globs: "**/*.{blade.php,vue,js,ts}"
+alwaysApply: false
+---
+
+# Purpose
+
+Keep frontend code consistent across Blade and Vue parts of the project.
+
+# Rules
+
+- Prefer existing Blade components and Vue patterns used in the same package.
+- Keep template logic minimal; move non-trivial logic to JS/Vue methods.
+- Use descriptive component and variable names.
+- Keep Tailwind classes ordered and readable (per PR template expectation).
+- Do not introduce a new frontend framework without explicit approval.
+
+# Good Examples
+
+```blade
+<x-admin::form.control-group>
+    <x-admin::form.control-group.label class="required">
+        @lang('admin::app.marketing.promotions.cart-rules.title')
+    </x-admin::form.control-group.label>
+</x-admin::form.control-group>
+```
+
+```vue
+const selectedRuleIds = ref<number[]>([]);
+const isSubmitting = ref(false);
+```
+
+# Bad Examples
+
+```blade
+{{-- Complex discount calculation directly in Blade loops --}}
+@php $total = 0; foreach ($items as $item) { $total += $item->price * 1.12; } @endphp
+```
+
+```javascript
+let a = 1;
+let b = false;
+```
+
+# Checklist
+
+- Is business logic kept out of templates where practical?
+- Are names self-explanatory?
+- Are Tailwind classes organized?
+- Does this follow existing frontend patterns in the target package?

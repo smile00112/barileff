@@ -1,0 +1,60 @@
+---
+description: PHP style and naming conventions for Laravel code
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Purpose
+
+Enforce consistent PHP coding style for Laravel/Bagisto code.
+
+# Rules
+
+- Follow Laravel Pint (`preset: laravel`) and run formatter for changed files.
+- Always use explicit parameter and return types where possible.
+- Use curly braces for all control structures.
+- Prefer constructor property promotion in modern classes.
+- Prefer Form Request classes over inline controller validation.
+- Use descriptive method names (`isEligibleForDiscount`, not `discount`).
+
+# Good Examples
+
+```php
+public function isEligibleForDiscount(Customer $customer, Cart $cart): bool
+{
+    if (! $customer->is_active) {
+        return false;
+    }
+
+    return $cart->items->isNotEmpty();
+}
+```
+
+```php
+public function __construct(
+    private readonly CartRuleRepository $cartRuleRepository
+) {}
+```
+
+# Bad Examples
+
+```php
+function discount($c, $x) {
+    if ($c) return true;
+    return false;
+}
+```
+
+```php
+public function store(Request $request)
+{
+    $request->validate(['name' => 'required']);
+}
+```
+
+# Checklist
+
+- Are types explicit and naming descriptive?
+- Are control blocks wrapped in braces?
+- Is validation extracted into Form Requests when needed?
+- Was Pint applied to changed PHP files?

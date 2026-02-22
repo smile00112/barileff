@@ -1,0 +1,51 @@
+---
+description: Commit, branch, PR, and review workflow conventions
+globs: "{.github/**/*.md,**/*.md}"
+alwaysApply: false
+---
+
+# Purpose
+
+Standardize collaboration flow for branches, commits, pull requests, and reviews.
+
+# Rules
+
+- Prefer issue-based branches, e.g. `issue-1234`.
+- Keep commits small, focused, and descriptive.
+- Compatible commit style:
+  - `Fixed #1234 - <subject>` for bug fixes (matches existing contributing guide).
+  - `feat(scope): short summary` / `fix(scope): short summary` is acceptable when team agrees.
+- Follow PR template sections: issue reference, description, how to test, docs impact, target branch.
+- Code review must verify behavior, test coverage, regressions, and migration risks.
+
+# Good Examples
+
+```text
+Branch: issue-4871
+Commit: Fixed #4871 - prevent duplicate coupon usage on guest checkout
+```
+
+```text
+PR includes:
+- Reproduction steps
+- Test plan with commands
+- Screenshot or payload examples when UI/API changes
+```
+
+# Bad Examples
+
+```text
+Branch: temp-fix-final-final
+Commit: update
+```
+
+```text
+PR without test instructions for a behavior change.
+```
+
+# Checklist
+
+- Is branch name traceable to an issue/task?
+- Are commits understandable from history alone?
+- Is PR template fully completed?
+- Does review cover tests and regression risks?

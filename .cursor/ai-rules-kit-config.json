@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/CyberWalrus/ai-rules-kit/main/schemas/ai-rules-kit-config-1.0.0.schema.json",
+  "cliVersion": "0.8.1",
+  "configVersion": "1.0.0",
+  "fileOverrides": [],
+  "ideType": "cursor",
+  "ignoreList": [],
+  "installedAt": "2026-02-22T07:19:48.659Z",
+  "promptsVersion": "2026.02.09.02",
+  "ruleSets": [
+    {
+      "id": "base",
+      "update": true
+    }
+  ],
+  "settings": {
+    "language": "en"
+  },
+  "source": "ai-rules-kit",
+  "systemRulesVersion": "2026.1.6.1",
+  "updatedAt": "2026-02-22T07:19:48.659Z"
+}

@@ -1,0 +1,46 @@
+---
+description: Project identity, purpose, stack, and type
+globs: "{composer.json,package.json,AGENTS.md,README.md}"
+alwaysApply: false
+---
+
+# Purpose
+
+Keep AI responses aligned with the real project context.
+
+# Rules
+
+- Project name: `my_bagisto` (Bagisto-based Laravel eCommerce application).
+- Project goal: extend and maintain a production-grade eCommerce platform.
+- Project type: web application (admin + storefront), package-oriented monolith.
+- Primary stack:
+  - Backend: PHP 8.2+, Laravel 11, package modules under `packages/Webkul/*`.
+  - Testing: Pest 3 + PHPUnit 11.
+  - Formatting: Laravel Pint (`preset: laravel`).
+  - Frontend build: Vite 5.
+
+# Good Examples
+
+```text
+"For this Laravel 11 + Bagisto web app, add the feature inside the relevant Webkul package."
+```
+
+```text
+"Use Pest tests and run php artisan test --compact for affected suites."
+```
+
+# Bad Examples
+
+```text
+Treating the repository like a standalone SPA and ignoring package modules.
+```
+
+```text
+Suggesting tooling that conflicts with existing stack without justification.
+```
+
+# Checklist
+
+- Does the solution target a Laravel + Bagisto modular web app?
+- Are stack assumptions consistent with `composer.json` and `package.json`?
+- Is the proposal compatible with Pest and Pint workflows?

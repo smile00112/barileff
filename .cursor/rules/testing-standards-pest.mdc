@@ -1,0 +1,53 @@
+---
+description: Testing standards using Pest and PHPUnit
+globs: "tests/**/*.php"
+alwaysApply: false
+---
+
+# Purpose
+
+Ensure every behavior change is covered by fast, focused automated tests.
+
+# Rules
+
+- Every code change must be validated by new or updated tests.
+- Prefer Pest style tests and project base test cases.
+- Run the minimum affected suite with `php artisan test --compact`.
+- Use factories and existing test helpers instead of heavy manual setup.
+- Keep test names behavior-focused and deterministic.
+
+# Good Examples
+
+```php
+it('prevents coupon reuse after limit is reached', function () {
+    $coupon = Coupon::factory()->create(['usage_limit' => 1]);
+
+    // First successful use...
+    // Second attempt should fail...
+
+    expect($result->isValid())->toBeFalse();
+});
+```
+
+```text
+php artisan test --compact packages/Webkul/CartRule/tests/Feature/ApplyCouponTest.php
+```
+
+# Bad Examples
+
+```php
+it('works', function () {
+    expect(true)->toBeTrue();
+});
+```
+
+```text
+Skipping tests because the change "looks small".
+```
+
+# Checklist
+
+- Is the changed behavior asserted by a test?
+- Are tests placed in the correct package suite?
+- Is the executed test scope minimal and relevant?
+- Are assertions meaningful for business behavior?

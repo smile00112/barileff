@@ -1,0 +1,49 @@
+---
+description: Dependency addition, updates, and deprecation policy
+globs: "{composer.json,composer.lock,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}"
+alwaysApply: false
+---
+
+# Purpose
+
+Control dependency growth and reduce upgrade risk.
+
+# Rules
+
+- Do not add new dependencies without explicit approval.
+- Prefer built-in Laravel/PHP features before introducing external packages.
+- Keep dependency changes scoped and justified in PR description.
+- When upgrading, prefer incremental updates and verify affected tests.
+- Remove deprecated or unused packages only with impact assessment.
+- Document migration notes for breaking changes.
+
+# Good Examples
+
+```text
+Proposal:
+- Need package X for Y capability unavailable in framework.
+- Alternatives considered: A, B.
+- Risk: low/medium/high.
+- Validation plan: affected Pest suites.
+```
+
+```text
+Single-package upgrade with changelog review and focused regression tests.
+```
+
+# Bad Examples
+
+```text
+Adding 3 helper libraries for convenience without prior approval.
+```
+
+```text
+Large dependency upgrade + unrelated refactor in one pull request.
+```
+
+# Checklist
+
+- Is dependency change approved?
+- Is there a clear technical justification?
+- Are risks and migration notes documented?
+- Are affected tests executed after update?

@@ -1,0 +1,48 @@
+---
+description: Folder organization and naming conventions
+globs: "**/*"
+alwaysApply: false
+---
+
+# Purpose
+
+Keep new code aligned with current repository structure and naming patterns.
+
+# Rules
+
+- Respect package-first structure under `packages/Webkul/<Domain>/`.
+- Place domain logic in corresponding package, not in unrelated root folders.
+- Use framework defaults for root Laravel directories (`app`, `config`, `routes`, `tests`).
+- Use descriptive PascalCase class names and domain-specific file names.
+- Follow existing route/controller/view organization inside each package.
+- Reuse existing components/services before creating new ones.
+
+# Good Examples
+
+```text
+New Cart Rule behavior:
+- Service/Repository updates in packages/Webkul/CartRule/src
+- Tests in packages/Webkul/CartRule/tests or relevant existing suite
+```
+
+```text
+Class naming:
+ApplyCouponAction.php
+CartRuleValidationService.php
+```
+
+# Bad Examples
+
+```text
+Creating a new top-level folder "business-logic/" for package-specific code.
+```
+
+```text
+Placing checkout code inside an unrelated marketing package.
+```
+
+# Checklist
+
+- Is the change inside the correct package/domain?
+- Does file naming match nearby conventions?
+- Did we avoid creating new base folders without approval?

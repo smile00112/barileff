@@ -1,0 +1,53 @@
+---
+description: Documentation and commenting standards
+globs: "**/*.{php,js,ts,vue,md}"
+alwaysApply: false
+---
+
+# Purpose
+
+Ensure docs and comments are concise, useful, and easy to maintain.
+
+# Rules
+
+- Prefer self-explanatory code; add comments only for non-obvious decisions.
+- In PHP, prefer PHPDoc blocks for complex contracts and array shapes.
+- Keep README updates focused on user-impacting behavior changes.
+- Avoid stale comments that duplicate what code already states.
+- Include test instructions in PR descriptions for behavior changes.
+
+# Good Examples
+
+```php
+/**
+ * @param array{code:string,usage_limit:int|null} $payload
+ */
+public function createCoupon(array $payload): Coupon
+{
+    // ...
+}
+```
+
+```markdown
+## Setup
+## Running Tests
+## Environment Variables
+## Deployment Notes
+```
+
+# Bad Examples
+
+```php
+$total = $cart->grand_total; // Assign grand total to total
+```
+
+```markdown
+# README
+This project is good.
+```
+
+# Checklist
+
+- Do comments explain intent instead of restating syntax?
+- Are complex payloads/contracts documented with PHPDoc or equivalent?
+- If behavior changed, are README/PR test steps updated?

@@ -1,0 +1,59 @@
+---
+description: Architectural patterns for Laravel 11 and Bagisto packages
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Purpose
+
+Guide implementation decisions using existing Laravel and Bagisto architecture.
+
+# Rules
+
+- Follow package-first architecture and keep bounded contexts explicit.
+- Prefer repository + service orchestration where that pattern already exists.
+- Use Eloquent relations and eager loading to avoid N+1 queries.
+- For input validation, use Form Request classes, not ad-hoc validation.
+- Keep controllers thin: delegate domain logic to repositories/services/actions.
+- For new features, add tests and place code in the smallest correct domain.
+
+# Good Examples
+
+```php
+public function update(UpdateCartRuleRequest $request, int $id): JsonResponse
+{
+    $cartRule = $this->cartRuleRepository->findOrFail($id);
+
+    $updatedCartRule = $this->cartRuleService->updateFromPayload($cartRule, $request->validated());
+
+    return response()->json(['data' => $updatedCartRule]);
+}
+```
+
+```php
+$cartRules = CartRule::query()
+    ->with(['coupons', 'customerGroups'])
+    ->latest()
+    ->paginate(20);
+```
+
+# Bad Examples
+
+```php
+public function update(Request $request, int $id)
+{
+    DB::table('cart_rules')->where('id', $id)->update($request->all());
+    return 'ok';
+}
+```
+
+```php
+// Controller contains validation, query logic, mapping, and side effects together.
+```
+
+# Checklist
+
+- Is the code in the right package/domain?
+- Is controller logic kept thin?
+- Are Eloquent relations/eager loads used where applicable?
+- Are architecture decisions consistent with existing package patterns?
