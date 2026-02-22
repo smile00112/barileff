@@ -1,0 +1,30 @@
+<?php
+
+namespace Webkul\Admin\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class DeliveryCityRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'code' => ['required', 'alpha_dash', 'max:255', 'unique:delivery_cities,code,'.$this->id],
+            'name' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:2'],
+            'state' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['nullable', 'boolean'],
+        ];
+    }
+}

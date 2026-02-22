@@ -9,6 +9,7 @@ use Webkul\Checkout\Contracts\Cart as CartContract;
 use Webkul\Checkout\Database\Factories\CartFactory;
 use Webkul\Core\Models\ChannelProxy;
 use Webkul\Customer\Models\CustomerProxy;
+use Webkul\Shipping\Models\DeliveryZone;
 
 class Cart extends Model implements CartContract
 {
@@ -97,6 +98,14 @@ class Cart extends Model implements CartContract
     public function shipping_rates(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CartShippingRateProxy::modelClass());
+    }
+
+    /**
+     * Get selected delivery zone for the cart.
+     */
+    public function delivery_zone(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(DeliveryZone::class, 'delivery_zone_id');
     }
 
     /**

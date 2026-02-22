@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Settings\ChannelController;
 use Webkul\Admin\Http\Controllers\Settings\CurrencyController;
 use Webkul\Admin\Http\Controllers\Settings\DataTransfer\ImportController;
+use Webkul\Admin\Http\Controllers\Settings\DeliveryCityController;
+use Webkul\Admin\Http\Controllers\Settings\DeliveryZoneController;
 use Webkul\Admin\Http\Controllers\Settings\ExchangeRateController;
 use Webkul\Admin\Http\Controllers\Settings\InventorySourceController;
 use Webkul\Admin\Http\Controllers\Settings\LocaleController;
@@ -98,6 +100,34 @@ Route::prefix('settings')->group(function () {
         Route::put('edit/{id}', 'update')->name('admin.settings.inventory_sources.update');
 
         Route::delete('edit/{id}', 'destroy')->name('admin.settings.inventory_sources.delete');
+    });
+
+    Route::controller(DeliveryCityController::class)->prefix('delivery-cities')->group(function () {
+        Route::get('', 'index')->name('admin.settings.delivery_cities.index');
+
+        Route::get('create', 'create')->name('admin.settings.delivery_cities.create');
+
+        Route::post('create', 'store')->name('admin.settings.delivery_cities.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.settings.delivery_cities.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.settings.delivery_cities.update');
+
+        Route::delete('edit/{id}', 'destroy')->name('admin.settings.delivery_cities.delete');
+    });
+
+    Route::controller(DeliveryZoneController::class)->prefix('delivery-zones')->group(function () {
+        Route::get('', 'index')->name('admin.settings.delivery_zones.index');
+
+        Route::get('create', 'create')->name('admin.settings.delivery_zones.create');
+
+        Route::post('create', 'store')->name('admin.settings.delivery_zones.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.settings.delivery_zones.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.settings.delivery_zones.update');
+
+        Route::delete('edit/{id}', 'destroy')->name('admin.settings.delivery_zones.delete');
     });
 
     Route::prefix('taxes')->group(function () {

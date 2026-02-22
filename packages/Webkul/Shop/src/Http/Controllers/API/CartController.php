@@ -166,7 +166,11 @@ class CartController extends APIController
             'country' => 'required',
             'state' => 'required',
             'postcode' => 'required',
+            'city' => 'sometimes|string',
             'shipping_method' => 'sometimes|required',
+            'delivery_point_lat' => 'nullable|numeric|between:-90,90',
+            'delivery_point_lng' => 'nullable|numeric|between:-180,180',
+            'delivery_zone_id' => 'nullable|integer|exists:delivery_zones,id',
         ]);
 
         $cart = Cart::getCart();
@@ -174,6 +178,7 @@ class CartController extends APIController
         $address = (new CartAddress)->fill([
             'country' => request()->input('country'),
             'state' => request()->input('state'),
+            'city' => request()->input('city'),
             'postcode' => request()->input('postcode'),
             'cart_id' => $cart->id,
         ]);
@@ -183,6 +188,12 @@ class CartController extends APIController
         $cart->setRelation('shipping_address', $address);
 
         Cart::setCart($cart);
+
+        $cart->delivery_point_lat = request()->input('delivery_point_lat');
+        $cart->delivery_point_lng = request()->input('delivery_point_lng');
+        $cart->delivery_zone_id = request()->input('delivery_zone_id');
+        $cart->delivery_zone_mode = request()->filled('delivery_zone_id') ? 'manual' : (($cart->delivery_point_lat && $cart->delivery_point_lng) ? 'auto' : null);
+        $cart->save();
 
         if (request()->has('shipping_method')) {
             Cart::saveShippingMethod(request()->input('shipping_method'));

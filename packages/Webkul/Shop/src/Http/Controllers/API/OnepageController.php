@@ -63,6 +63,12 @@ class OnepageController extends APIController
 
         $cart = Cart::getCart();
 
+        $cart->delivery_point_lat = $params['delivery_point_lat'] ?? null;
+        $cart->delivery_point_lng = $params['delivery_point_lng'] ?? null;
+        $cart->delivery_zone_id = $params['delivery_zone_id'] ?? null;
+        $cart->delivery_zone_mode = ! empty($params['delivery_zone_id']) ? 'manual' : (($cart->delivery_point_lat && $cart->delivery_point_lng) ? 'auto' : null);
+        $cart->save();
+
         Cart::collectTotals();
 
         if ($cart->haveStockableItems()) {
@@ -82,6 +88,36 @@ class OnepageController extends APIController
         return new JsonResource([
             'redirect' => false,
             'data' => Payment::getSupportedPaymentMethods(),
+        ]);
+    }
+
+    /**
+     * Store delivery zone manually and recalculate shipping.
+     */
+    public function storeDeliveryZone()
+    {
+        $validatedData = $this->validate(request(), [
+            'delivery_zone_id' => 'required|integer|exists:delivery_zones,id',
+        ]);
+
+        $cart = Cart::getCart();
+
+        if (! $cart) {
+            return response()->json([
+                'message' => 'Cart not found.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $cart->delivery_zone_id = (int) $validatedData['delivery_zone_id'];
+        $cart->delivery_zone_mode = 'manual';
+        $cart->save();
+
+        Shipping::collectRates();
+        Cart::collectTotals();
+
+        return response()->json([
+            'cart' => new CartResource(Cart::getCart()),
+            'shipping_methods' => array_values(Shipping::collectRates()['shippingMethods'] ?? []),
         ]);
     }
 

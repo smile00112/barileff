@@ -701,10 +701,50 @@ return [
         'route' => 'admin.settings.inventory_sources.delete',
         'sort' => 3,
     ], [
+        'key' => 'settings.delivery_cities',
+        'name' => 'Delivery cities',
+        'route' => 'admin.settings.delivery_cities.index',
+        'sort' => 5,
+    ], [
+        'key' => 'settings.delivery_cities.create',
+        'name' => 'admin::app.acl.create',
+        'route' => 'admin.settings.delivery_cities.create',
+        'sort' => 1,
+    ], [
+        'key' => 'settings.delivery_cities.edit',
+        'name' => 'admin::app.acl.edit',
+        'route' => 'admin.settings.delivery_cities.edit',
+        'sort' => 2,
+    ], [
+        'key' => 'settings.delivery_cities.delete',
+        'name' => 'admin::app.acl.delete',
+        'route' => 'admin.settings.delivery_cities.delete',
+        'sort' => 3,
+    ], [
+        'key' => 'settings.delivery_zones',
+        'name' => 'Delivery zones',
+        'route' => 'admin.settings.delivery_zones.index',
+        'sort' => 6,
+    ], [
+        'key' => 'settings.delivery_zones.create',
+        'name' => 'admin::app.acl.create',
+        'route' => 'admin.settings.delivery_zones.create',
+        'sort' => 1,
+    ], [
+        'key' => 'settings.delivery_zones.edit',
+        'name' => 'admin::app.acl.edit',
+        'route' => 'admin.settings.delivery_zones.edit',
+        'sort' => 2,
+    ], [
+        'key' => 'settings.delivery_zones.delete',
+        'name' => 'admin::app.acl.delete',
+        'route' => 'admin.settings.delivery_zones.delete',
+        'sort' => 3,
+    ], [
         'key' => 'settings.channels',
         'name' => 'admin::app.acl.channels',
         'route' => 'admin.settings.channels.index',
-        'sort' => 5,
+        'sort' => 7,
     ], [
         'key' => 'settings.channels.create',
         'name' => 'admin::app.acl.create',
@@ -724,7 +764,7 @@ return [
         'key' => 'settings.users',
         'name' => 'admin::app.acl.users',
         'route' => 'admin.settings.users.index',
-        'sort' => 6,
+        'sort' => 8,
     ], [
         'key' => 'settings.users.create',
         'name' => 'admin::app.acl.create',
@@ -744,7 +784,7 @@ return [
         'key' => 'settings.roles',
         'name' => 'admin::app.acl.roles',
         'route' => 'admin.settings.roles.index',
-        'sort' => 7,
+        'sort' => 9,
     ], [
         'key' => 'settings.roles.create',
         'name' => 'admin::app.acl.create',
@@ -764,7 +804,7 @@ return [
         'key' => 'settings.themes',
         'name' => 'admin::app.acl.themes',
         'route' => 'admin.settings.themes.index',
-        'sort' => 8,
+        'sort' => 10,
     ], [
         'key' => 'settings.themes.create',
         'name' => 'admin::app.acl.create',
@@ -784,7 +824,7 @@ return [
         'key' => 'settings.taxes',
         'name' => 'admin::app.acl.taxes',
         'route' => 'admin.settings.taxes.categories.index',
-        'sort' => 9,
+        'sort' => 11,
     ], [
         'key' => 'settings.taxes.tax_categories',
         'name' => 'admin::app.acl.tax-categories',
@@ -824,7 +864,7 @@ return [
         'key' => 'settings.data_transfer',
         'name' => 'admin::app.acl.data-transfer',
         'route' => 'admin.settings.data_transfer.imports.index',
-        'sort' => 10,
+        'sort' => 12,
     ], [
         'key' => 'settings.data_transfer.imports',
         'name' => 'admin::app.acl.imports',

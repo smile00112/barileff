@@ -37,6 +37,12 @@ class CartAddressRequest extends FormRequest
             $this->mergeAddressRules('shipping');
         }
 
+        $this->mergeWithRules([
+            'delivery_point_lat' => ['nullable', 'numeric', 'between:-90,90'],
+            'delivery_point_lng' => ['nullable', 'numeric', 'between:-180,180'],
+            'delivery_zone_id' => ['nullable', 'integer', 'exists:delivery_zones,id'],
+        ]);
+
         return $this->rules;
     }
 

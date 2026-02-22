@@ -1825,6 +1825,34 @@ return [
             ],
         ],
     ], [
+        'key' => 'sales.carriers.delivery_zones',
+        'name' => 'Delivery By Zones',
+        'info' => 'Zone-based shipping method',
+        'sort' => 3,
+        'fields' => [
+            [
+                'name' => 'title',
+                'title' => 'Title',
+                'type' => 'text',
+                'depends' => 'active:1',
+                'validation' => 'required_if:active,1',
+                'channel_based' => true,
+                'locale_based' => true,
+            ], [
+                'name' => 'description',
+                'title' => 'Description',
+                'type' => 'textarea',
+                'channel_based' => true,
+                'locale_based' => true,
+            ], [
+                'name' => 'active',
+                'title' => 'Status',
+                'type' => 'boolean',
+                'channel_based' => true,
+                'locale_based' => false,
+            ],
+        ],
+    ], [
         'key' => 'sales.payment_methods',
         'name' => 'admin::app.configuration.index.sales.payment-methods.page-title',
         'info' => 'admin::app.configuration.index.sales.payment-methods.info',
