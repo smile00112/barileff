@@ -67,6 +67,7 @@ it('should store the newly created channels', function () {
         'seo_description' => substr(fake()->paragraph(), 0, 50),
         'seo_keywords' => fake()->name(),
         'is_maintenance_on' => fake()->boolean(),
+        'maintenance_excluded_paths' => 'api/*, page/*, paypal/*',
         'logo' => [
             UploadedFile::fake()->image('logo.png'),
         ],
@@ -152,6 +153,7 @@ it('should update the existing channel', function () {
         'locales' => [1],
         'currencies' => [1],
         'is_maintenance_on' => fake()->boolean(),
+        'maintenance_excluded_paths' => 'api/*,page/*',
     ])
         ->assertRedirect(route('admin.settings.channels.index'))
         ->isRedirection();
@@ -162,6 +164,7 @@ it('should update the existing channel', function () {
                 'code' => $data['code'],
                 'hostname' => $data['hostname'],
                 'is_maintenance_on' => $data['is_maintenance_on'],
+                'maintenance_excluded_paths' => 'api/*,page/*',
                 'base_currency_id' => 1,
                 'root_category_id' => 1,
                 'default_locale_id' => 1,

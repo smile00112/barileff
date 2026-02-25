@@ -68,6 +68,7 @@ class PreventRequestsDuringMaintenance extends BasePreventRequestsDuringMaintena
             if (
                 in_array($request->ip(), $this->excludedIPs)
                 || $this->inExceptArray($request)
+                || $this->isInMaintenanceExcludedPaths($request)
                 || ! (bool) core()->getCurrentChannel()->is_maintenance_on
             ) {
                 return $next($request);
@@ -117,5 +118,27 @@ class PreventRequestsDuringMaintenance extends BasePreventRequestsDuringMaintena
         if ($channel = core()->getCurrentChannel()) {
             $this->excludedIPs = array_map('trim', explode(',', $channel->allowed_ips ?? ''));
         }
+    }
+
+    /**
+     * Check if the request path matches any maintenance excluded path from channel config.
+     */
+    protected function isInMaintenanceExcludedPaths($request): bool
+    {
+        $channel = core()->getCurrentChannel();
+
+        if (! $channel || empty($channel->maintenance_excluded_paths)) {
+            return false;
+        }
+
+        $paths = array_filter(array_map('trim', explode(',', $channel->maintenance_excluded_paths)));
+
+        foreach ($paths as $path) {
+            if ($path !== '' && $request->is($path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

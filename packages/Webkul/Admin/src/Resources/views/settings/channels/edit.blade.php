@@ -545,6 +545,28 @@
                             <x-admin::form.control-group.error control-name="allowed_ips" />
                         </x-admin::form.control-group>
 
+                        <!-- Maintenance Excluded Paths -->
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.settings.channels.edit.maintenance-excluded-paths')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="text"
+                                id="maintenance-excluded-paths"
+                                name="maintenance_excluded_paths"
+                                :value="old('maintenance_excluded_paths') ?? $channel->maintenance_excluded_paths"
+                                :label="trans('admin::app.settings.channels.edit.maintenance-excluded-paths')"
+                                :placeholder="trans('admin::app.settings.channels.edit.maintenance-excluded-paths-placeholder')"
+                            />
+
+                            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                                @lang('admin::app.settings.channels.edit.maintenance-excluded-paths-info')
+                            </p>
+
+                            <x-admin::form.control-group.error control-name="maintenance_excluded_paths" />
+                        </x-admin::form.control-group>
+
                         <!-- Maintenance Mode Switcher -->
                         <x-admin::form.control-group class="!mb-0">
                             <x-admin::form.control-group.label>

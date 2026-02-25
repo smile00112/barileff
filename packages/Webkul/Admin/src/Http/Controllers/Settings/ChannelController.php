@@ -77,9 +77,13 @@ class ChannelController extends Controller
             'is_maintenance_on' => 'boolean',
             'maintenance_mode_text' => 'nullable',
             'allowed_ips' => 'nullable',
+            'maintenance_excluded_paths' => 'nullable|string',
         ]);
 
         $data = $this->setSEOContent($data);
+        $data['maintenance_excluded_paths'] = $this->normalizeMaintenanceExcludedPaths(
+            $data['maintenance_excluded_paths'] ?? null
+        );
 
         Event::dispatch('core.channel.create.before');
 
@@ -148,9 +152,13 @@ class ChannelController extends Controller
             'is_maintenance_on' => 'boolean',
             $locale.'.maintenance_mode_text' => 'nullable',
             'allowed_ips' => 'nullable',
+            'maintenance_excluded_paths' => 'nullable|string',
         ]);
 
         $data['is_maintenance_on'] = request()->input('is_maintenance_on') == '1';
+        $data['maintenance_excluded_paths'] = $this->normalizeMaintenanceExcludedPaths(
+            request()->input('maintenance_excluded_paths')
+        );
 
         $data = $this->setSEOContent($data, $locale);
 
@@ -232,6 +240,20 @@ class ChannelController extends Controller
         }
 
         return $editedData;
+    }
+
+    /**
+     * Normalize maintenance excluded paths (trim, collapse commas).
+     */
+    private function normalizeMaintenanceExcludedPaths(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $paths = array_filter(array_map('trim', explode(',', $value)));
+
+        return empty($paths) ? null : implode(',', $paths);
     }
 
     /**
