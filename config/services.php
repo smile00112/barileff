@@ -68,6 +68,10 @@ return [
         'redirect' => env('GOOGLE_CALLBACK_URL'),
     ],
 
+    'yandex_maps' => [
+        'api_key' => env('YANDEX_MAPS_API_KEY'),
+    ],
+
     'linkedin-openid' => [
         'client_id' => env('LINKEDIN_CLIENT_ID'),
         'client_secret' => env('LINKEDIN_CLIENT_SECRET'),

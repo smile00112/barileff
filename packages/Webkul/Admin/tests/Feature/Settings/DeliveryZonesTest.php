@@ -58,3 +58,39 @@ it('should create delivery city and delivery zone', function () {
         ->and($zone->rates()->count())->toBe(1)
         ->and($zone->inventory_sources()->count())->toBe(1);
 });
+
+it('should append yandex maps api key to map script url on create and edit pages', function () {
+    $this->loginAsAdmin();
+
+    config()->set('services.yandex_maps.api_key', 'test-yandex-key');
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'spb',
+        'name' => 'Saint Petersburg',
+        'country' => 'RU',
+        'state' => 'SPE',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'spb-center',
+        'name' => 'SPB Center',
+        'polygon_json' => [],
+        'is_active' => true,
+    ]);
+
+    get(route('admin.settings.delivery_zones.create'))
+        ->assertOk()
+        ->assertSee('api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=test-yandex-key', false)
+        ->assertSee('const initDeliveryZoneForm = () => {', false)
+        ->assertSee('const syncPolygonInput = (value) => {', false)
+        ->assertSee('window.setTimeout(initDeliveryZoneForm, 0);', false);
+
+    get(route('admin.settings.delivery_zones.edit', $zone->id))
+        ->assertOk()
+        ->assertSee('api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=test-yandex-key', false)
+        ->assertSee('const initDeliveryZoneForm = () => {', false)
+        ->assertSee('const syncPolygonInput = (value) => {', false)
+        ->assertSee('window.setTimeout(initDeliveryZoneForm, 0);', false);
+});

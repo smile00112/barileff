@@ -1,0 +1,48 @@
+---
+description: Rules for the flatrate shipping method
+alwaysApply: false
+---
+
+# Purpose
+
+Keep `flatrate` shipping changes consistent with existing carrier contracts and checkout behavior.
+
+# Rules
+
+- Keep carrier and method identifiers stable: `carrier=flatrate`, `method=flatrate_flatrate`, `config path=sales.carriers.flatrate`.
+- Preserve current pricing modes: `per_unit` multiplies by stockable item quantity; any other value behaves as per-order flat amount.
+- Keep `default_rate` numeric and ensure `price` and `base_price` stay aligned with converted/base values.
+- Do not move business logic from `packages/Webkul/Shipping` into controllers.
+- Any behavior change must include focused checkout/shipping tests.
+
+# Good Examples
+
+```text
+Need to add a validation around flatrate config:
+- Keep code in Shipping carrier/service layer.
+- Preserve method id flatrate_flatrate.
+- Add/adjust tests that assert per_unit and per_order totals.
+```
+
+```text
+Changing admin labels only:
+- Update translation/config presentation.
+- Keep carrier code and method code unchanged.
+```
+
+# Bad Examples
+
+```text
+Renaming method code from flatrate_flatrate to flat_rate.
+```
+
+```text
+Adding flatrate math in Shop API controller instead of carrier class.
+```
+
+# Checklist
+
+- Are `flatrate` and `flatrate_flatrate` unchanged?
+- Do `per_unit` and flat modes still calculate correctly?
+- Is the change limited to the shipping domain where possible?
+- Is there a test that covers changed flatrate behavior?

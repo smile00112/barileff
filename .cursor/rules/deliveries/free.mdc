@@ -1,0 +1,47 @@
+---
+description: Rules for the free shipping method
+alwaysApply: false
+---
+
+# Purpose
+
+Protect the `free` shipping contract and prevent accidental regressions in zero-cost checkout flows.
+
+# Rules
+
+- Keep carrier and method identifiers stable: `carrier=free`, `method=free_free`, `config path=sales.carriers.free`.
+- Preserve zero-cost behavior: shipping `price` and `base_price` must remain `0` for this method.
+- Respect activation toggle; if method is inactive it must not be returned by carrier calculation.
+- When changing defaults, check impact on tests and factories that rely on `free_free`.
+- Any behavior change must include focused tests for active/inactive and rate selection paths.
+
+# Good Examples
+
+```text
+Need to update free shipping title/description:
+- Adjust config or translations only.
+- Keep free/free_free identifiers and zero pricing untouched.
+```
+
+```text
+Need to change availability condition:
+- Implement in carrier or supporting service.
+- Add tests for active=1 and active=0 outcomes.
+```
+
+# Bad Examples
+
+```text
+Returning a non-zero price from the free carrier.
+```
+
+```text
+Changing free_free method id without updating all dependent tests and consumers.
+```
+
+# Checklist
+
+- Are `free` and `free_free` unchanged?
+- Does free shipping still produce zero cost?
+- Is method availability controlled only by shipping config/state?
+- Are affected tests updated for free shipping behavior?

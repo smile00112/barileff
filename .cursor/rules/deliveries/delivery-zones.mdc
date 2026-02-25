@@ -1,0 +1,50 @@
+---
+description: Rules for the delivery_zones shipping method
+alwaysApply: false
+---
+
+# Purpose
+
+Keep zone-based delivery behavior predictable across Shipping, Checkout, Shop API, and Admin settings.
+
+# Rules
+
+- Keep carrier and method identifiers stable: `carrier=delivery_zones`, `method=delivery_zones_delivery_zones`, `config path=sales.carriers.delivery_zones`.
+- Preserve zone resolution flow: cart context -> `ZoneSelector` -> zone rate selection by `min_order_total` and `sort_order`.
+- Do not bypass delivery mode logic (`manual` / `auto`) when updating cart address, delivery zone, or coordinates.
+- Keep delivery zone pricing in shipping domain (`packages/Webkul/Shipping`) and avoid controller-level pricing logic.
+- Keep Admin CRUD, validation requests, and datagrids aligned with delivery city/zone models.
+- Any behavior change must include tests for checkout shipping-rate resolution and admin management scenarios.
+
+# Good Examples
+
+```text
+Need to refine zone selection:
+- Update ZoneSelector and related service logic.
+- Keep method id delivery_zones_delivery_zones.
+- Add feature tests for matching and non-matching zones.
+```
+
+```text
+Need to add field validation for delivery zones:
+- Implement in Form Requests used by Admin or Shop API.
+- Keep controllers thin and preserve existing flow.
+```
+
+# Bad Examples
+
+```text
+Computing delivery zone price directly in API controllers.
+```
+
+```text
+Changing manual/auto behavior in one endpoint but not updating cart model/resource/tests.
+```
+
+# Checklist
+
+- Are `delivery_zones` and `delivery_zones_delivery_zones` unchanged?
+- Does zone resolution still rely on ZoneSelector and cart context?
+- Are manual/auto delivery mode paths consistent across Checkout and Shop API?
+- Are Admin zone/city CRUD validations still aligned with models?
+- Are checkout and admin tests updated for changed zone behavior?

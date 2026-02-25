@@ -146,93 +146,142 @@
     </x-admin::form>
 
     @pushOnce('scripts')
-        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+        @php
+            $yandexMapsApiKey = (string) config('services.yandex_maps.api_key', '');
+            $yandexMapsScriptUrl = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+
+            if ($yandexMapsApiKey !== '') {
+                $yandexMapsScriptUrl .= '&apikey='.urlencode($yandexMapsApiKey);
+            }
+        @endphp
+
+        <script src="{{ $yandexMapsScriptUrl }}"></script>
 
         <script type="module">
-            let ratesIndex = {{ count($rates) }};
-            const ratesWrapper = document.getElementById('rates-wrapper');
-            const addRateRowButton = document.getElementById('add-rate-row');
+            const initDeliveryZoneForm = () => {
+                let ratesIndex = {{ count($rates) }};
+                const ratesWrapper = document.getElementById('rates-wrapper');
+                const addRateRowButton = document.getElementById('add-rate-row');
+                const polygonInput = document.getElementById('polygon_json');
+                const clearPolygonButton = document.getElementById('clear-polygon');
 
-            addRateRowButton?.addEventListener('click', () => {
-                const row = document.createElement('div');
-                row.className = 'grid grid-cols-3 gap-2 max-md:grid-cols-1';
-                row.innerHTML = `
-                    <div>
-                        <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
-                    </div>
-                    <div>
-                        <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][price]">
-                    </div>
-                    <div class="flex gap-2">
-                        <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
-                        <button type="button" class="secondary-button remove-rate">X</button>
-                    </div>
-                `;
-
-                ratesWrapper.appendChild(row);
-                ratesIndex++;
-            });
-
-            ratesWrapper?.addEventListener('click', (event) => {
-                const target = event.target;
-                if (target instanceof HTMLElement && target.classList.contains('remove-rate')) {
-                    target.closest('.grid')?.remove();
-                }
-            });
-
-            const polygonInput = document.getElementById('polygon_json');
-            const clearPolygonButton = document.getElementById('clear-polygon');
-
-            const parseCoordinates = () => {
-                try {
-                    const parsed = JSON.parse(polygonInput.value || '[]');
-                    return Array.isArray(parsed) ? parsed : [];
-                } catch (e) {
-                    return [];
-                }
-            };
-
-            let coordinates = parseCoordinates();
-            let polygonObject = null;
-
-            const renderPolygon = (map) => {
-                if (polygonObject) {
-                    map.geoObjects.remove(polygonObject);
-                }
-
-                if (coordinates.length < 3) {
+                if (! ratesWrapper || ! addRateRowButton || ! polygonInput) {
                     return;
                 }
 
-                polygonObject = new ymaps.Polygon([coordinates], {}, {
-                    fillColor: '#0088ff33',
-                    strokeColor: '#0077cc',
-                    strokeWidth: 3,
+                addRateRowButton.addEventListener('click', () => {
+                    const row = document.createElement('div');
+                    row.className = 'grid grid-cols-3 gap-2 max-md:grid-cols-1';
+                    row.innerHTML = `
+                        <div>
+                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
+                        </div>
+                        <div>
+                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][price]">
+                        </div>
+                        <div class="flex gap-2">
+                            <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
+                            <button type="button" class="secondary-button remove-rate">X</button>
+                        </div>
+                    `;
+
+                    ratesWrapper.appendChild(row);
+                    ratesIndex++;
                 });
 
-                map.geoObjects.add(polygonObject);
-            };
+                ratesWrapper.addEventListener('click', (event) => {
+                    const target = event.target;
 
-            ymaps.ready(() => {
-                const map = new ymaps.Map('zone-map', {
-                    center: [55.751244, 37.618423],
-                    zoom: 10,
+                    if (target instanceof HTMLElement && target.classList.contains('remove-rate')) {
+                        target.closest('.grid')?.remove();
+                    }
                 });
 
-                renderPolygon(map);
+                const parseCoordinates = () => {
+                    try {
+                        const parsed = JSON.parse(polygonInput.value || '[]');
 
-                map.events.add('click', (event) => {
-                    const point = event.get('coords');
-                    coordinates.push([Number(point[0].toFixed(7)), Number(point[1].toFixed(7))]);
-                    polygonInput.value = JSON.stringify(coordinates);
-                    renderPolygon(map);
-                });
+                        if (! Array.isArray(parsed)) {
+                            return [];
+                        }
+
+                        if (
+                            parsed.length > 0
+                            && Array.isArray(parsed[0])
+                            && parsed[0].length > 0
+                            && Array.isArray(parsed[0][0])
+                        ) {
+                            return parsed[0];
+                        }
+
+                        return parsed;
+                    } catch (e) {
+                        return [];
+                    }
+                };
+
+                const syncPolygonInput = (value) => {
+                    polygonInput.value = JSON.stringify(value);
+                    polygonInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    polygonInput.dispatchEvent(new Event('change', { bubbles: true }));
+                };
+
+                let coordinates = parseCoordinates();
+                let polygonObject = null;
+                let map = null;
+
+                const renderPolygon = () => {
+                    if (! map) {
+                        return;
+                    }
+
+                    if (polygonObject) {
+                        map.geoObjects.remove(polygonObject);
+                        polygonObject = null;
+                    }
+
+                    if (coordinates.length < 3) {
+                        return;
+                    }
+
+                    polygonObject = new ymaps.Polygon([coordinates], {}, {
+                        fillColor: '#0088ff33',
+                        strokeColor: '#0077cc',
+                        strokeWidth: 3,
+                    });
+
+                    map.geoObjects.add(polygonObject);
+                };
 
                 clearPolygonButton?.addEventListener('click', () => {
                     coordinates = [];
-                    polygonInput.value = '[]';
-                    renderPolygon(map);
+                    syncPolygonInput(coordinates);
+                    renderPolygon();
                 });
+
+                if (typeof ymaps === 'undefined' || typeof ymaps.ready !== 'function') {
+                    return;
+                }
+
+                ymaps.ready(() => {
+                    map = new ymaps.Map('zone-map', {
+                        center: [55.751244, 37.618423],
+                        zoom: 10,
+                    });
+
+                    renderPolygon();
+
+                    map.events.add('click', (event) => {
+                        const point = event.get('coords');
+                        coordinates.push([Number(point[0].toFixed(7)), Number(point[1].toFixed(7))]);
+                        syncPolygonInput(coordinates);
+                        renderPolygon();
+                    });
+                });
+            };
+
+            window.addEventListener('load', () => {
+                window.setTimeout(initDeliveryZoneForm, 0);
             });
         </script>
     @endpushOnce
