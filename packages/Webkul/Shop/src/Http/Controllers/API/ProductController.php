@@ -8,6 +8,11 @@ use Webkul\Marketing\Jobs\UpdateCreateSearchTerm as UpdateCreateSearchTermJob;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\ProductResource;
 
+/**
+ * Product listing, related and up-sell products.
+ *
+ * @group Products
+ */
 class ProductController extends APIController
 {
     /**
@@ -21,7 +26,14 @@ class ProductController extends APIController
     ) {}
 
     /**
-     * Product listings.
+     * Product listings with search and filters.
+     *
+     * @queryParam query string Search query. Example: laptop
+     * @queryParam category_id int Filter by category ID. Example: 5
+     * @queryParam sort string Sort field (price, created_at, etc.). Example: price
+     * @queryParam order string Sort order: asc or desc. Example: asc
+     * @queryParam limit int Items per page. Example: 12
+     * @queryParam page int Page number for pagination. Example: 1
      */
     public function index(): JsonResource
     {

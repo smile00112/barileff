@@ -8,6 +8,11 @@ use Webkul\Customer\Repositories\CustomerAddressRepository;
 use Webkul\Shop\Http\Requests\Customer\AddressRequest;
 use Webkul\Shop\Http\Resources\AddressResource;
 
+/**
+ * Customer addresses: list, create, update. Requires authentication.
+ *
+ * @group Customer Addresses
+ */
 class AddressController extends APIController
 {
     /**

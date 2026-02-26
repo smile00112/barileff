@@ -13,6 +13,11 @@ use Webkul\Shipping\Facades\Shipping;
 use Webkul\Shop\Http\Requests\CartAddressRequest;
 use Webkul\Shop\Http\Resources\CartResource;
 
+/**
+ * Checkout one-page flow: addresses, shipping, payment, order creation.
+ *
+ * @group Checkout Onepage
+ */
 class OnepageController extends APIController
 {
     /**

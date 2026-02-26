@@ -9,6 +9,11 @@ use Webkul\Customer\Repositories\CompareItemRepository;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\CompareItemResource;
 
+/**
+ * Compare items: add, list, remove products for comparison.
+ *
+ * @group Compare
+ */
 class CompareController extends APIController
 {
     /**

@@ -1,0 +1,52 @@
+---
+description: Rules for site maintenance mode and excluded paths during maintenance
+alwaysApply: false
+---
+
+# Purpose
+
+Keep maintenance mode behavior predictable when the site is disabled: show a stub page everywhere except admin and configured excluded paths (Shop API, CMS pages, payment callbacks).
+
+# Rules
+
+- Maintenance is controlled per channel: `is_maintenance_on`, `maintenance_mode_text`, `maintenance_excluded_paths` in `packages/Webkul/Core/src/Models/Channel`.
+- Excluded paths are comma-separated patterns (e.g. `api/*`, `page/*`, `paypal/*`) stored in `maintenance_excluded_paths`. Laravel's `$request->is()` supports wildcards.
+- `PreventRequestsDuringMaintenance` in `packages/Webkul/Core/src/Http/Middleware/PreventRequestsDuringMaintenance.php` checks: Laravel maintenance active, channel `is_maintenance_on`, then bypasses if path is in `maintenance_excluded_paths`, admin URL, allowed IPs, or route names.
+- Admin panel is always excluded via `$except` (admin_url). Do not remove this exclusion.
+- When adding new payment gateways (Stripe, Razorpay, etc.), document that admins should add `stripe/*`, `razorpay/*` to `maintenance_excluded_paths` if callbacks must work during maintenance.
+- Any change to maintenance logic must include tests in `MaintenanceExclusionTest` or `ChannelsTest`.
+
+# Good Examples
+
+```text
+Need to add new excluded path pattern:
+- Add to Channel edit/create UI and validation.
+- Middleware already uses comma-separated parsing; no change needed if pattern matches $request->is().
+```
+
+```text
+Need to customize stub page:
+- Update view in packages/Webkul/Shop or error handler; preserve 503 status.
+- Do not change PreventRequestsDuringMaintenance bypass logic.
+```
+
+# Bad Examples
+
+```text
+Adding maintenance logic outside PreventRequestsDuringMaintenance or channel settings.
+```
+
+```text
+Removing admin_url from $except or changing the order of bypass checks.
+```
+
+```text
+Storing excluded paths in core_config instead of Channel when maintenance is channel-based.
+```
+
+# Checklist
+
+- Is `maintenance_excluded_paths` used for path-based exclusions?
+- Are admin and allowed IPs still bypassed?
+- Are new payment gateway paths documented for admins?
+- Are tests updated for changed maintenance behavior?

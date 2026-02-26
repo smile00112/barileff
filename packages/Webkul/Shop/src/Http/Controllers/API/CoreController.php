@@ -2,6 +2,11 @@
 
 namespace Webkul\Shop\Http\Controllers\API;
 
+/**
+ * Core API (countries, states).
+ *
+ * @group Core
+ */
 class CoreController extends APIController
 {
     /**

@@ -1,0 +1,155 @@
+name: Compare
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/compare-items
+    metadata:
+      custom: []
+      groupName: Compare
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Address route index page.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IldoWFR4UDBucjB4RFlId2pOUit4aUE9PSIsInZhbHVlIjoiMVNvbG1lRzdSdjV5S3pwUlduSlNRc3RQV1dhdGZDMHhkeDhFQmdRK3NPTHM2RVdTWHZ5bnpyNnNLZWE1a1B3S3FsUHMvNWRJNmp1WWNnVURYTE5kS2FWejBWQ0lKVnJ5cTMyQjNRTDNqbkVKY1U5c0pDV3ZMaUJQN01Qa2JHSlMiLCJtYWMiOiIzMmFkMjRkYjdiZGI3ODEyOTU1ZTJhNDI4YmI5NjhiZGVhMDZjOTg2M2E4ZjE0MjIzNDU1YzA0OWQyODg4ZTc0IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkVzSTYxbUxNTUt4bEFXQnJ5eFoxYUE9PSIsInZhbHVlIjoibTFpQXhGSVNYcm4vMzhabUJXb3pGVWJVMm1UNHVHTHlPL0x3bUVDZFExK2tzaCtTZWszU3pYcXh6NVVseDZ4SzAyT0IvMGNYd1h6T3RnbGcrSEtWZ1VldU9TYXo2c1NieTZHWHlzdHVrZ2Z6YmlOZjJ3cE5IOEJZV09qWDQvQmUiLCJtYWMiOiJkOWI3NzQ0OTU3MmE0YjU1MWM5ZDI2YTAzMDA1MGMwZDViZjgzZDE2YWViNzRhYmQwZGU0ZWRmMzc3MDIwZmUxIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/compare-items
+    metadata:
+      custom: []
+      groupName: Compare
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Method for customers to get products in comparison.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      product_id:
+        custom: []
+        name: product_id
+        description: 'The <code>id</code> of an existing record in the products table.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      product_id: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: api/compare-items
+    metadata:
+      custom: []
+      groupName: Compare
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Method to remove the item from compare list.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: api/compare-items/all
+    metadata:
+      custom: []
+      groupName: Compare
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Method for remove all items from compare list'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

@@ -1,0 +1,408 @@
+name: 'Checkout Onepage'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/checkout/onepage/summary
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Return cart summary.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 500
+        content: '{"error":"500 \u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044f\u044f \u043e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430","description":"shop::app.shop.errors.500.description"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkFWQzZRa0F6OWZvVzBla3h2K1JpclE9PSIsInZhbHVlIjoiVklsNjA1MUtzdU95UXlPWldFSVZ3aTZoQzVXeWxUVWI3c1pheXBCUkR0SW8yZzNnUy9RbTRyTFZSTE02MUZzMzhTbmJaM3B0VmpOWGhCNlcvdmY1S2pBeDIrRHVqQXp6K3hNc1Z1a3BjV0R1Q2ZiK0xEOVpoTDFUc01MQ2UyV3YiLCJtYWMiOiJmNWM3MjEzNjRiZDEwMzNiYzc0OGFlODVhNThmMmU1MTk2MzlkODgxNTBhMzA0YWJjZjU2ZGVmM2RkYWFlZjJlIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjlYcDkxejVEMW1uckpGTGRmQ29uSUE9PSIsInZhbHVlIjoiMEFhaW1KQkdxVGc1dGJZcDNWbHRlRHhHOVc2dFNxU2w0d25mNWZPVHNyRlZ3Q0ZUQWdBOEp6emxtUkR2aVFCeVA5Zyt3YmtlZG53UTFQNUNiR0MrMDdOWVNtT0JuOG9rbStDc2MybVNDUlB4UUJUQVl1MkdnQjY1ZVhXOXExenAiLCJtYWMiOiJiNGRlNTM5N2NlYzhmNmM3MzY4ZTA4NWExMGExNzdmMzIxNWM1YWEzOTk1ZTBhY2FhNTIxYjU1ZGEyZTg1MjMyIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout/onepage/addresses
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store address.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      shipping:
+        custom: []
+        name: shipping
+        description: ''
+        required: false
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.company_name:
+        custom: []
+        name: shipping.company_name
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      shipping.first_name:
+        custom: []
+        name: shipping.first_name
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.last_name:
+        custom: []
+        name: shipping.last_name
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.email:
+        custom: []
+        name: shipping.email
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.address:
+        custom: []
+        name: shipping.address
+        description: 'Поле value должно содержать как минимум 1 элементов.'
+        required: true
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.city:
+        custom: []
+        name: shipping.city
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.country:
+        custom: []
+        name: shipping.country
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.state:
+        custom: []
+        name: shipping.state
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.postcode:
+        custom: []
+        name: shipping.postcode
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping.phone:
+        custom: []
+        name: shipping.phone
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      delivery_point_lat:
+        custom: []
+        name: delivery_point_lat
+        description: 'Поле value должно быть между -90 и 90.'
+        required: false
+        example: -89
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      delivery_point_lng:
+        custom: []
+        name: delivery_point_lng
+        description: 'Поле value должно быть между -180 и 180.'
+        required: false
+        example: -180
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      delivery_zone_id:
+        custom: []
+        name: delivery_zone_id
+        description: 'The <code>id</code> of an existing record in the delivery_zones table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      shipping:
+        first_name: architecto
+        last_name: architecto
+        email: architecto
+        address: []
+        city: architecto
+        country: architecto
+        state: architecto
+        postcode: architecto
+        phone: architecto
+      delivery_point_lat: -89
+      delivery_point_lng: -180
+      delivery_zone_id: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout/onepage/shipping-methods
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store shipping method.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      shipping_method:
+        custom: []
+        name: shipping_method
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      shipping_method: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout/onepage/delivery-zone
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store delivery zone manually and recalculate shipping.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      delivery_zone_id:
+        custom: []
+        name: delivery_zone_id
+        description: 'The <code>id</code> of an existing record in the delivery_zones table.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      delivery_zone_id: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout/onepage/payment-methods
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store payment method.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      payment:
+        custom: []
+        name: payment
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      payment: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout/onepage/orders
+    metadata:
+      custom: []
+      groupName: 'Checkout Onepage'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store order'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

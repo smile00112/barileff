@@ -11,6 +11,11 @@ use Webkul\Product\Repositories\ProductReviewAttachmentRepository;
 use Webkul\Product\Repositories\ProductReviewRepository;
 use Webkul\Shop\Http\Resources\ProductReviewResource;
 
+/**
+ * Product reviews: list, create, translate.
+ *
+ * @group Product Reviews
+ */
 class ReviewController extends APIController
 {
     /**

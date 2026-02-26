@@ -7,10 +7,25 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Event;
 use Webkul\Shop\Http\Requests\Customer\LoginRequest;
 
+/**
+ * Customer authentication (login).
+ *
+ * @group Customer Auth
+ */
 class CustomerController extends APIController
 {
     /**
-     * Login Customer
+     * Login Customer.
+     *
+     * Authenticates the customer. On success, session cookies are set for use with protected endpoints.
+     *
+     * @bodyParam email string required Customer email. Example: customer@example.com
+     * @bodyParam password string required Customer password (min 6 chars). Example: password123
+     *
+     * @response 200 {}
+     * @response 403 scenario="Invalid credentials" {"message": "These credentials do not match our records."}
+     * @response 403 scenario="Account not activated" {"message": "Your account is not activated."}
+     * @response 403 scenario="Email not verified" {"message": "Please verify your email first."}
      *
      * @return \Illuminate\Http\JsonResponse
      */

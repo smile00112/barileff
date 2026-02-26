@@ -10,6 +10,11 @@ use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\WishlistResource;
 
+/**
+ * Wishlist: add, list, remove, move to cart. Requires authentication.
+ *
+ * @group Wishlist
+ */
 class WishlistController extends APIController
 {
     /**

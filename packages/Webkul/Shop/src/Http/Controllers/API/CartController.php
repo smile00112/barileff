@@ -13,6 +13,11 @@ use Webkul\Shipping\Facades\Shipping;
 use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\ProductResource;
 
+/**
+ * Cart: CRUD, coupons, shipping estimate, cross-sell.
+ *
+ * @group Cart
+ */
 class CartController extends APIController
 {
     /**
@@ -44,7 +49,14 @@ class CartController extends APIController
     }
 
     /**
-     * Store items in cart.
+     * Add product to cart.
+     *
+     * @bodyParam product_id int required Product ID. Example: 1
+     * @bodyParam quantity int Quantity (default 1). Example: 2
+     * @bodyParam is_buy_now int Set 1 for buy-now (redirects to checkout). Example: 0
+     *
+     * @response 200 {"data": {...}, "message": "Item added to cart."}
+     * @response 400 scenario="Insufficient inventory" {"message": "Requested quantity is not available."}
      */
     public function store()
     {

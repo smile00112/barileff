@@ -1,0 +1,262 @@
+name: Categories
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/categories
+    metadata:
+      custom: []
+      groupName: Categories
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all categories.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[{"id":1,"parent_id":null,"name":"\u041a\u043e\u0440\u0435\u043d\u044c","slug":"root","status":1,"position":1,"display_mode":"products_and_description","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u043e\u0440\u043d\u0435\u0432\u043e\u0439 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438","meta":{"title":"","keywords":"","description":""},"translations":[{"id":1,"category_id":1,"name":"\u041a\u043e\u0440\u0435\u043d\u044c","slug":"root","url_path":"","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u043e\u0440\u043d\u0435\u0432\u043e\u0439 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438","meta_title":"","meta_description":"","meta_keywords":"","locale_id":null,"locale":"ru"}],"additional":[]},{"id":2,"parent_id":1,"name":"\u041b\u044e\u0434\u0438","slug":"\u041c\u0443\u0436\u0447\u0438\u043d\u044b","status":1,"position":1,"display_mode":"products_and_description","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","meta":{"title":"\u041c\u0435\u0442\u0430-\u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","keywords":"\u041c\u0435\u0442\u0430-\u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0441\u043b\u043e\u0432\u0430 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","description":"\u041c\u0435\u0442\u0430-\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b"},"translations":[{"id":2,"category_id":2,"name":"\u041b\u044e\u0434\u0438","slug":"\u041c\u0443\u0436\u0447\u0438\u043d\u044b","url_path":"","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","meta_title":"\u041c\u0435\u0442\u0430-\u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","meta_description":"\u041c\u0435\u0442\u0430-\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","meta_keywords":"\u041c\u0435\u0442\u0430-\u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0441\u043b\u043e\u0432\u0430 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u041c\u0443\u0436\u0447\u0438\u043d\u044b","locale_id":null,"locale":"ru"}],"additional":[]},{"id":3,"parent_id":2,"name":"\u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","slug":"\u0437\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","status":1,"position":1,"display_mode":"products_and_description","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","meta":{"title":"\u041c\u0435\u0442\u0430-\u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","keywords":"\u041c\u0435\u0442\u0430-\u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0441\u043b\u043e\u0432\u0430 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","description":"\u041c\u0435\u0442\u0430-\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430"},"translations":[{"id":3,"category_id":3,"name":"\u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","slug":"\u0437\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","url_path":"","description":"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","meta_title":"\u041c\u0435\u0442\u0430-\u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","meta_description":"\u041c\u0435\u0442\u0430-\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","meta_keywords":"\u041c\u0435\u0442\u0430-\u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0441\u043b\u043e\u0432\u0430 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","locale_id":null,"locale":"ru"}],"additional":[]}],"links":{"first":"https:\/\/my_bagisto.test\/api\/categories?page=1","last":"https:\/\/my_bagisto.test\/api\/categories?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; \u041d\u0430\u0437\u0430\u0434","active":false},{"url":"https:\/\/my_bagisto.test\/api\/categories?page=1","label":"1","active":true},{"url":null,"label":"\u0414\u0430\u043b\u0435\u0435 &raquo;","active":false}],"path":"https:\/\/my_bagisto.test\/api\/categories","per_page":10,"to":3,"total":3}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlRHRU9HbWxsM2lrblB5eWJJTzVMMGc9PSIsInZhbHVlIjoiTVp0UGZ2S05PaS9OZS84RG5MS2VVaW1qcTl4UGhnNUdaV05KU2lhMUhzbDd0Zzh1NHBuS1FJV01CbGdHTTJYd2lBUjI1enBFaDdKWDN1RHF3eDRUTy9Ia1g2STFIQjBJYUJjamtzNWs0WWhFZEltb3JqUlMzcVJzeFBxWjY2OG0iLCJtYWMiOiIzYTg4NDcwMjhiYWYxYjAyN2M2NzAyZmRjMzJjZTg2NTU3ZWIxMTliZDdmNTE2MTYwMzFhYjYwYjBmNGQ0NGU2IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkltQm1QOHFQYnlzMlByM04wMEZ1eVE9PSIsInZhbHVlIjoiZW9HeWlqaE5tVTBoWHE2Mk9aNGEyZWdacnJTYjB3elNQcjFySTd4ZVJxYU95SGVHdHpZWmVveTF1YlBKMG81bk5PTGFKNkpyVXJSeExIaEZmaTl6V0VrbDBoNkcvbjN3YlIvU1pnU1VEUDFCWmptMXdPTlptc1Q4Mkd0TW0wUlMiLCJtYWMiOiI2MzBlMGQ3ODU5YzZlZDFhZDZmNTQ4NjIyYmQxZTIxYzkyYjI4ZmU4YTBkYWU3M2VlMWM5YzAyYjhlMTJmY2Q3IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/categories/tree
+    metadata:
+      custom: []
+      groupName: Categories
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all categories in tree format.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[{"id":2,"parent_id":1,"name":"\u041b\u044e\u0434\u0438","slug":"\u041c\u0443\u0436\u0447\u0438\u043d\u044b","url":"https:\/\/my_bagisto.test\/\u041c\u0443\u0436\u0447\u0438\u043d\u044b","status":1,"children":[{"id":3,"parent_id":2,"name":"\u0417\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","slug":"\u0437\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","url":"https:\/\/my_bagisto.test\/\u0437\u0438\u043c\u043d\u044f\u044f \u043e\u0434\u0435\u0436\u0434\u0430","status":1,"children":[]}]}]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlAzZ0hZcjlrMnd0NTBpMEV0UVFSbnc9PSIsInZhbHVlIjoiWFRYMVZHRGE3SXNwbUtUUWlxdUJzcUNlenJUaVZnTmNheUJVSVlwTWZRS09JTGVWd1NLYWE0eXhZbUpaaGtUN0tVOUJqdkhmSTI2bzIxS3pIUmxxeFNXOENXelVzNkFnNU14WXN1UDlyQTBxNnRleU9LcDdCSVFiRk1rR0FUZ2giLCJtYWMiOiI4OTVmYzY0ZDkyNDA4N2ZiZDJmZTcyYTA3ZjdjY2EzNzExYWM2NjViNjZmMzAyN2QzNGFmZDdhMDg5NDJiNjExIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkszOXUwNEtVdnNKbGl4RHZEWS9xV0E9PSIsInZhbHVlIjoiRVdXeDVKMStVRy9McEx1R0FwVGlRY01VNCs2dHNrTmlINDg1M01oWC9rek5Fa1NIaU5zeVJzTjBwYVZGY0tYVUpIMm1FYjJaZ1NLdXRaeTYwMEFMTnpqRG10WTkrVnRxTi9lbWVoMUxjSjk5WnNLN1hGcTNPNE9WeXljbTBqWXUiLCJtYWMiOiI3NTliNWM3OTQ1NWYxNzZkMGY3MDkyMzYzOWNjMzJmNzRjYWFjMTY3NDAzMTk0NjBiOWZiNWNkZmVlYmI2ZWQ2IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/categories/attributes
+    metadata:
+      custom: []
+      groupName: Categories
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get filterable attributes for category.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[{"id":11,"code":"price","type":"price","name":"\u0426\u0435\u043d\u0430"},{"id":23,"code":"color","type":"select","name":"\u0426\u0432\u0435\u0442"},{"id":24,"code":"size","type":"select","name":"\u0420\u0430\u0437\u043c\u0435\u0440"},{"id":25,"code":"brand","type":"select","name":"\u0411\u0440\u0435\u043d\u0434"}]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlZ3SlJFM1ZaNjQ4QTUyb3FPN3RKMEE9PSIsInZhbHVlIjoiMy9Qd0pWT2dQMVg1QWJxdDhDVnZUU1hwQUpXU25PUVhNOTl0NFkzMHNFcDRrdHZLblljVVBVT0dKRWFhSVRMT1l2RmE0MHhyTlpSTmRUcExKTjBBY3FzczV2M2lHdGNDMTAza0ZBbjlGMHBQcDB3ZDd4ZTY0TGF5dkdiZmdNak8iLCJtYWMiOiJhZTYxYzBjNGI1NzZlZmExYjdkMzJiYmMzZGI5NDA2ZmRkN2U4MGRiMDA0M2RhNjUxNjZlMDZhOWQxNWUyNzIyIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InJSSmhMV1UzNi82L3FQUXdYN1lhVkE9PSIsInZhbHVlIjoiR1BUQWZ1T215UTZ1VEpTSWpCbG5IaVFCNldxaHVsQ0JlVGZYTm9hbnJ5VndSemVvWXBwcXJTTWlsZVBaVXRwMnBiTXZCZjRmWk81a3hwNG5LWVA0c1dqMzlocnh3dk50RkR0OFpYb0xUbjRqTWpISCtOQVgwdjlWdi92R21MNk4iLCJtYWMiOiI3NzI1OWM2YjFhNWUyMTNmNTNiNmZlYWI0ZTg2YThjODM2NmM5ZTgzNmJkYTQzOGI1ZmUxMzZlOTZiN2NkNDA1IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/categories/attributes/{attribute_id}/options'
+    metadata:
+      custom: []
+      groupName: Categories
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get attribute options with pagination and search.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      attribute_id:
+        custom: []
+        name: attribute_id
+        description: 'The ID of the attribute.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      attribute_id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 500
+        content: '{"error":"500 \u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044f\u044f \u043e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430","description":"shop::app.shop.errors.500.description"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkFCT1RWeTBvMTlYRjEzRENPcGZLTlE9PSIsInZhbHVlIjoiSmI3b2tZbVowRUN0ay9kdVVqMTFmWVRIODl2NG9CdnJqYnVmSi8xSVBjWWNQcmh0aDZpUlUyUlpKejh5MXJGQVlNN1pIYmoxR3M3ZldpeWQ1Wm9YbGw4RHl5MGJ2NkRlNEtpL01oMWVxTU5wa3IzTEFxTkY3SzE4Mm1YSk90a3EiLCJtYWMiOiJjNjQ1N2YxMWExYmRkM2FiODBjMGQwZjc5MjBjNTQzOGU3NTEyODVlYjMwMmE2YzFlNThiNTg2YjA1NzIwMWRlIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InhDWUJkc2ltWHZFMldhdTVueW14OFE9PSIsInZhbHVlIjoiem5aQkZsZGwzMWttRHdLNHBiRW9DaUtJa2pKT3NRVmwzNFowQU9sNW81d2c1TWNKTE92UE9UcW1IYkxsbXkwR0dtNXFjajZ6aW1WK1ZIa01aR0dndjdQZi94UUhEbVJ0MDdUY3kzNjY2cXdiVXdBb1k2S0pXRzg2R2c1Q1duWmIiLCJtYWMiOiI2MTFlZjQ1YzIyYjM3NWY3OWM5NjY2ODE5ODBjZTFhMTlmMjlhZmM5MTUyNWFhODg3ODk0NDE0MzRmYTFlMmUzIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/categories/max-price/{id?}'
+    metadata:
+      custom: []
+      groupName: Categories
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get product maximum price.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the .'
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":{"max_price":0}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          referrer-policy: no-referrer-when-downgrade
+          x-content-type-options: nosniff
+          x-xss-protection: '1; mode=block'
+          x-frame-options: DENY
+          strict-transport-security: 'max-age=31536000; includeSubDomains'
+          x-built-with: Bagisto
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlQ0NEZ3ZW0xK0thazRBbmJWSjZtb3c9PSIsInZhbHVlIjoiUitDbUVTQ1JVYkhpeTZqN1FhZFNocXVKM2JYNGtpaDJSa1VjZzVxempEMXR1VXNnRlA5WWs0ZkdjT1pwbXV2U2ZtaEk0T0kydXVCT1YvZGVNSktnYmlWY0VsVExkcGRBcjhmN056VWtoUXZTMjNydFN3MmNCbERaWVEyaER1cFQiLCJtYWMiOiI4MGY0MTI1NmQ5OTc2N2RkYmZhMGM3MDE0NmU5N2YzMmU1NjAwMGNjY2Q3YzI2OWQ1MmFiMjZhODQ0NTEyMzk0IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InVHalZoRkdmSkZxdDdSeHpodGQrN3c9PSIsInZhbHVlIjoiZ0xYWDN2cXBQdEJPTDlXNFowMExvbUo0VStSb2lnbkRLOG5vMVRBUkxuMkF4TEY0QmFnWjBPNkZveDRuR1JGcGNYNE44OTMybmp2TDdkNXlPeHIwd2xaNlRDK1hTQ0R1UnAwUUs2TEphVERmVmxieXcxUktHT3d3YStCQnhyUlkiLCJtYWMiOiI1YzA0ZDRmY2Y0Yjk3YzVjNGM5ZTE0ODk0Y2I4OWRkNDhmODdmYTk0MmU4ZDU3YTk2OTNmODg2OGUxNTdjMzFhIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

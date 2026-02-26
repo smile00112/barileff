@@ -13,6 +13,11 @@ use Webkul\Shop\Http\Resources\AttributeResource;
 use Webkul\Shop\Http\Resources\CategoryResource;
 use Webkul\Shop\Http\Resources\CategoryTreeResource;
 
+/**
+ * Category listing, tree, attributes and filters.
+ *
+ * @group Categories
+ */
 class CategoryController extends APIController
 {
     /**
