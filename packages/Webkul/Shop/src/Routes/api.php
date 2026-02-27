@@ -26,25 +26,40 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::get('attributes', 'getAttributes')->name('shop.api.categories.attributes');
 
-        Route::get('attributes/{attribute_id}/options', 'getAttributeOptions')->name('shop.api.categories.attribute_options');
+        Route::get('attributes/{attribute_id}/options', 'getAttributeOptions')
+            ->whereNumber('attribute_id')
+            ->name('shop.api.categories.attribute_options');
 
-        Route::get('max-price/{id?}', 'getProductMaxPrice')->name('shop.api.categories.max_price');
+        Route::get('max-price/{id?}', 'getProductMaxPrice')
+            ->whereNumber('id')
+            ->name('shop.api.categories.max_price');
     });
 
     Route::controller(ProductController::class)->prefix('products')->group(function () {
         Route::get('', 'index')->name('shop.api.products.index');
 
-        Route::get('{id}/related', 'relatedProducts')->name('shop.api.products.related.index');
+        Route::get('{id}/related', 'relatedProducts')
+            ->whereNumber('id')
+            ->name('shop.api.products.related.index');
 
-        Route::get('{id}/up-sell', 'upSellProducts')->name('shop.api.products.up-sell.index');
+        Route::get('{id}/up-sell', 'upSellProducts')
+            ->whereNumber('id')
+            ->name('shop.api.products.up-sell.index');
     });
 
     Route::controller(ReviewController::class)->prefix('product/{id}')->group(function () {
-        Route::get('reviews', 'index')->name('shop.api.products.reviews.index');
+        Route::get('reviews', 'index')
+            ->whereNumber('id')
+            ->name('shop.api.products.reviews.index');
 
-        Route::post('review', 'store')->name('shop.api.products.reviews.store');
+        Route::post('review', 'store')
+            ->whereNumber('id')
+            ->name('shop.api.products.reviews.store');
 
-        Route::get('reviews/{review_id}/translate', 'translate')->name('shop.api.products.reviews.translate');
+        Route::get('reviews/{review_id}/translate', 'translate')
+            ->whereNumber('id')
+            ->whereNumber('review_id')
+            ->name('shop.api.products.reviews.translate');
     });
 
     Route::controller(CompareController::class)->prefix('compare-items')->group(function () {
@@ -106,7 +121,9 @@ Route::group(['prefix' => 'api'], function () {
 
             Route::post('', 'store')->name('shop.api.customers.account.addresses.store');
 
-            Route::put('edit/{id?}', 'update')->name('shop.api.customers.account.addresses.update');
+            Route::put('edit/{id?}', 'update')
+                ->whereNumber('id')
+                ->name('shop.api.customers.account.addresses.update');
         });
 
         Route::controller(WishlistController::class)->prefix('wishlist')->group(function () {
@@ -114,11 +131,15 @@ Route::group(['prefix' => 'api'], function () {
 
             Route::post('', 'store')->name('shop.api.customers.account.wishlist.store');
 
-            Route::post('{id}/move-to-cart', 'moveToCart')->name('shop.api.customers.account.wishlist.move_to_cart');
+            Route::post('{id}/move-to-cart', 'moveToCart')
+                ->whereNumber('id')
+                ->name('shop.api.customers.account.wishlist.move_to_cart');
 
             Route::delete('all', 'destroyAll')->name('shop.api.customers.account.wishlist.destroy_all');
 
-            Route::delete('{id}', 'destroy')->name('shop.api.customers.account.wishlist.destroy');
+            Route::delete('{id}', 'destroy')
+                ->whereNumber('id')
+                ->name('shop.api.customers.account.wishlist.destroy');
         });
     });
 });

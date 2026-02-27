@@ -274,3 +274,17 @@ it('should remove specified wishlisted item', function () {
         ->assertOk()
         ->assertJsonPath('message', trans('shop::app.customers.account.wishlist.removed'));
 });
+
+it('should reject moving wishlist item with non-numeric id', function () {
+    $this->loginAsCustomer();
+
+    postJson('/api/customer/wishlist/architecto/move-to-cart')
+        ->assertStatus(405);
+});
+
+it('should reject deleting wishlist item with non-numeric id', function () {
+    $this->loginAsCustomer();
+
+    deleteJson('/api/customer/wishlist/architecto')
+        ->assertStatus(405);
+});

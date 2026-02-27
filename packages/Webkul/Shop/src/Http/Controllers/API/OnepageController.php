@@ -14,14 +14,14 @@ use Webkul\Shop\Http\Requests\CartAddressRequest;
 use Webkul\Shop\Http\Resources\CartResource;
 
 /**
- * Checkout one-page flow: addresses, shipping, payment, order creation.
+ * One-page checkout: адреса, доставка, оплата, создание заказа.
  *
- * @group Checkout Onepage
+ * @group Оформление заказа (Onepage)
  */
 class OnepageController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -31,7 +31,7 @@ class OnepageController extends APIController
     ) {}
 
     /**
-     * Return cart summary.
+     * Получить сводку корзины.
      */
     public function summary(): JsonResource
     {
@@ -41,7 +41,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Store address.
+     * Сохранить адрес.
      */
     public function storeAddress(CartAddressRequest $cartAddressRequest): JsonResource
     {
@@ -97,7 +97,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Store delivery zone manually and recalculate shipping.
+     * Сохранить зону доставки вручную и пересчитать доставку.
      */
     public function storeDeliveryZone()
     {
@@ -127,7 +127,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Store shipping method.
+     * Сохранить способ доставки.
      *
      * @return \Illuminate\Http\Response
      */
@@ -153,7 +153,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Store payment method.
+     * Сохранить способ оплаты.
      *
      * @return array
      */
@@ -183,7 +183,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Store order
+     * Создать заказ.
      */
     public function storeOrder()
     {
@@ -228,7 +228,7 @@ class OnepageController extends APIController
     }
 
     /**
-     * Validate order before creation.
+     * Проверить заказ перед созданием.
      *
      * @return void|\Exception
      */

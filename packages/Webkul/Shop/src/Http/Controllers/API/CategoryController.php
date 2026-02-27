@@ -14,14 +14,14 @@ use Webkul\Shop\Http\Resources\CategoryResource;
 use Webkul\Shop\Http\Resources\CategoryTreeResource;
 
 /**
- * Category listing, tree, attributes and filters.
+ * Категории: список, дерево, атрибуты и фильтры.
  *
- * @group Categories
+ * @group Категории
  */
 class CategoryController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -32,13 +32,13 @@ class CategoryController extends APIController
     ) {}
 
     /**
-     * Get all categories.
+     * Получить все категории.
      */
     public function index(): JsonResource
     {
         /**
-         * These are the default parameters. By default, only the enabled category
-         * will be shown in the current locale.
+         * Параметры по умолчанию. По умолчанию возвращаются только
+         * активные категории в текущей локали.
          */
         $defaultParams = [
             'status' => 1,
@@ -51,7 +51,7 @@ class CategoryController extends APIController
     }
 
     /**
-     * Get all categories in tree format.
+     * Получить дерево категорий.
      */
     public function tree(): JsonResource
     {
@@ -61,7 +61,7 @@ class CategoryController extends APIController
     }
 
     /**
-     * Get filterable attributes for category.
+     * Получить фильтруемые атрибуты категории.
      */
     public function getAttributes(): JsonResource
     {
@@ -81,7 +81,11 @@ class CategoryController extends APIController
     }
 
     /**
-     * Get attribute options with pagination and search.
+     * Получить опции атрибута с пагинацией и поиском.
+     *
+     * @urlParam attribute_id int required ID атрибута. Example: 1
+     *
+     * @response 200 {"data": []}
      */
     public function getAttributeOptions(int $attributeId): mixed
     {
@@ -111,9 +115,11 @@ class CategoryController extends APIController
     }
 
     /**
-     * Get product maximum price.
+     * Получить максимальную цену товаров.
+     *
+     * @urlParam id int ID категории. Example: 1
      */
-    public function getProductMaxPrice($categoryId = null): JsonResource
+    public function getProductMaxPrice(?int $id = null): JsonResource
     {
         if (core()->getConfigData('catalog.products.search.engine') == 'elastic') {
             $searchEngine = core()->getConfigData('catalog.products.search.storefront_mode');
@@ -121,7 +127,7 @@ class CategoryController extends APIController
 
         $maxPrice = $this->productRepository
             ->setSearchEngine($searchEngine ?? 'database')
-            ->getMaxPrice(['category_id' => $categoryId]);
+            ->getMaxPrice(['category_id' => $id]);
 
         return new JsonResource([
             'max_price' => core()->convertPrice($maxPrice),

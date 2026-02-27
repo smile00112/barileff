@@ -1,4 +1,4 @@
-name: Compare
+name: Сравнение
 description: ''
 endpoints:
   -
@@ -8,11 +8,11 @@ endpoints:
     uri: api/compare-items
     metadata:
       custom: []
-      groupName: Compare
+      groupName: Сравнение
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Address route index page.'
+      title: 'Получить список товаров для сравнения.'
       description: ''
       authenticated: false
       deprecated: false
@@ -41,7 +41,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IldoWFR4UDBucjB4RFlId2pOUit4aUE9PSIsInZhbHVlIjoiMVNvbG1lRzdSdjV5S3pwUlduSlNRc3RQV1dhdGZDMHhkeDhFQmdRK3NPTHM2RVdTWHZ5bnpyNnNLZWE1a1B3S3FsUHMvNWRJNmp1WWNnVURYTE5kS2FWejBWQ0lKVnJ5cTMyQjNRTDNqbkVKY1U5c0pDV3ZMaUJQN01Qa2JHSlMiLCJtYWMiOiIzMmFkMjRkYjdiZGI3ODEyOTU1ZTJhNDI4YmI5NjhiZGVhMDZjOTg2M2E4ZjE0MjIzNDU1YzA0OWQyODg4ZTc0IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkVzSTYxbUxNTUt4bEFXQnJ5eFoxYUE9PSIsInZhbHVlIjoibTFpQXhGSVNYcm4vMzhabUJXb3pGVWJVMm1UNHVHTHlPL0x3bUVDZFExK2tzaCtTZWszU3pYcXh6NVVseDZ4SzAyT0IvMGNYd1h6T3RnbGcrSEtWZ1VldU9TYXo2c1NieTZHWHlzdHVrZ2Z6YmlOZjJ3cE5IOEJZV09qWDQvQmUiLCJtYWMiOiJkOWI3NzQ0OTU3MmE0YjU1MWM5ZDI2YTAzMDA1MGMwZDViZjgzZDE2YWViNzRhYmQwZGU0ZWRmMzc3MDIwZmUxIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlBHTEpHTGNsZnZBelhsbnFzN3lLaFE9PSIsInZhbHVlIjoibExZcVVaelc2UUtQQ3YvWWtCamFRbUMwc09kaUxueEJuT3c2NWxqcmdwelJsQUJldzdEYkdDUU9FbHEvQWtTM1QvKzk5SFZFYWxzeG1vYzhpbTNQdmtSME1iVlNKdnF2QWdvdWJvZ3FIdW9HNDdSYmtjTjh3R0pwSlBJeVJQeVYiLCJtYWMiOiJiNTdlM2E0MDdkM2Q1ZWFiNTJkYjY2YTY5YzUwYzEyZTM2NWIzNWIyZjgzY2QyMDhkMTYzNDM2NGU1YWE4ZWFjIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjA3T0l1T2RuWWMyRGVXYW1DNFNHb2c9PSIsInZhbHVlIjoibTR2anRIRWJHYUd2b0ZpdFRKMWtnYW8zN1MrT3RPK2VHYndyVkovalBkZGJFMytuOHM0c1JsV0Vsai9uSDc0RzBkT1N0N0Q4TThaVEYrYkNxa2RKT0NLc3pUUmJFak5XZTJQWHlTTVduR2p4cHJaMWZab0svR1Q4ZHMxdGFZWUIiLCJtYWMiOiJlMTc3MjkxNGZhZjA3YzAzOWE1ZTNmNzM1YjkxODcwNDE1Y2Y3M2ZlYjQyZWJlYjkzMzU2ZDEyYTU4ZjEzNjYxIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []
@@ -55,11 +55,11 @@ endpoints:
     uri: api/compare-items
     metadata:
       custom: []
-      groupName: Compare
+      groupName: Сравнение
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Method for customers to get products in comparison.'
+      title: 'Добавить товар в сравнение.'
       description: ''
       authenticated: false
       deprecated: false
@@ -98,11 +98,11 @@ endpoints:
     uri: api/compare-items
     metadata:
       custom: []
-      groupName: Compare
+      groupName: Сравнение
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Method to remove the item from compare list.'
+      title: 'Удалить товар из списка сравнения.'
       description: ''
       authenticated: false
       deprecated: false
@@ -129,11 +129,11 @@ endpoints:
     uri: api/compare-items/all
     metadata:
       custom: []
-      groupName: Compare
+      groupName: Сравнение
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Method for remove all items from compare list'
+      title: 'Удалить все товары из списка сравнения.'
       description: ''
       authenticated: false
       deprecated: false

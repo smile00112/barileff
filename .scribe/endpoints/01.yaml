@@ -1,4 +1,4 @@
-name: Categories
+name: Категории
 description: ''
 endpoints:
   -
@@ -8,11 +8,11 @@ endpoints:
     uri: api/categories
     metadata:
       custom: []
-      groupName: Categories
+      groupName: Категории
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get all categories.'
+      title: 'Получить все категории.'
       description: ''
       authenticated: false
       deprecated: false
@@ -41,7 +41,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlRHRU9HbWxsM2lrblB5eWJJTzVMMGc9PSIsInZhbHVlIjoiTVp0UGZ2S05PaS9OZS84RG5MS2VVaW1qcTl4UGhnNUdaV05KU2lhMUhzbDd0Zzh1NHBuS1FJV01CbGdHTTJYd2lBUjI1enBFaDdKWDN1RHF3eDRUTy9Ia1g2STFIQjBJYUJjamtzNWs0WWhFZEltb3JqUlMzcVJzeFBxWjY2OG0iLCJtYWMiOiIzYTg4NDcwMjhiYWYxYjAyN2M2NzAyZmRjMzJjZTg2NTU3ZWIxMTliZDdmNTE2MTYwMzFhYjYwYjBmNGQ0NGU2IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkltQm1QOHFQYnlzMlByM04wMEZ1eVE9PSIsInZhbHVlIjoiZW9HeWlqaE5tVTBoWHE2Mk9aNGEyZWdacnJTYjB3elNQcjFySTd4ZVJxYU95SGVHdHpZWmVveTF1YlBKMG81bk5PTGFKNkpyVXJSeExIaEZmaTl6V0VrbDBoNkcvbjN3YlIvU1pnU1VEUDFCWmptMXdPTlptc1Q4Mkd0TW0wUlMiLCJtYWMiOiI2MzBlMGQ3ODU5YzZlZDFhZDZmNTQ4NjIyYmQxZTIxYzkyYjI4ZmU4YTBkYWU3M2VlMWM5YzAyYjhlMTJmY2Q3IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlNTN0QwalFzcTE2cTNleVV6Vzc5d0E9PSIsInZhbHVlIjoiTXFKSmRLRGJOYTNFalN2VlIrLzJOcFNRSkdiZ3N6eFM2U3ZKc1lJZHRIc3ExUnloNFB0Qkl6VGswNFZkbTN2VUgybDJEeTVLYXU5MWg5cnphN3RiMWlCRFhBeElScGJvRGtaK1pOdUowK0tNZ0svT1dVd2VZSkxlM2ZMaDY1b0QiLCJtYWMiOiIzMmYyMWZjY2E2Mzc2MzA4NmQyYjdlOWI0ZTE3MDM0NWU0NzA5NTVkNTA2YWQ2NzAyNWY1Y2FkMGU0ZmQyNWVhIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjNqSWVxekhCTTk3c3VGeEFCcEJWV1E9PSIsInZhbHVlIjoibytuckpXZnU0NmpPejlEbVdIRy9xeS9qblBaTm80QjlSUkJhVzdKdXpyYk0xZlhVdU9TS0pXT3RPY3Rhd0dUV1JBR2tYMkFyZUt4TlJodmlZbWtPQ1dmN3FEUG1BTmZqVzJMUnM5a1I4ZGJLb1FhRS9vZWZ5Nmh0K050SkpPNmMiLCJtYWMiOiI5ZjdkZjNlNGU0ZTBiMzAwNDc4ZDA3ZWZlMjEzYWZiZjQ3N2JkMzA2YTZjMzE0ZWY2MjBlNjNlNjRkMTJlOTRlIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []
@@ -55,11 +55,11 @@ endpoints:
     uri: api/categories/tree
     metadata:
       custom: []
-      groupName: Categories
+      groupName: Категории
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get all categories in tree format.'
+      title: 'Получить дерево категорий.'
       description: ''
       authenticated: false
       deprecated: false
@@ -88,7 +88,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlAzZ0hZcjlrMnd0NTBpMEV0UVFSbnc9PSIsInZhbHVlIjoiWFRYMVZHRGE3SXNwbUtUUWlxdUJzcUNlenJUaVZnTmNheUJVSVlwTWZRS09JTGVWd1NLYWE0eXhZbUpaaGtUN0tVOUJqdkhmSTI2bzIxS3pIUmxxeFNXOENXelVzNkFnNU14WXN1UDlyQTBxNnRleU9LcDdCSVFiRk1rR0FUZ2giLCJtYWMiOiI4OTVmYzY0ZDkyNDA4N2ZiZDJmZTcyYTA3ZjdjY2EzNzExYWM2NjViNjZmMzAyN2QzNGFmZDdhMDg5NDJiNjExIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkszOXUwNEtVdnNKbGl4RHZEWS9xV0E9PSIsInZhbHVlIjoiRVdXeDVKMStVRy9McEx1R0FwVGlRY01VNCs2dHNrTmlINDg1M01oWC9rek5Fa1NIaU5zeVJzTjBwYVZGY0tYVUpIMm1FYjJaZ1NLdXRaeTYwMEFMTnpqRG10WTkrVnRxTi9lbWVoMUxjSjk5WnNLN1hGcTNPNE9WeXljbTBqWXUiLCJtYWMiOiI3NTliNWM3OTQ1NWYxNzZkMGY3MDkyMzYzOWNjMzJmNzRjYWFjMTY3NDAzMTk0NjBiOWZiNWNkZmVlYmI2ZWQ2IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkhZQkdVZTNvWDZZYnBjWHFJVk5OR3c9PSIsInZhbHVlIjoiMGRVRllCSUlXM2ljL2V1SFRTNGdEREJVdEtaNGZVRUtxaE5TZi85ZThoT1hvWWxQWVlJN3BxWE1pSGd3eldoOE1SNUVYZFJ3TWp4RUU1UmJVSjlVM091TmpTZ2EyUGx4cUM2OVA1Q09wdGdzbnZuQlRYTEcrdnExU2hYMFVOL2YiLCJtYWMiOiJmNmMwMzk2NWViYzczNzg4NDJmNDMzZDMwNDUzZTRlZjM5YTlkOTIyYWYxZjg4YzIzMDJmN2UzYzhlMGFiNDc4IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjlEa2JwTVBJRUQrWUJMSHBVWmVQU3c9PSIsInZhbHVlIjoib3NNWllrbmgzbllNMndlWlN2VDRvNHZWTDRKQnRlSk80a3lBTGN6RVRINDcwL0xwaVRwNkVkWTBsTHN1MVJ5OWxRZXBlSmRsMDFmL0d1T284aTREL1BpR3lOcDNZT1padzFRYURoWTdxYkNSMGdRTXFkTk53MjBvL0FCT3Z5MmUiLCJtYWMiOiI2MjllM2ExNDQwODRlMDI5MzlkOGQ4MDQ4MmI1MjYxYzcyNTA1MWU4MTk0ZTVhNmI3MWI4NDMxOTI3ZjZkOGY5IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []
@@ -102,11 +102,11 @@ endpoints:
     uri: api/categories/attributes
     metadata:
       custom: []
-      groupName: Categories
+      groupName: Категории
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get filterable attributes for category.'
+      title: 'Получить фильтруемые атрибуты категории.'
       description: ''
       authenticated: false
       deprecated: false
@@ -135,7 +135,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlZ3SlJFM1ZaNjQ4QTUyb3FPN3RKMEE9PSIsInZhbHVlIjoiMy9Qd0pWT2dQMVg1QWJxdDhDVnZUU1hwQUpXU25PUVhNOTl0NFkzMHNFcDRrdHZLblljVVBVT0dKRWFhSVRMT1l2RmE0MHhyTlpSTmRUcExKTjBBY3FzczV2M2lHdGNDMTAza0ZBbjlGMHBQcDB3ZDd4ZTY0TGF5dkdiZmdNak8iLCJtYWMiOiJhZTYxYzBjNGI1NzZlZmExYjdkMzJiYmMzZGI5NDA2ZmRkN2U4MGRiMDA0M2RhNjUxNjZlMDZhOWQxNWUyNzIyIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InJSSmhMV1UzNi82L3FQUXdYN1lhVkE9PSIsInZhbHVlIjoiR1BUQWZ1T215UTZ1VEpTSWpCbG5IaVFCNldxaHVsQ0JlVGZYTm9hbnJ5VndSemVvWXBwcXJTTWlsZVBaVXRwMnBiTXZCZjRmWk81a3hwNG5LWVA0c1dqMzlocnh3dk50RkR0OFpYb0xUbjRqTWpISCtOQVgwdjlWdi92R21MNk4iLCJtYWMiOiI3NzI1OWM2YjFhNWUyMTNmNTNiNmZlYWI0ZTg2YThjODM2NmM5ZTgzNmJkYTQzOGI1ZmUxMzZlOTZiN2NkNDA1IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImZCT2lhTDY0Q3BqWTlQdHJuQU5CWkE9PSIsInZhbHVlIjoidmZiTk5NTkZKbDQvbUNadVBRNlordkVNekgyVDJoUTlNQzZlTkY5MGY2NGxTWWMzWVdja0NjenJWd3FKZzlaVVBZVjFjRXVxbi9LTXlhc091Y3grclU2dmtGVkZWSWtYUDJwYmhIQWNVSkVla2JpYnlCMTFTd1hSbGNCNFEvZXIiLCJtYWMiOiI3MjBhMzIyOTZlZDIwMDRhOGIxYzVhZmNiNGE0ZGNjNzkzYzBlY2Y4Y2E3NTMyZGQ5ZTg1MTk0ZmM3YjcxOTk1IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6Inl5MmI2dWNIcnBRUWxBTkVEV2xRK2c9PSIsInZhbHVlIjoiNDZtTDZoTzBUdDV0U3ltamtyVlF6OWdOMy91a0NYY0t0QkROWlhNcWJvR0xUbDQ2ZFZoYmZISU8yN1pNVzNEWmoxeVg1L0RWYjBLQUFzWkVwSGdUQVNBeDBhbEEwb2UwRktnK3ZLMU5NQ1JSbFJWc29zTFVNUHhKVjhTQWM5V2ciLCJtYWMiOiIxNWVjYThjZjZjMGI0OGQ4NmE1ZDExMzJiMDM0MDUyYjdhNmFkMmE4NWJhZjI3MmM5ZmFjZGI3OTM3MDgyYWI1IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []
@@ -149,11 +149,11 @@ endpoints:
     uri: 'api/categories/attributes/{attribute_id}/options'
     metadata:
       custom: []
-      groupName: Categories
+      groupName: Категории
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get attribute options with pagination and search.'
+      title: 'Получить опции атрибута с пагинацией и поиском.'
       description: ''
       authenticated: false
       deprecated: false
@@ -164,16 +164,16 @@ endpoints:
       attribute_id:
         custom: []
         name: attribute_id
-        description: 'The ID of the attribute.'
+        description: 'ID атрибута.'
         required: true
-        example: architecto
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      attribute_id: architecto
+      attribute_id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -182,20 +182,10 @@ endpoints:
     responses:
       -
         custom: []
-        status: 500
-        content: '{"error":"500 \u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044f\u044f \u043e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430","description":"shop::app.shop.errors.500.description"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          referrer-policy: no-referrer-when-downgrade
-          x-content-type-options: nosniff
-          x-xss-protection: '1; mode=block'
-          x-frame-options: DENY
-          strict-transport-security: 'max-age=31536000; includeSubDomains'
-          x-built-with: Bagisto
-          access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkFCT1RWeTBvMTlYRjEzRENPcGZLTlE9PSIsInZhbHVlIjoiSmI3b2tZbVowRUN0ay9kdVVqMTFmWVRIODl2NG9CdnJqYnVmSi8xSVBjWWNQcmh0aDZpUlUyUlpKejh5MXJGQVlNN1pIYmoxR3M3ZldpeWQ1Wm9YbGw4RHl5MGJ2NkRlNEtpL01oMWVxTU5wa3IzTEFxTkY3SzE4Mm1YSk90a3EiLCJtYWMiOiJjNjQ1N2YxMWExYmRkM2FiODBjMGQwZjc5MjBjNTQzOGU3NTEyODVlYjMwMmE2YzFlNThiNTg2YjA1NzIwMWRlIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InhDWUJkc2ltWHZFMldhdTVueW14OFE9PSIsInZhbHVlIjoiem5aQkZsZGwzMWttRHdLNHBiRW9DaUtJa2pKT3NRVmwzNFowQU9sNW81d2c1TWNKTE92UE9UcW1IYkxsbXkwR0dtNXFjajZ6aW1WK1ZIa01aR0dndjdQZi94UUhEbVJ0MDdUY3kzNjY2cXdiVXdBb1k2S0pXRzg2R2c1Q1duWmIiLCJtYWMiOiI2MTFlZjQ1YzIyYjM3NWY3OWM5NjY2ODE5ODBjZTFhMTlmMjlhZmM5MTUyNWFhODg3ODk0NDE0MzRmYTFlMmUzIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
-        description: null
+        status: 200
+        content: '{"data": []}'
+        headers: []
+        description: ''
     responseFields: []
     auth: []
     controller: null
@@ -208,11 +198,11 @@ endpoints:
     uri: 'api/categories/max-price/{id?}'
     metadata:
       custom: []
-      groupName: Categories
+      groupName: Категории
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get product maximum price.'
+      title: 'Получить максимальную цену товаров.'
       description: ''
       authenticated: false
       deprecated: false
@@ -223,16 +213,16 @@ endpoints:
       id:
         custom: []
         name: id
-        description: 'The ID of the .'
+        description: 'ID категории.'
         required: false
-        example: architecto
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      id: architecto
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -253,7 +243,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlQ0NEZ3ZW0xK0thazRBbmJWSjZtb3c9PSIsInZhbHVlIjoiUitDbUVTQ1JVYkhpeTZqN1FhZFNocXVKM2JYNGtpaDJSa1VjZzVxempEMXR1VXNnRlA5WWs0ZkdjT1pwbXV2U2ZtaEk0T0kydXVCT1YvZGVNSktnYmlWY0VsVExkcGRBcjhmN056VWtoUXZTMjNydFN3MmNCbERaWVEyaER1cFQiLCJtYWMiOiI4MGY0MTI1NmQ5OTc2N2RkYmZhMGM3MDE0NmU5N2YzMmU1NjAwMGNjY2Q3YzI2OWQ1MmFiMjZhODQ0NTEyMzk0IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InVHalZoRkdmSkZxdDdSeHpodGQrN3c9PSIsInZhbHVlIjoiZ0xYWDN2cXBQdEJPTDlXNFowMExvbUo0VStSb2lnbkRLOG5vMVRBUkxuMkF4TEY0QmFnWjBPNkZveDRuR1JGcGNYNE44OTMybmp2TDdkNXlPeHIwd2xaNlRDK1hTQ0R1UnAwUUs2TEphVERmVmxieXcxUktHT3d3YStCQnhyUlkiLCJtYWMiOiI1YzA0ZDRmY2Y0Yjk3YzVjNGM5ZTE0ODk0Y2I4OWRkNDhmODdmYTk0MmU4ZDU3YTk2OTNmODg2OGUxNTdjMzFhIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkY4M043L05uWm9FdGw2NCtHZWdnMGc9PSIsInZhbHVlIjoiaXFaU0JQcS83NkpzTXB1L1RBUTJRZ1I5SUd3UzVpNEN4ZWprMTRRaU5qbWpROUVhdXRQcmNVNUNUb2hlc1hUdzRUVVQ1Q2M0MTE0WnpEaGxNWW5mWmY0R3JpWTBwd1dZRnZkWUJPNzA1dTJoVmsrbUtIZ3ZqN1p0QnJSemhaaUsiLCJtYWMiOiI1NzI5MTliNzRkNzQ1YjNmNjU0NjMzOWU0MTkxMDkyOGIxMWQ1MTFiOGEwYjIxYWI0NjFhN2Y2NDA5YTc3ZDYyIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6InNHeDhGM01CN0lSeEVEODBSOFpCeUE9PSIsInZhbHVlIjoicWFOaVF0cVhjWjA5bDZTUUNyYlZ0M2UvVEs3cHFHRThvMXFLbTRIcllkUkFSTDRPd3ZuOXlWUTdWbXpDY05WWmZDSVpEdlh2T1ltMVRpTituUURLTUhXbmUxYXgzYWhGcFVYK2d6NnpRV2EydEhLaEI5aVdiQWpHWEV4YVEvYmEiLCJtYWMiOiJlNjNmODM1ZDUzZDhkYjNiZjA1NTg2M2UzYjE3OTkyMjNkYTBmYjQ5ZDRlNjNjNWYwYWJkMmNkZTExMjk1N2FlIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []

@@ -1,4 +1,4 @@
-name: Core
+name: 'Базовые данные'
 description: ''
 endpoints:
   -
@@ -8,11 +8,11 @@ endpoints:
     uri: api/core/countries
     metadata:
       custom: []
-      groupName: Core
+      groupName: 'Базовые данные'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get countries.'
+      title: 'Получить список стран.'
       description: ''
       authenticated: false
       deprecated: false
@@ -41,7 +41,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IjdZZ25QcHg3UUZSVjZrNGYyNEVFMGc9PSIsInZhbHVlIjoiZUJlTFRJbGJ6bW9NL3llYll6dHBLWkJQNjBhS3FWTFJkTXNtSXE1NExMMGVnd3dkN3BFM3lxN1lJa2RwMy9sdWNJc0htdkFQN0l6amdaUGJkbXdhZERkUDdEMndDby85VnFVbmhnQUdNb3lrcWNSVGlET2ZTQjZBL0RTNlFEUFciLCJtYWMiOiI2ZmNiNjVlM2IwMzYwZjU1NzIxYzU5MWU3NmVhYjg5NGU4OTEwNWU2MjdmYjEzY2Y3YTA1OWNhZTVkMjEyZmU1IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:47 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjJBQXgxejlmS3NiZ3c4aXo2NFNCRFE9PSIsInZhbHVlIjoiU0lnQklhdWtjTVFzQjVVcHArWWVTS1o2TndzU1dCZ3ptVmYwbDd0Wml2L0dyTWczUjBjUGtqWThVWXJGMHBVUjZzcGxqejd1WGluWCtPd21ZWC9uSEV6dHVINmNuVk9OeHA0cG5hRWMvbEpqTWlmYkliTGxvc2hRaHlCSnBuZEkiLCJtYWMiOiI0ODc3MmVkYjA3Y2Q5NGU4ZDI2ZGRlNTYxYTczNzI4YTkxYmMzZWYzN2YzZDgxMmVmNmNkYmM4MWExMzE3Y2M4IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:47 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IndnRWJnTWpTL28wWURCYUg4YnRxbmc9PSIsInZhbHVlIjoiN1VvK1BXbVBObE0zVmxoUnRPMWlSTlFVRkRzVHZkTUNyQzQwQnBybU8rQmY3NDhJdldQQytqeWRJUDd0TVZJT1RmRVVoR3R3bXdNdk0xdW1RV1R6d0hvSjA3L1RDUXRLUkMwbGhRVGNTQ294ekFRSlE2WXdPVXpDcVBubFp0b1QiLCJtYWMiOiI0ZTUxYWI2NTdkODEzODk0YTk5YmIwNTQzODM5NzBkOGQ0YzA2NjdjNDM1MTBhYzVjODQ1ZTkyMDM1ZWZhNDQ3IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6Ii9oRzF3NCszQWxuTTZ1VHozRGFqY2c9PSIsInZhbHVlIjoiUXNkanoyL2VoY0oyVVNpZGhSRUVJaG8vNGV3L29GN2tSaVFPWUh5ZDRlOVpnNUQzOE42UzM1dkdMbTNHczdhYU5rQjNDdkp5RlF5a0dTSVN5cGNrSGw2TVVMNUR5U3QwSzFjRGpQN3E1cStXQUpNbXlzekc5dVJMYkxiVjRsSlEiLCJtYWMiOiI4Y2VlNDQxNTU2MzE3YmU5ZDc5YWQ4YWJkNzYyYzM5NWEyM2I4MDNhYTE1MDQ2MzU5OTJiZmQxNjFhOWI1MDEyIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []
@@ -55,11 +55,11 @@ endpoints:
     uri: api/core/states
     metadata:
       custom: []
-      groupName: Core
+      groupName: 'Базовые данные'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get states.'
+      title: 'Получить список регионов.'
       description: ''
       authenticated: false
       deprecated: false
@@ -88,7 +88,7 @@ endpoints:
           strict-transport-security: 'max-age=31536000; includeSubDomains'
           x-built-with: Bagisto
           access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6Ilh3cVJOWUJabEViSGU2OE9PZnlJalE9PSIsInZhbHVlIjoiQ1dFWDQzem1WanBoVEdLWFN6Z2RjeDIxZXZmcTlYN3pyWlVUeDJWVU84eStTdTdQZ296V05GRm9jeUtsUk5YYlFqVm1vMzNxY1p4RHp0VWVRZnFma1hnQ0laNVRJZ1UwNm9HdS9JdXE2OER6Y0RjZVRJcVlaR1I3ZWhWUzN4Um4iLCJtYWMiOiI2Njc4NDNlNjQ5YmFmZTE0N2E0MWNkZDM3Mzc0NjEzZWIwYzk2ZWFhMzkwNmU4ODYwYWZlOGJmOTA0N2FmM2RjIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IkFvVGVwUXZCaHZqaHBTRHdSWi9CVkE9PSIsInZhbHVlIjoidVhraUdBbXNIcXdDd0l0MWlxVEx6WVZkQ2d5ekpURkJJY1VzTWlSNVdndHBRWEFkVjBnUXdsQnZoajJHRHdjMEE1NS90STJkci9Tb2JSWmdtekJEMGxEN3RxSWI4RXgxemtxc1d5SkI5RFRMTzZBZEdqdDh3NlhXOU5COGVRVFoiLCJtYWMiOiIyMDc1ODdiZjA2OTg2YzE1MTBkNDYxZjUwODkzZTc4ZDdhYzdiMmFiZGRjMDcyYTJlYmU3Yjg1YzU3NWY5NWNkIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 09:25:48 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImkrbEo4WGt2ZWdPeGg5MFozRXJ2VkE9PSIsInZhbHVlIjoiL29yU0FxRk5mcklVajVnYkRSUXE5RWlrRTRGSjg1UkQxa1BQK3hZKzFoSFZudmpHY1dyeXFjNE1pUFI1bm8wd1MzMnJMMmZnQ0RQeDdWZWQrRVRxY3lpT01FTWE2UDhyN0YwR3VObGFwOHEydk9NZGlFbHNWZnRkUHBnTTRRb0IiLCJtYWMiOiJiNGVkN2RhNTQwNDdlM2Y5ZGU5MjQ1Y2UzN2RjMzUwZWRkZWJjYjkyNjlmOTAxNDA1MWU4ZDhkYTc2YzAyN2Q3IiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjRJMnN0Sk5DVWE4elBrd2JMaDM0R1E9PSIsInZhbHVlIjoiMUxlZFZUWUxJcERpTm56SUMrb29WeDF1T3RHZUF6TklLOHd4akVhK2YwakJQZ0dyNk1lcWMvRDNYMzdOblMvbFJRdE85QUFsenBtYm1hQWRjcHNxVi9SVmFxeGZIQk9GczgwSSt0VWxUaVlyRjBEYngweGlENFM4eGVleTlNYlAiLCJtYWMiOiJkZTAzODc5NWM2MmQ5NDcyMTZiMWNhYmZiMTFmZTI5ZmRiZTBmZmI4MDg4YTAyOWJiODc5YzlmMmFiYThiZDIxIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
         description: null
     responseFields: []
     auth: []

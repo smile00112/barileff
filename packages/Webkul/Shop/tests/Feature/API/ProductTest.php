@@ -77,3 +77,33 @@ it('returns all products listing', function () {
             'id' => $product->id,
         ]);
 });
+
+it('returns related products for a valid numeric product id', function () {
+    $product = (new ProductFaker)
+        ->getSimpleProductFactory()
+        ->create();
+
+    getJson(route('shop.api.products.related.index', ['id' => $product->id]))
+        ->assertOk()
+        ->assertJsonIsArray('data');
+});
+
+it('returns up-sell products for a valid numeric product id', function () {
+    $product = (new ProductFaker)
+        ->getSimpleProductFactory()
+        ->create();
+
+    getJson(route('shop.api.products.up-sell.index', ['id' => $product->id]))
+        ->assertOk()
+        ->assertJsonIsArray('data');
+});
+
+it('returns not found for non-numeric related product id', function () {
+    getJson(route('shop.api.products.related.index', ['id' => 'architecto']))
+        ->assertNotFound();
+});
+
+it('returns not found for non-numeric up-sell product id', function () {
+    getJson(route('shop.api.products.up-sell.index', ['id' => 'architecto']))
+        ->assertNotFound();
+});

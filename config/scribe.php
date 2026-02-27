@@ -267,6 +267,15 @@ return [
             Defaults::RESPONSES_STRATEGIES,
             Strategies\Responses\ResponseCalls::withSettings(
                 only: ['GET *'],
+                except: [
+                    'shop.api.categories.attribute_options',
+                    'shop.api.products.related.index',
+                    'shop.api.products.up-sell.index',
+                    'shop.api.products.reviews.index',
+                    'shop.api.products.reviews.translate',
+                    'shop.api.customers.account.addresses.index',
+                    'shop.api.customers.account.wishlist.index',
+                ],
                 // Recommended: disable debug mode in response calls to avoid error stack traces in responses
                 config: [
                     'app.debug' => false,

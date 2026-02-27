@@ -8,24 +8,25 @@ use Illuminate\Support\Facades\Event;
 use Webkul\Shop\Http\Requests\Customer\LoginRequest;
 
 /**
- * Customer authentication (login).
+ * Аутентификация покупателя (вход).
  *
- * @group Customer Auth
+ * @group Авторизация покупателя
  */
 class CustomerController extends APIController
 {
     /**
-     * Login Customer.
+     * Выполнить вход покупателя.
      *
-     * Authenticates the customer. On success, session cookies are set for use with protected endpoints.
+     * Аутентифицирует покупателя. При успехе выставляются session-cookie
+     * для доступа к защищенным endpoint-ам.
      *
-     * @bodyParam email string required Customer email. Example: customer@example.com
-     * @bodyParam password string required Customer password (min 6 chars). Example: password123
+     * @bodyParam email string required Email покупателя. Example: customer@example.com
+     * @bodyParam password string required Пароль покупателя (минимум 6 символов). Example: password123
      *
      * @response 200 {}
-     * @response 403 scenario="Invalid credentials" {"message": "These credentials do not match our records."}
-     * @response 403 scenario="Account not activated" {"message": "Your account is not activated."}
-     * @response 403 scenario="Email not verified" {"message": "Please verify your email first."}
+     * @response 403 scenario="Неверные учетные данные" {"message": "Эти учетные данные не совпадают с нашими записями."}
+     * @response 403 scenario="Аккаунт не активирован" {"message": "Ваш аккаунт не активирован."}
+     * @response 403 scenario="Email не подтвержден" {"message": "Сначала подтвердите ваш email."}
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -58,7 +59,7 @@ class CustomerController extends APIController
         }
 
         /**
-         * Event passed to prepare cart after login.
+         * Событие для подготовки корзины после входа.
          */
         Event::dispatch('customer.after.login', auth()->guard()->user());
 

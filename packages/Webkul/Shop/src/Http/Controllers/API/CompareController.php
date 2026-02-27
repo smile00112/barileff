@@ -10,14 +10,14 @@ use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\CompareItemResource;
 
 /**
- * Compare items: add, list, remove products for comparison.
+ * Сравнение товаров: добавить, получить список, удалить.
  *
- * @group Compare
+ * @group Сравнение
  */
 class CompareController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -27,14 +27,14 @@ class CompareController extends APIController
     ) {}
 
     /**
-     * Address route index page.
+     * Получить список товаров для сравнения.
      */
     public function index(): JsonResource
     {
         $productIds = request()->input('product_ids') ?? [];
 
         /**
-         * This will handle for customers.
+         * Логика для авторизованных покупателей.
          */
         if ($customer = auth()->guard('customer')->user()) {
             $productIds = $this->compareItemRepository
@@ -51,7 +51,7 @@ class CompareController extends APIController
     }
 
     /**
-     * Method for customers to get products in comparison.
+     * Добавить товар в сравнение.
      *
      * @return \Illuminate\Http\Resources\Json\JsonResource
      */
@@ -87,7 +87,7 @@ class CompareController extends APIController
     }
 
     /**
-     * Method to remove the item from compare list.
+     * Удалить товар из списка сравнения.
      */
     public function destroy(): JsonResource
     {
@@ -126,7 +126,7 @@ class CompareController extends APIController
     }
 
     /**
-     * Method for remove all items from compare list
+     * Удалить все товары из списка сравнения.
      */
     public function destroyAll(): JsonResource
     {

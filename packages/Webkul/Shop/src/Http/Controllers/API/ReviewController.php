@@ -12,14 +12,14 @@ use Webkul\Product\Repositories\ProductReviewRepository;
 use Webkul\Shop\Http\Resources\ProductReviewResource;
 
 /**
- * Product reviews: list, create, translate.
+ * Отзывы о товарах: список, создание, перевод.
  *
- * @group Product Reviews
+ * @group Отзывы о товарах
  */
 class ReviewController extends APIController
 {
     /**
-     * Create a controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -30,17 +30,21 @@ class ReviewController extends APIController
     ) {}
 
     /**
-     * Pending review status.
+     * Статус отзыва: на модерации.
      */
     const STATUS_PENDING = 'pending';
 
     /**
-     * Approved review status.
+     * Статус отзыва: одобрен.
      */
     const STATUS_APPROVED = 'approved';
 
     /**
-     * Product listings.
+     * Получить список отзывов по товару.
+     *
+     * @urlParam id int required ID товара. Example: 1
+     *
+     * @response 200 {"data": [], "links": {}, "meta": {}}
      */
     public function index(int $id): JsonResource
     {
@@ -62,7 +66,13 @@ class ReviewController extends APIController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Создать новый отзыв.
+     *
+     * @urlParam id int required ID товара. Example: 1
+     *
+     * @bodyParam title string required Заголовок отзыва.
+     * @bodyParam comment string required Текст отзыва.
+     * @bodyParam rating number required Оценка от 1 до 5. Example: 5
      */
     public function store(int $id): JsonResource
     {
@@ -101,7 +111,13 @@ class ReviewController extends APIController
     }
 
     /**
-     * Translate the specified resource in storage.
+     * Перевести выбранный отзыв.
+     *
+     * @urlParam id int required ID товара. Example: 1
+     * @urlParam review_id int required ID отзыва. Example: 1
+     *
+     * @response 200 {"content": "Переведенный текст отзыва"}
+     * @response 400 {"message": "Отзыв недоступен для перевода."}
      */
     public function translate(int $productId, int $reviewId): JsonResponse
     {
@@ -144,7 +160,7 @@ class ReviewController extends APIController
     }
 
     /**
-     * Censoring the reviewer name.
+     * Скрыть часть имени автора отзыва.
      */
     private function censorReviewerName(string $name): string
     {

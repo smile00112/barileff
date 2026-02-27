@@ -3,14 +3,14 @@
 namespace Webkul\Shop\Http\Controllers\API;
 
 /**
- * Core API (countries, states).
+ * Базовый API (страны, регионы).
  *
- * @group Core
+ * @group Базовые данные
  */
 class CoreController extends APIController
 {
     /**
-     * Get countries.
+     * Получить список стран.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -26,7 +26,7 @@ class CoreController extends APIController
     }
 
     /**
-     * Get states.
+     * Получить список регионов.
      *
      * @return \Illuminate\Http\JsonResponse
      */

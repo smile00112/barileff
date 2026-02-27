@@ -9,21 +9,21 @@ use Webkul\Shop\Http\Requests\Customer\AddressRequest;
 use Webkul\Shop\Http\Resources\AddressResource;
 
 /**
- * Customer addresses: list, create, update. Requires authentication.
+ * Адреса покупателя: список, создание, обновление. Требуется авторизация.
  *
- * @group Customer Addresses
+ * @group Адреса покупателя
  */
 class AddressController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
     public function __construct(protected CustomerAddressRepository $customerAddressRepository) {}
 
     /**
-     * Customer addresses.
+     * Получить адреса покупателя.
      */
     public function index(): JsonResource
     {
@@ -33,7 +33,7 @@ class AddressController extends APIController
     }
 
     /**
-     * Create a new address for customer.
+     * Создать новый адрес покупателя.
      */
     public function store(AddressRequest $request): JsonResource
     {
@@ -76,13 +76,17 @@ class AddressController extends APIController
     }
 
     /**
-     * Update address for customer.
+     * Обновить адрес покупателя.
+     *
+     * @urlParam id int ID адреса. Example: 1
      */
-    public function update(AddressRequest $request): JsonResource
+    public function update(AddressRequest $request, ?int $id = null): JsonResource
     {
         $customer = auth()->guard('customer')->user();
 
-        $addressToUpdate = $this->customerAddressRepository->findOrFail($request->input('id'));
+        $addressId = $id ?? (int) $request->input('id');
+
+        $addressToUpdate = $this->customerAddressRepository->findOrFail($addressId);
 
         if ($addressToUpdate->customer_id !== $customer->id) {
             abort(403);
@@ -106,7 +110,7 @@ class AddressController extends APIController
         ]), [
             'customer_id' => $customer->id,
             'address' => implode(PHP_EOL, array_filter($request->input('address'))),
-        ]), request('id'));
+        ]), $addressId);
 
         Event::dispatch('customer.addresses.update.after', $customerAddress);
 

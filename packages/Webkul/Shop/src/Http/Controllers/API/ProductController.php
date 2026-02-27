@@ -9,14 +9,14 @@ use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\ProductResource;
 
 /**
- * Product listing, related and up-sell products.
+ * Товары: список, сопутствующие и апселл-товары.
  *
- * @group Products
+ * @group Товары
  */
 class ProductController extends APIController
 {
     /**
-     * Create a controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -26,14 +26,14 @@ class ProductController extends APIController
     ) {}
 
     /**
-     * Product listings with search and filters.
+     * Получить список товаров с поиском и фильтрами.
      *
-     * @queryParam query string Search query. Example: laptop
-     * @queryParam category_id int Filter by category ID. Example: 5
-     * @queryParam sort string Sort field (price, created_at, etc.). Example: price
-     * @queryParam order string Sort order: asc or desc. Example: asc
-     * @queryParam limit int Items per page. Example: 12
-     * @queryParam page int Page number for pagination. Example: 1
+     * @queryParam query string Поисковый запрос. Example: laptop
+     * @queryParam category_id int Фильтр по ID категории. Example: 5
+     * @queryParam sort string Поле сортировки (price, created_at и т.д.). Example: price
+     * @queryParam order string Направление сортировки: asc или desc. Example: asc
+     * @queryParam limit int Количество элементов на странице. Example: 12
+     * @queryParam page int Номер страницы пагинации. Example: 1
      */
     public function index(): JsonResource
     {
@@ -58,8 +58,8 @@ class ProductController extends APIController
 
         if (! empty($query)) {
             /**
-             * Update or create search term only if
-             * there is only one filter that is query param
+             * Обновить или создать поисковый термин,
+             * только если передан один query-фильтр.
              */
             if (count(request()->except(['mode', 'sort', 'limit'])) == 1) {
                 UpdateCreateSearchTermJob::dispatch([
@@ -75,7 +75,7 @@ class ProductController extends APIController
     }
 
     /**
-     * Resolve search query data.
+     * Сформировать данные поискового запроса.
      */
     protected function resolveSearchQueryData($searchEngine): array
     {
@@ -95,7 +95,7 @@ class ProductController extends APIController
     }
 
     /**
-     * It will return the effective query based on the search engine.
+     * Вернуть итоговый поисковый запрос с учетом поискового движка.
      */
     protected function getEffectiveQuery(string $originalQuery, string $searchEngine): ?string
     {
@@ -105,11 +105,13 @@ class ProductController extends APIController
     }
 
     /**
-     * Related product listings.
+     * Получить список сопутствующих товаров.
      *
-     * @param  int  $id
+     * @urlParam id int required ID товара. Example: 1
+     *
+     * @response 200 {"data": []}
      */
-    public function relatedProducts($id): JsonResource
+    public function relatedProducts(int $id): JsonResource
     {
         $product = $this->productRepository->findOrFail($id);
 
@@ -121,11 +123,13 @@ class ProductController extends APIController
     }
 
     /**
-     * Up-sell product listings.
+     * Получить список апселл-товаров.
      *
-     * @param  int  $id
+     * @urlParam id int required ID товара. Example: 1
+     *
+     * @response 200 {"data": []}
      */
-    public function upSellProducts($id): JsonResource
+    public function upSellProducts(int $id): JsonResource
     {
         $product = $this->productRepository->findOrFail($id);
 

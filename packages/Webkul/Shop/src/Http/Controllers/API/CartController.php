@@ -14,14 +14,14 @@ use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\ProductResource;
 
 /**
- * Cart: CRUD, coupons, shipping estimate, cross-sell.
+ * Корзина: CRUD, купоны, расчет доставки, cross-sell.
  *
- * @group Cart
+ * @group Корзина
  */
 class CartController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -31,7 +31,7 @@ class CartController extends APIController
     ) {}
 
     /**
-     * Cart.
+     * Получить корзину.
      */
     public function index(): JsonResource
     {
@@ -49,11 +49,11 @@ class CartController extends APIController
     }
 
     /**
-     * Add product to cart.
+     * Добавить товар в корзину.
      *
-     * @bodyParam product_id int required Product ID. Example: 1
-     * @bodyParam quantity int Quantity (default 1). Example: 2
-     * @bodyParam is_buy_now int Set 1 for buy-now (redirects to checkout). Example: 0
+     * @bodyParam product_id int required ID товара. Example: 1
+     * @bodyParam quantity int Количество (по умолчанию 1). Example: 2
+     * @bodyParam is_buy_now int Установите 1 для покупки сразу (редирект на checkout). Example: 0
      *
      * @response 200 {"data": {...}, "message": "Item added to cart."}
      * @response 400 scenario="Insufficient inventory" {"message": "Requested quantity is not available."}
@@ -100,7 +100,7 @@ class CartController extends APIController
     }
 
     /**
-     * Removes the item from the cart if it exists.
+     * Удалить товар из корзины, если он существует.
      */
     public function destroy(): JsonResource
     {
@@ -119,7 +119,7 @@ class CartController extends APIController
     }
 
     /**
-     * Method for remove selected items from cart
+     * Удалить выбранные товары из корзины.
      */
     public function destroySelected(): JsonResource
     {
@@ -134,7 +134,7 @@ class CartController extends APIController
     }
 
     /**
-     * Method for move to wishlist selected items from cart
+     * Переместить выбранные товары из корзины в список желаемого.
      */
     public function moveToWishlist(): JsonResource
     {
@@ -151,7 +151,7 @@ class CartController extends APIController
     }
 
     /**
-     * Updates the quantity of the items present in the cart.
+     * Обновить количество товаров в корзине.
      */
     public function update(): JsonResource
     {
@@ -170,7 +170,7 @@ class CartController extends APIController
     }
 
     /**
-     * Estimate Shipping and Tax amount
+     * Рассчитать стоимость доставки и налогов.
      */
     public function estimateShippingMethods(): JsonResource
     {
@@ -224,7 +224,7 @@ class CartController extends APIController
     }
 
     /**
-     * Apply coupon to the cart.
+     * Применить купон к корзине.
      */
     public function storeCoupon()
     {
@@ -275,7 +275,7 @@ class CartController extends APIController
     }
 
     /**
-     * Remove applied coupon from the cart.
+     * Удалить примененный купон из корзины.
      */
     public function destroyCoupon(): JsonResource
     {
@@ -288,7 +288,7 @@ class CartController extends APIController
     }
 
     /**
-     * Cross-sell product listings.
+     * Получить список cross-sell товаров.
      *
      * @return \Illuminate\Http\Resources\Json\JsonResource::collection
      */

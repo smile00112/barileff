@@ -11,14 +11,14 @@ use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\WishlistResource;
 
 /**
- * Wishlist: add, list, remove, move to cart. Requires authentication.
+ * Список желаемого: добавить, получить список, удалить, переместить в корзину. Требуется авторизация.
  *
- * @group Wishlist
+ * @group Список желаемого
  */
 class WishlistController extends APIController
 {
     /**
-     * Create a new controller instance.
+     * Создать экземпляр контроллера.
      *
      * @return void
      */
@@ -28,7 +28,7 @@ class WishlistController extends APIController
     ) {}
 
     /**
-     * Displays the listing resources if the customer has items on the wishlist.
+     * Получить список желаемого покупателя.
      */
     public function index(): JsonResource
     {
@@ -45,7 +45,7 @@ class WishlistController extends APIController
     }
 
     /**
-     * Function to add items to the wishlist.
+     * Добавить товар в список желаемого.
      */
     public function store(): JsonResource
     {
@@ -92,11 +92,11 @@ class WishlistController extends APIController
     }
 
     /**
-     * Move the wishlist item to the cart.
+     * Переместить товар из списка желаемого в корзину.
      *
-     * @param  int  $id
+     * @urlParam id int required ID элемента списка желаемого. Example: 1
      */
-    public function moveToCart($id): JsonResource
+    public function moveToCart(int $id): JsonResource
     {
         $wishlistItem = $this->wishlistRepository->findOneWhere([
             'id' => $id,
@@ -140,11 +140,11 @@ class WishlistController extends APIController
     }
 
     /**
-     * Function to remove items to the wishlist.
+     * Удалить товар из списка желаемого.
      *
-     * @param  int  $id
+     * @urlParam id int required ID элемента списка желаемого. Example: 1
      */
-    public function destroy($id): JsonResource
+    public function destroy(int $id): JsonResource
     {
         Event::dispatch('customer.wishlist.delete.before', $id);
 
@@ -168,7 +168,7 @@ class WishlistController extends APIController
     }
 
     /**
-     * Method for removing all items from the wishlist.
+     * Удалить все товары из списка желаемого.
      */
     public function destroyAll(): JsonResource
     {
@@ -192,7 +192,7 @@ class WishlistController extends APIController
     }
 
     /**
-     * Removing inactive wishlist items.
+     * Удалить неактивные товары из списка желаемого.
      *
      * @return int
      */
