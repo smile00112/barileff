@@ -23,13 +23,17 @@
         <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
             <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
+                    @php
+                        $selectedCityId = (string) old('city_id', $deliveryZone->city_id);
+                    @endphp
+
                     <x-admin::form.control-group>
                         <x-admin::form.control-group.label class="required">City</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="select" name="city_id" rules="required">
+                        <x-admin::form.control-group.control type="select" name="city_id" rules="required" :value="$selectedCityId">
                             <option value="">Select city</option>
 
                             @foreach ($cities as $city)
-                                <option value="{{ $city->id }}" @selected((int) old('city_id', $deliveryZone->city_id) === $city->id)>{{ $city->name }}</option>
+                                <option value="{{ $city->id }}" @selected($selectedCityId === (string) $city->id)>{{ $city->name }}</option>
                             @endforeach
                         </x-admin::form.control-group.control>
                     </x-admin::form.control-group>
@@ -55,16 +59,16 @@
                     <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">Inventory Sources</p>
 
                     @php
-                        $selectedSourceId = (int) old('inventory_source_ids', $deliveryZone->inventory_sources->pluck('id')->first());
+                        $selectedSourceId = (string) old('inventory_source_ids', $deliveryZone->inventory_sources->pluck('id')->first());
                     @endphp
 
                     <x-admin::form.control-group class="!mb-0">
                         <x-admin::form.control-group.label class="required">Inventory Source</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="select" name="inventory_source_ids" rules="required">
+                        <x-admin::form.control-group.control type="select" name="inventory_source_ids" rules="required" :value="$selectedSourceId">
                             <option value="">Select inventory source</option>
 
                             @foreach ($inventorySources as $source)
-                                <option value="{{ $source->id }}" @selected($selectedSourceId === $source->id)>
+                                <option value="{{ $source->id }}" @selected($selectedSourceId === (string) $source->id)>
                                     {{ $source->name }}
                                 </option>
                             @endforeach

@@ -101,6 +101,41 @@ it('should render selected inactive city on delivery zone edit page', function (
         ->assertSee('value="'.$city->id.'"', false);
 });
 
+it('should bind selected city and inventory source values on delivery zone edit page', function () {
+    $this->loginAsAdmin();
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'kazan',
+        'name' => 'Kazan',
+        'country' => 'RU',
+        'state' => 'TA',
+        'is_active' => true,
+    ]);
+
+    $inventorySource = InventorySource::factory()->create();
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'kazan-center',
+        'name' => 'Kazan Center',
+        'polygon_json' => [],
+        'polygon_color' => '#0077cc',
+        'polygon_fill_opacity' => 0.2,
+        'polygon_stroke_opacity' => 1,
+        'is_active' => true,
+    ]);
+
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+
+    $response = get(route('admin.settings.delivery_zones.edit', $zone->id))
+        ->assertOk();
+
+    $content = $response->getContent();
+
+    expect((bool) preg_match('/<v-field(?=[^>]*name="city_id")(?=[^>]*(?:value|:value)="[^"]*'.$city->id.'[^"]*")[^>]*>/', $content))->toBeTrue();
+    expect((bool) preg_match('/<v-field(?=[^>]*name="inventory_source_ids")(?=[^>]*(?:value|:value)="[^"]*'.$inventorySource->id.'[^"]*")[^>]*>/', $content))->toBeTrue();
+});
+
 it('should append yandex maps api key to map script url on create and edit pages', function () {
     $this->loginAsAdmin();
 
