@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Customer\Repositories\CustomerRepository;
+use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\Payment\Facades\Payment;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
@@ -68,11 +69,12 @@ class OnepageController extends APIController
 
         $cart = Cart::getCart();
 
-        $cart->delivery_point_lat = $params['delivery_point_lat'] ?? null;
-        $cart->delivery_point_lng = $params['delivery_point_lng'] ?? null;
-        $cart->delivery_zone_id = $params['delivery_zone_id'] ?? null;
-        $cart->delivery_zone_mode = ! empty($params['delivery_zone_id']) ? 'manual' : (($cart->delivery_point_lat && $cart->delivery_point_lng) ? 'auto' : null);
-        $cart->save();
+        app(CartDeliveryZoneManager::class)->applySelection(
+            $cart,
+            isset($params['delivery_point_lat']) ? (float) $params['delivery_point_lat'] : null,
+            isset($params['delivery_point_lng']) ? (float) $params['delivery_point_lng'] : null,
+            ! empty($params['delivery_zone_id']) ? (int) $params['delivery_zone_id'] : null
+        );
 
         Cart::collectTotals();
 

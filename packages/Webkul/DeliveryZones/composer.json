@@ -1,0 +1,26 @@
+{
+    "name": "bagisto/laravel-delivery-zones",
+    "description": "Delivery zones package for zone-based shipping",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "webkul",
+            "email": "support@bagisto.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Webkul\\DeliveryZones\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\DeliveryZones\\Providers\\DeliveryZonesServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "minimum-stability": "dev"
+}

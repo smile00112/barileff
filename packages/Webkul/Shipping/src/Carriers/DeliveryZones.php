@@ -5,6 +5,7 @@ namespace Webkul\Shipping\Carriers;
 use Illuminate\Support\Facades\Log;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Checkout\Models\CartShippingRate;
+use Webkul\DeliveryZones\Services\DeliveryZoneRateResolver;
 use Webkul\Shipping\Services\ZoneSelector;
 
 class DeliveryZones extends AbstractShipping
@@ -45,11 +46,7 @@ class DeliveryZones extends AbstractShipping
             return false;
         }
 
-        $rate = $zone->rates()
-            ->where('min_order_total', '<=', $cart->sub_total)
-            ->orderByDesc('min_order_total')
-            ->orderByDesc('sort_order')
-            ->first();
+        $rate = app(DeliveryZoneRateResolver::class)->resolveRateForZone($cart, $zone);
 
         if (! $rate) {
             return false;

@@ -4,6 +4,7 @@ use Webkul\Checkout\Models\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Checkout\Models\CartItem;
 use Webkul\Core\Models\CoreConfig;
+use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\Shipping\Models\DeliveryCity;
@@ -174,4 +175,12 @@ it('should calculate delivery by selected zone manually', function () {
         ->assertOk()
         ->assertJsonPath('data.delivery_zone.id', $zone->id)
         ->assertJsonPath('data.delivery_zone.name', 'Manual Zone');
+});
+
+it('should resolve delivery zone mode consistently through service', function () {
+    $manager = app(CartDeliveryZoneManager::class);
+
+    expect($manager->resolveMode(55.73, 37.65, 10))->toBe('manual')
+        ->and($manager->resolveMode(55.73, 37.65, null))->toBe('auto')
+        ->and($manager->resolveMode(null, null, null))->toBeNull();
 });

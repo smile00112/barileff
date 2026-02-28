@@ -77,6 +77,7 @@
             "Webkul\\Customer\\": "packages/Webkul/Customer/src",
             "Webkul\\DataGrid\\": "packages/Webkul/DataGrid/src",
             "Webkul\\DataTransfer\\": "packages/Webkul/DataTransfer/src",
+            "Webkul\\DeliveryZones\\": "packages/Webkul/DeliveryZones/src",
             "Webkul\\DebugBar\\": "packages/Webkul/DebugBar/src",
             "Webkul\\FPC\\": "packages/Webkul/FPC/src",
             "Webkul\\GDPR\\": "packages/Webkul/GDPR/src",

@@ -22,6 +22,7 @@ return [
     Webkul\Customer\Providers\CustomerServiceProvider::class,
     Webkul\DataGrid\Providers\DataGridServiceProvider::class,
     Webkul\DataTransfer\Providers\DataTransferServiceProvider::class,
+    Webkul\DeliveryZones\Providers\DeliveryZonesServiceProvider::class,
     Webkul\DebugBar\Providers\DebugBarServiceProvider::class,
     Webkul\FPC\Providers\FPCServiceProvider::class,
     Webkul\GDPR\Providers\GDPRServiceProvider::class,

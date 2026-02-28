@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Webkul\CartRule\Repositories\CartRuleCouponRepository;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Checkout\Models\CartAddress;
+use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\Product\Exceptions\InsufficientProductInventoryException;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shipping\Facades\Shipping;
@@ -201,11 +202,12 @@ class CartController extends APIController
 
         Cart::setCart($cart);
 
-        $cart->delivery_point_lat = request()->input('delivery_point_lat');
-        $cart->delivery_point_lng = request()->input('delivery_point_lng');
-        $cart->delivery_zone_id = request()->input('delivery_zone_id');
-        $cart->delivery_zone_mode = request()->filled('delivery_zone_id') ? 'manual' : (($cart->delivery_point_lat && $cart->delivery_point_lng) ? 'auto' : null);
-        $cart->save();
+        app(CartDeliveryZoneManager::class)->applySelection(
+            $cart,
+            request()->filled('delivery_point_lat') ? (float) request()->input('delivery_point_lat') : null,
+            request()->filled('delivery_point_lng') ? (float) request()->input('delivery_point_lng') : null,
+            request()->filled('delivery_zone_id') ? (int) request()->input('delivery_zone_id') : null
+        );
 
         if (request()->has('shipping_method')) {
             Cart::saveShippingMethod(request()->input('shipping_method'));
