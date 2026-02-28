@@ -26,6 +26,8 @@
                     <x-admin::form.control-group>
                         <x-admin::form.control-group.label class="required">City</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="select" name="city_id" rules="required">
+                            <option value="">Select city</option>
+
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}" @selected((int) old('city_id', $deliveryZone->city_id) === $city->id)>{{ $city->name }}</option>
                             @endforeach
@@ -47,32 +49,29 @@
                         <x-admin::form.control-group.control type="number" name="delivery_time_minutes" :value="old('delivery_time_minutes', $deliveryZone->delivery_time_minutes)" />
                     </x-admin::form.control-group>
 
-                    <x-admin::form.control-group>
-                        <x-admin::form.control-group.label>Center Latitude</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="text" name="center_lat" :value="old('center_lat', $deliveryZone->center_lat)" />
-                    </x-admin::form.control-group>
-
-                    <x-admin::form.control-group class="!mb-0">
-                        <x-admin::form.control-group.label>Center Longitude</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="text" name="center_lng" :value="old('center_lng', $deliveryZone->center_lng)" />
-                    </x-admin::form.control-group>
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
                     <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">Inventory Sources</p>
 
                     @php
-                        $selectedSourceIds = collect(old('inventory_source_ids', $deliveryZone->inventory_sources->pluck('id')->all()));
+                        $selectedSourceId = (int) old('inventory_source_ids', $deliveryZone->inventory_sources->pluck('id')->first());
                     @endphp
 
-                    <div class="grid grid-cols-2 gap-3 max-md:grid-cols-1">
-                        @foreach ($inventorySources as $source)
-                            <label class="inline-flex items-center gap-2">
-                                <input type="checkbox" name="inventory_source_ids[]" value="{{ $source->id }}" @checked($selectedSourceIds->contains($source->id)) />
-                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $source->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
+                    <x-admin::form.control-group class="!mb-0">
+                        <x-admin::form.control-group.label class="required">Inventory Source</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.control type="select" name="inventory_source_ids" rules="required">
+                            <option value="">Select inventory source</option>
+
+                            @foreach ($inventorySources as $source)
+                                <option value="{{ $source->id }}" @selected($selectedSourceId === $source->id)>
+                                    {{ $source->name }}
+                                </option>
+                            @endforeach
+                        </x-admin::form.control-group.control>
+                    </x-admin::form.control-group>
+
+                    <x-admin::form.control-group.error control-name="inventory_source_ids" />
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
@@ -88,7 +87,7 @@
 
                     <div id="rates-wrapper" class="space-y-3">
                         @foreach ($rates as $index => $rate)
-                            <div class="grid grid-cols-3 gap-2 max-md:grid-cols-1">
+                            <div class="grid grid-cols-4 gap-2 max-md:grid-cols-1">
                                 <x-admin::form.control-group class="!mb-0">
                                     <x-admin::form.control-group.label class="required">Min Order Total</x-admin::form.control-group.label>
                                     <x-admin::form.control-group.control type="number" step="0.01" name="rates[{{ $index }}][min_order_total]" :value="$rate['min_order_total'] ?? 0" />
@@ -103,6 +102,10 @@
                                     <x-admin::form.control-group.label>Sort Order</x-admin::form.control-group.label>
                                     <x-admin::form.control-group.control type="number" name="rates[{{ $index }}][sort_order]" :value="$rate['sort_order'] ?? $index" />
                                 </x-admin::form.control-group>
+
+                                <div class="flex items-end">
+                                    <button type="button" class="secondary-button remove-rate">X</button>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -117,13 +120,39 @@
 
                     <div id="zone-map" class="h-[400px] w-full rounded border"></div>
 
-                    <div class="mt-3 flex gap-2">
+                    <div class="mt-3 flex flex-wrap items-center gap-3">
+                        <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                            <input id="polygon-edit-mode" type="checkbox" checked />
+                            <span>Edit Mode</span>
+                        </label>
+
                         <button type="button" id="clear-polygon" class="secondary-button">Clear Polygon</button>
+                        <button type="button" id="apply-polygon-json" class="secondary-button">Apply JSON</button>
                     </div>
+
+                    <p id="polygon-error" class="mt-2 hidden text-sm text-red-600"></p>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
                         <x-admin::form.control-group.label class="required">Polygon JSON</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="textarea" id="polygon_json" name="polygon_json" rules="required" :value="old('polygon_json', json_encode($deliveryZone->polygon_json))" />
+                    </x-admin::form.control-group>
+
+                    <x-admin::form.control-group class="mt-3 !mb-0">
+                        <x-admin::form.control-group.label class="required">Polygon Color</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.control type="color" id="polygon_color" name="polygon_color" rules="required" :value="old('polygon_color', $deliveryZone->polygon_color ?? '#0077cc')" />
+                        <x-admin::form.control-group.error control-name="polygon_color" />
+                    </x-admin::form.control-group>
+
+                    <x-admin::form.control-group class="mt-3 !mb-0">
+                        <x-admin::form.control-group.label class="required">Polygon Fill Opacity</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.control type="number" id="polygon_fill_opacity" name="polygon_fill_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_fill_opacity', $deliveryZone->polygon_fill_opacity ?? 0.20)" />
+                        <x-admin::form.control-group.error control-name="polygon_fill_opacity" />
+                    </x-admin::form.control-group>
+
+                    <x-admin::form.control-group class="mt-3 !mb-0">
+                        <x-admin::form.control-group.label class="required">Border Opacity</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.control type="number" id="polygon_stroke_opacity" name="polygon_stroke_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_stroke_opacity', $deliveryZone->polygon_stroke_opacity ?? 1)" />
+                        <x-admin::form.control-group.error control-name="polygon_stroke_opacity" />
                     </x-admin::form.control-group>
                 </div>
             </div>
@@ -159,11 +188,18 @@
 
         <script type="module">
             const initDeliveryZoneForm = () => {
+                const MIN_POLYGON_VERTEX_COUNT = 3;
                 let ratesIndex = {{ count($rates) }};
                 const ratesWrapper = document.getElementById('rates-wrapper');
                 const addRateRowButton = document.getElementById('add-rate-row');
                 const polygonInput = document.getElementById('polygon_json');
+                const polygonColorInput = document.getElementById('polygon_color');
+                const polygonFillOpacityInput = document.getElementById('polygon_fill_opacity');
+                const polygonStrokeOpacityInput = document.getElementById('polygon_stroke_opacity');
                 const clearPolygonButton = document.getElementById('clear-polygon');
+                const applyPolygonJsonButton = document.getElementById('apply-polygon-json');
+                const editModeInput = document.getElementById('polygon-edit-mode');
+                const polygonError = document.getElementById('polygon-error');
 
                 if (! ratesWrapper || ! addRateRowButton || ! polygonInput) {
                     return;
@@ -171,7 +207,7 @@
 
                 addRateRowButton.addEventListener('click', () => {
                     const row = document.createElement('div');
-                    row.className = 'grid grid-cols-3 gap-2 max-md:grid-cols-1';
+                    row.className = 'grid grid-cols-4 gap-2 max-md:grid-cols-1';
                     row.innerHTML = `
                         <div>
                             <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
@@ -181,6 +217,8 @@
                         </div>
                         <div class="flex gap-2">
                             <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
+                        </div>
+                        <div class="flex items-end">
                             <button type="button" class="secondary-button remove-rate">X</button>
                         </div>
                     `;
@@ -197,27 +235,20 @@
                     }
                 });
 
-                const parseCoordinates = () => {
-                    try {
-                        const parsed = JSON.parse(polygonInput.value || '[]');
-
-                        if (! Array.isArray(parsed)) {
-                            return [];
-                        }
-
-                        if (
-                            parsed.length > 0
-                            && Array.isArray(parsed[0])
-                            && parsed[0].length > 0
-                            && Array.isArray(parsed[0][0])
-                        ) {
-                            return parsed[0];
-                        }
-
-                        return parsed;
-                    } catch (e) {
-                        return [];
+                const showPolygonError = (message) => {
+                    if (! polygonError) {
+                        return;
                     }
+
+                    if (! message) {
+                        polygonError.classList.add('hidden');
+                        polygonError.textContent = '';
+
+                        return;
+                    }
+
+                    polygonError.textContent = message;
+                    polygonError.classList.remove('hidden');
                 };
 
                 const syncPolygonInput = (value) => {
@@ -226,9 +257,178 @@
                     polygonInput.dispatchEvent(new Event('change', { bubbles: true }));
                 };
 
-                let coordinates = parseCoordinates();
+                const normalizePolygonColor = (value) => {
+                    if (typeof value !== 'string') {
+                        return '#0077cc';
+                    }
+
+                    const normalized = value.trim();
+
+                    if (! /^#[0-9A-Fa-f]{6}$/.test(normalized)) {
+                        return '#0077cc';
+                    }
+
+                    return normalized.toLowerCase();
+                };
+
+                const getPolygonColor = () => {
+                    if (! (polygonColorInput instanceof HTMLInputElement)) {
+                        return '#0077cc';
+                    }
+
+                    const normalizedColor = normalizePolygonColor(polygonColorInput.value);
+                    polygonColorInput.value = normalizedColor;
+
+                    return normalizedColor;
+                };
+
+                const normalizeOpacity = (value, fallbackValue) => {
+                    const normalized = Number.parseFloat(String(value));
+
+                    if (! Number.isFinite(normalized)) {
+                        return fallbackValue;
+                    }
+
+                    return Math.min(1, Math.max(0, normalized));
+                };
+
+                const getHexAlpha = (value, fallbackValue) => {
+                    const opacity = normalizeOpacity(value, fallbackValue);
+                    const alpha = Math.round(opacity * 255);
+
+                    return alpha.toString(16).padStart(2, '0');
+                };
+
+                const getFillOpacityHex = () => {
+                    if (! (polygonFillOpacityInput instanceof HTMLInputElement)) {
+                        return getHexAlpha(0.2, 0.2);
+                    }
+
+                    const opacity = normalizeOpacity(polygonFillOpacityInput.value, 0.2);
+                    polygonFillOpacityInput.value = opacity.toFixed(2);
+
+                    return getHexAlpha(opacity, 0.2);
+                };
+
+                const getStrokeOpacityHex = () => {
+                    if (! (polygonStrokeOpacityInput instanceof HTMLInputElement)) {
+                        return getHexAlpha(1, 1);
+                    }
+
+                    const opacity = normalizeOpacity(polygonStrokeOpacityInput.value, 1);
+                    polygonStrokeOpacityInput.value = opacity.toFixed(2);
+
+                    return getHexAlpha(opacity, 1);
+                };
+
+                const normalizePoint = (value) => {
+                    if (! Array.isArray(value) || value.length < 2) {
+                        throw new Error('Each point must be [latitude, longitude].');
+                    }
+
+                    const latitude = Number(value[0]);
+                    const longitude = Number(value[1]);
+
+                    if (! Number.isFinite(latitude) || ! Number.isFinite(longitude)) {
+                        throw new Error('Latitude and longitude must be numeric.');
+                    }
+
+                    return [Number(latitude.toFixed(7)), Number(longitude.toFixed(7))];
+                };
+
+                const stripClosingPoint = (value) => {
+                    if (value.length < 2) {
+                        return value;
+                    }
+
+                    const firstPoint = value[0];
+                    const lastPoint = value[value.length - 1];
+
+                    if (firstPoint[0] === lastPoint[0] && firstPoint[1] === lastPoint[1]) {
+                        return value.slice(0, -1);
+                    }
+
+                    return value;
+                };
+
+                const parseCoordinatesFromJson = (jsonValue) => {
+                    let parsed;
+
+                    try {
+                        parsed = JSON.parse(jsonValue || '[]');
+                    } catch (error) {
+                        throw new Error('Invalid JSON in Polygon JSON field.');
+                    }
+
+                    if (! Array.isArray(parsed)) {
+                        throw new Error('Polygon JSON must be an array of coordinates.');
+                    }
+
+                    if (! parsed.length) {
+                        return [];
+                    }
+
+                    let rawCoordinates = parsed;
+
+                    if (Array.isArray(parsed[0]) && parsed[0].length && Array.isArray(parsed[0][0])) {
+                        rawCoordinates = parsed[0];
+                    }
+
+                    const normalizedCoordinates = rawCoordinates.map(normalizePoint);
+                    const coordinatesWithoutClosingPoint = stripClosingPoint(normalizedCoordinates);
+
+                    if (
+                        coordinatesWithoutClosingPoint.length > 0
+                        && coordinatesWithoutClosingPoint.length < MIN_POLYGON_VERTEX_COUNT
+                    ) {
+                        throw new Error(`Polygon must have at least ${MIN_POLYGON_VERTEX_COUNT} vertices.`);
+                    }
+
+                    return coordinatesWithoutClosingPoint;
+                };
+
+                let coordinates;
+
+                try {
+                    coordinates = parseCoordinatesFromJson(polygonInput.value);
+                } catch (error) {
+                    coordinates = [];
+                    showPolygonError(error.message);
+                    syncPolygonInput(coordinates);
+                }
+
                 let polygonObject = null;
                 let map = null;
+                let editMode = ! (editModeInput instanceof HTMLInputElement) || editModeInput.checked;
+
+                const syncCoordinatesFromPolygon = () => {
+                    if (! polygonObject) {
+                        return;
+                    }
+
+                    const geometryCoordinates = polygonObject.geometry.getCoordinates();
+
+                    if (! Array.isArray(geometryCoordinates) || ! Array.isArray(geometryCoordinates[0])) {
+                        return;
+                    }
+
+                    const normalizedCoordinates = geometryCoordinates[0].map(normalizePoint);
+                    coordinates = stripClosingPoint(normalizedCoordinates);
+                    syncPolygonInput(coordinates);
+                    showPolygonError('');
+                };
+
+                const toggleEditorState = () => {
+                    if (! polygonObject || ! polygonObject.editor) {
+                        return;
+                    }
+
+                    if (editMode) {
+                        polygonObject.editor.startEditing();
+                    } else {
+                        polygonObject.editor.stopEditing();
+                    }
+                };
 
                 const renderPolygon = () => {
                     if (! map) {
@@ -245,17 +445,54 @@
                     }
 
                     polygonObject = new ymaps.Polygon([coordinates], {}, {
-                        fillColor: '#0088ff33',
-                        strokeColor: '#0077cc',
+                        fillColor: `${getPolygonColor()}${getFillOpacityHex()}`,
+                        strokeColor: `${getPolygonColor()}${getStrokeOpacityHex()}`,
                         strokeWidth: 3,
                     });
 
+                    polygonObject.geometry.events.add('change', () => {
+                        syncCoordinatesFromPolygon();
+                    });
+
                     map.geoObjects.add(polygonObject);
+                    toggleEditorState();
                 };
 
                 clearPolygonButton?.addEventListener('click', () => {
                     coordinates = [];
                     syncPolygonInput(coordinates);
+                    showPolygonError('');
+                    renderPolygon();
+                });
+
+                applyPolygonJsonButton?.addEventListener('click', () => {
+                    try {
+                        const parsedCoordinates = parseCoordinatesFromJson(polygonInput.value);
+                        coordinates = parsedCoordinates;
+                        syncPolygonInput(coordinates);
+                        showPolygonError('');
+                        renderPolygon();
+                    } catch (error) {
+                        showPolygonError(error.message);
+                    }
+                });
+
+                editModeInput?.addEventListener('change', () => {
+                    if (editModeInput instanceof HTMLInputElement) {
+                        editMode = editModeInput.checked;
+                        toggleEditorState();
+                    }
+                });
+
+                polygonColorInput?.addEventListener('input', () => {
+                    renderPolygon();
+                });
+
+                polygonFillOpacityInput?.addEventListener('input', () => {
+                    renderPolygon();
+                });
+
+                polygonStrokeOpacityInput?.addEventListener('input', () => {
                     renderPolygon();
                 });
 
@@ -272,9 +509,14 @@
                     renderPolygon();
 
                     map.events.add('click', (event) => {
+                        if (! editMode) {
+                            return;
+                        }
+
                         const point = event.get('coords');
                         coordinates.push([Number(point[0].toFixed(7)), Number(point[1].toFixed(7))]);
                         syncPolygonInput(coordinates);
+                        showPolygonError('');
                         renderPolygon();
                     });
                 });

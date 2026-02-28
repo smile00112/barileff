@@ -24,6 +24,9 @@ class DeliveryCityRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'country' => ['required', 'string', 'max:2'],
             'state' => ['nullable', 'string', 'max:255'],
+            'center_lat' => ['nullable', 'numeric', 'between:-90,90'],
+            'center_lng' => ['nullable', 'numeric', 'between:-180,180'],
+            'polygon_json' => ['required', 'json'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }

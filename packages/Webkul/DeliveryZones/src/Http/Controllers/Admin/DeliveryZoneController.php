@@ -32,18 +32,22 @@ class DeliveryZoneController extends Controller
 
     public function store(DeliveryZoneRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+        $inventorySourceId = (int) $validated['inventory_source_ids'];
+
         $zone = DeliveryZone::query()->create([
-            'city_id' => (int) $request->input('city_id'),
-            'code' => $request->input('code'),
-            'name' => $request->input('name'),
-            'polygon_json' => json_decode((string) $request->input('polygon_json'), true),
-            'center_lat' => $request->input('center_lat'),
-            'center_lng' => $request->input('center_lng'),
-            'delivery_time_minutes' => $request->input('delivery_time_minutes'),
+            'city_id' => (int) $validated['city_id'],
+            'code' => $validated['code'],
+            'name' => $validated['name'],
+            'polygon_json' => json_decode((string) $validated['polygon_json'], true),
+            'polygon_color' => $validated['polygon_color'] ?? '#0077cc',
+            'polygon_fill_opacity' => (float) ($validated['polygon_fill_opacity'] ?? 0.2),
+            'polygon_stroke_opacity' => (float) ($validated['polygon_stroke_opacity'] ?? 1),
+            'delivery_time_minutes' => $validated['delivery_time_minutes'] ?? null,
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 
-        $zone->inventory_sources()->sync($request->input('inventory_source_ids', []));
+        $zone->inventory_sources()->sync([$inventorySourceId]);
 
         foreach ($request->input('rates', []) as $index => $rate) {
             $zone->rates()->create([
@@ -61,30 +65,41 @@ class DeliveryZoneController extends Controller
     public function edit(int $id)
     {
         $deliveryZone = DeliveryZone::query()->with(['rates', 'inventory_sources'])->findOrFail($id);
+        $cityId = (int) $deliveryZone->city_id;
 
         return view('delivery-zones::settings.delivery-zones.edit', [
             'deliveryZone' => $deliveryZone,
-            'cities' => DeliveryCity::query()->where('is_active', true)->orderBy('name')->get(),
+            'cities' => DeliveryCity::query()
+                ->where(function ($query) use ($cityId) {
+                    $query->where('is_active', true)
+                        ->orWhere('id', $cityId);
+                })
+                ->orderBy('name')
+                ->get(),
             'inventorySources' => InventorySource::query()->where('status', true)->orderBy('name')->get(),
         ]);
     }
 
     public function update(DeliveryZoneRequest $request, int $id): RedirectResponse
     {
+        $validated = $request->validated();
+        $inventorySourceId = (int) $validated['inventory_source_ids'];
+
         $zone = DeliveryZone::query()->with('rates')->findOrFail($id);
 
         $zone->update([
-            'city_id' => (int) $request->input('city_id'),
-            'code' => $request->input('code'),
-            'name' => $request->input('name'),
-            'polygon_json' => json_decode((string) $request->input('polygon_json'), true),
-            'center_lat' => $request->input('center_lat'),
-            'center_lng' => $request->input('center_lng'),
-            'delivery_time_minutes' => $request->input('delivery_time_minutes'),
+            'city_id' => (int) $validated['city_id'],
+            'code' => $validated['code'],
+            'name' => $validated['name'],
+            'polygon_json' => json_decode((string) $validated['polygon_json'], true),
+            'polygon_color' => $validated['polygon_color'] ?? '#0077cc',
+            'polygon_fill_opacity' => (float) ($validated['polygon_fill_opacity'] ?? 0.2),
+            'polygon_stroke_opacity' => (float) ($validated['polygon_stroke_opacity'] ?? 1),
+            'delivery_time_minutes' => $validated['delivery_time_minutes'] ?? null,
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 
-        $zone->inventory_sources()->sync($request->input('inventory_source_ids', []));
+        $zone->inventory_sources()->sync([$inventorySourceId]);
         $zone->rates()->delete();
 
         foreach ($request->input('rates', []) as $index => $rate) {

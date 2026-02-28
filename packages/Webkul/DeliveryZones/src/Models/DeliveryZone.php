@@ -14,6 +14,8 @@ class DeliveryZone extends Model
 
     protected $casts = [
         'polygon_json' => 'array',
+        'polygon_fill_opacity' => 'float',
+        'polygon_stroke_opacity' => 'float',
         'is_active' => 'boolean',
     ];
 

@@ -27,8 +27,13 @@ class DeliveryCityController extends Controller
 
     public function store(DeliveryCityRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+
         DeliveryCity::query()->create([
-            ...$request->validated(),
+            ...$validated,
+            'polygon_json' => json_decode((string) $validated['polygon_json'], true),
+            'center_lat' => $validated['center_lat'] ?? null,
+            'center_lng' => $validated['center_lng'] ?? null,
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 
@@ -47,9 +52,13 @@ class DeliveryCityController extends Controller
     public function update(DeliveryCityRequest $request, int $id): RedirectResponse
     {
         $deliveryCity = DeliveryCity::query()->findOrFail($id);
+        $validated = $request->validated();
 
         $deliveryCity->update([
-            ...$request->validated(),
+            ...$validated,
+            'polygon_json' => json_decode((string) $validated['polygon_json'], true),
+            'center_lat' => $validated['center_lat'] ?? null,
+            'center_lng' => $validated['center_lng'] ?? null,
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 

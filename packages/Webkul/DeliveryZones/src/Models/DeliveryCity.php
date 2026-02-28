@@ -9,6 +9,11 @@ class DeliveryCity extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'polygon_json' => 'array',
+        'is_active' => 'boolean',
+    ];
+
     /**
      * @return HasMany<DeliveryZone, $this>
      */
