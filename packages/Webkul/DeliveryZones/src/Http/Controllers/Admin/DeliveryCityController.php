@@ -1,14 +1,14 @@
 <?php
 
-namespace Webkul\Admin\Http\Controllers\Settings;
+namespace Webkul\DeliveryZones\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Webkul\Admin\DataGrids\Settings\DeliveryCitiesDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
-use Webkul\Admin\Http\Requests\DeliveryCityRequest;
+use Webkul\DeliveryZones\DataGrids\DeliveryCitiesDataGrid;
+use Webkul\DeliveryZones\Http\Requests\DeliveryCityRequest;
+use Webkul\DeliveryZones\Models\DeliveryCity;
 use Webkul\Inventory\Models\InventorySource;
-use Webkul\Shipping\Models\DeliveryCity;
 
 class DeliveryCityController extends Controller
 {
@@ -18,12 +18,12 @@ class DeliveryCityController extends Controller
             return datagrid(DeliveryCitiesDataGrid::class)->process();
         }
 
-        return view('admin::settings.delivery-cities.index');
+        return view('delivery-zones::settings.delivery-cities.index');
     }
 
     public function create()
     {
-        return view('admin::settings.delivery-cities.create');
+        return view('delivery-zones::settings.delivery-cities.create');
     }
 
     public function store(DeliveryCityRequest $request): RedirectResponse
@@ -47,7 +47,7 @@ class DeliveryCityController extends Controller
     {
         $deliveryCity = DeliveryCity::query()->findOrFail($id);
 
-        return view('admin::settings.delivery-cities.edit', compact('deliveryCity'));
+        return view('delivery-zones::settings.delivery-cities.edit', compact('deliveryCity'));
     }
 
     public function zones(int $id)
@@ -59,7 +59,7 @@ class DeliveryCityController extends Controller
             ])
             ->findOrFail($id);
 
-        return view('admin::settings.delivery-cities.zones', [
+        return view('delivery-zones::settings.delivery-cities.zones', [
             'deliveryCity' => $deliveryCity,
             'inventorySources' => InventorySource::query()->where('status', true)->orderBy('name')->get(),
         ]);

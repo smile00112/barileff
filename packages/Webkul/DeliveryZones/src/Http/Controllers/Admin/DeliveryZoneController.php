@@ -34,6 +34,7 @@ class DeliveryZoneController extends Controller
     {
         $validated = $request->validated();
         $inventorySourceId = (int) $validated['inventory_source_ids'];
+        $redirectCityId = (int) $request->input('redirect_city_id', 0);
 
         $zone = DeliveryZone::query()->create([
             'city_id' => (int) $validated['city_id'],
@@ -58,6 +59,10 @@ class DeliveryZoneController extends Controller
         }
 
         session()->flash('success', 'Delivery zone created successfully.');
+
+        if ($redirectCityId > 0) {
+            return redirect()->route('admin.settings.delivery_cities.zones', $redirectCityId);
+        }
 
         return redirect()->route('admin.settings.delivery_zones.index');
     }
@@ -84,6 +89,7 @@ class DeliveryZoneController extends Controller
     {
         $validated = $request->validated();
         $inventorySourceId = (int) $validated['inventory_source_ids'];
+        $redirectCityId = (int) $request->input('redirect_city_id', 0);
 
         $zone = DeliveryZone::query()->with('rates')->findOrFail($id);
 
@@ -111,6 +117,10 @@ class DeliveryZoneController extends Controller
         }
 
         session()->flash('success', 'Delivery zone updated successfully.');
+
+        if ($redirectCityId > 0) {
+            return redirect()->route('admin.settings.delivery_cities.zones', $redirectCityId);
+        }
 
         return redirect()->route('admin.settings.delivery_zones.index');
     }

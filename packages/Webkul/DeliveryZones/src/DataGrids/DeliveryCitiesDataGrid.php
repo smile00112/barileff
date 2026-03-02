@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\Admin\DataGrids\Settings;
+namespace Webkul\DeliveryZones\DataGrids;
 
 use Illuminate\Support\Facades\DB;
 use Webkul\DataGrid\DataGrid;

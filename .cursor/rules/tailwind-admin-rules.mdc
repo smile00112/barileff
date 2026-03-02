@@ -1,0 +1,1055 @@
+---
+# Правила стилизации Tailwind CSS для админ-панели
+
+## Общие принципы
+- Все компоненты должны поддерживать dark mode через префикс `dark:`
+- Использовать единую цветовую палитру
+- Соблюдать консистентность отступов и промежутков
+- Обеспечивать адаптивность для мобильных устройств
+
+---
+
+## [TAILWIND-PAGE-STRUCTURE]
+
+### Заголовок страницы
+```css
+/* Контейнер заголовка */
+.flex.items-center.justify-between.mb-6
+/* или для адаптивности */
+.flex.items-center.justify-between.gap-4.max-sm:flex-wrap
+
+/* Заголовок H1 */
+.text-2xl.font-bold.text-gray-900.dark:text-white
+/* или */
+.text-xl.font-bold.text-gray-800.dark:text-white
+
+/* Кнопка "Назад" */
+.inline-flex.items-center.gap-2.text-gray-600.hover:text-gray-900.dark:text-gray-400.dark:hover:text-white
+```
+
+### Кнопки действий в заголовке
+```css
+/* Контейнер кнопок */
+.flex.items-center.gap-x-2.5
+
+/* Основная кнопка (используйте класс .primary-button) */
+.primary-button {
+    @apply bg-blue-600 border border-blue-700 cursor-pointer flex 
+           focus:opacity-[0.9] font-semibold gap-x-1 hover:opacity-[0.9] 
+           items-center place-content-center px-3 py-1.5 rounded-md 
+           text-gray-50 transition-all;
+}
+```
+
+---
+
+## [TAILWIND-CARDS]
+
+### Основная карточка
+```css
+.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.border.border-gray-200.dark:border-gray-700
+```
+
+### Внутренние секции карточки
+```css
+/* Заголовок секции */
+.px-6.py-4.border-b.border-gray-200.dark:border-gray-700
+
+/* Заголовок секции (текст) */
+.text-lg.font-semibold.text-gray-900.dark:text-white
+
+/* Контент секции */
+.p-6.space-y-6  /* или .p-4.space-y-4 */
+```
+
+---
+
+## [TAILWIND-FORMS]
+
+### Контейнер формы
+```css
+.space-y-6  /* для основных форм */
+.space-y-4  /* для компактных форм */
+```
+
+### Поле формы (label + input)
+```css
+/* Label */
+.block.text-sm.font-medium.text-gray-700.dark:text-gray-300.mb-2
+
+/* Обязательное поле (звездочка) */
+.text-red-500
+
+/* Input (текст, email, number, date, time, datetime-local) */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md.shadow-sm
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+.dark:bg-gray-700.dark:text-white
+
+/* Textarea */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md.shadow-sm
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+.dark:bg-gray-700.dark:text-white
+.rows-4  /* или другое количество строк */
+
+/* Select (dropdown) */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md.shadow-sm
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+.dark:bg-gray-700.dark:text-white
+.bg-white.dark:bg-gray-700
+
+/* Select multiple */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md.shadow-sm
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+.dark:bg-gray-700.dark:text-white
+/* size="5" для видимых опций */
+
+/* File input */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md.shadow-sm
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+.dark:bg-gray-700.dark:text-white
+
+/* Disabled input */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md
+.bg-gray-100.dark:bg-gray-700.text-gray-500.dark:text-gray-400
+.cursor-not-allowed
+```
+
+### Checkbox
+```css
+/* Контейнер checkbox */
+.flex.items-center
+
+/* Input checkbox */
+.rounded.border-gray-300.text-indigo-600.focus:ring-indigo-500
+
+/* Label для checkbox */
+.ml-2.block.text-sm.text-gray-900.dark:text-gray-300
+.cursor-pointer  /* если label кликабельный */
+```
+
+### Radio buttons
+```css
+/* Контейнер radio */
+.flex.items-center
+
+/* Input radio */
+.border-gray-300.text-indigo-600.focus:ring-indigo-500
+
+/* Label для radio */
+.ml-2.block.text-sm.text-gray-900.dark:text-gray-300
+.cursor-pointer
+```
+
+### Switch (toggle)
+```css
+/* Используется компонент <x-admin::form.control-group.control type="switch" /> */
+/* Стили применяются автоматически через компонент */
+```
+
+### Группа полей (grid)
+```css
+/* Две колонки */
+.grid.grid-cols-1.md:grid-cols-2.gap-4
+
+/* Пять колонок */
+.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-5.gap-4
+
+/* Три колонки */
+.grid.grid-cols-1.md:grid-cols-3.gap-4
+```
+
+### Сообщения об ошибках
+```css
+.mt-1.text-sm.text-red-600.dark:text-red-400
+```
+
+### Подсказки (hint text)
+```css
+.mt-1.text-xs.text-gray-500.dark:text-gray-400
+```
+
+### Группа полей формы (control-group)
+```css
+/* Контейнер группы */
+/* Используется компонент <x-admin::form.control-group> */
+/* Последний элемент без отступа */
+.!mb-0  /* для последнего элемента в группе */
+```
+
+---
+
+## [TAILWIND-TABLES]
+
+### Контейнер таблицы
+```css
+.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.border.border-gray-200.dark:border-gray-700
+.overflow-x-auto
+```
+
+### Таблица
+```css
+.min-w-full.divide-y.divide-gray-200.dark:divide-gray-700
+```
+
+### Заголовок таблицы (thead)
+```css
+.bg-gray-50.dark:bg-gray-700
+```
+
+### Ячейки заголовка (th)
+```css
+.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.dark:text-gray-300.uppercase.tracking-wider
+```
+
+### Тело таблицы (tbody)
+```css
+.bg-white.dark:bg-gray-800.divide-y.divide-gray-200.dark:divide-gray-700
+```
+
+### Ячейки данных (td)
+```css
+.px-6.py-4.whitespace-nowrap.text-sm.text-gray-900.dark:text-white
+/* или без whitespace-nowrap для текста с переносами */
+.px-6.py-4.text-sm.text-gray-900.dark:text-white
+```
+
+---
+
+## [TAILWIND-BADGES]
+
+### Бейдж (базовый)
+```css
+.px-2.inline-flex.text-xs.leading-5.font-semibold.rounded-full
+```
+
+### Цветовые варианты бейджей
+```css
+/* Успех (зеленый) */
+.bg-green-100.text-green-800.dark:bg-green-900.dark:text-green-200
+
+/* Ошибка (красный) */
+.bg-red-100.text-red-800.dark:bg-red-900.dark:text-red-200
+
+/* WhatsApp (зеленый) */
+.bg-green-100.text-green-800.dark:bg-green-900.dark:text-green-200
+
+/* Email (синий) */
+.bg-blue-100.text-blue-800.dark:bg-blue-900.dark:text-blue-200
+
+/* Telegram (фиолетовый) */
+.bg-purple-100.text-purple-800.dark:bg-purple-900.dark:text-purple-200
+```
+
+---
+
+## [TAILWIND-BUTTONS]
+
+### Кнопки в таблице (иконки)
+```css
+/* Контейнер кнопок */
+.flex.space-x-2
+
+/* Кнопка редактирования */
+.text-indigo-600.hover:text-indigo-900.dark:text-indigo-400.dark:hover:text-indigo-300
+
+/* Кнопка удаления */
+.text-red-600.hover:text-red-900.dark:text-red-400.dark:hover:text-red-300
+
+/* Кнопка запуска */
+.text-green-600.hover:text-green-900.dark:text-green-400.dark:hover:text-green-300
+
+/* Кнопка паузы */
+.text-yellow-600.hover:text-yellow-900.dark:text-yellow-400.dark:hover:text-yellow-300
+
+/* Иконка внутри кнопки */
+.cursor-pointer.rounded-md.p-1.5.text-2xl.transition-all
+.hover:bg-gray-200.dark:hover:bg-gray-800.max-sm:place-self-center
+```
+
+### Кнопки формы
+```css
+/* Основная кнопка (Submit) */
+.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.border.border-transparent.rounded-md
+.hover:bg-blue-700.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-blue-500
+
+/* Вторичная кнопка (Cancel) */
+.px-4.py-2.text-sm.font-medium.text-gray-700.bg-white.border.border-gray-300.rounded-md
+.hover:bg-gray-50.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-blue-500
+.dark:bg-gray-700.dark:text-gray-300.dark:border-gray-600.dark:hover:bg-gray-600
+```
+
+---
+
+## [TAILWIND-ALERTS]
+
+### Предупреждение (warning)
+```css
+.mb-6.bg-yellow-50.dark:bg-yellow-900/20.border.border-yellow-200.dark:border-yellow-800.rounded-lg.p-4
+```
+
+### Внутренняя структура алерта
+```css
+/* Контейнер */
+.flex.items-start
+
+/* Иконка */
+.flex-shrink-0
+.h-5.w-5.text-yellow-400
+
+/* Контент */
+.ml-3.flex-1
+
+/* Заголовок */
+.text-sm.font-medium.text-yellow-800.dark:text-yellow-200
+
+/* Текст */
+.mt-2.text-sm.text-yellow-700.dark:text-yellow-300
+```
+
+---
+
+## [TAILWIND-PROGRESS]
+
+### Контейнер прогресс-бара
+```css
+.flex.items-center.gap-2
+```
+
+### Фон прогресс-бара
+```css
+.flex-1.flex-shrink-0.bg-gray-200.dark:bg-gray-700.rounded-full.h-2.5.min-w-[100px]
+```
+
+### Индикатор прогресса
+```css
+.bg-blue-600.h-2.5.rounded-full.transition-all.duration-300
+/* width задается через style="width: X%" */
+```
+
+### Текст прогресса
+```css
+.text-xs.text-gray-600.dark:text-gray-400.min-w-[80px]
+```
+
+---
+
+## [TAILWIND-EMPTY-STATE]
+
+```css
+/* Контейнер */
+.px-6.py-12.text-center
+
+/* Внутренний контейнер */
+.flex.flex-col.items-center
+
+/* Иконка */
+.mx-auto.h-12.w-12.text-gray-400
+
+/* Заголовок */
+.mt-2.text-sm.font-medium.text-gray-900.dark:text-white
+
+/* Описание */
+.mt-1.text-sm.text-gray-500.dark:text-gray-400
+
+/* Кнопка действия */
+.mt-6
+.inline-flex.items-center.px-4.py-2.border.border-transparent.shadow-sm
+.text-sm.font-medium.rounded-md.text-white.bg-blue-600
+.hover:bg-blue-700.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-blue-500
+```
+
+---
+
+## [TAILWIND-GRID]
+
+### Адаптивная сетка
+```css
+/* 1 колонка на мобильных, 2 на средних экранах */
+.grid.grid-cols-1.md:grid-cols-2.gap-4
+
+/* 1 колонка на мобильных, 2 на средних, 5 на больших */
+.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-5.gap-4
+```
+
+---
+
+## [TAILWIND-COLORS]
+
+### Основные цвета
+- Primary: `blue-600`, `blue-700`
+- Success: `green-100`, `green-600`, `green-800`
+- Warning: `yellow-50`, `yellow-400`, `yellow-800`
+- Error: `red-500`, `red-600`, `red-800`
+- Info: `indigo-600`, `indigo-800`
+
+### Серые оттенки
+- Текст: `gray-900` (light), `white` (dark)
+- Вторичный текст: `gray-600` (light), `gray-400` (dark)
+- Фон: `white` (light), `gray-800` (dark)
+- Границы: `gray-200` (light), `gray-700` (dark)
+
+---
+
+## [TAILWIND-TYPOGRAPHY]
+
+```css
+/* H1 - Заголовок страницы */
+.text-2xl.font-bold
+
+/* H2 - Заголовок секции */
+.text-lg.font-semibold
+
+/* Label */
+.text-sm.font-medium
+
+/* Body text */
+.text-sm
+
+/* Helper text / Hint */
+.text-xs
+
+/* Uppercase labels (таблицы) */
+.text-xs.uppercase.tracking-wider
+```
+
+---
+
+## [TAILWIND-SPACING]
+
+```css
+/* Вертикальные отступы между секциями */
+.mb-6  /* между основными блоками */
+.mb-2  /* между label и input */
+.mt-1  /* после input для ошибок */
+.mt-2  /* после input для подсказок */
+
+/* Горизонтальные отступы */
+.px-6  /* в карточках */
+.px-3  /* в input */
+.px-4  /* в кнопках */
+
+/* Вертикальные отступы */
+.py-4  /* в карточках */
+.py-2  /* в input */
+.py-1.5  /* в кнопках */
+
+/* Промежутки между элементами */
+.space-y-6  /* между секциями формы */
+.space-y-4  /* между полями */
+.gap-2  /* между кнопками */
+.gap-4  /* между элементами */
+```
+
+---
+
+## [TAILWIND-SHADOWS]
+
+```css
+/* Тень карточки */
+.shadow-sm
+
+/* Граница */
+.border.border-gray-200.dark:border-gray-700
+
+/* Скругление */
+.rounded-lg  /* карточки */
+.rounded-md  /* кнопки, input */
+.rounded-full  /* бейджи, иконки */
+```
+
+---
+
+## [TAILWIND-FOCUS]
+
+```css
+/* Input focus */
+.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+
+/* Button focus */
+.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-blue-500
+```
+
+---
+
+## [TAILWIND-RESPONSIVE]
+
+```css
+/* Responsive utilities */
+.max-sm:place-self-center  /* центрирование на мобильных */
+.whitespace-nowrap  /* предотвращение переноса */
+.overflow-x-auto  /* горизонтальная прокрутка */
+```
+
+---
+
+## [TAILWIND-TRANSITIONS]
+
+```css
+/* Плавные переходы */
+.transition-all
+.transition-all.duration-300  /* для прогресс-баров */
+```
+
+---
+
+## [TAILWIND-TOOLBAR]
+
+### Контейнер toolbar
+```css
+.mt-7.flex.items-center.justify-between.gap-4.max-md:flex-wrap
+```
+
+### Левая панель (поиск/массовые действия)
+```css
+.flex.gap-x-1
+```
+
+### Правая панель (фильтры и пагинация)
+```css
+.flex.gap-x-4
+```
+
+---
+
+## [TAILWIND-SEARCH]
+
+### Контейнер поиска
+```css
+.flex.w-full.items-center.gap-x-1
+```
+
+### Поле поиска
+```css
+/* Контейнер поля */
+.flex.max-w-[445px].items-center.max-sm:w-full.max-sm:max-w-full
+
+/* Input поле */
+.block.w-full.rounded-lg.border.bg-white.py-1.5.leading-6.text-gray-600
+.transition-all.hover:border-gray-400.focus:border-gray-400
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400.dark:focus:border-gray-400
+.ltr:pl-3.ltr:pr-10.rtl:pl-10.rtl:pr-3
+
+/* Активное состояние (когда есть значение) */
+.border-blue-600  /* добавляется когда есть значение */
+```
+
+### Иконка поиска
+```css
+.icon-search.pointer-events-none.absolute.top-2.flex.items-center.text-2xl
+.ltr:right-2.5.rtl:left-2.5
+```
+
+### Панель информации (количество результатов)
+```css
+.ltr:pl-2.5.rtl:pr-2.5
+
+/* Текст */
+.text-sm.font-light.text-gray-800.dark:text-white
+```
+
+---
+
+## [TAILWIND-FILTERS]
+
+### Кнопка открытия фильтров
+```css
+.relative.inline-flex.w-full.max-w-max.cursor-pointer.select-none
+.appearance-none.items-center.justify-between.gap-x-1.rounded-md.border
+.bg-white.px-1.py-1.5.text-center.text-gray-600.transition-all.marker:shadow
+.hover:border-gray-400.focus:outline-none.focus:ring-2
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400
+.ltr:pl-3.ltr:pr-5.rtl:pl-5.rtl:pr-3
+
+/* Активное состояние (когда применены фильтры) */
+[&>*]:text-blue-600.border-blue-600.[&>*]:dark:text-white
+```
+
+### Иконка фильтра
+```css
+.icon-filter.text-2xl
+```
+
+### Индикатор активных фильтров (точка)
+```css
+.icon-dot.absolute.right-2.top-1.5.text-sm.font-bold
+```
+
+### Заголовок drawer фильтров
+```css
+.text-xl.font-semibold.text-gray-800.dark:text-white
+```
+
+### Быстрые фильтры (Quick Filters)
+```css
+/* Заголовок секции */
+.text-base.font-semibold.text-gray-800.dark:text-white
+
+/* Элемент быстрого фильтра */
+.flex.cursor-pointer.items-center.justify-between.px-4.py-1.5
+.text-gray-700.hover:bg-gray-50.dark:text-white.dark:hover:bg-gray-950
+
+/* Активный фильтр */
+.bg-gray-50.dark:bg-gray-950.font-semibold
+
+/* Текст элемента */
+.text-xs.font-medium.text-gray-800.dark:text-white
+
+/* Кнопка удаления фильтра */
+.icon-cross.rounded.p-1.5.text-lg.hover:bg-gray-200.dark:hover:bg-gray-800
+```
+
+### Кастомные фильтры (Custom Filters)
+```css
+/* Заголовок колонки фильтра */
+.text-xs.font-medium.text-gray-800.dark:text-white
+
+/* Кнопка "Очистить все" */
+.cursor-pointer.text-xs.font-medium.leading-6.text-blue-600
+.transition-all.hover:underline
+.ltr:ml-20.rtl:mr-20
+
+/* Dropdown для фильтра */
+.inline-flex.w-full.cursor-pointer.appearance-none.items-center
+.justify-between.gap-x-2.rounded-md.border.bg-white.px-2.5.py-1.5
+.text-center.leading-6.text-gray-600.transition-all.marker:shadow
+.hover:border-gray-400.focus:border-gray-400
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400.dark:focus:border-gray-400
+
+/* Placeholder в dropdown */
+.text-sm.text-gray-400.dark:text-gray-400
+
+/* Иконка dropdown */
+.icon-sort-down.text-2xl
+
+/* Input поле в фильтре */
+.block.w-full.rounded-md.border.bg-white.px-2.py-1.5.text-sm.leading-6
+.text-gray-600.transition-all.hover:border-gray-400.focus:border-gray-400
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400.dark:focus:border-gray-400
+
+/* Примененные значения фильтра (теги) */
+.flex.flex-wrap.gap-2
+
+/* Тег значения */
+.flex.items-center.gap-x-1.rounded.bg-blue-100.px-2.py-1.text-xs
+.font-semibold.text-blue-800.dark:bg-blue-900.dark:text-blue-200
+
+/* Кнопка удаления тега */
+.icon-cross.cursor-pointer.text-lg.text-blue-800.dark:text-blue-200
+```
+
+---
+
+## [TAILWIND-PAGINATION]
+
+### Контейнер пагинации
+```css
+.flex.items-center.gap-x-2
+```
+
+### Dropdown "Записей на странице"
+```css
+.inline-flex.w-full.max-w-max.cursor-pointer.appearance-none
+.items-center.justify-between.gap-x-2.rounded-md.border.bg-white
+.px-2.5.py-1.5.text-center.leading-6.text-gray-600.transition-all
+.marker:shadow.hover:border-gray-400.focus:border-gray-400
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400.dark:focus:border-gray-400
+```
+
+### Текст "записей на странице"
+```css
+.whitespace-nowrap.text-gray-600.dark:text-gray-300.max-sm:hidden
+```
+
+### Input для номера страницы
+```css
+.inline-flex.min-h-[38px].max-w-10.appearance-none.items-center
+.justify-center.gap-x-1.rounded-md.border.bg-white.px-3.py-1.5
+.text-center.leading-6.text-gray-600.transition-all.marker:shadow
+.hover:border-gray-400.focus:border-gray-400.focus:outline-none
+.dark:border-gray-800.dark:bg-gray-900.dark:text-gray-300
+.dark:hover:border-gray-400.dark:focus:border-gray-400
+.max-sm:hidden
+```
+
+### Текст "из X страниц"
+```css
+.whitespace-nowrap.text-gray-600.dark:text-gray-300
+```
+
+### Кнопки навигации (предыдущая/следующая)
+```css
+.flex.items-center.gap-1
+
+/* Кнопка */
+.inline-flex.w-full.max-w-max.cursor-pointer.appearance-none
+.items-center.justify-between.gap-x-1.rounded-md.border.border-transparent
+.p-1.5.text-center.text-gray-600.transition-all.marker:shadow
+.hover:bg-gray-200.active:border-gray-300
+.dark:text-gray-300.dark:hover:bg-gray-800
+```
+
+### Иконки навигации
+```css
+.icon-sort-left.rtl:icon-sort-right.text-2xl  /* предыдущая */
+.icon-sort-right.rtl:icon-sort-left.text-2xl    /* следующая */
+```
+
+---
+
+## [TAILWIND-SORTING]
+
+### Заголовок колонки с сортировкой
+```css
+/* Базовый стиль */
+.text-gray-600.dark:text-gray-300
+
+/* Активная сортировка */
+.font-medium.text-gray-800.dark:text-white
+
+/* Кликабельная колонка */
+.cursor-pointer.hover:text-gray-800.dark:hover:text-white
+```
+
+### Разделитель между колонками в заголовке
+```css
+/* Разделитель "/" */
+.after:content-['/'].last:after:content-['']
+```
+
+### Иконка направления сортировки
+```css
+.align-text-bottom.text-base.text-gray-800.dark:text-white
+.ltr:ml-1.5.rtl:mr-1.5
+
+/* Иконка вверх (asc) */
+.icon-down-stat
+
+/* Иконка вниз (desc) */
+.icon-up-stat
+```
+
+### Контейнер заголовков таблицы с сортировкой
+```css
+.row.grid.gap-2.md:grid-cols-[2fr_1fr_1fr].grid-rows-1.items-center
+.border-b.px-4.py-2.5.dark:border-gray-800
+```
+
+---
+
+## [TAILWIND-MASS-ACTIONS]
+
+### Контейнер массовых действий
+```css
+/* Используется когда выбраны элементы */
+/* Отображается вместо поиска */
+```
+
+---
+
+## [TAILWIND-CHECKBOXES]
+
+### Скрытый input
+```css
+.peer.hidden
+```
+
+### Label для чекбокса (иконка)
+```css
+.icon-uncheckbox.cursor-pointer.rounded-md.text-2xl
+.peer-checked:icon-checked.peer-checked:text-blue-600
+
+/* Частичный выбор */
+.peer-checked:icon-checkbox-partial.peer-checked:text-blue-600
+```
+
+---
+
+## [TAILWIND-LOADING]
+
+### Shimmer эффекты
+```css
+/* Используются компоненты shimmer для всех элементов toolbar */
+/* <x-admin::shimmer.datagrid.toolbar /> */
+/* <x-admin::shimmer.datagrid.toolbar.search /> */
+/* <x-admin::shimmer.datagrid.toolbar.filter /> */
+/* <x-admin::shimmer.datagrid.toolbar.pagination /> */
+```
+
+---
+
+## [TAILWIND-EDIT-LAYOUT]
+
+### Контейнер страницы редактирования
+```css
+/* Основной контейнер с левой и правой секциями */
+.mt-3.5.flex.gap-2.5.max-xl:flex-wrap
+```
+
+### Левая секция (основной контент)
+```css
+/* Контейнер левой секции */
+.flex.flex-1.flex-col.gap-2.max-xl:flex-auto
+
+/* Карточка контента */
+.box-shadow.rounded.bg-white.p-4.dark:bg-gray-900
+
+/* Заголовок карточки */
+.mb-4.text-base.font-semibold.text-gray-800.dark:text-white
+
+/* Контент карточки */
+/* Используются стандартные поля форм из [TAILWIND-FORMS] */
+```
+
+### Правая секция (настройки)
+```css
+/* Контейнер правой секции */
+.flex.w-[360px].max-w-full.flex-col.gap-2
+.max-sm:w-full  /* на мобильных полная ширина */
+
+/* Accordion для настроек */
+/* Используется компонент <x-admin::accordion> */
+
+/* Заголовок accordion */
+.p-2.5.text-base.font-semibold.text-gray-800.dark:text-white
+
+/* Контент accordion */
+/* Используются стандартные поля форм из [TAILWIND-FORMS] */
+```
+
+### Элементы настроек в правой секции
+```css
+/* Статус (активность) */
+/* Используется switch компонент */
+
+/* Дата создания (readonly) */
+.w-full.px-3.py-2.border.border-gray-300.dark:border-gray-600.rounded-md
+.bg-gray-100.dark:bg-gray-700.text-gray-500.dark:text-gray-400
+/* disabled атрибут для input */
+
+/* Дата обновления (readonly) */
+/* Аналогично дате создания */
+
+/* Другие метаданные */
+/* Используются стандартные поля форм */
+```
+
+### Структура страницы редактирования
+```html
+<!-- Заголовок страницы -->
+<div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
+    <p class="text-xl font-bold text-gray-800 dark:text-white">
+        Заголовок
+    </p>
+    <div class="flex items-center gap-x-2.5">
+        <!-- Кнопки действий -->
+    </div>
+</div>
+
+<!-- Основной контейнер -->
+<div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
+    <!-- Левая секция -->
+    <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
+        <!-- Карточки с контентом -->
+        <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
+            <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
+                Заголовок секции
+            </p>
+            <!-- Поля формы -->
+        </div>
+    </div>
+
+    <!-- Правая секция -->
+    <div class="flex w-[360px] max-w-full flex-col gap-2 max-sm:w-full">
+        <!-- Accordion с настройками -->
+        <x-admin::accordion>
+            <x-slot:header>
+                <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">
+                    Настройки
+                </p>
+            </x-slot:header>
+            <x-slot:content>
+                <!-- Поля настроек -->
+            </x-slot:content>
+        </x-admin::accordion>
+    </div>
+</div>
+```
+
+---
+
+## [TAILWIND-MODAL]
+
+### Overlay (фон модального окна)
+```css
+.hidden.fixed.inset-0.bg-gray-600.bg-opacity-50.overflow-y-auto.h-full.w-full.z-[10001]
+```
+
+### Контейнер модального окна
+```css
+/* Базовый контейнер */
+.relative.top-10.mx-auto.p-5.border.w-11/12.shadow-lg.rounded-md
+.bg-white.dark:bg-gray-800.max-h-[90vh].overflow-y-auto
+
+/* Адаптивные размеры */
+.md:w-4/5.lg:w-3/4.xl:w-2/3  /* для больших модальных окон */
+/* или */
+.md:w-3/4.lg:w-2/3  /* для средних модальных окон */
+```
+
+### Заголовок модального окна
+```css
+/* Контейнер заголовка */
+.flex.items-center.justify-between.mb-4
+
+/* Заголовок (H3) */
+.text-lg.font-medium.text-gray-900.dark:text-white
+
+/* Кнопка закрытия */
+.text-gray-400.hover:text-gray-600.dark:hover:text-gray-300
+
+/* Иконка закрытия */
+.icon-cross.text-2xl
+```
+
+### Контент модального окна
+```css
+/* Контейнер контента */
+.mt-3
+
+/* Форма внутри модального окна */
+.space-y-4  /* для полей формы */
+```
+
+### Футер модального окна (кнопки действий)
+```css
+/* Контейнер футера */
+.flex.justify-end.gap-x-2.pt-4.mt-6
+
+/* Или с разделителем сверху */
+.flex.justify-end.gap-x-2.pt-4.mt-6.border-t.border-gray-200.dark:border-gray-700
+```
+
+### Условия фильтра (вложенные карточки)
+```css
+/* Контейнер условия */
+.border.border-gray-200.dark:border-gray-700.rounded-lg.p-4
+.bg-gray-50.dark:bg-gray-900
+
+/* Заголовок условия */
+.flex.items-center.justify-between.mb-3
+
+/* Текст заголовка условия */
+.text-sm.font-medium.text-gray-700.dark:text-gray-300
+
+/* Кнопка удаления условия */
+.text-red-600.hover:text-red-800.dark:text-red-400.text-sm
+```
+
+### Индикатор загрузки в модальном окне
+```css
+/* Контейнер загрузки */
+.hidden.text-center.py-8
+
+/* Спиннер */
+.inline-block.animate-spin.rounded-full.h-8.w-8.border-b-2.border-indigo-600
+
+/* Текст загрузки */
+.mt-2.text-sm.text-gray-600.dark:text-gray-400
+```
+
+### Информационный блок в модальном окне
+```css
+/* Информационный блок */
+.text-sm.text-gray-600.dark:text-gray-400.mb-4.p-3
+.bg-blue-50.dark:bg-blue-900.rounded
+
+/* Заголовок информационного блока */
+.font-medium
+```
+
+### Счетчик контактов в модальном окне
+```css
+/* Контейнер счетчика */
+.mt-4.pt-4.border-t.border-gray-200.dark:border-gray-700
+
+/* Контейнер значения */
+.flex.items-center.justify-start.gap-1
+
+/* Текст метки */
+.text-sm.font-medium.text-gray-700.dark:text-gray-300
+
+/* Значение счетчика */
+.text-sm.font-semibold.text-red-600.dark:text-red-500
+
+/* Индикатор загрузки счетчика */
+.hidden.text-sm.text-gray-500.dark:text-gray-400
+
+/* Иконка загрузки */
+.icon-loader.animate-spin
+
+/* Разбивка по каналам */
+.hidden.mt-3.space-y-2
+
+/* Элемент канала */
+.flex.items-center.justify-start.gap-1.text-xs
+
+/* Метка канала */
+.text-gray-600.dark:text-gray-400
+
+/* Значение канала */
+.font-semibold.text-gray-700.dark:text-gray-300
+
+/* Сообщение об ошибке */
+.hidden.mt-1.text-xs.text-red-600.dark:text-red-400
+```
+
+---
+
+## [TAILWIND-CHECKLIST]
+
+### Базовая страница
+- [ ] Заголовок страницы с `.text-2xl.font-bold`
+- [ ] Кнопки действий используют `.primary-button` или стандартные классы
+- [ ] Карточки с `.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.border`
+- [ ] Формы с `.space-y-6` и правильными label/input классами
+- [ ] Таблицы с правильными классами для thead/tbody/th/td
+- [ ] Бейджи используют `.rounded-full` и цветовые классы
+- [ ] Все элементы поддерживают dark mode (`dark:` префиксы)
+- [ ] Сообщения об ошибках с `.text-red-600.dark:text-red-400`
+- [ ] Подсказки с `.text-xs.text-gray-500.dark:text-gray-400`
+- [ ] Адаптивная сетка для форм (`grid-cols-1.md:grid-cols-2`)
+- [ ] Правильные отступы (`mb-6`, `px-6`, `py-4`)
+- [ ] Состояния фокуса для всех интерактивных элементов
+
+### Страница с datagrid
+- [ ] Toolbar с правильной структурой (левая/правая панель)
+- [ ] Поле поиска с иконкой и активным состоянием
+- [ ] Кнопка фильтров с индикатором активных фильтров
+- [ ] Drawer фильтров с быстрыми и кастомными фильтрами
+- [ ] Пагинация с dropdown для записей на странице
+- [ ] Кнопки навигации по страницам
+- [ ] Сортировка в заголовках таблицы с иконками направления
+- [ ] Чекбоксы для массовых действий
+- [ ] Адаптивность для мобильных устройств
+- [ ] Состояния загрузки (shimmer)
+- [ ] Поддержка dark mode для всех элементов
+- [ ] Правильные отступы и промежутки
+
+---
+
+## ВАЖНЫЕ ЗАМЕЧАНИЯ
+
+1. **Всегда используйте dark mode** - каждый элемент должен иметь соответствующие `dark:` классы
+2. **Консистентность отступов** - следуйте установленным паттернам (`mb-6`, `px-6`, `py-4`)
+3. **Адаптивность** - используйте `max-sm:`, `max-md:` для мобильных устройств
+4. **Цветовая палитра** - придерживайтесь установленных цветов
+5. **Типографика** - используйте правильные размеры шрифтов для разных элементов
+6. **Состояния** - всегда добавляйте hover, focus, active состояния
+7. **Иконки** - используйте классы иконок из системы (например, `icon-search`, `icon-filter`)
+
+---

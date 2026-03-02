@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Settings\ChannelController;
 use Webkul\Admin\Http\Controllers\Settings\CurrencyController;
 use Webkul\Admin\Http\Controllers\Settings\DataTransfer\ImportController;
-use Webkul\Admin\Http\Controllers\Settings\DeliveryCityController;
 use Webkul\Admin\Http\Controllers\Settings\ExchangeRateController;
 use Webkul\Admin\Http\Controllers\Settings\InventorySourceController;
 use Webkul\Admin\Http\Controllers\Settings\LocaleController;
@@ -13,6 +12,7 @@ use Webkul\Admin\Http\Controllers\Settings\Tax\TaxCategoryController;
 use Webkul\Admin\Http\Controllers\Settings\Tax\TaxRateController;
 use Webkul\Admin\Http\Controllers\Settings\ThemeController;
 use Webkul\Admin\Http\Controllers\Settings\UserController;
+use Webkul\DeliveryZones\Http\Controllers\Admin\DeliveryCityController;
 use Webkul\DeliveryZones\Http\Controllers\Admin\DeliveryZoneController;
 
 /**
@@ -108,6 +108,8 @@ Route::prefix('settings')->group(function () {
         Route::get('create', 'create')->name('admin.settings.delivery_cities.create');
 
         Route::post('create', 'store')->name('admin.settings.delivery_cities.store');
+
+        Route::get('{id}/zones', 'zones')->name('admin.settings.delivery_cities.zones');
 
         Route::get('edit/{id}', 'edit')->name('admin.settings.delivery_cities.edit');
 

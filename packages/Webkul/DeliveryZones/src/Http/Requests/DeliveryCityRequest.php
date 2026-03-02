@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\Admin\Http\Requests;
+namespace Webkul\DeliveryZones\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -19,8 +19,10 @@ class DeliveryCityRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('id');
+
         return [
-            'code' => ['required', 'alpha_dash', 'max:255', 'unique:delivery_cities,code,'.$this->id],
+            'code' => ['required', 'alpha_dash', 'max:255', 'unique:delivery_cities,code,'.$id],
             'name' => ['required', 'string', 'max:255'],
             'country' => ['required', 'string', 'max:2'],
             'state' => ['nullable', 'string', 'max:255'],

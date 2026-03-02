@@ -7,28 +7,54 @@ alwaysApply: false
 
 Keep zone-based delivery behavior predictable across Shipping, Checkout, Shop API, and Admin settings.
 
+# Architecture
+
+| Layer | Package | Responsibility |
+|-------|---------|----------------|
+| Models, services, admin CRUD | `Webkul\DeliveryZones` | DeliveryCity, DeliveryZone, DeliveryZoneRate; ZoneSelector, CartDeliveryZoneManager, DeliveryZoneRateResolver; controllers, datagrids, form requests, views |
+| Carrier, config, model proxies | `Webkul\Shipping` | DeliveryZones carrier; ZoneSelector proxy extending base; model proxies for cart/resource |
+| Cart fields | `Webkul\Checkout` | `delivery_zone_id`, `delivery_zone_mode`, `delivery_point_lat`, `delivery_point_lng` |
+| API integration | `Webkul\Shop` | CartController, OnepageController use CartDeliveryZoneManager |
+
 # Rules
 
 - Keep carrier and method identifiers stable: `carrier=delivery_zones`, `method=delivery_zones_delivery_zones`, `config path=sales.carriers.delivery_zones`.
-- Preserve zone resolution flow: cart context -> `ZoneSelector` -> zone rate selection by `min_order_total` and `sort_order`.
-- Do not bypass delivery mode logic (`manual` / `auto`) when updating cart address, delivery zone, or coordinates.
-- Keep delivery zone pricing in shipping domain (`packages/Webkul/Shipping`) and avoid controller-level pricing logic.
-- Keep Admin CRUD, validation requests, and datagrids aligned with delivery city/zone models.
+- Preserve zone resolution flow: cart context -> `ZoneSelector` -> zone by mode; then `DeliveryZoneRateResolver` -> rate by `min_order_total` and `sort_order`.
+- ZoneSelector logic:
+  - **Manual mode**: `delivery_zone_mode === 'manual'` and `delivery_zone_id` -> load zone by id, check `is_active` and inventory source compatibility.
+  - **Auto mode**: `delivery_point_lat`/`delivery_point_lng` + `shipping_address->city` -> match zones by city (case-insensitive), filter by inventory sources, point-in-polygon on `polygon_json`.
+- Rate selection: `min_order_total <= cart->sub_total`, ordered by `min_order_total DESC`, then `sort_order DESC` (highest applicable rate).
+- Do not bypass delivery mode logic when updating cart address, delivery zone, or coordinates. Use `CartDeliveryZoneManager::applySelection` in Shop API.
+- Keep delivery zone pricing in shipping domain: carrier uses `DeliveryZoneRateResolver`; avoid controller-level pricing logic.
+- Admin CRUD lives in `packages/Webkul/DeliveryZones`; validation via Form Requests; views in `Resources/views/settings/delivery-cities/` and `delivery-zones/`.
+- Admin routes: `admin.settings.delivery_cities.*`, `admin.settings.delivery_zones.*`; cities have `delivery_cities.zones` for zone management per city.
 - Any behavior change must include tests for checkout shipping-rate resolution and admin management scenarios.
+
+# Key Classes
+
+- `Webkul\DeliveryZones\Services\ZoneSelector` — base; `Webkul\Shipping\Services\ZoneSelector` extends it.
+- `Webkul\DeliveryZones\Services\CartDeliveryZoneManager` — mode resolution, `applySelection`.
+- `Webkul\DeliveryZones\Services\DeliveryZoneRateResolver` — `resolveRate`, `resolveRateForZone`.
+- Models: `DeliveryCity`, `DeliveryZone`, `DeliveryZoneRate`; pivot `delivery_zone_inventory_sources`.
 
 # Good Examples
 
 ```text
 Need to refine zone selection:
-- Update ZoneSelector and related service logic.
+- Update ZoneSelector in DeliveryZones package.
 - Keep method id delivery_zones_delivery_zones.
 - Add feature tests for matching and non-matching zones.
 ```
 
 ```text
 Need to add field validation for delivery zones:
-- Implement in Form Requests used by Admin or Shop API.
+- Implement in DeliveryCityRequest or DeliveryZoneRequest.
 - Keep controllers thin and preserve existing flow.
+```
+
+```text
+Need to change rate selection logic:
+- Update DeliveryZoneRateResolver, not the carrier or controllers.
 ```
 
 # Bad Examples
@@ -41,10 +67,21 @@ Computing delivery zone price directly in API controllers.
 Changing manual/auto behavior in one endpoint but not updating cart model/resource/tests.
 ```
 
+```text
+Placing delivery zone CRUD in Admin package; it belongs to DeliveryZones package.
+```
+
+# Tests
+
+- **Admin**: `packages/Webkul/Admin/tests/Feature/Settings/DeliveryZonesTest.php` — city/zone CRUD, zones page, datagrid, form bindings.
+- **Checkout**: `packages/Webkul/Shop/tests/Feature/Checkout/DeliveryZonesCheckoutTest.php` — auto mode (coordinates), manual mode (delivery_zone_id), CartDeliveryZoneManager.
+- Use `enableDeliveryZonesCarrier()` helper where carrier must be active. Admin tests use `Webkul\Shipping\Models\DeliveryCity` / `DeliveryZone` (proxies).
+
 # Checklist
 
 - Are `delivery_zones` and `delivery_zones_delivery_zones` unchanged?
 - Does zone resolution still rely on ZoneSelector and cart context?
+- Does rate selection use DeliveryZoneRateResolver with min_order_total and sort_order?
 - Are manual/auto delivery mode paths consistent across Checkout and Shop API?
-- Are Admin zone/city CRUD validations still aligned with models?
+- Are Admin zone/city CRUD and views in DeliveryZones package?
 - Are checkout and admin tests updated for changed zone behavior?

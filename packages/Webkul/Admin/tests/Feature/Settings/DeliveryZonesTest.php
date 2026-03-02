@@ -7,6 +7,7 @@ use Webkul\Shipping\Models\DeliveryZone;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 it('should render delivery city and zone index pages', function () {
     $this->loginAsAdmin();
@@ -99,6 +100,150 @@ it('should render selected inactive city on delivery zone edit page', function (
         ->assertSeeText('Nizhny Novgorod')
         ->assertSee('name="city_id"', false)
         ->assertSee('value="'.$city->id.'"', false);
+});
+
+it('should render city zones management page with city zones map', function () {
+    $this->loginAsAdmin();
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'city-zones-page',
+        'name' => 'City Zones Page',
+        'country' => 'RU',
+        'state' => 'MSK',
+        'center_lat' => 55.7512440,
+        'center_lng' => 37.6184230,
+        'polygon_json' => [
+            [55.7800, 37.5600],
+            [55.7800, 37.6800],
+            [55.7000, 37.6800],
+            [55.7000, 37.5600],
+        ],
+        'is_active' => true,
+    ]);
+
+    DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'city-zones-page-main',
+        'name' => 'Main Zone',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.6500],
+            [55.7200, 37.6500],
+            [55.7200, 37.6000],
+        ],
+        'polygon_color' => '#0077cc',
+        'polygon_fill_opacity' => 0.2,
+        'polygon_stroke_opacity' => 1,
+        'is_active' => true,
+    ]);
+
+    $response = get(route('admin.settings.delivery_cities.zones', $city->id));
+    $response->assertOk();
+    $response->assertSee('Main Zone');
+    expect(str_contains($response->getContent(), 'Manage Delivery Zones')
+        || str_contains($response->getContent(), 'Управление зонами доставки'))->toBeTrue();
+    $response->assertSee('id="city-zones-map"', false);
+    $response->assertSee('id="add-zone-button"', false);
+    $response->assertSee("map.behaviors.disable('dblClickZoom');", false);
+    $response->assertSee("map.events.add('dblclick', (event) => {", false);
+    $response->assertSee('data-zone-item=', false);
+});
+
+it('should show manage zones link on delivery city edit page', function () {
+    $this->loginAsAdmin();
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'city-edit-manage-zones-link',
+        'name' => 'Manage Zones Link',
+        'country' => 'RU',
+        'state' => 'MSK',
+        'is_active' => true,
+    ]);
+
+    get(route('admin.settings.delivery_cities.edit', $city->id))
+        ->assertOk()
+        ->assertSee(route('admin.settings.delivery_cities.zones', $city->id), false)
+        ->assertSeeText('Manage Zones');
+});
+
+it('should include manage zones route in delivery cities datagrid actions', function () {
+    $this->loginAsAdmin();
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'city-datagrid-zones-action',
+        'name' => 'Datagrid Action City',
+        'country' => 'RU',
+        'state' => 'MSK',
+        'is_active' => true,
+    ]);
+
+    $response = get(route('admin.settings.delivery_cities.index'), [
+        'X-Requested-With' => 'XMLHttpRequest',
+    ])
+        ->assertOk()
+        ->assertSeeText('Manage Zones');
+
+    expect($response->getContent())->toContain(str_replace('/', '\\/', route('admin.settings.delivery_cities.zones', $city->id)));
+});
+
+it('should redirect back to city zones page after create and update when redirect city is provided', function () {
+    $this->loginAsAdmin();
+
+    $inventorySource = InventorySource::factory()->create();
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'city-zones-redirect',
+        'name' => 'City Redirect',
+        'country' => 'RU',
+        'state' => 'MSK',
+        'is_active' => true,
+    ]);
+
+    postJson(route('admin.settings.delivery_zones.store'), [
+        'city_id' => $city->id,
+        'redirect_city_id' => $city->id,
+        'code' => 'city-zones-redirect-main',
+        'name' => 'Redirect Main Zone',
+        'polygon_color' => '#0077cc',
+        'polygon_fill_opacity' => 0.25,
+        'polygon_stroke_opacity' => 1,
+        'polygon_json' => json_encode([
+            [55.7600, 37.6000],
+            [55.7600, 37.6500],
+            [55.7200, 37.6500],
+            [55.7200, 37.6000],
+        ]),
+        'delivery_time_minutes' => 45,
+        'is_active' => 1,
+        'inventory_source_ids' => $inventorySource->id,
+        'rates' => [
+            ['min_order_total' => 0, 'price' => 250, 'sort_order' => 0],
+        ],
+    ])->assertRedirect(route('admin.settings.delivery_cities.zones', $city->id));
+
+    $zone = DeliveryZone::query()->where('code', 'city-zones-redirect-main')->latest('id')->firstOrFail();
+
+    putJson(route('admin.settings.delivery_zones.update', $zone->id), [
+        'city_id' => $city->id,
+        'redirect_city_id' => $city->id,
+        'code' => 'city-zones-redirect-main',
+        'name' => 'Redirect Main Zone Updated',
+        'polygon_color' => '#ff6600',
+        'polygon_fill_opacity' => 0.3,
+        'polygon_stroke_opacity' => 1,
+        'polygon_json' => json_encode([
+            [55.7600, 37.6000],
+            [55.7600, 37.6600],
+            [55.7200, 37.6600],
+            [55.7200, 37.6000],
+        ]),
+        'delivery_time_minutes' => 50,
+        'is_active' => 1,
+        'inventory_source_ids' => $inventorySource->id,
+        'rates' => [
+            ['min_order_total' => 0, 'price' => 300, 'sort_order' => 0],
+        ],
+    ])->assertRedirect(route('admin.settings.delivery_cities.zones', $city->id));
 });
 
 it('should bind selected city and inventory source values on delivery zone edit page', function () {
