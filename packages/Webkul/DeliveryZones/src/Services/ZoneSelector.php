@@ -22,6 +22,7 @@ class ZoneSelector
             && $cart->delivery_zone_id
         ) {
             $manualZone = DeliveryZone::query()
+                ->with('inventory_sources')
                 ->where('id', $cart->delivery_zone_id)
                 ->where('is_active', true)
                 ->whereHas('inventory_sources', function ($query) use ($sourceIds) {
@@ -48,7 +49,7 @@ class ZoneSelector
         }
 
         $zones = DeliveryZone::query()
-            ->with('city')
+            ->with(['city', 'inventory_sources'])
             ->where('is_active', true)
             ->whereHas('city', function ($query) use ($cityName) {
                 $query->whereRaw('LOWER(name) = ?', [mb_strtolower($cityName)]);
@@ -60,6 +61,58 @@ class ZoneSelector
 
         foreach ($zones as $zone) {
             if ($this->pointInPolygon((float) $cart->delivery_point_lat, (float) $cart->delivery_point_lng, $zone->polygon_json ?? [])) {
+                return $zone;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve zone by selection params (for use without cart, e.g. map click).
+     */
+    public function resolveZoneBySelection(
+        ?int $deliveryZoneId = null,
+        ?float $deliveryPointLat = null,
+        ?float $deliveryPointLng = null,
+        ?string $city = null
+    ): ?DeliveryZone {
+        $channel = core()->getCurrentChannel();
+        $sourceIds = $channel->inventory_sources->pluck('id')->all();
+
+        if (empty($sourceIds)) {
+            return null;
+        }
+
+        if ($deliveryZoneId) {
+            return DeliveryZone::query()
+                ->with('inventory_sources')
+                ->where('id', $deliveryZoneId)
+                ->where('is_active', true)
+                ->whereHas('inventory_sources', function ($query) use ($sourceIds) {
+                    $query->whereIn('inventory_sources.id', $sourceIds);
+                })
+                ->first();
+        }
+
+        if ($deliveryPointLat === null || $deliveryPointLng === null || trim((string) $city) === '') {
+            return null;
+        }
+
+        $cityName = trim($city);
+        $zones = DeliveryZone::query()
+            ->with(['city', 'inventory_sources'])
+            ->where('is_active', true)
+            ->whereHas('city', function ($query) use ($cityName) {
+                $query->whereRaw('LOWER(name) = ?', [mb_strtolower($cityName)]);
+            })
+            ->whereHas('inventory_sources', function ($query) use ($sourceIds) {
+                $query->whereIn('inventory_sources.id', $sourceIds);
+            })
+            ->get();
+
+        foreach ($zones as $zone) {
+            if ($this->pointInPolygon((float) $deliveryPointLat, (float) $deliveryPointLng, $zone->polygon_json ?? [])) {
                 return $zone;
             }
         }

@@ -104,6 +104,22 @@
                     <x-shop::form.control-group.error name="state" />
                 </x-shop::form.control-group>
 
+                <!-- City -->
+                <x-shop::form.control-group>
+                    <x-shop::form.control-group.label>
+                        @lang('shop::app.checkout.cart.summary.estimate-shipping.city')
+                    </x-shop::form.control-group.label>
+
+                    <x-shop::form.control-group.control
+                        type="text"
+                        name="city"
+                        :label="trans('shop::app.checkout.cart.summary.estimate-shipping.city')"
+                        :placeholder="trans('shop::app.checkout.cart.summary.estimate-shipping.city')"
+                    />
+
+                    <x-shop::form.control-group.error control-name="city" />
+                </x-shop::form.control-group>
+
                 <!-- Postcode -->
                 <x-shop::form.control-group class="!mb-0">
                     <x-shop::form.control-group.label class="{{ core()->isPostCodeRequired() ? 'required' : '' }}">
@@ -120,6 +136,14 @@
 
                     <x-shop::form.control-group.error control-name="postcode" />
                 </x-shop::form.control-group>
+
+                <a
+                    href="{{ route('shop.delivery_zones.index') }}"
+                    class="mt-2 inline-block text-sm text-blue-600 hover:underline dark:text-blue-400"
+                    target="_blank"
+                >
+                    @lang('shop::app.delivery-zones.map-link')
+                </a>
 
                 <!-- Estimated Shipping Methods -->
                 <div

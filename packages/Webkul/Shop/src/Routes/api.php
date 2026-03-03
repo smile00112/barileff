@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Webkul\DeliveryZones\Http\Controllers\Shop\DeliveryZonesController;
 use Webkul\Shop\Http\Controllers\API\AddressController;
 use Webkul\Shop\Http\Controllers\API\CartController;
 use Webkul\Shop\Http\Controllers\API\CategoryController;
@@ -13,6 +14,10 @@ use Webkul\Shop\Http\Controllers\API\ReviewController;
 use Webkul\Shop\Http\Controllers\API\WishlistController;
 
 Route::group(['prefix' => 'api'], function () {
+    Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
+        Route::get('', 'index')->name('shop.api.delivery_zones.index');
+        Route::post('select', 'select')->name('shop.api.delivery_zones.select');
+    });
     Route::controller(CoreController::class)->prefix('core')->group(function () {
         Route::get('countries', 'getCountries')->name('shop.api.core.countries');
 

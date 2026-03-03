@@ -184,3 +184,55 @@ it('should resolve delivery zone mode consistently through service', function ()
         ->and($manager->resolveMode(55.73, 37.65, null))->toBe('auto')
         ->and($manager->resolveMode(null, null, null))->toBeNull();
 });
+
+it('should set inventory_source_id when zone is resolved via estimate shipping', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create();
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-inv',
+        'name' => 'Moscow',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'zone-inv',
+        'name' => 'Zone With Inventory',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.7000],
+            [55.7000, 37.7000],
+            [55.7000, 37.6000],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 0, 'price' => 100, 'sort_order' => 0]);
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'sub_total' => 500,
+        'base_sub_total' => 500,
+    ]);
+
+    cart()->setCart($cart);
+
+    postJson(route('shop.api.checkout.cart.estimate_shipping'), [
+        'country' => 'RU',
+        'state' => 'MOW',
+        'city' => 'Moscow',
+        'postcode' => '101000',
+        'delivery_zone_id' => $zone->id,
+    ])->assertOk();
+
+    $cart->refresh();
+
+    expect($cart->inventory_source_id)->toBe($inventorySource->id)
+        ->and((int) session('selected_inventory_source_id'))->toBe($inventorySource->id);
+});

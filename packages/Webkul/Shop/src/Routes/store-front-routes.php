@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Shop\Http\Controllers\BookingProductController;
 use Webkul\Shop\Http\Controllers\CompareController;
+use Webkul\Shop\Http\Controllers\DeliveryZonesController;
 use Webkul\Shop\Http\Controllers\HomeController;
 use Webkul\Shop\Http\Controllers\PageController;
 use Webkul\Shop\Http\Controllers\ProductController;
@@ -33,6 +34,10 @@ Route::get('/', [HomeController::class, 'index'])
 
 Route::get('contact-us', [HomeController::class, 'contactUs'])
     ->name('shop.home.contact_us')
+    ->middleware('cache.response');
+
+Route::get('delivery-zones', [DeliveryZonesController::class, 'index'])
+    ->name('shop.delivery_zones.index')
     ->middleware('cache.response');
 
 Route::post('contact-us/send-mail', [HomeController::class, 'sendContactUsMail'])

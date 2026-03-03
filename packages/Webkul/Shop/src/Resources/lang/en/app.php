@@ -910,6 +910,13 @@ return [
         'title' => 'Product Compare',
     ],
 
+    'delivery-zones' => [
+        'zone-not-found' => 'Delivery zone not found for the selected address.',
+        'page-title' => 'Delivery Zones',
+        'select-zone' => 'Select your delivery zone',
+        'map-link' => 'View delivery zones on map',
+    ],
+
     'checkout' => [
         'success' => [
             'info' => 'We will email you, your order details and tracking information',
@@ -992,6 +999,7 @@ return [
                 'tax' => 'Tax',
 
                 'estimate-shipping' => [
+                    'city' => 'City',
                     'country' => 'Country',
                     'info' => 'Enter your destination to get a shipping and tax estimate.',
                     'postcode' => 'Zip/Postcode',

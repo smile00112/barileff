@@ -278,6 +278,28 @@ class ProductRepository extends Repository
                     ->where('product_channels.channel_id', explode(',', $params['channel_id']));
             }
 
+            if (! empty($params['inventory_source_id'])) {
+                $sourceId = (int) $params['inventory_source_id'];
+                $qb->where(function ($q) use ($sourceId, $prefix) {
+                    $q->whereIn('products.type', ['virtual', 'downloadable'])
+                        ->orWhereExists(function ($sub) use ($sourceId, $prefix) {
+                            $sub->select(DB::raw(1))
+                                ->from('product_inventories as pi_filter')
+                                ->whereColumn('pi_filter.product_id', $prefix.'products.id')
+                                ->where('pi_filter.inventory_source_id', $sourceId)
+                                ->where('pi_filter.qty', '>', 0);
+                        })
+                        ->orWhereExists(function ($sub) use ($sourceId, $prefix) {
+                            $sub->select(DB::raw(1))
+                                ->from('product_inventories as pi_var')
+                                ->join('products as p_var', 'pi_var.product_id', '=', 'p_var.id')
+                                ->whereColumn('p_var.parent_id', $prefix.'products.id')
+                                ->where('pi_var.inventory_source_id', $sourceId)
+                                ->where('pi_var.qty', '>', 0);
+                        });
+                });
+            }
+
             if (! empty($params['type'])) {
                 $qb->where('products.type', $params['type']);
 

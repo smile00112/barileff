@@ -54,6 +54,7 @@ class ProductController extends APIController
                 'channel_id' => core()->getCurrentChannel()->id,
                 'status' => 1,
                 'visible_individually' => 1,
+                'inventory_source_id' => getCurrentInventorySourceId(),
             ]));
 
         if (! empty($query)) {
