@@ -887,6 +887,8 @@ class Cart
         $this->cart->grand_total = $this->cart->sub_total + $this->cart->tax_total - $this->cart->discount_amount;
         $this->cart->base_grand_total = $this->cart->base_sub_total + $this->cart->base_tax_total - $this->cart->base_discount_amount;
 
+        Event::dispatch('checkout.cart.collect.totals.before.shipping', $this->cart);
+
         if ($shipping = $this->cart->selected_shipping_rate) {
             $this->cart->tax_total += $shipping->tax_amount;
             $this->cart->base_tax_total += $shipping->base_tax_amount;

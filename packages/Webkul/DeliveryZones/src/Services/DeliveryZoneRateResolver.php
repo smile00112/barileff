@@ -21,8 +21,10 @@ class DeliveryZoneRateResolver
 
     public function resolveRateForZone(CartContract $cart, DeliveryZone $zone): ?DeliveryZoneRate
     {
+        $subTotal = $cart->sub_total ?? 0;
+
         return $zone->rates()
-            ->where('min_order_total', '<=', $cart->sub_total)
+            ->where('min_order_total', '<=', $subTotal)
             ->orderByDesc('min_order_total')
             ->orderByDesc('sort_order')
             ->first();

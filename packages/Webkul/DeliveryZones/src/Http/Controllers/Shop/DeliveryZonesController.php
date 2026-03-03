@@ -9,6 +9,8 @@ use Webkul\Checkout\Models\CartAddress;
 use Webkul\DeliveryZones\Models\DeliveryCity;
 use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\DeliveryZones\Services\ZoneSelector;
+use Webkul\Shipping\Facades\Shipping;
+use Webkul\Shop\Http\Resources\CartResource;
 
 /**
  * Public API for delivery zones map on storefront.
@@ -29,7 +31,7 @@ class DeliveryZonesController
 
         $cities = DeliveryCity::query()
             ->with(['zones' => function ($query) use ($sourceIds) {
-                $query->with('inventory_sources')
+                $query->with(['inventory_sources', 'rates'])
                     ->where('is_active', true)
                     ->whereHas('inventory_sources', function ($q) use ($sourceIds) {
                         $q->whereIn('inventory_sources.id', $sourceIds);
@@ -58,6 +60,17 @@ class DeliveryZonesController
                         'polygon_json' => $zone->polygon_json ?? [],
                         'polygon_color' => (string) ($zone->polygon_color ?? '#0077cc'),
                         'inventory_source_id' => (int) $zone->inventory_sources->first()?->id,
+                        'rates' => $zone->rates()
+                            ->orderByDesc('min_order_total')
+                            ->orderByDesc('sort_order')
+                            ->get()
+                            ->map(fn ($rate) => [
+                                'min_order_total' => (float) $rate->min_order_total,
+                                'price' => (float) $rate->price,
+                                'sort_order' => (int) $rate->sort_order,
+                            ])
+                            ->values()
+                            ->all(),
                     ];
                 })->values()->all(),
             ];
@@ -76,6 +89,7 @@ class DeliveryZonesController
             'delivery_point_lat' => 'nullable|numeric|between:-90,90',
             'delivery_point_lng' => 'nullable|numeric|between:-180,180',
             'city' => 'nullable|string|max:255',
+            'shipping_method' => 'nullable|string|in:delivery_zones_delivery_zones',
         ]);
 
         $zoneId = ! empty($validated['delivery_zone_id']) ? (int) $validated['delivery_zone_id'] : null;
@@ -122,7 +136,34 @@ class DeliveryZonesController
                 $lng,
                 $zoneId ?? $zone->id
             );
+
+            Cart::collectTotals();
+
+            $shippingMethod = $validated['shipping_method'] ?? null;
+            if ($shippingMethod === 'delivery_zones_delivery_zones') {
+                Cart::saveShippingMethod($shippingMethod);
+            }
+
+            $shippingMethods = [];
+            if ($cart->haveStockableItems() && $cart->shipping_address) {
+                $rates = Shipping::collectRates();
+                $shippingMethods = array_values($rates['shippingMethods'] ?? []);
+            }
+            Cart::collectTotals();
+
             $cart->refresh();
+
+            return new JsonResource([
+                'data' => [
+                    'inventory_source_id' => $inventorySourceId,
+                    'zone' => [
+                        'id' => $zone->id,
+                        'name' => $zone->name,
+                    ],
+                    'cart' => new CartResource($cart),
+                    'shipping_methods' => $shippingMethods,
+                ],
+            ]);
         }
 
         return new JsonResource([
