@@ -25,6 +25,21 @@ class ProductResource extends JsonResource
             'inventories' => $this->inventories,
             'is_options_required' => ! $this->getTypeInstance()->canBeAddedToCartWithoutOptions(),
             'is_saleable' => $this->getTypeInstance()->isSaleable(),
+            'supplier' => $this->whenLoaded('supplier', fn () => $this->supplier ? [
+                'id' => $this->supplier->id,
+                'name' => $this->supplier->name,
+                'contact_name' => $this->supplier->contact_name,
+                'contact_email' => $this->supplier->contact_email,
+                'contact_phone' => $this->supplier->contact_phone,
+                'address' => $this->supplier->address,
+                'notes' => $this->supplier->notes,
+                'status' => $this->supplier->status,
+            ] : null),
+            'tags' => $this->whenLoaded('tags', fn () => $this->tags->map(fn ($tag) => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'locale' => $tag->locale,
+            ])->all()),
             ...$this->getExposedApiAttributes(),
         ];
     }

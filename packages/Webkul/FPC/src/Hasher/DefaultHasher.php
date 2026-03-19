@@ -12,6 +12,15 @@ class DefaultHasher extends BaseDefaultHasher
      */
     protected function getNormalizedRequestUri(Request $request): string
     {
+        if (str_starts_with($request->getPathInfo(), '/api/')) {
+            $params = $request->query();
+            ksort($params);
+
+            $queryString = $params ? '?'.http_build_query($params) : '';
+
+            return $request->getBaseUrl().$request->getPathInfo().$queryString;
+        }
+
         if (
             $request->routeIs('shop.search.index')
             && $request->has('query')

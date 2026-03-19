@@ -2,10 +2,12 @@
 
 namespace Webkul\FPC\Listeners;
 
-use Spatie\ResponseCache\Facades\ResponseCache;
+use Webkul\FPC\Concerns\ClearsApiCache;
 
 class Channel
 {
+    use ClearsApiCache;
+
     /**
      * After channel update.
      *
@@ -14,6 +16,6 @@ class Channel
      */
     public function afterUpdate($channel)
     {
-        ResponseCache::clear();
+        $this->clearApiCacheAndWarm();
     }
 }

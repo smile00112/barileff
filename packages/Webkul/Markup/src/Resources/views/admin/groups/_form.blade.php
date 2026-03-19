@@ -125,6 +125,30 @@
     </x-admin::form.control-group>
 </div>
 
+@php
+    $schedulesJson = isset($group) && $group->schedules
+        ? $group->schedules->toArray()
+        : [];
+
+    $conditionsJson = [];
+
+    if (isset($group) && $group->conditions) {
+        foreach ($group->conditions as $c) {
+            $conditionsJson[] = [
+                'cost_from'        => $c->cost_from,
+                'cost_to'          => $c->cost_to,
+                'adjustment_type'  => $c->adjustment_type,
+                'adjustment_value' => $c->adjustment_value,
+                'sort_order'       => $c->sort_order,
+                'categories'       => $c->categories->pluck('id')->toArray(),
+                'products'         => $c->products->pluck('id')->toArray(),
+            ];
+        }
+    }
+
+    $logsExist = isset($group) && $group->logs && $group->logs->count() > 0;
+@endphp
+
 {{-- Schedules --}}
 <div class="box-shadow mt-3 rounded bg-white p-4 dark:bg-gray-900">
     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
@@ -132,7 +156,7 @@
     </p>
 
     <v-markup-schedules
-        :initial-schedules='@json($group->schedules ?? [])'
+        :initial-schedules='@json($schedulesJson)'
     ></v-markup-schedules>
 </div>
 
@@ -143,24 +167,12 @@
     </p>
 
     <v-markup-conditions
-        :initial-conditions='@json(
-            isset($group)
-                ? $group->conditions->map(fn($c) => [
-                    "cost_from" => $c->cost_from,
-                    "cost_to" => $c->cost_to,
-                    "adjustment_type" => $c->adjustment_type,
-                    "adjustment_value" => $c->adjustment_value,
-                    "sort_order" => $c->sort_order,
-                    "categories" => $c->categories->pluck("id")->toArray(),
-                    "products" => $c->products->pluck("id")->toArray(),
-                ])
-                : []
-        )'
+        :initial-conditions='@json($conditionsJson)'
     ></v-markup-conditions>
 </div>
 
 {{-- Logs (edit only) --}}
-@if(isset($group) && $group->logs->count())
+@if($logsExist)
     <div class="box-shadow mt-3 rounded bg-white p-4 dark:bg-gray-900">
         <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
             @lang('markup::app.admin.groups.form.logs')

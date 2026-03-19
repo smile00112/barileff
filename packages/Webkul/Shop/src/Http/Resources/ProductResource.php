@@ -55,6 +55,19 @@ class ProductResource extends JsonResource
             'reviews' => [
                 'total' => $this->reviewHelper->getTotalReviews($this),
             ],
+            'supplier' => $this->whenLoaded('supplier', fn () => $this->supplier ? [
+                'id' => $this->supplier->id,
+                'name' => $this->supplier->name,
+                'contact_name' => $this->supplier->contact_name,
+                'contact_email' => $this->supplier->contact_email,
+                'contact_phone' => $this->supplier->contact_phone,
+                'address' => $this->supplier->address,
+            ] : null),
+            'tags' => $this->whenLoaded('tags', fn () => $this->tags->map(fn ($tag) => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'locale' => $tag->locale,
+            ])->all()),
             ...$this->getExposedApiAttributes(),
         ];
     }

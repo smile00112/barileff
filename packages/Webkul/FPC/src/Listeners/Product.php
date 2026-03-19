@@ -3,12 +3,15 @@
 namespace Webkul\FPC\Listeners;
 
 use Spatie\ResponseCache\Facades\ResponseCache;
+use Webkul\FPC\Concerns\ClearsApiCache;
 use Webkul\Product\Repositories\ProductBundleOptionProductRepository;
 use Webkul\Product\Repositories\ProductGroupedProductRepository;
 use Webkul\Product\Repositories\ProductRepository;
 
 class Product
 {
+    use ClearsApiCache;
+
     /**
      * Create a new listener instance.
      *
@@ -31,6 +34,8 @@ class Product
         $urls = $this->getForgettableUrls($product);
 
         ResponseCache::forget($urls);
+
+        $this->clearApiCacheAndWarm();
     }
 
     /**
@@ -46,6 +51,8 @@ class Product
         $urls = $this->getForgettableUrls($product);
 
         ResponseCache::forget($urls);
+
+        $this->clearApiCacheAndWarm();
     }
 
     /**

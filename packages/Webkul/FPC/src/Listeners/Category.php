@@ -4,9 +4,12 @@ namespace Webkul\FPC\Listeners;
 
 use Spatie\ResponseCache\Facades\ResponseCache;
 use Webkul\Category\Repositories\CategoryRepository;
+use Webkul\FPC\Concerns\ClearsApiCache;
 
 class Category
 {
+    use ClearsApiCache;
+
     /**
      * Create a new listener instance.
      *
@@ -29,6 +32,8 @@ class Category
 
             ResponseCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
         }
+
+        $this->clearApiCacheAndWarm();
     }
 
     /**
@@ -48,5 +53,7 @@ class Category
 
             ResponseCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
         }
+
+        $this->clearApiCacheAndWarm();
     }
 }

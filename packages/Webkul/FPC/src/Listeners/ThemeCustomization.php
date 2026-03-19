@@ -3,10 +3,13 @@
 namespace Webkul\FPC\Listeners;
 
 use Spatie\ResponseCache\Facades\ResponseCache;
+use Webkul\FPC\Concerns\ClearsApiCache;
 use Webkul\Theme\Repositories\ThemeCustomizationRepository;
 
 class ThemeCustomization
 {
+    use ClearsApiCache;
+
     /**
      * Create a new listener instance.
      *
@@ -23,7 +26,7 @@ class ThemeCustomization
     public function afterCreate($themeCustomization)
     {
         if (in_array($themeCustomization->type, ['footer_links', 'services_content'])) {
-            ResponseCache::clear();
+            $this->clearApiCacheAndWarm();
         } else {
             ResponseCache::selectCachedItems()
                 ->forUrls(config('app.url').'/')
@@ -40,7 +43,7 @@ class ThemeCustomization
     public function afterUpdate($themeCustomization)
     {
         if (in_array($themeCustomization->type, ['footer_links', 'services_content'])) {
-            ResponseCache::clear();
+            $this->clearApiCacheAndWarm();
         } else {
             ResponseCache::selectCachedItems()
                 ->forUrls(config('app.url').'/')
@@ -59,7 +62,7 @@ class ThemeCustomization
         $themeCustomization = $this->themeCustomizationRepository->find($themeCustomizationId);
 
         if (in_array($themeCustomization->type, ['footer_links', 'services_content'])) {
-            ResponseCache::clear();
+            $this->clearApiCacheAndWarm();
         } else {
             ResponseCache::selectCachedItems()
                 ->forUrls(config('app.url').'/')

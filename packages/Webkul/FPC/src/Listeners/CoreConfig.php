@@ -2,10 +2,12 @@
 
 namespace Webkul\FPC\Listeners;
 
-use Spatie\ResponseCache\Facades\ResponseCache;
+use Webkul\FPC\Concerns\ClearsApiCache;
 
 class CoreConfig
 {
+    use ClearsApiCache;
+
     /**
      * After core configuration update.
      *
@@ -13,6 +15,6 @@ class CoreConfig
      */
     public function afterUpdate()
     {
-        ResponseCache::clear();
+        $this->clearApiCacheAndWarm();
     }
 }

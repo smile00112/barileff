@@ -23,5 +23,7 @@ class Refund extends Product
 
             ResponseCache::forget($urls);
         }
+
+        $this->clearApiCacheAndWarm();
     }
 }

@@ -3,10 +3,13 @@
 namespace Webkul\FPC\Listeners;
 
 use Spatie\ResponseCache\Facades\ResponseCache;
+use Webkul\FPC\Concerns\ClearsApiCache;
 use Webkul\Product\Repositories\ProductReviewRepository;
 
 class Review
 {
+    use ClearsApiCache;
+
     /**
      * Create a new listener instance.
      *
@@ -23,6 +26,8 @@ class Review
     public function afterUpdate($review)
     {
         ResponseCache::forget('/'.$review->product->url_key);
+
+        $this->clearApiCacheAndWarm();
     }
 
     /**
@@ -36,5 +41,7 @@ class Review
         $review = $this->productReviewRepository->find($reviewId);
 
         ResponseCache::forget('/'.$review->product->url_key);
+
+        $this->clearApiCacheAndWarm();
     }
 }

@@ -23,5 +23,7 @@ class Order extends Product
 
             ResponseCache::forget($urls);
         }
+
+        $this->clearApiCacheAndWarm();
     }
 }

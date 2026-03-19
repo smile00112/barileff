@@ -256,6 +256,8 @@ class ProductRepository extends Repository
             'variants.attribute_values',
             'variants.price_indices',
             'variants.inventory_indices',
+            'supplier',
+            'tags',
         ])->scopeQuery(function ($query) use ($params) {
             $prefix = DB::getTablePrefix();
 
@@ -508,6 +510,8 @@ class ProductRepository extends Repository
             'variants.attribute_values',
             'variants.price_indices',
             'variants.inventory_indices',
+            'supplier',
+            'tags',
         ])->scopeQuery(function ($query) use ($params, $indices) {
             $qb = $query->distinct()
                 ->whereIn('products.id', $indices['ids']);

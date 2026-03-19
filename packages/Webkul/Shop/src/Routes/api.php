@@ -14,57 +14,71 @@ use Webkul\Shop\Http\Controllers\API\ReviewController;
 use Webkul\Shop\Http\Controllers\API\WishlistController;
 
 Route::group(['prefix' => 'api'], function () {
+    /**
+     * Cacheable public catalog GET endpoints (1 hour TTL, tag: api-catalog).
+     */
+    Route::middleware('cache.response:3600')->group(function () {
+        Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
+            Route::get('', 'index')->name('shop.api.delivery_zones.index');
+        });
+
+        Route::controller(CoreController::class)->prefix('core')->group(function () {
+            Route::get('countries', 'getCountries')->name('shop.api.core.countries');
+
+            Route::get('states', 'getStates')->name('shop.api.core.states');
+        });
+
+        Route::controller(CategoryController::class)->prefix('categories')->group(function () {
+            Route::get('', 'index')->name('shop.api.categories.index');
+
+            Route::get('tree', 'tree')->name('shop.api.categories.tree');
+
+            Route::get('attributes', 'getAttributes')->name('shop.api.categories.attributes');
+
+            Route::get('attributes/{attribute_id}/options', 'getAttributeOptions')
+                ->whereNumber('attribute_id')
+                ->name('shop.api.categories.attribute_options');
+
+            Route::get('max-price/{id?}', 'getProductMaxPrice')
+                ->whereNumber('id')
+                ->name('shop.api.categories.max_price');
+        });
+
+        Route::controller(ProductController::class)->prefix('products')->group(function () {
+            Route::get('', 'index')->name('shop.api.products.index');
+
+            Route::get('{id}/related', 'relatedProducts')
+                ->whereNumber('id')
+                ->name('shop.api.products.related.index');
+
+            Route::get('{id}/up-sell', 'upSellProducts')
+                ->whereNumber('id')
+                ->name('shop.api.products.up-sell.index');
+        });
+
+        Route::controller(ReviewController::class)->prefix('product/{id}')->group(function () {
+            Route::get('reviews', 'index')
+                ->whereNumber('id')
+                ->name('shop.api.products.reviews.index');
+
+            Route::get('reviews/{review_id}/translate', 'translate')
+                ->whereNumber('id')
+                ->whereNumber('review_id')
+                ->name('shop.api.products.reviews.translate');
+        });
+    });
+
+    /**
+     * Non-cacheable endpoints (mutations, personal data).
+     */
     Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
-        Route::get('', 'index')->name('shop.api.delivery_zones.index');
         Route::post('select', 'select')->name('shop.api.delivery_zones.select');
-    });
-    Route::controller(CoreController::class)->prefix('core')->group(function () {
-        Route::get('countries', 'getCountries')->name('shop.api.core.countries');
-
-        Route::get('states', 'getStates')->name('shop.api.core.states');
-    });
-
-    Route::controller(CategoryController::class)->prefix('categories')->group(function () {
-        Route::get('', 'index')->name('shop.api.categories.index');
-
-        Route::get('tree', 'tree')->name('shop.api.categories.tree');
-
-        Route::get('attributes', 'getAttributes')->name('shop.api.categories.attributes');
-
-        Route::get('attributes/{attribute_id}/options', 'getAttributeOptions')
-            ->whereNumber('attribute_id')
-            ->name('shop.api.categories.attribute_options');
-
-        Route::get('max-price/{id?}', 'getProductMaxPrice')
-            ->whereNumber('id')
-            ->name('shop.api.categories.max_price');
-    });
-
-    Route::controller(ProductController::class)->prefix('products')->group(function () {
-        Route::get('', 'index')->name('shop.api.products.index');
-
-        Route::get('{id}/related', 'relatedProducts')
-            ->whereNumber('id')
-            ->name('shop.api.products.related.index');
-
-        Route::get('{id}/up-sell', 'upSellProducts')
-            ->whereNumber('id')
-            ->name('shop.api.products.up-sell.index');
     });
 
     Route::controller(ReviewController::class)->prefix('product/{id}')->group(function () {
-        Route::get('reviews', 'index')
-            ->whereNumber('id')
-            ->name('shop.api.products.reviews.index');
-
         Route::post('review', 'store')
             ->whereNumber('id')
             ->name('shop.api.products.reviews.store');
-
-        Route::get('reviews/{review_id}/translate', 'translate')
-            ->whereNumber('id')
-            ->whereNumber('review_id')
-            ->name('shop.api.products.reviews.translate');
     });
 
     Route::controller(CompareController::class)->prefix('compare-items')->group(function () {
