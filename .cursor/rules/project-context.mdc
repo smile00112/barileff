@@ -18,6 +18,16 @@ Keep AI responses aligned with the real project context.
   - Testing: Pest 3 + PHPUnit 11.
   - Formatting: Laravel Pint (`preset: laravel`).
   - Frontend build: Vite 5.
+- Custom packages (developed in-house):
+  - `Webkul\Supplier` — управление поставщиками, привязка supplier_id к продуктам.
+  - `Webkul\Markup` — массовые наценки/скидки по расписанию, jobs-цепочка Apply→Revert.
+  - `Webkul\ProductTag` — AI-генерация тегов через GigaChat, pivot product_tag.
+  - `Webkul\DeliveryZones` — зоны доставки с полигонами (Yandex Maps), тарифы, привязка к складам.
+- External integrations:
+  - GigaChat AI (`tigusigalpa/gigachat-php`) — генерация тегов.
+  - OpenAI (`openai-php/laravel`) — MagicAI.
+  - Yandex Maps API — карты зон доставки.
+  - Elasticsearch — поиск продуктов.
 
 # Good Examples
 

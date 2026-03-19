@@ -16,6 +16,9 @@ Keep new code aligned with current repository structure and naming patterns.
 - Use descriptive PascalCase class names and domain-specific file names.
 - Follow existing route/controller/view organization inside each package.
 - Reuse existing components/services before creating new ones.
+- Custom packages follow Bagisto conventions: Contracts, Models (with Proxy), Repositories (extend `Webkul\Core\Eloquent\Repository`), ServiceProvider, ModuleServiceProvider, Routes, Views, Config (acl/admin-menu), lang.
+- Package tests go in `packages/Webkul/<Domain>/tests/` (Feature/Unit).
+- Documentation for custom packages: `.cursor/docs/dev/<package>-package.md`.
 
 # Good Examples
 
@@ -23,6 +26,22 @@ Keep new code aligned with current repository structure and naming patterns.
 New Cart Rule behavior:
 - Service/Repository updates in packages/Webkul/CartRule/src
 - Tests in packages/Webkul/CartRule/tests or relevant existing suite
+```
+
+```text
+Custom package structure (e.g. Supplier):
+packages/Webkul/Supplier/
+  src/Contracts/Supplier.php
+  src/Models/Supplier.php, SupplierProxy.php
+  src/Repositories/SupplierRepository.php
+  src/Providers/SupplierServiceProvider.php, ModuleServiceProvider.php
+  src/Http/Controllers/Admin/SupplierController.php
+  src/Http/Requests/SupplierRequest.php
+  src/DataGrids/SupplierDataGrid.php
+  src/Routes/admin-routes.php
+  src/Resources/views/, lang/
+  src/Database/Migrations/
+  tests/Feature/
 ```
 
 ```text
