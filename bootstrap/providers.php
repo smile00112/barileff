@@ -42,6 +42,7 @@ return [
     Webkul\SocialLogin\Providers\SocialLoginServiceProvider::class,
     Webkul\SocialShare\Providers\SocialShareServiceProvider::class,
     Webkul\Supplier\Providers\SupplierServiceProvider::class,
+    Webkul\Markup\Providers\MarkupServiceProvider::class,
     Webkul\ProductTag\Providers\ProductTagServiceProvider::class,
     Webkul\Tax\Providers\TaxServiceProvider::class,
     Webkul\Theme\Providers\ThemeServiceProvider::class,

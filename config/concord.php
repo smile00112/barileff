@@ -41,6 +41,7 @@ return [
         \Webkul\Sitemap\Providers\ModuleServiceProvider::class,
         \Webkul\SocialLogin\Providers\ModuleServiceProvider::class,
         \Webkul\Supplier\Providers\ModuleServiceProvider::class,
+        \Webkul\Markup\Providers\ModuleServiceProvider::class,
         \Webkul\ProductTag\Providers\ModuleServiceProvider::class,
         \Webkul\Tax\Providers\ModuleServiceProvider::class,
         \Webkul\Theme\Providers\ModuleServiceProvider::class,

@@ -99,6 +99,7 @@
             "Webkul\\SocialLogin\\": "packages/Webkul/SocialLogin/src",
             "Webkul\\SocialShare\\": "packages/Webkul/SocialShare/src",
             "Webkul\\Supplier\\": "packages/Webkul/Supplier/src",
+            "Webkul\\Markup\\": "packages/Webkul/Markup/src",
             "Webkul\\ProductTag\\": "packages/Webkul/ProductTag/src",
             "Webkul\\Tax\\": "packages/Webkul/Tax/src",
             "Webkul\\Theme\\": "packages/Webkul/Theme/src",

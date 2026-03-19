@@ -1,0 +1,20 @@
+{
+    "name": "webkul/markup",
+    "description": "Bagisto package for bulk product markup/discount management",
+    "type": "library",
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Markup\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Markup\\Providers\\MarkupServiceProvider"
+            ]
+        }
+    }
+}
