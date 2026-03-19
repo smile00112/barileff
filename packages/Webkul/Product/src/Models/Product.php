@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Shetabit\Visitor\Traits\Visitable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Webkul\Attribute\Models\AttributeFamilyProxy;
 use Webkul\Attribute\Models\AttributeProxy;
 use Webkul\Attribute\Repositories\AttributeRepository;
@@ -22,10 +24,12 @@ use Webkul\Inventory\Models\InventorySourceProxy;
 use Webkul\Product\Contracts\Product as ProductContract;
 use Webkul\Product\Database\Factories\ProductFactory;
 use Webkul\Product\Type\AbstractType;
+use Webkul\ProductTag\Models\TagProxy;
+use Webkul\Supplier\Models\SupplierProxy;
 
 class Product extends Model implements ProductContract
 {
-    use HasFactory, Visitable;
+    use HasFactory, LogsActivity, Visitable;
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +39,7 @@ class Product extends Model implements ProductContract
         'attribute_family_id',
         'sku',
         'parent_id',
+        'supplier_id',
     ];
 
     /**
@@ -43,6 +48,17 @@ class Product extends Model implements ProductContract
     protected $casts = [
         'additional' => 'array',
     ];
+
+    /**
+     * Configure which attributes are tracked in the activity log.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['sku', 'type', 'attribute_family_id', 'supplier_id'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * The type of product.
@@ -290,6 +306,22 @@ class Product extends Model implements ProductContract
     public function channels(): BelongsToMany
     {
         return $this->belongsToMany(ChannelProxy::modelClass(), 'product_channels', 'product_id', 'channel_id');
+    }
+
+    /**
+     * Get the supplier that owns the product.
+     */
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(SupplierProxy::modelClass());
+    }
+
+    /**
+     * Get the tags for the product.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(TagProxy::modelClass(), 'product_tag', 'product_id', 'tag_id');
     }
 
     /**

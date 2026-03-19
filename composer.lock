@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "158f520d205dc13921bff7b414bb60e9",
+    "content-hash": "d461eadaa2513450c9b3cdaaa5d153b3",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -6039,104 +6039,6 @@
             "time": "2026-02-16T11:41:01+00:00"
         },
         {
-            "name": "paypal/paypal-checkout-sdk",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paypal/Checkout-PHP-SDK.git",
-                "reference": "ed6a55075448308b87a8b59dcb7fedf04a048cb1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paypal/Checkout-PHP-SDK/zipball/ed6a55075448308b87a8b59dcb7fedf04a048cb1",
-                "reference": "ed6a55075448308b87a8b59dcb7fedf04a048cb1",
-                "shasum": ""
-            },
-            "require": {
-                "paypal/paypalhttp": "1.0.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sample\\": "samples/",
-                    "PayPalCheckoutSdk\\": "lib/PayPalCheckoutSdk"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "https://github.com/paypal/Checkout-PHP-SDK/blob/master/LICENSE"
-            ],
-            "authors": [
-                {
-                    "name": "PayPal",
-                    "homepage": "https://github.com/paypal/Checkout-PHP-SDK/contributors"
-                }
-            ],
-            "description": "PayPal's PHP SDK for Checkout REST APIs",
-            "homepage": "http://github.com/paypal/Checkout-PHP-SDK/",
-            "keywords": [
-                "checkout",
-                "orders",
-                "payments",
-                "paypal",
-                "rest",
-                "sdk"
-            ],
-            "support": {
-                "issues": "https://github.com/paypal/Checkout-PHP-SDK/issues",
-                "source": "https://github.com/paypal/Checkout-PHP-SDK/tree/1.0.1"
-            },
-            "abandoned": "paypal/paypal-server-sdk",
-            "time": "2019-11-07T23:16:44+00:00"
-        },
-        {
-            "name": "paypal/paypalhttp",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paypal/paypalhttp_php.git",
-                "reference": "1ad9b846a046f09d6135cbf2cbaa7701bbc630a3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paypal/paypalhttp_php/zipball/1ad9b846a046f09d6135cbf2cbaa7701bbc630a3",
-                "reference": "1ad9b846a046f09d6135cbf2cbaa7701bbc630a3",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "wiremock-php/wiremock-php": "1.43.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PayPalHttp\\": "lib/PayPalHttp"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PayPal",
-                    "homepage": "https://github.com/paypal/paypalhttp_php/contributors"
-                }
-            ],
-            "support": {
-                "issues": "https://github.com/paypal/paypalhttp_php/issues",
-                "source": "https://github.com/paypal/paypalhttp_php/tree/1.0.0"
-            },
-            "abandoned": true,
-            "time": "2019-11-06T21:27:12+00:00"
-        },
-        {
             "name": "phenx/php-font-lib",
             "version": "0.5.6",
             "source": {
@@ -8101,6 +8003,97 @@
                 }
             ],
             "time": "2026-02-21T22:52:37+00:00"
+        },
+        {
+            "name": "spatie/laravel-activitylog",
+            "version": "4.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-activitylog.git",
+                "reference": "bf66b5bbe9a946e977e876420d16b30b9aff1b2d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/bf66b5bbe9a946e977e876420d16b30b9aff1b2d",
+                "reference": "bf66b5bbe9a946e977e876420d16b30b9aff1b2d",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+                "illuminate/database": "^8.69 || ^9.27 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+                "illuminate/support": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.6.3"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "orchestra/testbench": "^6.23 || ^7.0 || ^8.0 || ^9.6 || ^10.0 || ^11.0",
+                "pestphp/pest": "^1.20 || ^2.0 || ^3.0 || ^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Activitylog\\ActivitylogServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Spatie\\Activitylog\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Tom Witkowski",
+                    "email": "dev.gummibeer@gmail.com",
+                    "homepage": "https://gummibeer.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A very simple activity logger to monitor the users of your website or application",
+            "homepage": "https://github.com/spatie/activitylog",
+            "keywords": [
+                "activity",
+                "laravel",
+                "log",
+                "spatie",
+                "user"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-activitylog/issues",
+                "source": "https://github.com/spatie/laravel-activitylog/tree/4.12.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-22T08:37:18+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -11244,6 +11237,78 @@
                 }
             ],
             "time": "2026-02-09T09:33:46+00:00"
+        },
+        {
+            "name": "tigusigalpa/gigachat-php",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tigusigalpa/gigachat-php.git",
+                "reference": "72f0639eced97f94706150d1aa095b1bca6796bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tigusigalpa/gigachat-php/zipball/72f0639eced97f94706150d1aa095b1bca6796bc",
+                "reference": "72f0639eced97f94706150d1aa095b1bca6796bc",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8.2",
+                "illuminate/support": "^8|^9|^10|^11|^12",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^8.0|^9.0",
+                "phpunit/phpunit": "^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "GigaChat": "Tigusigalpa\\GigaChat\\Laravel\\GigaChat"
+                    },
+                    "providers": [
+                        "Tigusigalpa\\GigaChat\\Laravel\\GigaChatServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Tigusigalpa\\GigaChat\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Sazonov",
+                    "email": "sovletig@gmail.com",
+                    "homepage": "https://github.com/tigusigalpa"
+                }
+            ],
+            "description": "🚀 GigaChat PHP SDK - полнофункциональная библиотека для интеграции с Sber GigaChat API. Простое подключение GigaChat к PHP-приложениям с поддержкой Laravel. Генерация текста, чат-боты, AI-ассистенты. Полная документация, примеры кода, OAuth авторизация.",
+            "homepage": "https://github.com/tigusigalpa/gigachat-php",
+            "keywords": [
+                "ai",
+                "api",
+                "artificial-intelligence",
+                "chatbot",
+                "gigachat",
+                "laravel",
+                "machine-learning",
+                "php",
+                "sber",
+                "sdk"
+            ],
+            "support": {
+                "docs": "https://developers.sber.ru/docs/ru/gigachat/api/overview",
+                "issues": "https://github.com/tigusigalpa/gigachat-php/issues",
+                "source": "https://github.com/tigusigalpa/gigachat-php"
+            },
+            "time": "2025-10-11T09:32:05+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

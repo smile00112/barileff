@@ -40,6 +40,8 @@ return [
         \Webkul\Shop\Providers\ModuleServiceProvider::class,
         \Webkul\Sitemap\Providers\ModuleServiceProvider::class,
         \Webkul\SocialLogin\Providers\ModuleServiceProvider::class,
+        \Webkul\Supplier\Providers\ModuleServiceProvider::class,
+        \Webkul\ProductTag\Providers\ModuleServiceProvider::class,
         \Webkul\Tax\Providers\ModuleServiceProvider::class,
         \Webkul\Theme\Providers\ModuleServiceProvider::class,
         \Webkul\User\Providers\ModuleServiceProvider::class,

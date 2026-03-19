@@ -18,6 +18,7 @@ class ProductInventory extends Model implements ProductInventoryContract
 
     protected $fillable = [
         'qty',
+        'min_stock',
         'product_id',
         'inventory_source_id',
         'vendor_id',

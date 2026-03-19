@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Webkul\Admin\Mail\Admin\ResetPasswordNotification;
+use Webkul\Inventory\Models\InventorySourceProxy;
 use Webkul\User\Contracts\Admin as AdminContract;
 use Webkul\User\Database\Factories\AdminFactory;
 
@@ -111,6 +112,19 @@ class Admin extends Authenticatable implements AdminContract
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Get the inventory sources for this admin.
+     */
+    public function inventorySources(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            InventorySourceProxy::modelClass(),
+            'admin_inventory_sources',
+            'admin_id',
+            'inventory_source_id'
+        );
     }
 
     /**
