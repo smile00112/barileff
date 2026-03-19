@@ -5,6 +5,7 @@ namespace Webkul\Marketing\Helpers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Webkul\Core\Models\SubscribersList;
+use Webkul\Core\Support\DbHelper;
 use Webkul\Marketing\Mail\NewsletterMail;
 use Webkul\Marketing\Repositories\CampaignRepository;
 use Webkul\Marketing\Repositories\EventRepository;
@@ -79,7 +80,7 @@ class Campaign
     {
         return $campaign->customer_group
             ->customers()
-            ->whereRaw('DATE_FORMAT(date_of_birth, "%m-%d") = ?', [Carbon::now()->format('m-d')])
+            ->whereRaw(DbHelper::dateFormat('date_of_birth', '%m-%d').' = ?', [Carbon::now()->format('m-d')])
             ->where('subscribed_to_news_letter', 1)
             ->pluck('email')
             ->toArray();

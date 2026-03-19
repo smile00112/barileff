@@ -5,6 +5,7 @@ namespace Webkul\Admin\Helpers\Reporting;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Webkul\Core\Support\DbHelper;
 
 abstract class AbstractReporting
 {
@@ -229,7 +230,7 @@ abstract class AbstractReporting
                 $formatter = '?-?-?';
             }
 
-            $groupColumn = 'DATE_FORMAT(created_at, "'.Str::replaceArray('?', ['%Y', '%m', '%d'], $formatter).'")';
+            $groupColumn = DbHelper::dateFormat('created_at', Str::replaceArray('?', ['%Y', '%m', '%d'], $formatter));
 
             $intervals = [];
 

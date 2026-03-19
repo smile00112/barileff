@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Webkul\Core\Support\DbHelper;
 use Webkul\Product\Helpers\Indexers\Price as PriceIndexer;
 use Webkul\Product\Repositories\ProductRepository;
 
@@ -36,11 +37,9 @@ class UpdateCreatePriceIndex implements ShouldQueue
             return;
         }
 
-        $ids = implode(',', $this->productIds);
-
         $products = app(ProductRepository::class)
             ->whereIn('id', $this->productIds)
-            ->orderByRaw("FIELD(id, $ids)")
+            ->orderBy(DbHelper::fieldOrderBy('id', $this->productIds))
             ->get();
 
         app(PriceIndexer::class)->reindexRows($products);

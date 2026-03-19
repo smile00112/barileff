@@ -3,6 +3,7 @@
 namespace Webkul\Marketing\Repositories;
 
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Core\Support\DbHelper;
 
 class SearchSynonymRepository extends Repository
 {
@@ -24,7 +25,7 @@ class SearchSynonymRepository extends Repository
     {
         $synonyms = [$query];
 
-        $searchSynonyms = $this->whereRaw('FIND_IN_SET(?, terms)', $synonyms)->get();
+        $searchSynonyms = $this->whereRaw(DbHelper::findInSet('?', 'terms'), $synonyms)->get();
 
         foreach ($searchSynonyms as $searchSynonym) {
             $synonyms = array_merge($synonyms, explode(',', $searchSynonym->terms));

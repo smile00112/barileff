@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Webkul\Attribute\Enums\AttributeTypeEnum;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Core\Support\DbHelper;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Marketing\Repositories\SearchSynonymRepository;
 use Webkul\Product\Contracts\Product;
@@ -411,7 +412,7 @@ class ProductRepository extends Repository
 
                                     $subFilterQuery->where(function ($query) use ($paramValues, $alias, $attribute, $prefix) {
                                         foreach ($paramValues as $value) {
-                                            $query->orWhereRaw("FIND_IN_SET(?, {$prefix}{$alias}.{$attribute->column_name})", [$value]);
+                                            $query->orWhereRaw(DbHelper::findInSet('?', "{$prefix}{$alias}.{$attribute->column_name}"), [$value]);
                                         }
                                     });
                                 } else {
@@ -520,7 +521,7 @@ class ProductRepository extends Repository
                     ->whereNull('product_customizable_options.id');
             }
 
-            $qb->orderBy(DB::raw('FIELD(id, '.implode(',', $indices['ids']).')'));
+            $qb->orderBy(DbHelper::fieldOrderBy('id', $indices['ids']));
 
             return $qb;
         });

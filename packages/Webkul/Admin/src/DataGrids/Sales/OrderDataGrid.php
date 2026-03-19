@@ -3,6 +3,7 @@
 namespace Webkul\Admin\DataGrids\Sales;
 
 use Illuminate\Support\Facades\DB;
+use Webkul\Core\Support\DbHelper;
 use Webkul\DataGrid\DataGrid;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderAddress;
@@ -29,7 +30,7 @@ class OrderDataGrid extends DataGrid
             ->leftJoin('order_payment', 'orders.id', '=', 'order_payment.order_id')
             ->select(
                 'orders.id',
-                DB::raw('GROUP_CONCAT('.DB::getTablePrefix().'order_payment.method SEPARATOR "|") as method'),
+                DB::raw(DbHelper::groupConcat(DB::getTablePrefix().'order_payment.method', '|').' as method'),
                 'orders.increment_id',
                 'orders.base_grand_total',
                 'orders.created_at',
@@ -38,12 +39,12 @@ class OrderDataGrid extends DataGrid
                 'status',
                 'customer_email',
                 'orders.cart_id as items',
-                DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, " ", '.DB::getTablePrefix().'orders.customer_last_name) as full_name'),
-                DB::raw('CONCAT('.DB::getTablePrefix().'order_address_billing.city, ", ", '.DB::getTablePrefix().'order_address_billing.state,", ", '.DB::getTablePrefix().'order_address_billing.country) as location')
+                DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, \' \', '.DB::getTablePrefix().'orders.customer_last_name) as full_name'),
+                DB::raw('CONCAT('.DB::getTablePrefix().'order_address_billing.city, \', \', '.DB::getTablePrefix().'order_address_billing.state,\', \', '.DB::getTablePrefix().'order_address_billing.country) as location')
             )
             ->groupBy('orders.id');
 
-        $this->addFilter('full_name', DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, " ", '.DB::getTablePrefix().'orders.customer_last_name)'));
+        $this->addFilter('full_name', DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, \' \', '.DB::getTablePrefix().'orders.customer_last_name)'));
         $this->addFilter('created_at', 'orders.created_at');
 
         return $queryBuilder;

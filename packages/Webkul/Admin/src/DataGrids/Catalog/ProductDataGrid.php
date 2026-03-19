@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Attribute\Repositories\AttributeFamilyRepository;
 use Webkul\Core\Facades\ElasticSearch;
+use Webkul\Core\Support\DbHelper;
 use Webkul\DataGrid\DataGrid;
 use Webkul\Product\Helpers\Product;
 
@@ -331,7 +332,7 @@ class ProductDataGrid extends DataGrid
 
         if ($ids) {
             $this->queryBuilder
-                ->orderBy(DB::raw('FIELD('.DB::getTablePrefix().'product_flat.product_id, '.implode(',', $ids).')'));
+                ->orderBy(DbHelper::fieldOrderBy(DB::getTablePrefix().'product_flat.product_id', $ids));
         }
 
         $total = $results['hits']['total']['value'];
