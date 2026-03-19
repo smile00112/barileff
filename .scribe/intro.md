@@ -20,6 +20,7 @@ API for mobile applications: catalog, categories, products, cart, checkout, cust
     - **Compare** — Compare items
     - **Cart** — Cart CRUD, coupons, shipping estimate
     - **Checkout Onepage** — Addresses, shipping, payment, order creation
+    - **Delivery Zones** — Города и зоны доставки с тарифами, выбор зоны (карта/адрес)
     - **Customer Auth** — Login
     - **Customer Addresses** — Address management (authenticated)
     - **Wishlist** — Wishlist management (authenticated)

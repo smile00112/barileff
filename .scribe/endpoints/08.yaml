@@ -1,50 +1,21 @@
-name: 'Адреса покупателя'
+name: 'Авторизация покупателя'
 description: ''
 endpoints:
   -
     custom: []
     httpMethods:
-      - GET
-    uri: api/customer/addresses
-    metadata:
-      custom: []
-      groupName: 'Адреса покупателя'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Получить адреса покупателя.'
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
       - POST
-    uri: api/customer/addresses
+    uri: api/customer/login
     metadata:
       custom: []
-      groupName: 'Адреса покупателя'
+      groupName: 'Авторизация покупателя'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Создать новый адрес покупателя.'
-      description: ''
+      title: 'Выполнить вход покупателя.'
+      description: |-
+        Аутентифицирует покупателя. При успехе выставляются session-cookie
+        для доступа к защищенным endpoint-ам.
       authenticated: false
       deprecated: false
     headers:
@@ -55,312 +26,57 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      company_name:
-        custom: []
-        name: company_name
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      first_name:
-        custom: []
-        name: first_name
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      last_name:
-        custom: []
-        name: last_name
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      address:
-        custom: []
-        name: address
-        description: 'Поле value должно содержать как минимум 1 элементов.'
-        required: true
-        example: []
-        type: object
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      country:
-        custom: []
-        name: country
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      state:
-        custom: []
-        name: state
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      city:
-        custom: []
-        name: city
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      postcode:
-        custom: []
-        name: postcode
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      phone:
-        custom: []
-        name: phone
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      vat_id:
-        custom: []
-        name: vat_id
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
       email:
         custom: []
         name: email
-        description: ''
+        description: 'Email покупателя.'
         required: true
-        example: architecto
+        example: customer@example.com
         type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      first_name: architecto
-      last_name: architecto
-      address: []
-      country: architecto
-      state: architecto
-      city: architecto
-      postcode: architecto
-      phone: architecto
-      email: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - PUT
-    uri: 'api/customer/addresses/edit/{id?}'
-    metadata:
-      custom: []
-      groupName: 'Адреса покупателя'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Обновить адрес покупателя.'
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'ID адреса.'
-        required: false
-        example: 1
-        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         deprecated: false
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      company_name:
+      password:
         custom: []
-        name: company_name
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      first_name:
-        custom: []
-        name: first_name
-        description: ''
+        name: password
+        description: 'Пароль покупателя (минимум 6 символов).'
         required: true
-        example: architecto
+        example: password123
         type: string
         enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      last_name:
-        custom: []
-        name: last_name
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      address:
-        custom: []
-        name: address
-        description: 'Поле value должно содержать как минимум 1 элементов.'
-        required: true
-        example: []
-        type: object
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      country:
-        custom: []
-        name: country
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      state:
-        custom: []
-        name: state
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      city:
-        custom: []
-        name: city
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      postcode:
-        custom: []
-        name: postcode
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      phone:
-        custom: []
-        name: phone
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      vat_id:
-        custom: []
-        name: vat_id
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      email:
-        custom: []
-        name: email
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      first_name: architecto
-      last_name: architecto
-      address: []
-      country: architecto
-      state: architecto
-      city: architecto
-      postcode: architecto
-      phone: architecto
-      email: architecto
+      email: customer@example.com
+      password: password123
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 403
+        content: '{"message": "Эти учетные данные не совпадают с нашими записями."}'
+        headers: []
+        description: 'Неверные учетные данные'
+      -
+        custom: []
+        status: 403
+        content: '{"message": "Ваш аккаунт не активирован."}'
+        headers: []
+        description: 'Аккаунт не активирован'
+      -
+        custom: []
+        status: 403
+        content: '{"message": "Сначала подтвердите ваш email."}'
+        headers: []
+        description: 'Email не подтвержден'
     responseFields: []
     auth: []
     controller: null

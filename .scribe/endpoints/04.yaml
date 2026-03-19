@@ -1,26 +1,38 @@
-name: Сравнение
+name: 'Отзывы о товарах'
 description: ''
 endpoints:
   -
     custom: []
     httpMethods:
       - GET
-    uri: api/compare-items
+    uri: 'api/product/{id}/reviews'
     metadata:
       custom: []
-      groupName: Сравнение
+      groupName: 'Отзывы о товарах'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Получить список товаров для сравнения.'
+      title: 'Получить список отзывов по товару.'
       description: ''
       authenticated: false
       deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID товара.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -30,19 +42,9 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":[]}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          referrer-policy: no-referrer-when-downgrade
-          x-content-type-options: nosniff
-          x-xss-protection: '1; mode=block'
-          x-frame-options: DENY
-          strict-transport-security: 'max-age=31536000; includeSubDomains'
-          x-built-with: Bagisto
-          access-control-allow-origin: '*'
-          set-cookie: 'XSRF-TOKEN=eyJpdiI6IlBHTEpHTGNsZnZBelhsbnFzN3lLaFE9PSIsInZhbHVlIjoibExZcVVaelc2UUtQQ3YvWWtCamFRbUMwc09kaUxueEJuT3c2NWxqcmdwelJsQUJldzdEYkdDUU9FbHEvQWtTM1QvKzk5SFZFYWxzeG1vYzhpbTNQdmtSME1iVlNKdnF2QWdvdWJvZ3FIdW9HNDdSYmtjTjh3R0pwSlBJeVJQeVYiLCJtYWMiOiJiNTdlM2E0MDdkM2Q1ZWFiNTJkYjY2YTY5YzUwYzEyZTM2NWIzNWIyZjgzY2QyMDhkMTYzNDM2NGU1YWE4ZWFjIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; samesite=lax; my_bagisto_session=eyJpdiI6IjA3T0l1T2RuWWMyRGVXYW1DNFNHb2c9PSIsInZhbHVlIjoibTR2anRIRWJHYUd2b0ZpdFRKMWtnYW8zN1MrT3RPK2VHYndyVkovalBkZGJFMytuOHM0c1JsV0Vsai9uSDc0RzBkT1N0N0Q4TThaVEYrYkNxa2RKT0NLc3pUUmJFak5XZTJQWHlTTVduR2p4cHJaMWZab0svR1Q4ZHMxdGFZWUIiLCJtYWMiOiJlMTc3MjkxNGZhZjA3YzAzOWE1ZTNmNzM1YjkxODcwNDE1Y2Y3M2ZlYjQyZWJlYjkzMzU2ZDEyYTU4ZjEzNjYxIiwidGFnIjoiIn0%3D; expires=Sun, 01 Mar 2026 18:13:58 GMT; Max-Age=217200; path=/; secure; httponly; samesite=lax'
-        description: null
+        content: '{"data": [], "links": {}, "meta": {}}'
+        headers: []
+        description: ''
     responseFields: []
     auth: []
     controller: null
@@ -52,39 +54,89 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/compare-items
+    uri: 'api/product/{id}/review'
     metadata:
       custom: []
-      groupName: Сравнение
+      groupName: 'Отзывы о товарах'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Добавить товар в сравнение.'
+      title: 'Создать новый отзыв.'
       description: ''
       authenticated: false
       deprecated: false
     headers:
-      Content-Type: application/json
+      Content-Type: multipart/form-data
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID товара.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      product_id:
+      title:
         custom: []
-        name: product_id
-        description: 'The <code>id</code> of an existing record in the products table.'
+        name: title
+        description: 'Заголовок отзыва.'
         required: true
-        example: 16
-        type: integer
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      comment:
+        custom: []
+        name: comment
+        description: 'Текст отзыва.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      rating:
+        custom: []
+        name: rating
+        description: 'Оценка от 1 до 5.'
+        required: true
+        example: 5.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      attachments:
+        custom: []
+        name: attachments
+        description: 'Must be a file.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      product_id: 16
-    fileParameters: []
+      title: architecto
+      comment: architecto
+      rating: 5.0
+    fileParameters:
+      attachments:
+        - null
     responses: []
     responseFields: []
     auth: []
@@ -94,60 +146,65 @@ endpoints:
   -
     custom: []
     httpMethods:
-      - DELETE
-    uri: api/compare-items
+      - GET
+    uri: 'api/product/{id}/reviews/{review_id}/translate'
     metadata:
       custom: []
-      groupName: Сравнение
+      groupName: 'Отзывы о товарах'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Удалить товар из списка сравнения.'
+      title: 'Перевести выбранный отзыв.'
       description: ''
       authenticated: false
       deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID товара.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      review_id:
+        custom: []
+        name: review_id
+        description: 'ID отзыва.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+      review_id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - DELETE
-    uri: api/compare-items/all
-    metadata:
-      custom: []
-      groupName: Сравнение
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Удалить все товары из списка сравнения.'
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"content": "Переведенный текст отзыва"}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 400
+        content: '{"message": "Отзыв недоступен для перевода."}'
+        headers: []
+        description: ''
     responseFields: []
     auth: []
     controller: null
