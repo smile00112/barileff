@@ -11,4 +11,14 @@ return [
     'copy' => [
         'skip_attributes' => [],
     ],
+
+    /**
+     * Attributes exposed as top-level fields in product API responses.
+     *
+     * List attribute codes that should appear as separate fields
+     * alongside id, sku, name in Shop and Admin API product resources.
+     *
+     * Example: ['brand', 'country_of_origin', 'color']
+     */
+    'api_exposed_attributes' => [],
 ];

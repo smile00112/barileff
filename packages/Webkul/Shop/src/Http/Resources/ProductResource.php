@@ -55,6 +55,7 @@ class ProductResource extends JsonResource
             'reviews' => [
                 'total' => $this->reviewHelper->getTotalReviews($this),
             ],
+            ...$this->getExposedApiAttributes(),
         ];
     }
 }

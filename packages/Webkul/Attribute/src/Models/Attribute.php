@@ -38,6 +38,15 @@ class Attribute extends TranslatableModel implements AttributeContract
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'is_api_field',
+    ];
+
+    /**
      * Attribute type fields.
      *
      * @var array
@@ -126,6 +135,14 @@ class Attribute extends TranslatableModel implements AttributeContract
         $validations = '{ '.implode(', ', array_filter($validations)).' }';
 
         return $validations;
+    }
+
+    /**
+     * Determine if this attribute is exposed as a top-level API field.
+     */
+    protected function getIsApiFieldAttribute(): bool
+    {
+        return in_array($this->code, config('products.api_exposed_attributes', []));
     }
 
     /**

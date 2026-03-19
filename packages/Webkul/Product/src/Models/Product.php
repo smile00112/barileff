@@ -538,6 +538,64 @@ class Product extends Model implements ProductContract
     }
 
     /**
+     * Get attribute values for attributes marked as API-exposed fields.
+     *
+     * @return array<string, mixed>
+     */
+    public function getExposedApiAttributes(): array
+    {
+        $exposed = [];
+
+        $familyAttributes = $this->checkInLoadedFamilyAttributes();
+
+        foreach ($familyAttributes as $attribute) {
+            if (! $attribute->is_api_field) {
+                continue;
+            }
+
+            $value = $this->getCustomAttributeValue($attribute);
+
+            if (in_array($attribute->type, ['select', 'multiselect'])) {
+                $value = $this->resolveOptionLabels($attribute, $value);
+            }
+
+            $exposed[$attribute->code] = $value;
+        }
+
+        return $exposed;
+    }
+
+    /**
+     * Resolve option labels for select/multiselect attribute values.
+     */
+    protected function resolveOptionLabels($attribute, mixed $value): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $options = $attribute->options()->with('translations')->get();
+
+        if ($attribute->type === 'select') {
+            $option = $options->where('id', (int) $value)->first();
+
+            return $option?->label ?? $option?->admin_name ?? $value;
+        }
+
+        $ids = is_string($value) ? explode(',', $value) : (array) $value;
+
+        return collect($ids)
+            ->map(function ($id) use ($options) {
+                $option = $options->where('id', (int) trim($id))->first();
+
+                return $option?->label ?? $option?->admin_name ?? $id;
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
      * Check in loaded family attributes.
      */
     public function checkInLoadedFamilyAttributes(): object
