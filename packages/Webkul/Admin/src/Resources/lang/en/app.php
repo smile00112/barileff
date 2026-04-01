@@ -3576,6 +3576,7 @@ return [
 
                 'type' => [
                     'category-carousel' => 'Category Carousel',
+                    'category-grid' => 'Category Grid',
                     'footer-links' => 'Footer Links',
                     'image-carousel' => 'Image Carousel',
                     'product-carousel' => 'Product Carousel',
@@ -3595,6 +3596,8 @@ return [
                 'back' => 'Back',
                 'category-carousel' => 'Category Carousel',
                 'category-carousel-description' => 'Display dynamic categories attractively using a responsive category carousel.',
+                'category-grid' => 'Category Grid',
+                'category-grid-description' => 'Display categories in a responsive grid with configurable columns and optional names.',
                 'category-id' => 'Category ID',
                 'channels' => 'Channels',
                 'column' => 'Column',
@@ -3621,6 +3624,8 @@ return [
                 'key-input' => 'Key',
                 'limit' => 'Limit',
                 'link' => 'Link',
+                'desktop-columns' => 'Desktop Columns',
+                'mobile-columns' => 'Mobile Columns',
                 'name' => 'Name',
                 'new' => 'New',
                 'no' => 'No',
@@ -3641,6 +3646,7 @@ return [
                 'static-content' => 'Static Content',
                 'static-content-description' => 'Improve engagement with concise, informative static content for your audience.',
                 'status' => 'Status',
+                'show-category-name' => 'Show Category Name',
                 'themes' => 'Themes',
                 'title' => 'Edit Theme',
                 'update-slider' => 'Update Slider',

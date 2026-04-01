@@ -95,6 +95,9 @@
                 <!-- Category Template -->
                 @includeWhen($theme->type === 'category_carousel', 'admin::settings.themes.edit.category-carousel')
 
+                <!-- Category Grid Template -->
+                @includeWhen($theme->type === 'category_grid', 'admin::settings.themes.edit.category-grid')
+
                 <!-- Static-Content Template -->
                 @includeWhen($theme->type === 'static_content', 'admin::settings.themes.edit.static-content')
 

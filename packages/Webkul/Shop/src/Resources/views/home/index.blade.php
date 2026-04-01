@@ -74,6 +74,19 @@
                 />
 
                 @break
+            @case ($customization::CATEGORY_GRID)
+                <!-- Categories grid -->
+                <x-shop::categories.grid
+                    :title="$data['title'] ?? ''"
+                    :src="route('shop.api.categories.index', $data['filters'] ?? [])"
+                    :desktop-columns="$data['desktop_columns'] ?? 4"
+                    :mobile-columns="$data['mobile_columns'] ?? 2"
+                    :show-name="$data['show_name'] ?? true"
+                    :navigation-link="route('shop.home.index')"
+                    aria-label="{{ trans('shop::app.home.index.categories-grid') }}"
+                />
+
+                @break
             @case ($customization::PRODUCT_CAROUSEL)
                 <!-- Product Carousel -->
                 <x-shop::products.carousel

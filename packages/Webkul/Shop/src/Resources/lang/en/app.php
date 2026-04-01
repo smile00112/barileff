@@ -1110,6 +1110,7 @@ return [
 
         'index' => [
             'categories-carousel' => 'Categories Carousel',
+            'categories-grid' => 'Categories Grid',
             'image-carousel' => 'Image Carousel',
             'offer' => 'Get UPTO 40% OFF on your 1st order SHOP NOW',
             'product-carousel' => 'Product Carousel',

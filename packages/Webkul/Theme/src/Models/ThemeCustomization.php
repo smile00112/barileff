@@ -50,6 +50,13 @@ class ThemeCustomization extends TranslatableModel implements ThemeCustomization
     public const CATEGORY_CAROUSEL = 'category_carousel';
 
     /**
+     * Category grid precision.
+     *
+     * @var string
+     */
+    public const CATEGORY_GRID = 'category_grid';
+
+    /**
      * Footer links precision.
      *
      * @var string
