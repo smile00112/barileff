@@ -92,6 +92,12 @@ return [
         'route' => 'admin.catalog.families.index',
         'sort' => 4,
         'icon' => '',
+    ], [
+        'key' => 'catalog.imports',
+        'name' => 'admin::app.components.layouts.sidebar.catalog-imports',
+        'route' => 'admin.catalog.imports.index',
+        'sort' => 5,
+        'icon' => '',
     ],
 
     /**

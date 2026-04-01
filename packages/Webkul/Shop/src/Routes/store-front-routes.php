@@ -5,6 +5,7 @@ use Webkul\Shop\Http\Controllers\BookingProductController;
 use Webkul\Shop\Http\Controllers\CompareController;
 use Webkul\Shop\Http\Controllers\DeliveryZonesController;
 use Webkul\Shop\Http\Controllers\HomeController;
+use Webkul\Shop\Http\Controllers\InventorySourceController;
 use Webkul\Shop\Http\Controllers\PageController;
 use Webkul\Shop\Http\Controllers\ProductController;
 use Webkul\Shop\Http\Controllers\ProductsCategoriesProxyController;
@@ -52,6 +53,9 @@ Route::get('search', [SearchController::class, 'index'])
     ->middleware('cache.response');
 
 Route::post('search/upload', [SearchController::class, 'upload'])->name('shop.search.upload');
+
+Route::post('inventory-sources/switch', [InventorySourceController::class, 'switch'])
+    ->name('shop.inventory_sources.switch');
 
 /**
  * Subscription routes.

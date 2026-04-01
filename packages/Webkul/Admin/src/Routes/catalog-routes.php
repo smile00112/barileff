@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Catalog\AttributeController;
 use Webkul\Admin\Http\Controllers\Catalog\AttributeFamilyController;
 use Webkul\Admin\Http\Controllers\Catalog\CategoryController;
+use Webkul\Admin\Http\Controllers\Catalog\ImportController;
 use Webkul\Admin\Http\Controllers\Catalog\Product\BundleController;
 use Webkul\Admin\Http\Controllers\Catalog\Product\ConfigurableController;
 use Webkul\Admin\Http\Controllers\Catalog\Product\DownloadableController;
@@ -77,6 +78,23 @@ Route::prefix('catalog')->group(function () {
         Route::get('search', 'search')->name('admin.catalog.categories.search');
 
         Route::get('tree', 'tree')->name('admin.catalog.categories.tree');
+    });
+
+    /**
+     * Imports routes.
+     */
+    Route::controller(ImportController::class)->prefix('imports')->group(function () {
+        Route::get('', 'index')->name('admin.catalog.imports.index');
+
+        Route::get('create', 'create')->name('admin.catalog.imports.create');
+
+        Route::post('create', 'store')->name('admin.catalog.imports.store');
+
+        Route::get('{id}', 'show')->name('admin.catalog.imports.show');
+
+        Route::post('{id}/start', 'start')->name('admin.catalog.imports.start');
+
+        Route::get('{id}/status', 'status')->name('admin.catalog.imports.status');
     });
 
     /**

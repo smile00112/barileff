@@ -205,6 +205,11 @@ return [
         'name' => 'admin::app.acl.delete',
         'route' => 'admin.catalog.families.delete',
         'sort' => 3,
+    ], [
+        'key' => 'catalog.imports',
+        'name' => 'admin::app.acl.catalog-imports',
+        'route' => 'admin.catalog.imports.index',
+        'sort' => 5,
     ],
 
     /*

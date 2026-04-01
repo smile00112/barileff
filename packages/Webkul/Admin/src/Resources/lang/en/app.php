@@ -1676,6 +1676,106 @@ return [
             'update-success' => 'Family updated successfully.',
             'user-define-error' => 'Can not delete system Attribute family',
         ],
+
+        'imports' => [
+            'index' => [
+                'button-new' => 'New Import',
+                'description' => 'Use this page to import catalog data from prepared files.',
+                'no-records' => 'No import sessions found.',
+                'title' => 'Data Import',
+
+                'columns' => [
+                    'actions' => 'Actions',
+                    'date' => 'Date',
+                    'file' => 'File',
+                    'locale' => 'Locale',
+                    'state' => 'State',
+                    'view' => 'View',
+                ],
+            ],
+
+            'upload' => [
+                'back-btn' => 'Back',
+                'submit' => 'Upload and Continue',
+                'success' => 'File uploaded. Please map the columns below.',
+                'title' => 'New Data Import',
+
+                'delimiters' => [
+                    'comma' => 'Comma (,)',
+                    'pipe' => 'Pipe (|)',
+                    'semicolon' => 'Semicolon (;)',
+                    'tab' => 'Tab',
+                ],
+
+                'fields' => [
+                    'delimiter' => 'Column Delimiter',
+                    'file' => 'CSV File',
+                    'file-hint' => 'Accepted: .csv, .txt  •  Max 50 MB',
+                    'locale' => 'Import Locale',
+                    'locale-hint' => 'Locale for text attributes (name, description, etc.)',
+                ],
+
+                'validation' => [
+                    'file-csv-only' => 'Only CSV / TXT files are accepted.',
+                    'file-required' => 'Please select a file.',
+                    'file-too-large' => 'The file may not be larger than 50 MB.',
+                ],
+            ],
+
+            'show' => [
+                'back-btn' => 'Back to list',
+                'back-to-list' => 'Back to list',
+                'bagisto-field' => 'Bagisto Field',
+                'batches-label' => 'Batches',
+                'completed-title' => 'Import completed successfully!',
+                'csv-column' => 'CSV Column',
+                'failed-title' => 'Import failed.',
+                'mapping-hint' => 'Map each CSV column to the corresponding Bagisto product field. Unmapped columns will be skipped.',
+                'mapping-title' => 'Column Mapping',
+                'polling-hint' => 'Import is running in the background. This page updates automatically.',
+                'processing-title' => 'Import in progress…',
+                'progress-label' => 'Progress',
+                'sku-required' => 'You must map at least one column to the SKU field before importing.',
+                'start-import' => 'Start Import',
+                'step-import' => 'Processing',
+                'step-mapping' => 'Column Mapping',
+                'step-result' => 'Result',
+                'summary-created' => 'Created',
+                'summary-deleted' => 'Deleted',
+                'summary-updated' => 'Updated',
+                'title' => 'Import #:id',
+            ],
+
+            'fields' => [
+                'attribute-family' => 'Attribute Family Code',
+                'locale' => 'Locale',
+                'qty' => 'Quantity (stock)',
+                'sku' => 'SKU',
+                'type' => 'Product Type',
+            ],
+
+            'mapping' => [
+                'saved' => 'Mapping saved.',
+                'skip' => 'Skip this column',
+            ],
+
+            'states' => [
+                'completed' => 'Completed',
+                'failed' => 'Failed',
+                'pending' => 'Pending',
+                'processing' => 'Processing',
+                'ready' => 'Ready',
+            ],
+
+            'errors' => [
+                'cannot-modify' => 'Cannot modify a session that has already started.',
+                'csv-reformat-failed' => 'Failed to create the remapped CSV file.',
+                'generic' => 'An error occurred. Please try again.',
+                'map-first' => 'Please save the column mapping before starting the import.',
+                'not-ready' => 'The import session is not ready to start.',
+                'validation-failed' => 'The import file failed validation.',
+            ],
+        ],
     ],
 
     'customers' => [
@@ -4784,6 +4884,7 @@ return [
                 'attributes' => 'Attributes',
                 'booking-product' => 'Bookings',
                 'campaigns' => 'Campaigns',
+                'catalog-imports' => 'Data Import',
                 'catalog' => 'Catalog',
                 'categories' => 'Categories',
                 'channels' => 'Channels',
@@ -5043,6 +5144,7 @@ return [
         'attribute-families' => 'Attribute Families',
         'attributes' => 'Attributes',
         'campaigns' => 'Campaigns',
+        'catalog-imports' => 'Catalog Data Import',
         'cancel' => 'Cancel',
         'cart-rules' => 'Cart Rules',
         'catalog' => 'Catalog',
