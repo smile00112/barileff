@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'অ্যাকাউন্ট',
+                'back-btn' => 'পিছনে',
                 'app-version' => 'সংস্করণ : :version',
                 'logout' => 'লগআউট',
                 'my-account' => 'আমার অ্যাকাউন্ট',

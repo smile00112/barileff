@@ -296,13 +296,13 @@ return [
         'icon' => '',
     ], [
         'key' => 'settings.delivery_cities',
-        'name' => 'Delivery Cities',
+        'name' => 'admin::app.components.layouts.sidebar.delivery-cities',
         'route' => 'admin.settings.delivery_cities.index',
         'sort' => 5,
         'icon' => '',
     ], [
         'key' => 'settings.delivery_zones',
-        'name' => 'Delivery Zones',
+        'name' => 'admin::app.components.layouts.sidebar.delivery-zones',
         'route' => 'admin.settings.delivery_zones.index',
         'sort' => 6,
         'icon' => '',

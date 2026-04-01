@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'アカウント',
+                'back-btn' => '戻る',
                 'app-version' => 'バージョン : :version',
                 'logout' => 'ログアウト',
                 'my-account' => 'マイアカウント',

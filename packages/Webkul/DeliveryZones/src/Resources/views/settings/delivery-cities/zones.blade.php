@@ -308,6 +308,10 @@
             'invalid_polygon_json' => __('admin::app.settings.delivery_zones.zones.invalid-polygon-json'),
             'polygon_must_be_array' => __('admin::app.settings.delivery_zones.zones.polygon-must-be-array'),
             'unable_to_delete_zone' => __('admin::app.settings.delivery_zones.zones.unable-to-delete-zone'),
+            'point_must_be_lat_lng' => __('admin::app.settings.delivery_zones.js.point-must-be-lat-lng'),
+            'lat_lng_numeric' => __('admin::app.settings.delivery_zones.js.lat-lng-numeric'),
+            'polygon_min_vertices' => __('admin::app.settings.delivery_zones.js.polygon-min-vertices'),
+            'remove_rate' => __('admin::app.settings.delivery_zones.edit.remove-rate'),
         ];
     @endphp
 
@@ -390,14 +394,14 @@
 
                 const normalizePoint = (value) => {
                     if (! Array.isArray(value) || value.length < 2) {
-                        throw new Error('Each point must be [latitude, longitude].');
+                        throw new Error(zoneTranslations.point_must_be_lat_lng);
                     }
 
                     const latitude = Number(value[0]);
                     const longitude = Number(value[1]);
 
                     if (! Number.isFinite(latitude) || ! Number.isFinite(longitude)) {
-                        throw new Error('Latitude and longitude must be numeric.');
+                        throw new Error(zoneTranslations.lat_lng_numeric);
                     }
 
                     return [Number(latitude.toFixed(7)), Number(longitude.toFixed(7))];
@@ -583,7 +587,7 @@
                                 <input class="${inputClasses}" type="number" name="rates[${index}][sort_order]" value="${Number(rate.sort_order)}">
                             </div>
                             <div class="flex items-end">
-                                <button type="button" class="secondary-button remove-rate">X</button>
+                                <button type="button" class="secondary-button remove-rate">${zoneTranslations.remove_rate}</button>
                             </div>
                         `;
 

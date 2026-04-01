@@ -1,21 +1,21 @@
 <x-admin::layouts>
     <x-slot:title>
-        Create Delivery City
+        @lang('admin::app.settings.delivery_zones.cities-create.title')
     </x-slot>
 
     <x-admin::form :action="route('admin.settings.delivery_cities.store')">
         <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
             <p class="text-xl font-bold text-gray-800 dark:text-white">
-                Create Delivery City
+                @lang('admin::app.settings.delivery_zones.cities-create.heading')
             </p>
 
             <div class="flex items-center gap-x-2.5">
                 <a href="{{ route('admin.settings.delivery_cities.index') }}" class="transparent-button">
-                    Back
+                    @lang('admin::app.settings.delivery_zones.edit.back-btn')
                 </a>
 
                 <button type="submit" class="primary-button">
-                    Save
+                    @lang('admin::app.settings.delivery_zones.edit.save-btn')
                 </button>
             </div>
         </div>
@@ -24,63 +24,63 @@
             <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">Code</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.cities-form.code')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="code" rules="required" :value="old('code')" />
                         <x-admin::form.control-group.error control-name="code" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">Name</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.cities-form.name')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="name" rules="required" :value="old('name')" />
                         <x-admin::form.control-group.error control-name="name" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">Country</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.cities-form.country')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="country" rules="required" :value="old('country', 'RU')" />
                         <x-admin::form.control-group.error control-name="country" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="!mb-0">
-                        <x-admin::form.control-group.label>State</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label>@lang('admin::app.settings.delivery_zones.cities-form.state')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="state" :value="old('state')" />
                         <x-admin::form.control-group.error control-name="state" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label>Center Latitude</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label>@lang('admin::app.settings.delivery_zones.cities-form.center-lat')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" id="center_lat" name="center_lat" :value="old('center_lat')" />
                         <x-admin::form.control-group.error control-name="center_lat" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="!mb-0">
-                        <x-admin::form.control-group.label>Center Longitude</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label>@lang('admin::app.settings.delivery_zones.cities-form.center-lng')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" id="center_lng" name="center_lng" :value="old('center_lng')" />
                         <x-admin::form.control-group.error control-name="center_lng" />
                     </x-admin::form.control-group>
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">City Polygon (Yandex Map)</p>
+                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.cities-form.city-polygon')</p>
 
                     <div id="city-map" class="h-[400px] w-full rounded border"></div>
 
                     <div class="mt-3 flex flex-wrap items-center gap-3">
-                        <button type="button" id="set-center-mode" class="secondary-button">Set Center</button>
+                        <button type="button" id="set-center-mode" class="secondary-button">@lang('admin::app.settings.delivery_zones.cities-form.set-center')</button>
 
                         <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
                             <input id="polygon-edit-mode" type="checkbox" checked />
-                            <span>Edit Polygon</span>
+                            <span>@lang('admin::app.settings.delivery_zones.cities-form.edit-polygon')</span>
                         </label>
 
-                        <button type="button" id="clear-polygon" class="secondary-button">Clear Polygon</button>
-                        <button type="button" id="apply-polygon-json" class="secondary-button">Apply JSON</button>
+                        <button type="button" id="clear-polygon" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.clear-polygon')</button>
+                        <button type="button" id="apply-polygon-json" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.apply-polygon-json')</button>
                     </div>
 
                     <p id="polygon-error" class="mt-2 hidden text-sm text-red-600"></p>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
-                        <x-admin::form.control-group.label class="required">Polygon JSON</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.cities-form.polygon-json')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="textarea" id="polygon_json" name="polygon_json" rules="required" :value="old('polygon_json', '[]')" />
                         <x-admin::form.control-group.error control-name="polygon_json" />
                     </x-admin::form.control-group>
@@ -90,7 +90,7 @@
             <div class="flex w-[360px] max-w-full flex-col gap-2">
                 <x-admin::accordion>
                     <x-slot:header>
-                        <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">Settings</p>
+                        <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.settings')</p>
                     </x-slot>
 
                     <x-slot:content>
@@ -116,8 +116,21 @@
 
         <script src="{{ $yandexMapsScriptUrl }}"></script>
 
+        @php
+            $deliveryCityPolygonJs = [
+                'invalid_json' => __('admin::app.settings.delivery_zones.js.invalid-json-polygon-field'),
+                'polygon_must_be_array' => __('admin::app.settings.delivery_zones.js.polygon-must-be-coordinate-array'),
+                'point_must_be_lat_lng' => __('admin::app.settings.delivery_zones.js.point-must-be-lat-lng'),
+                'lat_lng_numeric' => __('admin::app.settings.delivery_zones.js.lat-lng-numeric'),
+                'polygon_min_vertices' => __('admin::app.settings.delivery_zones.js.polygon-min-vertices'),
+                'set_center' => __('admin::app.settings.delivery_zones.js.set-center'),
+                'set_center_active' => __('admin::app.settings.delivery_zones.js.set-center-active'),
+            ];
+        @endphp
+
         <script type="module">
             const initDeliveryCityForm = () => {
+                const polygonJs = @json($deliveryCityPolygonJs);
                 const MIN_POLYGON_VERTEX_COUNT = 3;
                 const DEFAULT_CENTER = [55.751244, 37.618423];
 
@@ -180,14 +193,14 @@
 
                 const normalizePoint = (value) => {
                     if (! Array.isArray(value) || value.length < 2) {
-                        throw new Error('Each point must be [latitude, longitude].');
+                        throw new Error(polygonJs.point_must_be_lat_lng);
                     }
 
                     const latitude = Number(value[0]);
                     const longitude = Number(value[1]);
 
                     if (! Number.isFinite(latitude) || ! Number.isFinite(longitude)) {
-                        throw new Error('Latitude and longitude must be numeric.');
+                        throw new Error(polygonJs.lat_lng_numeric);
                     }
 
                     return [Number(latitude.toFixed(7)), Number(longitude.toFixed(7))];
@@ -214,11 +227,11 @@
                     try {
                         parsed = JSON.parse(jsonValue || '[]');
                     } catch (error) {
-                        throw new Error('Invalid JSON in Polygon JSON field.');
+                        throw new Error(polygonJs.invalid_json);
                     }
 
                     if (! Array.isArray(parsed)) {
-                        throw new Error('Polygon JSON must be an array of coordinates.');
+                        throw new Error(polygonJs.polygon_must_be_array);
                     }
 
                     if (! parsed.length) {
@@ -238,7 +251,7 @@
                         coordinatesWithoutClosingPoint.length > 0
                         && coordinatesWithoutClosingPoint.length < MIN_POLYGON_VERTEX_COUNT
                     ) {
-                        throw new Error(`Polygon must have at least ${MIN_POLYGON_VERTEX_COUNT} vertices.`);
+                        throw new Error(polygonJs.polygon_min_vertices.replace(':count', String(MIN_POLYGON_VERTEX_COUNT)));
                     }
 
                     return coordinatesWithoutClosingPoint;
@@ -265,7 +278,7 @@
                         return;
                     }
 
-                    setCenterModeButton.textContent = setCenterMode ? 'Set Center (Active)' : 'Set Center';
+                    setCenterModeButton.textContent = setCenterMode ? polygonJs.set_center_active : polygonJs.set_center;
                 };
 
                 const placeCenterMarker = (point) => {

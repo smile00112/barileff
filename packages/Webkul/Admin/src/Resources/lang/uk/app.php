@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Обліковий запис',
+                'back-btn' => 'Назад',
                 'app-version' => 'Версія: :version',
                 'logout' => 'Вийти',
                 'my-account' => 'Мій обліковий запис',

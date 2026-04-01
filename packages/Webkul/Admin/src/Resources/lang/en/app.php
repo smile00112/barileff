@@ -3106,6 +3106,7 @@ return [
                 'price' => 'Price',
                 'sort-order' => 'Sort Order',
                 'add-rate-row' => 'Add Rate Row',
+                'remove-rate' => '×',
                 'zone-polygon' => 'Zone Polygon (Yandex Map)',
                 'edit-mode' => 'Edit Mode',
                 'clear-polygon' => 'Clear Polygon',
@@ -3139,6 +3140,96 @@ return [
                 'unable-to-delete-zone' => 'Unable to delete zone.',
                 'status' => 'Status',
                 'expand-details' => 'Expand zone details',
+            ],
+
+            'cities-index' => [
+                'title' => 'Delivery Cities',
+                'heading' => 'Delivery Cities',
+                'add-city' => 'Add City',
+            ],
+
+            'cities-create' => [
+                'title' => 'Create Delivery City',
+                'heading' => 'Create Delivery City',
+            ],
+
+            'cities-edit' => [
+                'title' => 'Edit Delivery City',
+                'heading' => 'Edit Delivery City',
+                'manage-zones' => 'Manage Zones',
+            ],
+
+            'cities-form' => [
+                'code' => 'Code',
+                'name' => 'Name',
+                'country' => 'Country',
+                'state' => 'State',
+                'center-lat' => 'Center Latitude',
+                'center-lng' => 'Center Longitude',
+                'city-polygon' => 'City Polygon (Yandex Map)',
+                'set-center' => 'Set Center',
+                'set-center-active' => 'Set Center (Active)',
+                'edit-polygon' => 'Edit Polygon',
+                'polygon-json' => 'Polygon JSON',
+            ],
+
+            'zones-index' => [
+                'title' => 'Delivery Zones',
+                'heading' => 'Delivery Zones',
+                'add-zone' => 'Add Zone',
+            ],
+
+            'zones-create' => [
+                'title' => 'Create Delivery Zone',
+                'heading' => 'Create Delivery Zone',
+            ],
+
+            'datagrid' => [
+                'cities' => [
+                    'id' => 'ID',
+                    'code' => 'Code',
+                    'name' => 'Name',
+                    'country' => 'Country',
+                    'state' => 'State',
+                    'status' => 'Status',
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                    'manage-zones' => 'Manage Zones',
+                    'edit' => 'Edit',
+                    'delete' => 'Delete',
+                ],
+                'zones' => [
+                    'id' => 'ID',
+                    'code' => 'Code',
+                    'zone' => 'Zone',
+                    'city' => 'City',
+                    'delivery-time-min' => 'Delivery Time (min)',
+                    'status' => 'Status',
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                    'edit' => 'Edit',
+                    'delete' => 'Delete',
+                ],
+            ],
+
+            'response' => [
+                'city-created' => 'Delivery city created successfully.',
+                'city-updated' => 'Delivery city updated successfully.',
+                'city-deleted' => 'Delivery city deleted successfully.',
+                'zone-created' => 'Delivery zone created successfully.',
+                'zone-updated' => 'Delivery zone updated successfully.',
+                'zone-deleted' => 'Delivery zone deleted successfully.',
+            ],
+
+            'js' => [
+                'invalid-json-polygon-field' => 'Invalid JSON in Polygon JSON field.',
+                'polygon-must-be-coordinate-array' => 'Polygon JSON must be an array of coordinates.',
+                'point-must-be-lat-lng' => 'Each point must be [latitude, longitude].',
+                'lat-lng-numeric' => 'Latitude and longitude must be numeric.',
+                'polygon-min-vertices' => 'Polygon must have at least :count vertices.',
+                'set-center' => 'Set Center',
+                'set-center-active' => 'Set Center (Active)',
+                'edit-polygon' => 'Edit Polygon',
             ],
         ],
 
@@ -4657,6 +4748,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Account',
+                'back-btn' => 'Back',
                 'app-version' => 'Version : :version',
                 'logout' => 'Logout',
                 'my-account' => 'My Account',
@@ -4697,6 +4789,8 @@ return [
                 'customers' => 'Customers',
                 'dashboard' => 'Dashboard',
                 'data-transfer' => 'Data Transfer',
+                'delivery-cities' => 'Delivery Cities',
+                'delivery-zones' => 'Delivery Zones',
                 'discount' => 'Discount',
                 'email-templates' => 'Email Templates',
                 'events' => 'Events',
@@ -4957,6 +5051,8 @@ return [
         'currencies' => 'Currencies',
         'customers' => 'Customers',
         'dashboard' => 'Dashboard',
+        'delivery-cities' => 'Delivery Cities',
+        'delivery-zones' => 'Delivery Zones',
         'data-transfer' => 'Data Transfer',
         'delete' => 'Delete',
         'edit' => 'Edit',

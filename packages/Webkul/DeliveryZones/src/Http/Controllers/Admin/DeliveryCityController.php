@@ -38,7 +38,7 @@ class DeliveryCityController extends Controller
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 
-        session()->flash('success', 'Delivery city created successfully.');
+        session()->flash('success', trans('admin::app.settings.delivery_zones.response.city-created'));
 
         return redirect()->route('admin.settings.delivery_cities.index');
     }
@@ -78,7 +78,7 @@ class DeliveryCityController extends Controller
             'is_active' => (bool) $request->boolean('is_active'),
         ]);
 
-        session()->flash('success', 'Delivery city updated successfully.');
+        session()->flash('success', trans('admin::app.settings.delivery_zones.response.city-updated'));
 
         return redirect()->route('admin.settings.delivery_cities.index');
     }
@@ -88,7 +88,7 @@ class DeliveryCityController extends Controller
         DeliveryCity::query()->findOrFail($id)->delete();
 
         return response()->json([
-            'message' => 'Delivery city deleted successfully.',
+            'message' => trans('admin::app.settings.delivery_zones.response.city-deleted'),
         ]);
     }
 }

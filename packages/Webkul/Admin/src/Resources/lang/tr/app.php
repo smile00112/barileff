@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Hesap',
+                'back-btn' => 'Geri',
                 'app-version' => 'Sürüm : :version',
                 'logout' => 'Çıkış',
                 'my-account' => 'Hesabım',

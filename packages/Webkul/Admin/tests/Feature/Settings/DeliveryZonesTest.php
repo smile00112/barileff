@@ -375,3 +375,17 @@ it('should append yandex maps api key to delivery city map script url on create 
         ->assertSee('name="center_lng"', false)
         ->assertSee('name="polygon_json"', false);
 });
+
+it('resolves delivery zones admin translation keys in english and russian', function () {
+    app()->setLocale('en');
+
+    expect(__('admin::app.settings.delivery_zones.cities-index.heading'))->toBe('Delivery Cities')
+        ->and(__('admin::app.settings.delivery_zones.response.city-created'))->toBe('Delivery city created successfully.')
+        ->and(__('admin::app.settings.delivery_zones.datagrid.cities.manage-zones'))->toBe('Manage Zones');
+
+    app()->setLocale('ru');
+
+    expect(__('admin::app.settings.delivery_zones.cities-index.heading'))->toBe('Города доставки')
+        ->and(__('admin::app.settings.delivery_zones.response.city-created'))->toBe('Город доставки успешно создан.')
+        ->and(__('admin::app.components.layouts.sidebar.delivery-cities'))->toBe('Города доставки');
+});

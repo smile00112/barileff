@@ -3106,11 +3106,12 @@ return [
                 'price' => 'Цена',
                 'sort-order' => 'Порядок сортировки',
                 'add-rate-row' => 'Добавить тариф',
+                'remove-rate' => '×',
                 'zone-polygon' => 'Полигон зоны (Яндекс.Карты)',
                 'edit-mode' => 'Режим редактирования',
                 'clear-polygon' => 'Очистить полигон',
                 'apply-polygon-json' => 'Применить JSON',
-                'polygon-json' => 'Polygon JSON',
+                'polygon-json' => 'JSON полигона',
                 'polygon-color' => 'Цвет полигона',
                 'polygon-fill-opacity' => 'Прозрачность заливки',
                 'border-opacity' => 'Прозрачность границы',
@@ -3134,11 +3135,101 @@ return [
                 'save-zone' => 'Сохранить зону',
                 'edit-zone-title' => 'Редактирование зоны: :name',
                 'delete-zone-confirm' => 'Удалить эту зону?',
-                'invalid-polygon-json' => 'Некорректный JSON в поле Polygon JSON.',
-                'polygon-must-be-array' => 'Polygon JSON должен быть массивом координат.',
+                'invalid-polygon-json' => 'Некорректный JSON в поле JSON полигона.',
+                'polygon-must-be-array' => 'JSON полигона должен быть массивом координат.',
                 'unable-to-delete-zone' => 'Не удалось удалить зону.',
                 'status' => 'Статус',
                 'expand-details' => 'Развернуть детали зоны',
+            ],
+
+            'cities-index' => [
+                'title' => 'Города доставки',
+                'heading' => 'Города доставки',
+                'add-city' => 'Добавить город',
+            ],
+
+            'cities-create' => [
+                'title' => 'Создание города доставки',
+                'heading' => 'Создание города доставки',
+            ],
+
+            'cities-edit' => [
+                'title' => 'Редактирование города доставки',
+                'heading' => 'Редактирование города доставки',
+                'manage-zones' => 'Управление зонами',
+            ],
+
+            'cities-form' => [
+                'code' => 'Код',
+                'name' => 'Название',
+                'country' => 'Страна',
+                'state' => 'Регион / область',
+                'center-lat' => 'Широта центра',
+                'center-lng' => 'Долгота центра',
+                'city-polygon' => 'Полигон города (Яндекс.Карты)',
+                'set-center' => 'Задать центр',
+                'set-center-active' => 'Задать центр (активно)',
+                'edit-polygon' => 'Редактировать полигон',
+                'polygon-json' => 'JSON полигона',
+            ],
+
+            'zones-index' => [
+                'title' => 'Зоны доставки',
+                'heading' => 'Зоны доставки',
+                'add-zone' => 'Добавить зону',
+            ],
+
+            'zones-create' => [
+                'title' => 'Создание зоны доставки',
+                'heading' => 'Создание зоны доставки',
+            ],
+
+            'datagrid' => [
+                'cities' => [
+                    'id' => 'ID',
+                    'code' => 'Код',
+                    'name' => 'Название',
+                    'country' => 'Страна',
+                    'state' => 'Регион',
+                    'status' => 'Статус',
+                    'active' => 'Активен',
+                    'inactive' => 'Неактивен',
+                    'manage-zones' => 'Управление зонами',
+                    'edit' => 'Изменить',
+                    'delete' => 'Удалить',
+                ],
+                'zones' => [
+                    'id' => 'ID',
+                    'code' => 'Код',
+                    'zone' => 'Зона',
+                    'city' => 'Город',
+                    'delivery-time-min' => 'Время доставки (мин)',
+                    'status' => 'Статус',
+                    'active' => 'Активна',
+                    'inactive' => 'Неактивна',
+                    'edit' => 'Изменить',
+                    'delete' => 'Удалить',
+                ],
+            ],
+
+            'response' => [
+                'city-created' => 'Город доставки успешно создан.',
+                'city-updated' => 'Город доставки успешно обновлён.',
+                'city-deleted' => 'Город доставки успешно удалён.',
+                'zone-created' => 'Зона доставки успешно создана.',
+                'zone-updated' => 'Зона доставки успешно обновлена.',
+                'zone-deleted' => 'Зона доставки успешно удалена.',
+            ],
+
+            'js' => [
+                'invalid-json-polygon-field' => 'Некорректный JSON в поле JSON полигона.',
+                'polygon-must-be-coordinate-array' => 'JSON полигона должен быть массивом координат.',
+                'point-must-be-lat-lng' => 'Каждая точка должна быть [широта, долгота].',
+                'lat-lng-numeric' => 'Широта и долгота должны быть числами.',
+                'polygon-min-vertices' => 'В полигоне должно быть не менее :count вершин.',
+                'set-center' => 'Задать центр',
+                'set-center-active' => 'Задать центр (активно)',
+                'edit-polygon' => 'Редактировать полигон',
             ],
         ],
 
@@ -4657,6 +4748,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Аккаунт',
+                'back-btn' => 'Назад',
                 'app-version' => 'Версия : :version',
                 'logout' => 'Выход',
                 'my-account' => 'Мой аккаунт',
@@ -4697,6 +4789,8 @@ return [
                 'customers' => 'Клиенты',
                 'dashboard' => 'Панель управления',
                 'data-transfer' => 'Обмен данными',
+                'delivery-cities' => 'Города доставки',
+                'delivery-zones' => 'Зоны доставки',
                 'discount' => 'Скидка',
                 'email-templates' => 'Шаблоны электронных писем',
                 'events' => 'События',
@@ -4958,6 +5052,8 @@ return [
         'customers' => 'Клиенты',
         'dashboard' => 'Панель управления',
         'data-transfer' => 'Обмен данными',
+        'delivery-cities' => 'Города доставки',
+        'delivery-zones' => 'Зоны доставки',
         'delete' => 'Удалить',
         'edit' => 'Изменить',
         'email-templates' => 'Шаблоны электронных писем',

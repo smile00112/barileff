@@ -22,7 +22,11 @@ class MarkupGroupRequest extends FormRequest
             'schedule_type'                         => ['required', Rule::in(['daily', 'weekly'])],
             'apply_to_all_sources'                  => ['required', 'boolean'],
             'sort_order'                            => ['nullable', 'integer', 'min:0'],
-            'inventory_sources'                     => ['nullable', 'array'],
+            'inventory_sources'                     => Rule::when(
+                ! $this->boolean('apply_to_all_sources'),
+                ['required', 'array', 'min:1'],
+                ['nullable', 'array'],
+            ),
             'inventory_sources.*'                   => ['integer', 'exists:inventory_sources,id'],
             'schedules'                             => ['required', 'array', 'min:1'],
             'schedules.*.day_of_week'               => ['nullable', 'integer', 'min:0', 'max:6'],
@@ -38,6 +42,17 @@ class MarkupGroupRequest extends FormRequest
             'conditions.*.categories.*'             => ['integer', 'exists:categories,id'],
             'conditions.*.products'                 => ['nullable', 'array'],
             'conditions.*.products.*'               => ['integer', 'exists:products,id'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'inventory_sources'   => trans('markup::app.admin.groups.form.inventory-sources'),
+            'inventory_sources.*'   => trans('markup::app.admin.groups.form.inventory-sources'),
         ];
     }
 }

@@ -2,6 +2,17 @@
 
 return [
     'admin' => [
+        'menu' => [
+            'title' => 'Наценки',
+        ],
+
+        'acl' => [
+            'title'  => 'Наценки',
+            'create' => 'Создание группы наценки',
+            'edit'   => 'Редактирование группы наценки',
+            'delete' => 'Удаление группы наценки',
+        ],
+
         'groups' => [
             'created' => 'Группа наценки успешно создана.',
             'updated' => 'Группа наценки успешно обновлена.',
@@ -39,6 +50,17 @@ return [
                 'apply-to-all-sources' => 'Применять ко всем складам',
                 'yes'                  => 'Да',
                 'no'                   => 'Нет',
+
+                'inventory-sources'                  => 'Склады',
+                'inventory-sources-select-btn'       => 'Выбрать склады',
+                'inventory-sources-modal-title'      => 'Источники инвентаризации',
+                'inventory-sources-loading'          => 'Загрузка складов…',
+                'inventory-sources-load-error'       => 'Не удалось загрузить склады. Попробуйте снова.',
+                'inventory-sources-empty'              => 'Нет активных источников инвентаризации.',
+                'inventory-sources-selected-summary' => 'Выбрано: :count',
+                'inventory-sources-code'             => 'Код',
+                'inventory-sources-modal-apply'      => 'Применить',
+                'inventory-sources-modal-cancel'     => 'Отмена',
 
                 'schedules'   => 'Расписание',
                 'day-of-week' => 'День недели',

@@ -17,7 +17,7 @@ class DeliveryCitiesDataGrid extends DataGrid
     {
         $this->addColumn([
             'index' => 'id',
-            'label' => 'ID',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.id'),
             'type' => 'integer',
             'sortable' => true,
             'filterable' => true,
@@ -25,7 +25,7 @@ class DeliveryCitiesDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'code',
-            'label' => 'Code',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.code'),
             'type' => 'string',
             'sortable' => true,
             'filterable' => true,
@@ -34,7 +34,7 @@ class DeliveryCitiesDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'label' => 'Name',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.name'),
             'type' => 'string',
             'sortable' => true,
             'filterable' => true,
@@ -43,7 +43,7 @@ class DeliveryCitiesDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'country',
-            'label' => 'Country',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.country'),
             'type' => 'string',
             'sortable' => true,
             'filterable' => true,
@@ -51,7 +51,7 @@ class DeliveryCitiesDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'state',
-            'label' => 'State',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.state'),
             'type' => 'string',
             'sortable' => true,
             'filterable' => true,
@@ -59,11 +59,13 @@ class DeliveryCitiesDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'is_active',
-            'label' => 'Status',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.cities.status'),
             'type' => 'boolean',
             'sortable' => true,
             'filterable' => true,
-            'closure' => fn ($row) => $row->is_active ? 'Active' : 'Inactive',
+            'closure' => fn ($row) => $row->is_active
+                ? trans('admin::app.settings.delivery_zones.datagrid.cities.active')
+                : trans('admin::app.settings.delivery_zones.datagrid.cities.inactive'),
         ]);
     }
 
@@ -71,21 +73,21 @@ class DeliveryCitiesDataGrid extends DataGrid
     {
         $this->addAction([
             'icon' => 'icon-view',
-            'title' => 'Manage Zones',
+            'title' => trans('admin::app.settings.delivery_zones.datagrid.cities.manage-zones'),
             'method' => 'GET',
             'url' => fn ($row) => route('admin.settings.delivery_cities.zones', $row->id),
         ]);
 
         $this->addAction([
             'icon' => 'icon-edit',
-            'title' => 'Edit',
+            'title' => trans('admin::app.settings.delivery_zones.datagrid.cities.edit'),
             'method' => 'GET',
             'url' => fn ($row) => route('admin.settings.delivery_cities.edit', $row->id),
         ]);
 
         $this->addAction([
             'icon' => 'icon-delete',
-            'title' => 'Delete',
+            'title' => trans('admin::app.settings.delivery_zones.datagrid.cities.delete'),
             'method' => 'DELETE',
             'url' => fn ($row) => route('admin.settings.delivery_cities.delete', $row->id),
         ]);

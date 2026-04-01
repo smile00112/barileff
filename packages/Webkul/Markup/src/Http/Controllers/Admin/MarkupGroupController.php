@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Markup\DataGrids\MarkupGroupDataGrid;
 use Webkul\Markup\Http\Requests\MarkupGroupRequest;
 use Webkul\Markup\Jobs\ApplyMarkupJob;
@@ -37,6 +38,23 @@ class MarkupGroupController extends Controller
     public function create(): View
     {
         return view('markup::admin.groups.create');
+    }
+
+    public function inventorySourcesJson(InventorySourceRepository $inventorySourceRepository): JsonResponse
+    {
+        $sources = collect($inventorySourceRepository->findWhere(['status' => 1]))
+            ->sortBy([
+                ['priority', 'asc'],
+                ['name', 'asc'],
+            ])
+            ->values()
+            ->map(fn ($source) => [
+                'id'   => $source->id,
+                'name' => $source->name,
+                'code' => $source->code,
+            ]);
+
+        return new JsonResponse(['data' => $sources]);
     }
 
     public function store(MarkupGroupRequest $request): RedirectResponse

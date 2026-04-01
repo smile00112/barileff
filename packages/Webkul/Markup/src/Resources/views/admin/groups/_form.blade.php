@@ -106,22 +106,32 @@
         </x-admin::form.control-group>
     </div>
 
-    <x-admin::form.control-group>
-        <x-admin::form.control-group.label class="required">
-            @lang('markup::app.admin.groups.form.apply-to-all-sources')
-        </x-admin::form.control-group.label>
+    @php
+        $applyToAllOld = old('apply_to_all_sources', isset($group) ? ($group->apply_to_all_sources ? '1' : '0') : '1');
+        $initialInventorySourceIds = old('inventory_sources', isset($group) ? $group->inventorySources->pluck('id')->values()->all() : []);
+        $markupInventorySourceLabels = [
+            'loading'         => trans('markup::app.admin.groups.form.inventory-sources-loading'),
+            'loadError'       => trans('markup::app.admin.groups.form.inventory-sources-load-error'),
+            'empty'           => trans('markup::app.admin.groups.form.inventory-sources-empty'),
+            'modalTitle'      => trans('markup::app.admin.groups.form.inventory-sources-modal-title'),
+            'selectBtn'       => trans('markup::app.admin.groups.form.inventory-sources-select-btn'),
+            'selectedSummary' => trans('markup::app.admin.groups.form.inventory-sources-selected-summary'),
+            'code'            => trans('markup::app.admin.groups.form.inventory-sources-code'),
+            'apply'           => trans('markup::app.admin.groups.form.inventory-sources-modal-apply'),
+            'cancel'          => trans('markup::app.admin.groups.form.inventory-sources-modal-cancel'),
+        ];
+    @endphp
 
-        <x-admin::form.control-group.control
-            type="select"
-            name="apply_to_all_sources"
-            rules="required"
-            :value="old('apply_to_all_sources', isset($group) ? ($group->apply_to_all_sources ? '1' : '0') : '1')"
-            :label="trans('markup::app.admin.groups.form.apply-to-all-sources')"
-        >
-            <option value="1">@lang('markup::app.admin.groups.form.yes')</option>
-            <option value="0">@lang('markup::app.admin.groups.form.no')</option>
-        </x-admin::form.control-group.control>
+    <x-admin::form.control-group>
+        <v-markup-inventory-sources
+            sources-url="{{ route('admin.markup.groups.inventory-sources') }}"
+            initial-apply-to-all="{{ $applyToAllOld }}"
+            :initial-selected-ids='@json($initialInventorySourceIds)'
+            :labels='@json($markupInventorySourceLabels)'
+        ></v-markup-inventory-sources>
+
         <x-admin::form.control-group.error control-name="apply_to_all_sources" />
+        <x-admin::form.control-group.error control-name="inventory_sources" />
     </x-admin::form.control-group>
 </div>
 
@@ -204,6 +214,123 @@
 @endif
 
 @pushOnce('scripts')
+    <script type="text/x-template" id="v-markup-inventory-sources-template">
+        <div>
+            <label class="mb-1.5 flex items-center gap-1 text-sm font-medium text-gray-800 required dark:text-white">
+                @lang('markup::app.admin.groups.form.apply-to-all-sources')
+            </label>
+
+            <select
+                name="apply_to_all_sources"
+                v-model="applyToAll"
+                class="inline-flex w-full cursor-pointer appearance-none items-center justify-between gap-x-1 rounded-md border bg-white px-3 py-1.5 text-sm leading-6 text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300"
+            >
+                <option value="1">@lang('markup::app.admin.groups.form.yes')</option>
+                <option value="0">@lang('markup::app.admin.groups.form.no')</option>
+            </select>
+
+            <div v-show="applyToAll === '0'" class="mt-3">
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    @{{ selectedSummaryText }}
+                </p>
+
+                <template v-if="applyToAll === '0'">
+                    <input
+                        v-for="id in selectedIds"
+                        :key="id"
+                        type="hidden"
+                        name="inventory_sources[]"
+                        :value="id"
+                    />
+                </template>
+
+                <button
+                    type="button"
+                    class="secondary-button mt-2"
+                    @click="openModal"
+                >
+                    @{{ labels.selectBtn }}
+                </button>
+            </div>
+
+            <v-modal ref="sourcesModal">
+                <template #header="{ toggle }">
+                    <div class="flex w-full items-center justify-between gap-2.5 pr-2">
+                        <p class="text-lg font-bold text-gray-800 dark:text-white">
+                            @{{ labels.modalTitle }}
+                        </p>
+
+                        <span
+                            class="icon-cancel-1 cursor-pointer text-3xl hover:rounded-md hover:bg-gray-100 dark:hover:bg-gray-950"
+                            @click="toggle"
+                        >
+                        </span>
+                    </div>
+                </template>
+
+                <template #content>
+                    <div v-if="loadState === 'loading'" class="py-6 text-center text-sm text-gray-600 dark:text-gray-300">
+                        @{{ labels.loading }}
+                    </div>
+
+                    <div v-else-if="loadState === 'error'" class="py-6 text-center text-sm text-red-600">
+                        @{{ labels.loadError }}
+                    </div>
+
+                    <div v-else-if="!allSources.length" class="py-6 text-center text-sm text-gray-500">
+                        @{{ labels.empty }}
+                    </div>
+
+                    <ul v-else class="max-h-72 space-y-2 overflow-y-auto py-1">
+                        <li
+                            v-for="src in allSources"
+                            :key="src.id"
+                            class="flex items-start gap-2 rounded border border-gray-200 p-2 dark:border-gray-700"
+                        >
+                            <input
+                                type="checkbox"
+                                class="peer mt-0.5 cursor-pointer"
+                                :id="'inv-src-' + src.id"
+                                :checked="pendingIds.includes(Number(src.id))"
+                                @change="togglePending(src.id)"
+                            />
+
+                            <label
+                                class="cursor-pointer text-sm text-gray-800 dark:text-gray-200"
+                                :for="'inv-src-' + src.id"
+                            >
+                                <span class="font-medium">@{{ src.name }}</span>
+                                <span class="ml-1 text-xs text-gray-500">
+                                    (@{{ labels.code }}: @{{ src.code }})
+                                </span>
+                            </label>
+                        </li>
+                    </ul>
+                </template>
+
+                <template #footer>
+                    <div class="flex w-full justify-end gap-2.5">
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            @click="cancelModal"
+                        >
+                            @{{ labels.cancel }}
+                        </button>
+
+                        <button
+                            type="button"
+                            class="primary-button"
+                            @click="confirmModal"
+                        >
+                            @{{ labels.apply }}
+                        </button>
+                    </div>
+                </template>
+            </v-modal>
+        </div>
+    </script>
+
     <script type="text/x-template" id="v-markup-schedules-template">
         <div>
             <div
@@ -400,6 +527,112 @@
     </script>
 
     <script type="module">
+        app.component('v-markup-inventory-sources', {
+            template: '#v-markup-inventory-sources-template',
+
+            props: {
+                sourcesUrl: {
+                    type: String,
+                    required: true,
+                },
+                initialApplyToAll: {
+                    type: String,
+                    default: '1',
+                },
+                initialSelectedIds: {
+                    type: Array,
+                    default: () => [],
+                },
+                labels: {
+                    type: Object,
+                    default: () => ({}),
+                },
+            },
+
+            data() {
+                return {
+                    applyToAll: this.initialApplyToAll === '0' ? '0' : '1',
+                    selectedIds: (this.initialSelectedIds || []).map((id) => Number(id)),
+                    pendingIds: [],
+                    allSources: [],
+                    loadState: 'idle',
+                };
+            },
+
+            computed: {
+                selectedSummaryText() {
+                    const template = this.labels.selectedSummary || ':count';
+
+                    return String(template).replace(':count', String(this.selectedIds.length));
+                },
+            },
+
+            watch: {
+                applyToAll(value) {
+                    if (value === '1') {
+                        this.selectedIds = [];
+                        this.pendingIds = [];
+                    }
+                },
+            },
+
+            mounted() {
+                this.loadSources();
+            },
+
+            methods: {
+                async loadSources() {
+                    this.loadState = 'loading';
+
+                    try {
+                        const response = await fetch(this.sourcesUrl, {
+                            headers: {
+                                Accept: 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            credentials: 'same-origin',
+                        });
+
+                        if (! response.ok) {
+                            throw new Error('Bad response');
+                        }
+
+                        const payload = await response.json();
+
+                        this.allSources = payload.data || [];
+                        this.loadState = 'loaded';
+                    } catch (e) {
+                        this.loadState = 'error';
+                    }
+                },
+
+                openModal() {
+                    this.pendingIds = [...this.selectedIds];
+                    this.$refs.sourcesModal.open();
+                },
+
+                cancelModal() {
+                    this.$refs.sourcesModal.close();
+                },
+
+                confirmModal() {
+                    this.selectedIds = [...this.pendingIds];
+                    this.$refs.sourcesModal.close();
+                },
+
+                togglePending(sourceId) {
+                    const id = Number(sourceId);
+                    const index = this.pendingIds.indexOf(id);
+
+                    if (index > -1) {
+                        this.pendingIds.splice(index, 1);
+                    } else {
+                        this.pendingIds.push(id);
+                    }
+                },
+            },
+        });
+
         app.component('v-markup-schedules', {
             template: '#v-markup-schedules-template',
 

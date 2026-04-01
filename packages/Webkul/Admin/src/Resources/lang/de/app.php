@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Konto',
+                'back-btn' => 'Zurück',
                 'app-version' => 'Version: :version',
                 'logout' => 'Abmelden',
                 'my-account' => 'Mein Konto',

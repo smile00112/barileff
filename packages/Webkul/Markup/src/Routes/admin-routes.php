@@ -9,6 +9,7 @@ Route::group([
 ], function () {
     Route::prefix('markup/groups')->name('admin.markup.groups.')->controller(MarkupGroupController::class)->group(function () {
         Route::get('', 'index')->name('index');
+        Route::get('inventory-sources', 'inventorySourcesJson')->name('inventory-sources');
         Route::get('create', 'create')->name('create');
         Route::post('create', 'store')->name('store');
         Route::get('edit/{id}', 'edit')->name('edit');

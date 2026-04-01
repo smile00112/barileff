@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'حساب کاربری',
+                'back-btn' => 'بازگشت',
                 'app-version' => 'نسخه : :version',
                 'logout' => 'خروج',
                 'my-account' => 'حساب من',

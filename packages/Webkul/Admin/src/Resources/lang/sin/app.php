@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'ගිණුම',
+                'back-btn' => 'ආපසු',
                 'app-version' => 'වසර : :version',
                 'logout' => 'ඉවත්වෙනවා',
                 'my-account' => 'මමාගේ ගිණුම',

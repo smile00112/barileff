@@ -702,7 +702,7 @@ return [
         'sort' => 3,
     ], [
         'key' => 'settings.delivery_cities',
-        'name' => 'Delivery cities',
+        'name' => 'admin::app.acl.delivery-cities',
         'route' => 'admin.settings.delivery_cities.index',
         'sort' => 5,
     ], [
@@ -722,7 +722,7 @@ return [
         'sort' => 3,
     ], [
         'key' => 'settings.delivery_zones',
-        'name' => 'Delivery zones',
+        'name' => 'admin::app.acl.delivery-zones',
         'route' => 'admin.settings.delivery_zones.index',
         'sort' => 6,
     ], [

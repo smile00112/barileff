@@ -58,7 +58,7 @@ class DeliveryZoneController extends Controller
             ]);
         }
 
-        session()->flash('success', 'Delivery zone created successfully.');
+        session()->flash('success', trans('admin::app.settings.delivery_zones.response.zone-created'));
 
         if ($redirectCityId > 0) {
             return redirect()->route('admin.settings.delivery_cities.zones', $redirectCityId);
@@ -116,7 +116,7 @@ class DeliveryZoneController extends Controller
             ]);
         }
 
-        session()->flash('success', 'Delivery zone updated successfully.');
+        session()->flash('success', trans('admin::app.settings.delivery_zones.response.zone-updated'));
 
         if ($redirectCityId > 0) {
             return redirect()->route('admin.settings.delivery_cities.zones', $redirectCityId);
@@ -130,7 +130,7 @@ class DeliveryZoneController extends Controller
         DeliveryZone::query()->findOrFail($id)->delete();
 
         return response()->json([
-            'message' => 'Delivery zone deleted successfully.',
+            'message' => trans('admin::app.settings.delivery_zones.response.zone-deleted'),
         ]);
     }
 }

@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Account',
+                'back-btn' => 'Terug',
                 'app-version' => 'Versie : :version',
                 'logout' => 'Uitloggen',
                 'my-account' => 'Mijn Account',

@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'खाता',
+                'back-btn' => 'वापस',
                 'app-version' => 'संस्करण: :version',
                 'logout' => 'लॉगआउट',
                 'my-account' => 'मेरा खाता',

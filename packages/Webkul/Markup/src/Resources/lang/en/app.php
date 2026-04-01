@@ -2,6 +2,17 @@
 
 return [
     'admin' => [
+        'menu' => [
+            'title' => 'Markup',
+        ],
+
+        'acl' => [
+            'title'  => 'Markup',
+            'create' => 'Create Markup Group',
+            'edit'   => 'Edit Markup Group',
+            'delete' => 'Delete Markup Group',
+        ],
+
         'groups' => [
             'created' => 'Markup group created successfully.',
             'updated' => 'Markup group updated successfully.',
@@ -39,6 +50,17 @@ return [
                 'apply-to-all-sources' => 'Apply to All Sources',
                 'yes'                  => 'Yes',
                 'no'                   => 'No',
+
+                'inventory-sources'                  => 'Inventory sources',
+                'inventory-sources-select-btn'       => 'Select sources',
+                'inventory-sources-modal-title'      => 'Inventory sources',
+                'inventory-sources-loading'          => 'Loading inventory sources…',
+                'inventory-sources-load-error'       => 'Could not load inventory sources. Please try again.',
+                'inventory-sources-empty'              => 'No active inventory sources found.',
+                'inventory-sources-selected-summary' => ':count selected',
+                'inventory-sources-code'             => 'Code',
+                'inventory-sources-modal-apply'      => 'Apply',
+                'inventory-sources-modal-cancel'     => 'Cancel',
 
                 'schedules'   => 'Schedules',
                 'day-of-week' => 'Day of Week',

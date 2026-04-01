@@ -108,7 +108,7 @@
                                 </x-admin::form.control-group>
 
                                 <div class="flex items-end">
-                                    <button type="button" class="secondary-button remove-rate">X</button>
+                                    <button type="button" class="secondary-button remove-rate">@lang('admin::app.settings.delivery_zones.edit.remove-rate')</button>
                                 </div>
                             </div>
                         @endforeach
@@ -193,8 +193,20 @@
 
         <script src="{{ $yandexMapsScriptUrl }}"></script>
 
+        @php
+            $deliveryZonePolygonJs = [
+                'invalid_json' => __('admin::app.settings.delivery_zones.js.invalid-json-polygon-field'),
+                'polygon_must_be_array' => __('admin::app.settings.delivery_zones.js.polygon-must-be-coordinate-array'),
+                'point_must_be_lat_lng' => __('admin::app.settings.delivery_zones.js.point-must-be-lat-lng'),
+                'lat_lng_numeric' => __('admin::app.settings.delivery_zones.js.lat-lng-numeric'),
+                'polygon_min_vertices' => __('admin::app.settings.delivery_zones.js.polygon-min-vertices'),
+                'remove_rate' => __('admin::app.settings.delivery_zones.edit.remove-rate'),
+            ];
+        @endphp
+
         <script type="module">
             const initDeliveryZoneForm = () => {
+                const polygonJs = @json($deliveryZonePolygonJs);
                 const MIN_POLYGON_VERTEX_COUNT = 3;
                 let ratesIndex = {{ count($rates) }};
                 const ratesWrapper = document.getElementById('rates-wrapper');
@@ -226,7 +238,7 @@
                             <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
                         </div>
                         <div class="flex items-end">
-                            <button type="button" class="secondary-button remove-rate">X</button>
+                            <button type="button" class="secondary-button remove-rate">${polygonJs.remove_rate}</button>
                         </div>
                     `;
 
@@ -330,14 +342,14 @@
 
                 const normalizePoint = (value) => {
                     if (! Array.isArray(value) || value.length < 2) {
-                        throw new Error('Each point must be [latitude, longitude].');
+                        throw new Error(polygonJs.point_must_be_lat_lng);
                     }
 
                     const latitude = Number(value[0]);
                     const longitude = Number(value[1]);
 
                     if (! Number.isFinite(latitude) || ! Number.isFinite(longitude)) {
-                        throw new Error('Latitude and longitude must be numeric.');
+                        throw new Error(polygonJs.lat_lng_numeric);
                     }
 
                     return [Number(latitude.toFixed(7)), Number(longitude.toFixed(7))];
@@ -364,11 +376,11 @@
                     try {
                         parsed = JSON.parse(jsonValue || '[]');
                     } catch (error) {
-                        throw new Error('Invalid JSON in Polygon JSON field.');
+                        throw new Error(polygonJs.invalid_json);
                     }
 
                     if (! Array.isArray(parsed)) {
-                        throw new Error('Polygon JSON must be an array of coordinates.');
+                        throw new Error(polygonJs.polygon_must_be_array);
                     }
 
                     if (! parsed.length) {
@@ -388,7 +400,7 @@
                         coordinatesWithoutClosingPoint.length > 0
                         && coordinatesWithoutClosingPoint.length < MIN_POLYGON_VERTEX_COUNT
                     ) {
-                        throw new Error(`Polygon must have at least ${MIN_POLYGON_VERTEX_COUNT} vertices.`);
+                        throw new Error(polygonJs.polygon_min_vertices.replace(':count', String(MIN_POLYGON_VERTEX_COUNT)));
                     }
 
                     return coordinatesWithoutClosingPoint;

@@ -32,4 +32,21 @@ class DeliveryCityRequest extends FormRequest
             'is_active' => ['nullable', 'boolean'],
         ];
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'code' => __('admin::app.settings.delivery_zones.cities-form.code'),
+            'name' => __('admin::app.settings.delivery_zones.cities-form.name'),
+            'country' => __('admin::app.settings.delivery_zones.cities-form.country'),
+            'state' => __('admin::app.settings.delivery_zones.cities-form.state'),
+            'center_lat' => __('admin::app.settings.delivery_zones.cities-form.center-lat'),
+            'center_lng' => __('admin::app.settings.delivery_zones.cities-form.center-lng'),
+            'polygon_json' => __('admin::app.settings.delivery_zones.cities-form.polygon-json'),
+            'is_active' => __('admin::app.settings.delivery_zones.edit.active'),
+        ];
+    }
 }

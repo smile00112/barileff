@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => '账户',
+                'back-btn' => '返回',
                 'app-version' => '版本：:version',
                 'logout' => '退出',
                 'my-account' => '我的账户',

@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Akun',
+                'back-btn' => 'Kembali',
                 'app-version' => 'Versi : :version',
                 'logout' => 'Keluar',
                 'my-account' => 'Akun Saya',

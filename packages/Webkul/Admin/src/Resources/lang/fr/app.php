@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Compte',
+                'back-btn' => 'Retour',
                 'app-version' => 'Version : :version',
                 'logout' => 'Déconnexion',
                 'my-account' => 'Mon Compte',

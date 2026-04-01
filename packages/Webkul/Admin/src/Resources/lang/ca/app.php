@@ -4597,6 +4597,7 @@ return [
         'layouts' => [
             'header' => [
                 'account-title' => 'Compte',
+                'back-btn' => 'Enrere',
                 'app-version' => 'Versió : :version',
                 'logout' => 'Tancar sessió',
                 'my-account' => 'El meu compte',

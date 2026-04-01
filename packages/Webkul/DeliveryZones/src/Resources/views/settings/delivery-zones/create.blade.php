@@ -1,21 +1,21 @@
 <x-admin::layouts>
     <x-slot:title>
-        Create Delivery Zone
+        @lang('admin::app.settings.delivery_zones.zones-create.title')
     </x-slot>
 
     <x-admin::form :action="route('admin.settings.delivery_zones.store')">
         <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
             <p class="text-xl font-bold text-gray-800 dark:text-white">
-                Create Delivery Zone
+                @lang('admin::app.settings.delivery_zones.zones-create.heading')
             </p>
 
             <div class="flex items-center gap-x-2.5">
                 <a href="{{ route('admin.settings.delivery_zones.index') }}" class="transparent-button">
-                    Back
+                    @lang('admin::app.settings.delivery_zones.edit.back-btn')
                 </a>
 
                 <button type="submit" class="primary-button">
-                    Save
+                    @lang('admin::app.settings.delivery_zones.edit.save-btn')
                 </button>
             </div>
         </div>
@@ -24,9 +24,9 @@
             <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">City</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.city')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="select" name="city_id" rules="required">
-                            <option value="">Select city</option>
+                            <option value="">@lang('admin::app.settings.delivery_zones.edit.select-city')</option>
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}" @selected(old('city_id') == $city->id)>{{ $city->name }}</option>
                             @endforeach
@@ -35,19 +35,19 @@
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">Code</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.code')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="code" rules="required" :value="old('code')" />
                         <x-admin::form.control-group.error control-name="code" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label class="required">Zone Name</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.zone-name')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="text" name="name" rules="required" :value="old('name')" />
                         <x-admin::form.control-group.error control-name="name" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group>
-                        <x-admin::form.control-group.label>Delivery Time (min)</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label>@lang('admin::app.settings.delivery_zones.edit.delivery-time-min')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="number" name="delivery_time_minutes" :value="old('delivery_time_minutes', 60)" />
                         <x-admin::form.control-group.error control-name="delivery_time_minutes" />
                     </x-admin::form.control-group>
@@ -55,12 +55,12 @@
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">Inventory Sources</p>
+                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.inventory-sources')</p>
 
                     <x-admin::form.control-group class="!mb-0">
-                        <x-admin::form.control-group.label class="required">Inventory Source</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.inventory-source')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="select" name="inventory_source_ids" rules="required">
-                            <option value="">Select inventory source</option>
+                            <option value="">@lang('admin::app.settings.delivery_zones.edit.select-inventory-source')</option>
 
                             @foreach ($inventorySources as $source)
                                 <option value="{{ $source->id }}" @selected((int) old('inventory_source_ids') === $source->id)>
@@ -74,73 +74,73 @@
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">Zone Rates</p>
+                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.zone-rates')</p>
 
                     <div id="rates-wrapper" class="space-y-3">
                         <div class="grid grid-cols-4 gap-2 max-md:grid-cols-1">
                             <x-admin::form.control-group class="!mb-0">
-                                <x-admin::form.control-group.label class="required">Min Order Total</x-admin::form.control-group.label>
+                                <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.min-order-total')</x-admin::form.control-group.label>
                                 <x-admin::form.control-group.control type="number" step="0.01" name="rates[0][min_order_total]" value="0" />
                             </x-admin::form.control-group>
 
                             <x-admin::form.control-group class="!mb-0">
-                                <x-admin::form.control-group.label class="required">Price</x-admin::form.control-group.label>
+                                <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.price')</x-admin::form.control-group.label>
                                 <x-admin::form.control-group.control type="number" step="0.01" name="rates[0][price]" />
                             </x-admin::form.control-group>
 
                             <x-admin::form.control-group class="!mb-0">
-                                <x-admin::form.control-group.label>Sort Order</x-admin::form.control-group.label>
+                                <x-admin::form.control-group.label>@lang('admin::app.settings.delivery_zones.edit.sort-order')</x-admin::form.control-group.label>
                                 <x-admin::form.control-group.control type="number" name="rates[0][sort_order]" value="0" />
                             </x-admin::form.control-group>
 
                             <div class="flex items-end">
-                                <button type="button" class="secondary-button remove-rate">X</button>
+                                <button type="button" class="secondary-button remove-rate">@lang('admin::app.settings.delivery_zones.edit.remove-rate')</button>
                             </div>
                         </div>
                     </div>
 
                     <button type="button" id="add-rate-row" class="secondary-button mt-3">
-                        Add Rate Row
+                        @lang('admin::app.settings.delivery_zones.edit.add-rate-row')
                     </button>
                 </div>
 
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">Zone Polygon (Yandex Map)</p>
+                    <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.zone-polygon')</p>
 
                     <div id="zone-map" class="h-[400px] w-full rounded border"></div>
 
                     <div class="mt-3 flex flex-wrap items-center gap-3">
                         <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
                             <input id="polygon-edit-mode" type="checkbox" checked />
-                            <span>Edit Mode</span>
+                            <span>@lang('admin::app.settings.delivery_zones.edit.edit-mode')</span>
                         </label>
 
-                        <button type="button" id="clear-polygon" class="secondary-button">Clear Polygon</button>
-                        <button type="button" id="apply-polygon-json" class="secondary-button">Apply JSON</button>
+                        <button type="button" id="clear-polygon" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.clear-polygon')</button>
+                        <button type="button" id="apply-polygon-json" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.apply-polygon-json')</button>
                     </div>
 
                     <p id="polygon-error" class="mt-2 hidden text-sm text-red-600"></p>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
-                        <x-admin::form.control-group.label class="required">Polygon JSON</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.polygon-json')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="textarea" id="polygon_json" name="polygon_json" rules="required" :value="old('polygon_json', '[]')" />
                         <x-admin::form.control-group.error control-name="polygon_json" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
-                        <x-admin::form.control-group.label class="required">Polygon Color</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.polygon-color')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="color" id="polygon_color" name="polygon_color" rules="required" :value="old('polygon_color', '#0077cc')" />
                         <x-admin::form.control-group.error control-name="polygon_color" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
-                        <x-admin::form.control-group.label class="required">Polygon Fill Opacity</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.polygon-fill-opacity')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="number" id="polygon_fill_opacity" name="polygon_fill_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_fill_opacity', 0.20)" />
                         <x-admin::form.control-group.error control-name="polygon_fill_opacity" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
-                        <x-admin::form.control-group.label class="required">Border Opacity</x-admin::form.control-group.label>
+                        <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.border-opacity')</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control type="number" id="polygon_stroke_opacity" name="polygon_stroke_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_stroke_opacity', 1)" />
                         <x-admin::form.control-group.error control-name="polygon_stroke_opacity" />
                     </x-admin::form.control-group>
@@ -150,7 +150,7 @@
             <div class="flex w-[360px] max-w-full flex-col gap-2">
                 <x-admin::accordion>
                     <x-slot:header>
-                        <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">Settings</p>
+                        <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.settings')</p>
                     </x-slot>
 
                     <x-slot:content>
@@ -176,8 +176,20 @@
 
         <script src="{{ $yandexMapsScriptUrl }}"></script>
 
+        @php
+            $deliveryZonePolygonJs = [
+                'invalid_json' => __('admin::app.settings.delivery_zones.js.invalid-json-polygon-field'),
+                'polygon_must_be_array' => __('admin::app.settings.delivery_zones.js.polygon-must-be-coordinate-array'),
+                'point_must_be_lat_lng' => __('admin::app.settings.delivery_zones.js.point-must-be-lat-lng'),
+                'lat_lng_numeric' => __('admin::app.settings.delivery_zones.js.lat-lng-numeric'),
+                'polygon_min_vertices' => __('admin::app.settings.delivery_zones.js.polygon-min-vertices'),
+                'remove_rate' => __('admin::app.settings.delivery_zones.edit.remove-rate'),
+            ];
+        @endphp
+
         <script type="module">
             const initDeliveryZoneForm = () => {
+                const polygonJs = @json($deliveryZonePolygonJs);
                 const MIN_POLYGON_VERTEX_COUNT = 3;
                 let ratesIndex = 1;
                 const ratesWrapper = document.getElementById('rates-wrapper');
@@ -209,7 +221,7 @@
                             <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
                         </div>
                         <div class="flex items-end">
-                            <button type="button" class="secondary-button remove-rate">X</button>
+                            <button type="button" class="secondary-button remove-rate">${polygonJs.remove_rate}</button>
                         </div>
                     `;
 
@@ -313,14 +325,14 @@
 
                 const normalizePoint = (value) => {
                     if (! Array.isArray(value) || value.length < 2) {
-                        throw new Error('Each point must be [latitude, longitude].');
+                        throw new Error(polygonJs.point_must_be_lat_lng);
                     }
 
                     const latitude = Number(value[0]);
                     const longitude = Number(value[1]);
 
                     if (! Number.isFinite(latitude) || ! Number.isFinite(longitude)) {
-                        throw new Error('Latitude and longitude must be numeric.');
+                        throw new Error(polygonJs.lat_lng_numeric);
                     }
 
                     return [Number(latitude.toFixed(7)), Number(longitude.toFixed(7))];
@@ -347,11 +359,11 @@
                     try {
                         parsed = JSON.parse(jsonValue || '[]');
                     } catch (error) {
-                        throw new Error('Invalid JSON in Polygon JSON field.');
+                        throw new Error(polygonJs.invalid_json);
                     }
 
                     if (! Array.isArray(parsed)) {
-                        throw new Error('Polygon JSON must be an array of coordinates.');
+                        throw new Error(polygonJs.polygon_must_be_array);
                     }
 
                     if (! parsed.length) {
@@ -371,7 +383,7 @@
                         coordinatesWithoutClosingPoint.length > 0
                         && coordinatesWithoutClosingPoint.length < MIN_POLYGON_VERTEX_COUNT
                     ) {
-                        throw new Error(`Polygon must have at least ${MIN_POLYGON_VERTEX_COUNT} vertices.`);
+                        throw new Error(polygonJs.polygon_min_vertices.replace(':count', String(MIN_POLYGON_VERTEX_COUNT)));
                     }
 
                     return coordinatesWithoutClosingPoint;
