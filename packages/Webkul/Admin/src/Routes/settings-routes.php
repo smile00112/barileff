@@ -7,6 +7,7 @@ use Webkul\Admin\Http\Controllers\Settings\DataTransfer\ImportController;
 use Webkul\Admin\Http\Controllers\Settings\ExchangeRateController;
 use Webkul\Admin\Http\Controllers\Settings\InventorySourceController;
 use Webkul\Admin\Http\Controllers\Settings\LocaleController;
+use Webkul\Admin\Http\Controllers\Settings\PushNotificationController;
 use Webkul\Admin\Http\Controllers\Settings\RoleController;
 use Webkul\Admin\Http\Controllers\Settings\Tax\TaxCategoryController;
 use Webkul\Admin\Http\Controllers\Settings\Tax\TaxRateController;
@@ -254,5 +255,18 @@ Route::prefix('settings')->group(function () {
 
             Route::get('download-error-report/{id}', 'downloadErrorReport')->name('admin.settings.data_transfer.imports.download_error_report');
         });
+    });
+
+    /**
+     * Push notification settings routes.
+     */
+    Route::controller(PushNotificationController::class)->prefix('push-notifications')->group(function () {
+        Route::get('', 'index')->name('admin.settings.push_notifications.index');
+
+        Route::post('update', 'update')->name('admin.settings.push_notifications.update');
+
+        Route::post('vapid/generate', 'generateVapid')->name('admin.settings.push_notifications.vapid.generate');
+
+        Route::put('vapid/update', 'updateVapid')->name('admin.settings.push_notifications.vapid.update');
     });
 });

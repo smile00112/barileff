@@ -9,6 +9,7 @@ use Webkul\Shop\Http\Controllers\Customer\Account\WishlistController;
 use Webkul\Shop\Http\Controllers\Customer\CustomerController;
 use Webkul\Shop\Http\Controllers\Customer\ForgotPasswordController;
 use Webkul\Shop\Http\Controllers\Customer\GDPRController;
+use Webkul\Shop\Http\Controllers\Customer\PushNotificationController;
 use Webkul\Shop\Http\Controllers\Customer\RegistrationController;
 use Webkul\Shop\Http\Controllers\Customer\ResetPasswordController;
 use Webkul\Shop\Http\Controllers\Customer\SessionController;
@@ -167,6 +168,27 @@ Route::prefix('customer')->group(function () {
 
                 Route::get('download/{id}', 'download')->name('shop.customers.account.downloadable_products.download');
             });
+
+            /**
+             * Push notification routes.
+             */
+            Route::controller(PushNotificationController::class)->prefix('push')->group(function () {
+                Route::post('subscribe', 'subscribe')->name('shop.customers.push.subscribe');
+
+                Route::delete('unsubscribe', 'unsubscribe')->name('shop.customers.push.unsubscribe');
+
+                Route::get('notifications', 'notifications')->name('shop.customers.push.notifications');
+
+                Route::post('notifications/mark-all-read', 'markAllRead')->name('shop.customers.push.mark_all_read');
+
+                Route::post('notifications/{id}/read', 'markRead')->name('shop.customers.push.mark_read');
+            });
         });
     });
 });
+
+/**
+ * Shop VAPID public key (no auth required so the browser can register).
+ */
+Route::get('push/vapid-public-key', [PushNotificationController::class, 'vapidPublicKey'])
+    ->name('shop.push.vapid_public_key');

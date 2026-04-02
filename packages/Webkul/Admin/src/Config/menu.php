@@ -366,6 +366,12 @@ return [
         'route' => 'admin.settings.data_transfer.imports.index',
         'sort' => 1,
         'icon' => '',
+    ], [
+        'key' => 'settings.push_notifications',
+        'name' => 'admin::app.components.layouts.sidebar.push-notifications',
+        'route' => 'admin.settings.push_notifications.index',
+        'sort' => 13,
+        'icon' => '',
     ],
 
     /**

@@ -2962,6 +2962,32 @@ return [
             ],
         ],
 
+        'push-notifications' => [
+            'index' => [
+                'title' => 'Push Notifications',
+                'vapid-section' => 'VAPID Keys',
+                'vapid-description' => 'VAPID keys are required to send Web Push notifications. Generate once and keep them consistent.',
+                'public-key' => 'Public Key',
+                'subject' => 'Subject (mailto or URL)',
+                'generate-btn' => 'Generate New Keys',
+                'save-subject-btn' => 'Save Subject',
+                'admin-events-tab' => 'Admin Events',
+                'shop-events-tab' => 'Shop Events',
+                'event-col' => 'Event',
+                'title-col' => 'Title',
+                'body-col' => 'Message Body',
+                'target-col' => 'Target',
+                'active-col' => 'Active',
+                'save-btn' => 'Save',
+                'placeholders-hint' => 'Available placeholders',
+                'no-vapid-warning' => 'VAPID keys are not configured. Web Push will not work until you generate keys.',
+            ],
+            'update-success' => 'Push notification setting saved successfully.',
+            'vapid-generated' => 'VAPID keys generated successfully.',
+            'vapid-updated' => 'VAPID subject updated successfully.',
+            'vapid-missing' => 'Please generate VAPID keys first.',
+        ],
+
         'data-transfer' => [
             'imports' => [
                 'create' => [
@@ -4914,6 +4940,7 @@ return [
                 'orders' => 'Orders',
                 'products' => 'Products',
                 'promotions' => 'Promotions',
+                'push-notifications' => 'Push Notifications',
                 'refunds' => 'Refunds',
                 'reporting' => 'Reporting',
                 'reviews' => 'Reviews',

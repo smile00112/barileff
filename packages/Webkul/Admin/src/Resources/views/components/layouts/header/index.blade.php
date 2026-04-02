@@ -786,4 +786,64 @@
             },
         });
     </script>
+
+    <script type="module">
+        (function () {
+            if (! ('serviceWorker' in navigator) || ! ('PushManager' in window)) {
+                return;
+            }
+
+            const vapidKeyUrl   = '{{ route('admin.push.vapid_public_key') }}';
+            const subscribeUrl  = '{{ route('admin.push.subscribe') }}';
+            const unsubscribeUrl = '{{ route('admin.push.unsubscribe') }}';
+
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+                const raw     = window.atob(base64);
+                return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+            }
+
+            async function registerAdminPush() {
+                try {
+                    const keyResp = await fetch(vapidKeyUrl);
+                    const keyData = await keyResp.json();
+
+                    if (! keyData.public_key) {
+                        return;
+                    }
+
+                    const reg          = await navigator.serviceWorker.register('/sw.js');
+                    const subscription = await reg.pushManager.getSubscription();
+
+                    if (subscription) {
+                        return;
+                    }
+
+                    const permission = await Notification.requestPermission();
+
+                    if (permission !== 'granted') {
+                        return;
+                    }
+
+                    const newSub = await reg.pushManager.subscribe({
+                        userVisibleOnly:      true,
+                        applicationServerKey: urlBase64ToUint8Array(keyData.public_key),
+                    });
+
+                    const subJson = newSub.toJSON();
+
+                    await axios.post(subscribeUrl, {
+                        endpoint:   subJson.endpoint,
+                        public_key: subJson.keys.p256dh,
+                        auth_token: subJson.keys.auth,
+                    });
+                } catch (e) {
+                    console.error('[AdminPush] Registration error:', e);
+                }
+            }
+
+            navigator.serviceWorker.ready.then(registerAdminPush);
+        })();
+    </script>
 @endpushOnce

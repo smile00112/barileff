@@ -55,6 +55,11 @@ Route::group(['middleware' => ['admin', NoCacheMiddleware::class], 'prefix' => c
     require 'notification-routes.php';
 
     /**
+     * Push subscription routes.
+     */
+    require 'push-routes.php';
+
+    /**
      * Remaining routes.
      */
     require 'rest-routes.php';
