@@ -1717,8 +1717,10 @@ return [
 
                 'validation' => [
                     'file-csv-only' => 'Only CSV / TXT files are accepted.',
+                    'file-invalid-encoding' => 'The file must be UTF-8 encoded.',
                     'file-required' => 'Please select a file.',
                     'file-too-large' => 'The file may not be larger than 50 MB.',
+                    'file-unreadable' => 'The file could not be read. Please try uploading it again.',
                 ],
             ],
 

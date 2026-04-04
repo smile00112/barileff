@@ -44,6 +44,23 @@ it('should reject non-csv file upload', function () {
     ])->assertSessionHasErrors('file');
 });
 
+it('should reject csv upload with non-utf8 encoding', function () {
+    $this->loginAsAdmin();
+
+    Storage::fake('private');
+
+    $csvContent = mb_convert_encoding("sku,name,price\nSKU001,Товар,100\n", 'Windows-1251', 'UTF-8');
+    $file = UploadedFile::fake()->createWithContent('products.csv', $csvContent);
+
+    post(route('admin.catalog.imports.store'), [
+        'file' => $file,
+        'delimiter' => 'comma',
+        'locale' => 'en',
+    ])->assertSessionHasErrors('file');
+
+    expect(CatalogImportSession::count())->toBe(0);
+});
+
 it('should upload csv and create import session', function () {
     $this->loginAsAdmin();
 
