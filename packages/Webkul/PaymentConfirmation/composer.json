@@ -1,0 +1,11 @@
+{
+    "name": "bagisto/laravel-payment-confirmation",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Webkul\\PaymentConfirmation\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
