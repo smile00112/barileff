@@ -30,3 +30,6 @@ yarn.lock
 yarn-error.log
 /test-results
 /playwright-report
+
+# Git worktrees
+.worktrees/
