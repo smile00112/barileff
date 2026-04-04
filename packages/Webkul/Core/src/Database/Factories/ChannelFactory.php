@@ -39,6 +39,7 @@ class ChannelFactory extends Factory
             'code' => $code = $this->faker->unique()->word(),
             'theme' => $code,
             'hostname' => 'http://'.$this->faker->ipv4(),
+            'timezone' => 'UTC',
             'root_category_id' => 1,
             'default_locale_id' => 1,
             'base_currency_id' => 1,

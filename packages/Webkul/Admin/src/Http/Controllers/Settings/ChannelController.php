@@ -2,8 +2,10 @@
 
 namespace Webkul\Admin\Http\Controllers\Settings;
 
+use DateTimeZone;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\Rule;
 use Webkul\Admin\DataGrids\Settings\ChannelDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Repositories\ChannelRepository;
@@ -62,6 +64,7 @@ class ChannelController extends Controller
             'default_locale_id' => 'required|in_array:locales.*',
             'currencies' => 'required|array|min:1',
             'base_currency_id' => 'required|in_array:currencies.*',
+            'timezone' => ['required', 'string', Rule::in(DateTimeZone::listIdentifiers(DateTimeZone::ALL))],
 
             /* design */
             'theme' => 'nullable',
@@ -137,6 +140,7 @@ class ChannelController extends Controller
             'default_locale_id' => 'required|in_array:locales.*',
             'currencies' => 'required|array|min:1',
             'base_currency_id' => 'required|in_array:currencies.*',
+            'timezone' => ['required', 'string', Rule::in(DateTimeZone::listIdentifiers(DateTimeZone::ALL))],
 
             /* design */
             'theme' => 'nullable',

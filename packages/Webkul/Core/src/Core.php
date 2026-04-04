@@ -649,7 +649,7 @@ class Core
             $date = Carbon::parse($date);
         }
 
-        $date->setTimezone($channel->timezone);
+        $date->setTimezone($channel->timezone ?? config('app.timezone'));
 
         return $date->translatedFormat($format);
     }

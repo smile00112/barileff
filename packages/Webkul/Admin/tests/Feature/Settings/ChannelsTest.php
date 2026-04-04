@@ -41,9 +41,32 @@ it('should fail the validation with errors when certain field not provided when 
         ->assertJsonValidationErrorFor('default_locale_id')
         ->assertJsonValidationErrorFor('currencies')
         ->assertJsonValidationErrorFor('base_currency_id')
+        ->assertJsonValidationErrorFor('timezone')
         ->assertJsonValidationErrorFor('seo_title')
         ->assertJsonValidationErrorFor('seo_description')
         ->assertJsonValidationErrorFor('seo_keywords')
+        ->assertUnprocessable();
+});
+
+it('should fail validation when an invalid timezone is provided', function () {
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    postJson(route('admin.settings.channels.store'), [
+        'code' => fake()->numerify('code######'),
+        'name' => fake()->name(),
+        'root_category_id' => 1,
+        'default_locale_id' => 1,
+        'base_currency_id' => 1,
+        'timezone' => 'Not/A_Timezone',
+        'inventory_sources' => [1],
+        'locales' => [1],
+        'currencies' => [1],
+        'seo_title' => fake()->title(),
+        'seo_description' => substr(fake()->paragraph(), 0, 50),
+        'seo_keywords' => fake()->name(),
+    ])
+        ->assertJsonValidationErrorFor('timezone')
         ->assertUnprocessable();
 });
 
@@ -58,6 +81,7 @@ it('should store the newly created channels', function () {
         'root_category_id' => 1,
         'default_locale_id' => 1,
         'base_currency_id' => 1,
+        'timezone' => 'Europe/Moscow',
         'name' => fake()->name(),
         'description' => substr(fake()->paragraph, 0, 50),
         'inventory_sources' => [1],
@@ -84,6 +108,7 @@ it('should store the newly created channels', function () {
                 'code' => $data['code'],
                 'theme' => $data['theme'],
                 'hostname' => $data['hostname'],
+                'timezone' => 'Europe/Moscow',
                 'root_category_id' => $data['root_category_id'],
                 'default_locale_id' => $data['default_locale_id'],
                 'base_currency_id' => $data['base_currency_id'],
@@ -149,6 +174,7 @@ it('should update the existing channel', function () {
         'root_category_id' => 1,
         'default_locale_id' => 1,
         'base_currency_id' => 1,
+        'timezone' => 'Europe/Moscow',
         'inventory_sources' => [1],
         'locales' => [1],
         'currencies' => [1],
@@ -163,6 +189,7 @@ it('should update the existing channel', function () {
             [
                 'code' => $data['code'],
                 'hostname' => $data['hostname'],
+                'timezone' => 'Europe/Moscow',
                 'is_maintenance_on' => $data['is_maintenance_on'],
                 'maintenance_excluded_paths' => 'api/*,page/*',
                 'base_currency_id' => 1,

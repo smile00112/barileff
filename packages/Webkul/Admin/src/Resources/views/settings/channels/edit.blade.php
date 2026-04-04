@@ -466,7 +466,7 @@
                         </div>
 
                         <!-- Default Currency Selector -->
-                        <x-admin::form.control-group class="!mb-0">
+                        <x-admin::form.control-group>
                             <x-admin::form.control-group.label class="required"> 
                                 @lang('admin::app.settings.channels.edit.default-currency')
                             </x-admin::form.control-group.label>
@@ -490,6 +490,43 @@
                             </x-admin::form.control-group.control>
 
                             <x-admin::form.control-group.error control-name="base_currency_id" />
+                        </x-admin::form.control-group>
+
+                        <!-- Timezone Selector -->
+                        <x-admin::form.control-group class="!mb-0">
+                            <x-admin::form.control-group.label class="required">
+                                @lang('admin::app.settings.channels.edit.timezone')
+                            </x-admin::form.control-group.label>
+
+                            @php
+                                $timezones = \DateTimeZone::listIdentifiers(\DateTimeZone::ALL);
+                                $selectedTimezone = old('timezone') ?? $channel->timezone ?? config('app.timezone');
+                            @endphp
+
+                            <x-admin::form.control-group.control
+                                type="select"
+                                id="timezone"
+                                name="timezone"
+                                rules="required"
+                                :value="$selectedTimezone"
+                                :label="trans('admin::app.settings.channels.edit.timezone')"
+                            >
+                                <option value="" disabled>
+                                    @lang('admin::app.settings.channels.edit.select-timezone')
+                                </option>
+
+                                @foreach ($timezones as $tz)
+                                    <option
+                                        value="{{ $tz }}"
+                                        {{ $selectedTimezone === $tz ? 'selected' : '' }}
+                                        v-pre
+                                    >
+                                        {{ $tz }}
+                                    </option>
+                                @endforeach
+                            </x-admin::form.control-group.control>
+
+                            <x-admin::form.control-group.error control-name="timezone" />
                         </x-admin::form.control-group>
                     </x-slot>
                 </x-admin::accordion>
