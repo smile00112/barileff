@@ -18,6 +18,11 @@ class PaymentConfirmationServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'paymentconfirmation');
         $this->registerRoutes();
+
+        Event::listen(
+            'checkout.order.save.after',
+            [\Webkul\PaymentConfirmation\Listeners\CreatePaymentConfirmationRecord::class, 'handle']
+        );
     }
 
     protected function registerConfig(): void
