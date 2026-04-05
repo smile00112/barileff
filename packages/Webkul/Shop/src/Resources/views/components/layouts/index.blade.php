@@ -52,6 +52,16 @@
             href="{{ core()->getCurrentChannel()->favicon_url ?? bagisto_asset('images/favicon.ico') }}"
         />
 
+        <link
+            rel="manifest"
+            href="{{ route('shop.pwa.manifest') }}"
+        />
+
+        <meta
+            name="theme-color"
+            content="#026773"
+        />
+
         @bagistoVite(['src/Resources/assets/css/app.css', 'src/Resources/assets/js/app.js'])
 
         <link
@@ -146,6 +156,12 @@
         {!! view_render_event('bagisto.shop.layout.body.after') !!}
 
         @stack('scripts')
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('{{ route("shop.pwa.sw") }}').catch(function () {});
+            }
+        </script>
 
         {!! view_render_event('bagisto.shop.layout.vue-app-mount.before') !!}
         <script>

@@ -13,6 +13,33 @@ use Webkul\Shop\Http\Controllers\SearchController;
 use Webkul\Shop\Http\Controllers\SubscriptionController;
 
 /**
+ * PWA: must be registered before the storefront fallback so /manifest.webmanifest and /sw.js are not handled as slugs.
+ */
+Route::get('manifest.webmanifest', function () {
+    $path = public_path('manifest.webmanifest');
+
+    abort_unless(is_file($path), 404);
+
+    return response(
+        file_get_contents($path),
+        200,
+        ['Content-Type' => 'application/manifest+json; charset=UTF-8']
+    );
+})->name('shop.pwa.manifest');
+
+Route::get('sw.js', function () {
+    $path = public_path('sw.js');
+
+    abort_unless(is_file($path), 404);
+
+    return response(
+        file_get_contents($path),
+        200,
+        ['Content-Type' => 'application/javascript; charset=UTF-8']
+    );
+})->name('shop.pwa.sw');
+
+/**
  * CMS pages.
  */
 Route::get('page/{slug}', [PageController::class, 'view'])

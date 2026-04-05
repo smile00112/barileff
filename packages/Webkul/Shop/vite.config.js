@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import laravel from "laravel-vite-plugin";
 import path from "path";
+import { shopPwaPublicPlugin } from "./vite-pwa-public-plugin.js";
 
 export default defineConfig(({ mode }) => {
     const envDir = "../../../";
@@ -46,6 +47,8 @@ export default defineConfig(({ mode }) => {
                 refresh: true,
                 preload: false,
             }),
+
+            shopPwaPublicPlugin(),
         ],
 
         experimental: {
