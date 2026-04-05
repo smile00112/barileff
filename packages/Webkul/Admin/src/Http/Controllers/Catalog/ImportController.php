@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Webkul\Admin\Events\CatalogImportCompleted;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\Catalog\ImportUploadRequest;
+use Webkul\Admin\Http\Requests\MassDestroyRequest;
 use Webkul\Admin\Models\CatalogImportSession;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
@@ -413,5 +414,108 @@ class ImportController extends Controller
         fclose($writeHandle);
 
         return $remappedName;
+    }
+
+    /**
+     * Remove a catalog import session owned by the current admin.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        if (! bouncer()->hasPermission('catalog.imports')) {
+            abort(403);
+        }
+
+        $session = CatalogImportSession::query()
+            ->where('created_by', auth()->guard('admin')->id())
+            ->whereKey($id)
+            ->firstOrFail();
+
+        if ($session->state === CatalogImportSession::STATE_PROCESSING) {
+            return new JsonResponse([
+                'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
+            ], 422);
+        }
+
+        try {
+            $this->deleteCatalogImportSession($session);
+        } catch (\Exception $e) {
+            report($e);
+
+            return new JsonResponse([
+                'message' => trans('admin::app.catalog.imports.index.delete-failed'),
+            ], 500);
+        }
+
+        return new JsonResponse([
+            'message' => trans('admin::app.catalog.imports.index.delete-success'),
+        ]);
+    }
+
+    /**
+     * Mass-delete catalog import sessions owned by the current admin.
+     */
+    public function massDestroy(MassDestroyRequest $request): JsonResponse
+    {
+        if (! bouncer()->hasPermission('catalog.imports')) {
+            abort(403);
+        }
+
+        foreach ($request->input('indices', []) as $sessionId) {
+            $session = CatalogImportSession::query()
+                ->where('created_by', auth()->guard('admin')->id())
+                ->whereKey($sessionId)
+                ->first();
+
+            if (! $session) {
+                continue;
+            }
+
+            if ($session->state === CatalogImportSession::STATE_PROCESSING) {
+                return new JsonResponse([
+                    'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
+                ], 422);
+            }
+
+            try {
+                $this->deleteCatalogImportSession($session);
+            } catch (\Exception $e) {
+                report($e);
+
+                return new JsonResponse([
+                    'message' => trans('admin::app.catalog.imports.index.delete-failed'),
+                ], 500);
+            }
+        }
+
+        return new JsonResponse([
+            'message' => trans('admin::app.catalog.imports.index.mass-delete-success'),
+        ]);
+    }
+
+    /**
+     * Delete storage files, linked data-transfer import, and the session row.
+     */
+    protected function deleteCatalogImportSession(CatalogImportSession $session): void
+    {
+        if ($session->import_ref_id) {
+            $import = $this->importRepository->find($session->import_ref_id);
+
+            if ($import) {
+                Storage::disk('private')->delete($import->file_path);
+                Storage::disk('private')->delete($import->error_file_path ?? '');
+
+                $this->importRepository->delete($import->id);
+            }
+        }
+
+        Storage::disk('private')->delete($session->file_path);
+
+        $remappedPath = 'catalog-imports/remapped_'.basename($session->file_path);
+
+        if (Storage::disk('private')->exists($remappedPath)) {
+            Storage::disk('private')->delete($remappedPath);
+        }
+
+        $session->delete();
     }
 }

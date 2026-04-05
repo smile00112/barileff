@@ -109,11 +109,17 @@
                                             v-model="mapping[header]"
                                             class="block w-full rounded-sm border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:outline-none"
                                         >
-                                            <option
-                                                v-for="(label, code) in bagistoFields"
-                                                :key="code"
-                                                :value="code"
-                                            >@{{ label }}</option>
+                                            <optgroup
+                                                v-for="group in bagistoFields"
+                                                :key="group.label"
+                                                :label="group.label"
+                                            >
+                                                <option
+                                                    v-for="field in group.children"
+                                                    :key="field.code"
+                                                    :value="field.code"
+                                                >@{{ field.name }}</option>
+                                            </optgroup>
                                         </select>
                                     </td>
                                 </tr>
@@ -272,17 +278,223 @@
                     },
                 },
 
+                watch: {
+                    mapping: {
+                        deep: true,
+
+                        handler() {
+                            if (! ['pending', 'ready'].includes(this.state) || ! this.headers.length) {
+                                return;
+                            }
+
+                            this.persistMappingToStorage();
+                        },
+                    },
+                },
+
                 mounted() {
                     if (this.state === 'processing') {
                         this.pollStatus();
                     }
 
-                    if (['pending', 'ready'].includes(this.state) && this.headers.length && !Object.keys(this.mapping).length) {
-                        this.headers.forEach(h => this.mapping[h] = '__skip__');
+                    if (! ['pending', 'ready'].includes(this.state) || ! this.headers.length) {
+                        return;
                     }
+
+                    this.initializeMapping();
                 },
 
                 methods: {
+                    initializeMapping() {
+                        this.headers.forEach((header) => {
+                            if (typeof this.mapping[header] === 'undefined') {
+                                this.mapping[header] = '__skip__';
+                            }
+                        });
+
+                        const hasServerMapping = this.headers.some((header) => {
+                            const mappedCode = this.mapping[header];
+
+                            return mappedCode && mappedCode !== '__skip__';
+                        });
+
+                        if (! hasServerMapping) {
+                            this.restoreMappingFromStorage();
+                            this.autoMapHeaders();
+                        }
+
+                        this.persistMappingToStorage();
+                    },
+
+                    getMappingStorageKey() {
+                        const signature = this.headers
+                            .map((header) => this.normalizeHeaderName(header))
+                            .join('|');
+
+                        return `catalog-import-mapping:v1:${signature}`;
+                    },
+
+                    normalizeHeaderName(header) {
+                        return String(header ?? '')
+                            .trim()
+                            .toLowerCase()
+                            .replace(/[\s-]+/g, '_')
+                            .replace(/[^\w]/g, '_')
+                            .replace(/_+/g, '_')
+                            .replace(/^_+|_+$/g, '');
+                    },
+
+                    getAvailableFieldCodes() {
+                        const codes = new Set(['__skip__']);
+
+                        this.bagistoFields.forEach((group) => {
+                            (group.children ?? []).forEach((field) => {
+                                if (field.code) {
+                                    codes.add(field.code);
+                                }
+                            });
+                        });
+
+                        return codes;
+                    },
+
+                    getAutoMappingAliases() {
+                        return {
+                            sku: 'sku',
+                            product_sku: 'sku',
+                            article: 'sku',
+
+                            type: 'type',
+                            product_type: 'type',
+
+                            attribute_family_code: 'attribute_family_code',
+                            attribute_family: 'attribute_family_code',
+
+                            locale: 'locale',
+                            language: 'locale',
+
+                            qty: 'qty',
+                            quantity: 'qty',
+                            stock: 'qty',
+
+                            price: 'price',
+                            cost: 'cost',
+
+                            special_price: 'special_price',
+                            special_price_from: 'special_price_from',
+                            special_price_to: 'special_price_to',
+
+                            name: 'name',
+                            title: 'name',
+                            product_name: 'name',
+
+                            description: 'description',
+                            short_description: 'short_description',
+
+                            url_key: 'url_key',
+                            slug: 'url_key',
+
+                            weight: 'weight',
+
+                            images: 'images',
+                            image: 'images',
+                            image_name: 'images',
+
+                            image_url: 'image_url',
+                            image_link: 'image_url',
+                            image_urls: 'image_url',
+
+                            categories: 'categories',
+                            category: 'categories',
+
+                            inventories: 'inventories',
+                            inventory: 'inventories',
+
+                            parent_sku: 'parent_sku',
+                            related_skus: 'related_skus',
+                            cross_sell_skus: 'cross_sell_skus',
+                            up_sell_skus: 'up_sell_skus',
+                        };
+                    },
+
+                    restoreMappingFromStorage() {
+                        try {
+                            const raw = window.localStorage.getItem(this.getMappingStorageKey());
+
+                            if (! raw) {
+                                return false;
+                            }
+
+                            const stored = JSON.parse(raw);
+
+                            if (! stored || typeof stored !== 'object') {
+                                return false;
+                            }
+
+                            const availableCodes = this.getAvailableFieldCodes();
+                            let restored = false;
+
+                            this.headers.forEach((header) => {
+                                const mappedCode = stored[header];
+
+                                if (typeof mappedCode === 'string' && availableCodes.has(mappedCode)) {
+                                    this.mapping[header] = mappedCode;
+                                    restored = true;
+                                }
+                            });
+
+                            return restored;
+                        } catch (_) {
+                            return false;
+                        }
+                    },
+
+                    persistMappingToStorage() {
+                        try {
+                            const payload = {};
+
+                            this.headers.forEach((header) => {
+                                const mappedCode = this.mapping[header];
+                                payload[header] = typeof mappedCode === 'string' ? mappedCode : '__skip__';
+                            });
+
+                            window.localStorage.setItem(this.getMappingStorageKey(), JSON.stringify(payload));
+                        } catch (_) {
+                            // Ignore storage quota or privacy mode errors.
+                        }
+                    },
+
+                    autoMapHeaders() {
+                        const availableCodes = this.getAvailableFieldCodes();
+                        const aliases = this.getAutoMappingAliases();
+
+                        this.headers.forEach((header) => {
+                            const current = this.mapping[header] ?? '__skip__';
+
+                            if (current && current !== '__skip__') {
+                                return;
+                            }
+
+                            const normalized = this.normalizeHeaderName(header);
+
+                            if (availableCodes.has(normalized)) {
+                                this.mapping[header] = normalized;
+
+                                return;
+                            }
+
+                            const alias = aliases[normalized];
+
+                            if (alias && availableCodes.has(alias)) {
+                                this.mapping[header] = alias;
+
+                                return;
+                            }
+
+                            this.mapping[header] = '__skip__';
+                        });
+                    },
+
                     startImport() {
                         this.isLoading = true;
                         this.error = null;

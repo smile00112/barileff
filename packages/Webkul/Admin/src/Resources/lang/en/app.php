@@ -1680,13 +1680,21 @@ return [
         'imports' => [
             'index' => [
                 'button-new' => 'New Import',
+                'button-delete-selected' => 'Delete Selected',
+                'confirm-mass-delete' => 'Delete the selected import sessions? This cannot be undone.',
+                'delete-confirm' => 'Delete this import session? This cannot be undone.',
+                'delete-failed' => 'Could not delete the import session.',
+                'delete-processing-not-allowed' => 'Cannot delete an import while it is processing. Wait until it finishes or fails.',
+                'delete-success' => 'Import session deleted successfully.',
                 'description' => 'Use this page to import catalog data from prepared files.',
+                'mass-delete-success' => 'Selected import sessions were deleted.',
                 'no-records' => 'No import sessions found.',
                 'title' => 'Data Import',
 
                 'columns' => [
                     'actions' => 'Actions',
                     'date' => 'Date',
+                    'delete' => 'Delete',
                     'file' => 'File',
                     'locale' => 'Locale',
                     'state' => 'State',

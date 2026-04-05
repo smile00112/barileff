@@ -8,8 +8,17 @@
             @lang('admin::app.catalog.imports.index.title')
         </p>
 
-        <div class="flex items-center gap-x-2.5">
+        <div class="flex flex-wrap items-center gap-x-2.5 gap-y-2">
             @if (bouncer()->hasPermission('catalog.imports'))
+                <button
+                    type="button"
+                    id="catalog-imports-mass-delete"
+                    class="danger-button"
+                    disabled
+                >
+                    @lang('admin::app.catalog.imports.index.button-delete-selected')
+                </button>
+
                 <a
                     href="{{ route('admin.catalog.imports.create') }}"
                     class="primary-button"
@@ -25,6 +34,21 @@
             <table class="w-full table-auto text-sm text-gray-600 dark:text-gray-300">
                 <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
                     <tr>
+                        @if (bouncer()->hasPermission('catalog.imports'))
+                            <th class="w-10 px-4 py-3 text-left font-medium">
+                                <label class="inline-flex cursor-pointer items-center">
+                                    <input
+                                        type="checkbox"
+                                        id="catalog-imports-select-all"
+                                        class="peer sr-only"
+                                    >
+                                    <span
+                                        class="icon-uncheckbox text-2xl text-gray-500 peer-checked:icon-checked peer-checked:text-blue-600 dark:text-gray-400"
+                                    ></span>
+                                    <span class="sr-only">@lang('admin::app.catalog.imports.index.button-delete-selected')</span>
+                                </label>
+                            </th>
+                        @endif
                         <th class="px-4 py-3 text-left font-medium">#</th>
                         <th class="px-4 py-3 text-left font-medium">@lang('admin::app.catalog.imports.index.columns.file')</th>
                         <th class="px-4 py-3 text-left font-medium">@lang('admin::app.catalog.imports.index.columns.locale')</th>
@@ -37,6 +61,21 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                     @forelse ($sessions as $session)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            @if (bouncer()->hasPermission('catalog.imports'))
+                                <td class="px-4 py-3">
+                                    <label class="inline-flex cursor-pointer items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="catalog_import_ids[]"
+                                            value="{{ $session->id }}"
+                                            class="catalog-import-row-checkbox peer sr-only"
+                                        >
+                                        <span
+                                            class="icon-uncheckbox text-2xl text-gray-500 peer-checked:icon-checked peer-checked:text-blue-600 dark:text-gray-400"
+                                        ></span>
+                                    </label>
+                                </td>
+                            @endif
                             <td class="px-4 py-3">{{ $session->id }}</td>
 
                             <td class="px-4 py-3">{{ $session->file_name }}</td>
@@ -62,17 +101,32 @@
                             <td class="px-4 py-3">{{ $session->created_at->format('d.m.Y H:i') }}</td>
 
                             <td class="px-4 py-3">
-                                <a
-                                    href="{{ route('admin.catalog.imports.show', $session->id) }}"
-                                    class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
-                                >
-                                    @lang('admin::app.catalog.imports.index.columns.view')
-                                </a>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <a
+                                        href="{{ route('admin.catalog.imports.show', $session->id) }}"
+                                        class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
+                                    >
+                                        @lang('admin::app.catalog.imports.index.columns.view')
+                                    </a>
+
+                                    @if (bouncer()->hasPermission('catalog.imports'))
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300"
+                                            data-catalog-import-delete="{{ route('admin.catalog.imports.delete', $session->id) }}"
+                                            data-catalog-import-confirm="{{ __('admin::app.catalog.imports.index.delete-confirm') }}"
+                                            title="{{ __('admin::app.catalog.imports.index.columns.delete') }}"
+                                        >
+                                            <span class="icon-delete text-xl"></span>
+                                            <span class="sr-only">@lang('admin::app.catalog.imports.index.columns.delete')</span>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="{{ bouncer()->hasPermission('catalog.imports') ? 7 : 6 }}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                 @lang('admin::app.catalog.imports.index.no-records')
                             </td>
                         </tr>
@@ -87,4 +141,111 @@
             </div>
         @endif
     </div>
+
+    @if (bouncer()->hasPermission('catalog.imports'))
+        @push('scripts')
+            <script>
+                (function () {
+                    const massDeleteUrl = @json(route('admin.catalog.imports.mass_delete'));
+                    const massConfirm = @json(__('admin::app.catalog.imports.index.confirm-mass-delete'));
+                    const selectAll = document.getElementById('catalog-imports-select-all');
+                    const massBtn = document.getElementById('catalog-imports-mass-delete');
+                    const rowChecks = () => Array.from(document.querySelectorAll('.catalog-import-row-checkbox'));
+
+                    function syncMassButton() {
+                        const checked = rowChecks().filter((el) => el.checked);
+
+                        if (massBtn) {
+                            massBtn.disabled = checked.length === 0;
+                        }
+
+                        if (selectAll) {
+                            const boxes = rowChecks();
+
+                            if (boxes.length === 0) {
+                                selectAll.checked = false;
+                                selectAll.indeterminate = false;
+                            } else if (checked.length === boxes.length) {
+                                selectAll.checked = true;
+                                selectAll.indeterminate = false;
+                            } else if (checked.length === 0) {
+                                selectAll.checked = false;
+                                selectAll.indeterminate = false;
+                            } else {
+                                selectAll.checked = false;
+                                selectAll.indeterminate = true;
+                            }
+                        }
+                    }
+
+                    rowChecks().forEach((el) => el.addEventListener('change', syncMassButton));
+
+                    if (selectAll) {
+                        selectAll.addEventListener('change', function () {
+                            const on = selectAll.checked;
+
+                            rowChecks().forEach((el) => {
+                                el.checked = on;
+                            });
+                            syncMassButton();
+                        });
+                    }
+
+                    syncMassButton();
+
+                    document.querySelectorAll('[data-catalog-import-delete]').forEach((btn) => {
+                        btn.addEventListener('click', async function () {
+                            const url = btn.getAttribute('data-catalog-import-delete');
+                            const msg = btn.getAttribute('data-catalog-import-confirm');
+
+                            if (! url || ! window.confirm(msg)) {
+                                return;
+                            }
+
+                            try {
+                                await window.axios.delete(url);
+
+                                window.location.reload();
+                            } catch (err) {
+                                const message =
+                                    err.response?.data?.message ||
+                                    @json(__('admin::app.catalog.imports.index.delete-failed'));
+
+                                window.alert(message);
+                            }
+                        });
+                    });
+
+                    if (massBtn) {
+                        massBtn.addEventListener('click', async function () {
+                            const indices = rowChecks()
+                                .filter((el) => el.checked)
+                                .map((el) => parseInt(el.value, 10))
+                                .filter((id) => ! Number.isNaN(id));
+
+                            if (indices.length === 0) {
+                                return;
+                            }
+
+                            if (! window.confirm(massConfirm)) {
+                                return;
+                            }
+
+                            try {
+                                await window.axios.post(massDeleteUrl, { indices });
+
+                                window.location.reload();
+                            } catch (err) {
+                                const message =
+                                    err.response?.data?.message ||
+                                    @json(__('admin::app.catalog.imports.index.delete-failed'));
+
+                                window.alert(message);
+                            }
+                        });
+                    }
+                })();
+            </script>
+        @endpush
+    @endif
 </x-admin::layouts>

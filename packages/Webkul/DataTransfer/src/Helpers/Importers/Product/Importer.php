@@ -1489,6 +1489,19 @@ class Importer extends AbstractImporter
                             continue;
                         }
 
+                        $contentType = strtolower((string) $response->header('Content-Type', ''));
+
+                        if ($contentType !== '' && ! str_starts_with($contentType, 'image/')) {
+                            Log::warning('Catalog import: remote image content-type is not supported.', [
+                                'import_id' => $this->import->id,
+                                'sku' => $sku,
+                                'url' => $imageData['url'],
+                                'content_type' => $contentType,
+                            ]);
+
+                            continue;
+                        }
+
                         $contentLength = (int) $response->header('Content-Length', 0);
 
                         if ($contentLength > self::MAX_REMOTE_IMAGE_BYTES) {

@@ -90,6 +90,10 @@ Route::prefix('catalog')->group(function () {
 
         Route::post('create', 'store')->name('admin.catalog.imports.store');
 
+        Route::post('mass-delete', 'massDestroy')->name('admin.catalog.imports.mass_delete');
+
+        Route::delete('{id}', 'destroy')->name('admin.catalog.imports.delete');
+
         Route::get('{id}', 'show')->name('admin.catalog.imports.show');
 
         Route::post('{id}/start', 'start')->name('admin.catalog.imports.start');

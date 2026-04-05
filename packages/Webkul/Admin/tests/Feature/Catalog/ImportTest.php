@@ -3,9 +3,12 @@
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Admin\Models\CatalogImportSession;
+use Webkul\User\Models\Admin;
 
+use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use function Pest\Laravel\postJson;
 
 it('should return catalog imports index page', function () {
     $this->loginAsAdmin();
@@ -49,6 +52,8 @@ it('should reject csv upload with non-utf8 encoding', function () {
 
     Storage::fake('private');
 
+    $initialSessionsCount = CatalogImportSession::count();
+
     $csvContent = mb_convert_encoding("sku,name,price\nSKU001,Товар,100\n", 'Windows-1251', 'UTF-8');
     $file = UploadedFile::fake()->createWithContent('products.csv', $csvContent);
 
@@ -58,7 +63,7 @@ it('should reject csv upload with non-utf8 encoding', function () {
         'locale' => 'en',
     ])->assertSessionHasErrors('file');
 
-    expect(CatalogImportSession::count())->toBe(0);
+    expect(CatalogImportSession::count())->toBe($initialSessionsCount);
 });
 
 it('should upload csv and create import session', function () {
@@ -117,13 +122,27 @@ it('should show grouped mapping fields including categories and image urls', fun
 
     get(route('admin.catalog.imports.show', $session->id))
         ->assertOk()
-        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-product-data'))
-        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-prices-and-inventory'))
-        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-content-and-media'))
-        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-categories-and-relations'))
-        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-attributes'))
-        ->assertSeeText(trans('admin::app.catalog.imports.fields.categories'))
-        ->assertSeeText(trans('admin::app.catalog.imports.fields.image-url'));
+        ->assertViewHas('bagistoFields', function (array $fields): bool {
+            $codes = [];
+
+            foreach ($fields as $group) {
+                if (! is_array($group) || ! isset($group['children']) || ! is_array($group['children'])) {
+                    return false;
+                }
+
+                foreach ($group['children'] as $field) {
+                    if (! isset($field['code'])) {
+                        return false;
+                    }
+
+                    $codes[] = $field['code'];
+                }
+            }
+
+            return in_array('__skip__', $codes, true)
+                && in_array('categories', $codes, true)
+                && in_array('image_url', $codes, true);
+        });
 });
 
 it('should return 422 when starting import without mapping', function () {
@@ -159,4 +178,110 @@ it('should return status json for an import session', function () {
     get(route('admin.catalog.imports.status', $session->id))
         ->assertOk()
         ->assertJsonPath('state', CatalogImportSession::STATE_COMPLETED);
+});
+
+it('should delete own catalog import session and storage file', function () {
+    $admin = $this->loginAsAdmin();
+
+    Storage::fake('private');
+    Storage::disk('private')->put('catalog-imports/test.csv', "sku\n");
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    deleteJson(route('admin.catalog.imports.delete', $session->id))
+        ->assertOk()
+        ->assertJsonPath('message', trans('admin::app.catalog.imports.index.delete-success'));
+
+    expect(CatalogImportSession::find($session->id))->toBeNull()
+        ->and(Storage::disk('private')->exists('catalog-imports/test.csv'))->toBeFalse();
+});
+
+it('should return 404 when deleting another admins catalog import session', function () {
+    $owner = Admin::factory()->create();
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/other.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $owner->id,
+    ]);
+
+    $this->loginAsAdmin();
+
+    deleteJson(route('admin.catalog.imports.delete', $session->id))
+        ->assertNotFound();
+
+    expect(CatalogImportSession::find($session->id))->not->toBeNull();
+});
+
+it('should return 422 when deleting a processing catalog import session', function () {
+    $admin = $this->loginAsAdmin();
+
+    Storage::fake('private');
+    Storage::disk('private')->put('catalog-imports/proc.csv', "sku\n");
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PROCESSING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/proc.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    deleteJson(route('admin.catalog.imports.delete', $session->id))
+        ->assertStatus(422)
+        ->assertJsonPath('message', trans('admin::app.catalog.imports.index.delete-processing-not-allowed'));
+
+    expect(CatalogImportSession::find($session->id))->not->toBeNull();
+});
+
+it('should mass delete own catalog import sessions', function () {
+    $admin = $this->loginAsAdmin();
+
+    Storage::fake('private');
+    Storage::disk('private')->put('catalog-imports/a.csv', "sku\n");
+    Storage::disk('private')->put('catalog-imports/b.csv', "sku\n");
+
+    $sessionA = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_COMPLETED,
+        'file_name' => 'a.csv',
+        'file_path' => 'catalog-imports/a.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    $sessionB = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_FAILED,
+        'file_name' => 'b.csv',
+        'file_path' => 'catalog-imports/b.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    postJson(route('admin.catalog.imports.mass_delete'), [
+        'indices' => [$sessionA->id, $sessionB->id],
+    ])
+        ->assertOk()
+        ->assertJsonPath('message', trans('admin::app.catalog.imports.index.mass-delete-success'));
+
+    expect(CatalogImportSession::query()->whereIn('id', [$sessionA->id, $sessionB->id])->count())->toBe(0)
+        ->and(Storage::disk('private')->exists('catalog-imports/a.csv'))->toBeFalse()
+        ->and(Storage::disk('private')->exists('catalog-imports/b.csv'))->toBeFalse();
 });
