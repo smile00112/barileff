@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Booking Product',
+    'name' => 'Webkul Sinica Booking Product',
     'version' => core()->version(),
 ];

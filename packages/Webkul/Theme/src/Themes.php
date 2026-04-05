@@ -286,7 +286,7 @@ class Themes
      * @param  mixed  $entryPoints
      * @return mixed
      */
-    public function setBagistoVite($entryPoints, ?string $namespace = null)
+    public function setSinicaVite($entryPoints, ?string $namespace = null)
     {
         /**
          * If the namespace is null, it means the theming system is activated. We use the request URI to
@@ -304,7 +304,7 @@ class Themes
                 $currentTheme = $this->current();
             }
 
-            return $currentTheme->setBagistoVite($entryPoints);
+            return $currentTheme->setSinicaVite($entryPoints);
         }
 
         /**

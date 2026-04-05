@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Konekt\Concord\Facades\Concord;
 
 /**
- * Collector for Bagisto's Module Collector
+ * Collector for Sinica's Module Collector
  */
 class ModuleCollector extends DataCollector implements AssetProvider, DataCollectorInterface, Renderable
 {

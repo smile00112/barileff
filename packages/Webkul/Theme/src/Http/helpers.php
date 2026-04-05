@@ -17,7 +17,7 @@ if (! function_exists('themes')) {
 
 if (! function_exists('bagisto_asset')) {
     /**
-     * Bagisto asset.
+     * Sinica asset.
      *
      * @return string
      */

@@ -7,7 +7,7 @@ use Intervention\Image\ImageServiceProvider as BaseImageServiceProvider;
 
 /**
  * This is the overridden `ImageServiceProvider` class from the `intervention/image` package. The base class
- * supports all versions of Laravel, but this class only supports the current Laravel version used by Bagisto.
+ * supports all versions of Laravel, but this class only supports the current Laravel version used by Sinica.
  */
 class ImageServiceProvider extends BaseImageServiceProvider
 {

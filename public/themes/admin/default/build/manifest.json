@@ -264,13 +264,17 @@
     "isDynamicEntry": true
   },
   "src/Resources/assets/css/app.css": {
-    "file": "assets/app-3xKjkB1S.css",
+    "file": "assets/app-CLDyCCm-.css",
     "src": "src/Resources/assets/css/app.css",
     "isEntry": true
   },
   "src/Resources/assets/fonts/bagisto-admin.woff": {
     "file": "assets/bagisto-admin-BzOkv6lg.woff",
     "src": "src/Resources/assets/fonts/bagisto-admin.woff"
+  },
+  "src/Resources/assets/images/-favicon.ico": {
+    "file": "assets/-favicon-BmOXrLh0.ico",
+    "src": "src/Resources/assets/images/-favicon.ico"
   },
   "src/Resources/assets/images/average-orders.svg": {
     "file": "assets/average-orders-UpY6pgyW.svg",
@@ -289,7 +293,7 @@
     "src": "src/Resources/assets/images/customers.svg"
   },
   "src/Resources/assets/images/dark-logo.svg": {
-    "file": "assets/dark-logo-P5H7MBtx.svg",
+    "file": "assets/dark-logo-CSyixN_l.svg",
     "src": "src/Resources/assets/images/dark-logo.svg"
   },
   "src/Resources/assets/images/empty-placeholders/customers.svg": {
@@ -317,7 +321,7 @@
     "src": "src/Resources/assets/images/error.svg"
   },
   "src/Resources/assets/images/favicon.ico": {
-    "file": "assets/favicon--PZ4cBiP.ico",
+    "file": "assets/favicon-D2IBQYz7.ico",
     "src": "src/Resources/assets/images/favicon.ico"
   },
   "src/Resources/assets/images/icon-add-product.svg": {
@@ -333,7 +337,7 @@
     "src": "src/Resources/assets/images/icon-options.svg"
   },
   "src/Resources/assets/images/logo.svg": {
-    "file": "assets/logo-CXf-crI0.svg",
+    "file": "assets/logo-vnfSlYPG.svg",
     "src": "src/Resources/assets/images/logo.svg"
   },
   "src/Resources/assets/images/product-placeholders/front.svg": {

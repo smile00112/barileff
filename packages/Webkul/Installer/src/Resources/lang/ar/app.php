@@ -624,7 +624,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'مدير',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'confirm-password' => 'تأكيد كلمة المرور',
                 'email' => 'البريد الإلكتروني',
                 'email-address' => 'admin@example.com',
@@ -639,7 +639,7 @@ return [
                 'application-name' => 'اسم التطبيق',
                 'argentine-peso' => 'البيزو الأرجنتيني (ARS)',
                 'australian-dollar' => 'الدولار الأسترالي (AUD)',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'bangladeshi-taka' => 'التاكا البنغلاديشي (BDT)',
                 'bahraini-dinar' => 'دينار بحريني (BHD)',
                 'brazilian-real' => 'الريال البرازيلي (BRL)',
@@ -732,24 +732,24 @@ return [
             ],
 
             'installation-processing' => [
-                'bagisto' => 'تثبيت Bagisto',
+                'bagisto' => 'تثبيت Sinica',
                 'bagisto-info' => 'إنشاء جداول قاعدة البيانات، وقد يستغرق ذلك بضع دقائق',
                 'title' => 'التثبيت',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'لوحة المشرف',
-                'bagisto-forums' => 'منتديات Bagisto',
+                'bagisto-forums' => 'منتديات Sinica',
                 'customer-panel' => 'لوحة العميل',
-                'explore-bagisto-extensions' => 'استكشاف امتدادات Bagisto',
+                'explore-bagisto-extensions' => 'استكشاف امتدادات Sinica',
                 'title' => 'اكتمال التثبيت',
-                'title-info' => 'تم تثبيت Bagisto بنجاح على نظامك.',
+                'title-info' => 'تم تثبيت Sinica بنجاح على نظامك.',
             ],
 
             'ready-for-installation' => [
                 'create-database-table' => 'إنشاء جدول قاعدة البيانات',
                 'install' => 'التثبيت',
-                'install-info' => 'Bagisto للتثبيت',
+                'install-info' => 'Sinica للتثبيت',
                 'install-info-button' => 'انقر على الزر أدناه ل',
                 'populate-database-table' => 'ملء جداول قاعدة البيانات',
                 'start-installation' => 'بدء التثبيت',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'اللغة',
                 'main' => 'بداية',
                 'select-locale' => 'اختر اللغة',
-                'title' => 'تثبيت Bagisto الخاص بك',
-                'welcome-title' => 'مرحبًا بك في Bagisto',
+                'title' => 'تثبيت Sinica الخاص بك',
+                'welcome-title' => 'مرحبًا بك في Sinica',
             ],
 
             'server-requirements' => [
@@ -789,9 +789,9 @@ return [
 
             'arabic' => 'العربية',
             'back' => 'رجوع',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'bagisto-info' => 'مشروع مجتمعي من قبل',
-            'bagisto-logo' => 'شعار Bagisto',
+            'bagisto-logo' => 'شعار Sinica',
             'bengali' => 'البنغالية',
             'catalan' => 'الكاتالونية',
             'chinese' => 'الصينية',
@@ -803,7 +803,7 @@ return [
             'hebrew' => 'العبرية',
             'hindi' => 'الهندية',
             'indonesian' => 'الإندونيسية',
-            'installation-description' => 'عادة ما تتضمن عملية تثبيت Bagisto عدة خطوات. إليك نظرة عامة عامة على عملية التثبيت لBagisto',
+            'installation-description' => 'عادة ما تتضمن عملية تثبيت Sinica عدة خطوات. إليك نظرة عامة عامة على عملية التثبيت لSinica',
             'installation-info' => 'نحن سعداء برؤيتك هنا!',
             'installation-title' => 'مرحبًا بك في التثبيت',
             'italian' => 'الإيطالية',
@@ -814,7 +814,7 @@ return [
             'russian' => 'الروسية',
             'sinhala' => 'السنهالية',
             'spanish' => 'الإسبانية',
-            'title' => 'مثبت Bagisto',
+            'title' => 'مثبت Sinica',
             'turkish' => 'التركية',
             'ukrainian' => 'الأوكرانية',
             'webkul' => 'Webkul',

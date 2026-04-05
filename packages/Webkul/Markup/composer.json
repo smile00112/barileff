@@ -1,6 +1,6 @@
 {
     "name": "webkul/markup",
-    "description": "Bagisto package for bulk product markup/discount management",
+    "description": "Sinica package for bulk product markup/discount management",
     "type": "library",
     "require": {
         "php": "^8.2"

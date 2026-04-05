@@ -4985,7 +4985,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'Desenvolupat per <a href="https://bagisto.com/" target="_blank">Bagisto</a>, Un Projecte Comunitari per <a href="https://webkul.com/" target="_blank">Webkul</a>',
+        'copy-right' => 'Desenvolupat per <a href="https://bagisto.com/" target="_blank">Sinica</a>, Un Projecte Comunitari per <a href="https://webkul.com/" target="_blank">Webkul</a>',
     ],
 
     'emails' => [

@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Notification',
+    'name' => 'Webkul Sinica Notification',
     'version' => core()->version(),
 ];

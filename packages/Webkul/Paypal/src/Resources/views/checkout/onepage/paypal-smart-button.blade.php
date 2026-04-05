@@ -19,7 +19,7 @@
     @pushOnce('scripts')
         <script
             src="https://www.paypal.com/sdk/js?client-id={{ $clientId }}&currency={{ $currencyToUse }}"
-            data-partner-attribution-id="Bagisto_Cart"
+            data-partner-attribution-id="Sinica_Cart"
         >
         </script>
 

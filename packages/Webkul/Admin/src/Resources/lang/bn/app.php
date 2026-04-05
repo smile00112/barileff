@@ -4985,7 +4985,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'প্রযুক্তিদ্বারা সমর্থিত <a href="https://bagisto.com/" target="_blank">Bagisto</a>, একটি সম্প্রদায় প্রকল্প দ্বারা <a href="https://webkul.com/" target="_blank">Webkul</a>',
+        'copy-right' => 'প্রযুক্তিদ্বারা সমর্থিত <a href="https://bagisto.com/" target="_blank">Sinica</a>, একটি সম্প্রদায় প্রকল্প দ্বারা <a href="https://webkul.com/" target="_blank">Webkul</a>',
     ],
 
     'emails' => [

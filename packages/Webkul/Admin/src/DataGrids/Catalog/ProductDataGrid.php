@@ -78,6 +78,15 @@ class ProductDataGrid extends DataGrid
         $this->addFilter('status', 'product_flat.status');
         $this->addFilter('attribute_family', 'af.id');
 
+        $admin = auth()->guard('admin')->user();
+
+        if ($admin->isInventorySourceRestricted()) {
+            $queryBuilder->whereIn(
+                'product_inventories.inventory_source_id',
+                $admin->getRestrictedInventorySourceIds()
+            );
+        }
+
         return $queryBuilder;
     }
 

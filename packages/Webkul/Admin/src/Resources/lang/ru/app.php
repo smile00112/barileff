@@ -1727,12 +1727,12 @@ return [
             'show' => [
                 'back-btn' => 'К списку',
                 'back-to-list' => 'К списку',
-                'bagisto-field' => 'Поле Bagisto',
+                'bagisto-field' => 'Поле Sinica',
                 'batches-label' => 'Пакеты',
                 'completed-title' => 'Импорт успешно завершён!',
                 'csv-column' => 'Столбец CSV',
                 'failed-title' => 'Импорт завершился с ошибкой.',
-                'mapping-hint' => 'Сопоставьте каждый столбец CSV с соответствующим полем товаров Bagisto. Несопоставленные столбцы будут пропущены.',
+                'mapping-hint' => 'Сопоставьте каждый столбец CSV с соответствующим полем товаров Sinica. Несопоставленные столбцы будут пропущены.',
                 'mapping-title' => 'Сопоставление столбцов',
                 'polling-hint' => 'Импорт выполняется в фоновом режиме. Страница обновляется автоматически.',
                 'processing-title' => 'Идёт импорт…',
@@ -5254,7 +5254,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'Разработано на платформе <a href="https://bagisto.com/" target="_blank">Bagisto</a>, Проект сообщества <a href="https://webkul.com/" target="_blank">Webkul</a>',
+        'copy-right' => 'Разработано на платформе <a href="https://bagisto.com/" target="_blank">Sinica</a>, Проект сообщества <a href="https://webkul.com/" target="_blank">Webkul</a>',
     ],
 
     'emails' => [

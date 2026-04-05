@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => 'සියල්ල',
                         'back-button' => 'ප්‍රධාන මෙනුවට ආපසු යන්න',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => 'ප්‍රවර්ග',
                         'compare' => 'සංසන්දනය කරන්න',
                         'dropdown-text' => 'කරත්තය, ඇණවුම් සහ ඉල්ලුම් ලැයිස්තුව කළමනාකරණය කරන්න',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => 'ගිණුම',
                     'back-button' => 'ප්‍රධාන මෙනුවට ආපසු යන්න',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => 'සංසන්දනය කරන්න',
                     'currencies' => 'මුදල් ඒකක',
                     'dropdown-text' => 'කරත්තය, ඇණවුම් සහ ඉල්ලුම් ලැයිස්තුව කළමනාකරණය කරන්න',

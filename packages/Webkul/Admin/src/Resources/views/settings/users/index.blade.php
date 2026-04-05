@@ -368,6 +368,37 @@
                                 </template>
                             </div>
 
+                            <!-- Inventory Sources -->
+                            @if (count($inventorySources) > 0)
+                                <x-admin::form.control-group class="!mb-4">
+                                    <x-admin::form.control-group.label>
+                                        @lang('admin::app.settings.users.index.create.inventory-sources')
+                                    </x-admin::form.control-group.label>
+
+                                    <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-2.5">
+                                        <label
+                                            v-for="source in inventorySources"
+                                            :key="source.id"
+                                            class="flex cursor-pointer select-none items-center gap-1.5"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="inventory_source_ids[]"
+                                                :value="source.id"
+                                                :checked="data.inventorySourceIds.includes(source.id)"
+                                                @change="toggleInventorySource(source.id)"
+                                                class="peer hidden"
+                                                :id="'inv_src_' + source.id"
+                                            />
+
+                                            <span class="icon-uncheckbox cursor-pointer rounded-md text-2xl peer-checked:icon-checked-box peer-checked:text-blue-600 dark:peer-checked:text-blue-400"></span>
+
+                                            <span class="text-sm text-gray-600 dark:text-gray-300">@{{ source.name }}</span>
+                                        </label>
+                                    </div>
+                                </x-admin::form.control-group>
+                            @endif
+
                             <x-admin::form.control-group>
                                 <div class="hidden">
                                     <x-admin::media.images
@@ -414,9 +445,12 @@
 
                         roles: @json($roles),
 
+                        inventorySources: @json($inventorySources),
+
                         data: {
                             user: {},
                             images: [],
+                            inventorySourceIds: [],
                         },
 
                         isLoading: false,
@@ -460,6 +494,16 @@
                             });
                     },
 
+                    toggleInventorySource(id) {
+                        const idx = this.data.inventorySourceIds.indexOf(id);
+
+                        if (idx === -1) {
+                            this.data.inventorySourceIds.push(id);
+                        } else {
+                            this.data.inventorySourceIds.splice(idx, 1);
+                        }
+                    },
+
                     editModal(url) {
                         this.isUpdating = true;
 
@@ -475,6 +519,7 @@
                                             password:'',
                                             password_confirmation:'',
                                         },
+                                        inventorySourceIds: response.data.userInventorySourceIds ?? [],
                                 };
 
                                 this.$refs.modalForm.setValues(response.data.user);
@@ -492,6 +537,7 @@
                         this.data = {
                             user: {},
                             images: [],
+                            inventorySourceIds: [],
                         };
                     },
                 },

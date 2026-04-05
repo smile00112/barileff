@@ -143,7 +143,7 @@ class TranslationsChecker extends Command
     {
         $this->newLine();
 
-        $this->info('🔍 Bagisto Translations Checker');
+        $this->info('🔍 Sinica Translations Checker');
 
         $this->line('   Canonical Locale: <fg=cyan>'.Str::upper(self::BASE_LOCALE).'</>');
 

@@ -4985,7 +4985,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'බගිස්ටෝ ආදේශයේ බරපත වෙබ්කුල්, සංචාලන ව්යාපෘති මාධ්යකුම අතියේ <a href="https://bagisto.com/" target="_blank">Bagisto</a> වෙතට බලන්න',
+        'copy-right' => 'බගිස්ටෝ ආදේශයේ බරපත වෙබ්කුල්, සංචාලන ව්යාපෘති මාධ්යකුම අතියේ <a href="https://bagisto.com/" target="_blank">Sinica</a> වෙතට බලන්න',
     ],
 
     'emails' => [

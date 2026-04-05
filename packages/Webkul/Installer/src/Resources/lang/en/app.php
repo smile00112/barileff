@@ -624,7 +624,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'Admin',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'confirm-password' => 'Confirm Password',
                 'email' => 'Email',
                 'email-address' => 'admin@example.com',
@@ -639,7 +639,7 @@ return [
                 'application-name' => 'Application Name',
                 'argentine-peso' => 'Argentine Peso (ARS)',
                 'australian-dollar' => 'Australian Dollar (AUD)',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'bangladeshi-taka' => 'Bangladeshi Taka (BDT)',
                 'bahraini-dinar' => 'Bahraini Dinar (BHD)',
                 'brazilian-real' => 'Brazilian Real (BRL)',
@@ -732,24 +732,24 @@ return [
             ],
 
             'installation-processing' => [
-                'bagisto' => 'Installation Bagisto',
+                'bagisto' => 'Installation Sinica',
                 'bagisto-info' => 'Creating the database tables, this can take a few moments',
                 'title' => 'Installation',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'Admin Panel',
-                'bagisto-forums' => 'Bagisto Forum',
+                'bagisto-forums' => 'Sinica Forum',
                 'customer-panel' => 'Customer Panel',
-                'explore-bagisto-extensions' => 'Explore Bagisto Extension',
+                'explore-bagisto-extensions' => 'Explore Sinica Extension',
                 'title' => 'Installation Completed',
-                'title-info' => 'Bagisto is Successfully installed on your system.',
+                'title-info' => 'Sinica is Successfully installed on your system.',
             ],
 
             'ready-for-installation' => [
                 'create-database-table' => 'Create the database table',
                 'install' => 'Installation',
-                'install-info' => 'Bagisto For Installation',
+                'install-info' => 'Sinica For Installation',
                 'install-info-button' => 'Click the button below to',
                 'populate-database-table' => 'Populate the database tables',
                 'start-installation' => 'Start Installation',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'Locale',
                 'main' => 'Start',
                 'select-locale' => 'Select Locale',
-                'title' => 'Your Bagisto install',
-                'welcome-title' => 'Welcome to Bagisto',
+                'title' => 'Your Sinica install',
+                'welcome-title' => 'Welcome to Sinica',
             ],
 
             'server-requirements' => [
@@ -789,9 +789,9 @@ return [
 
             'arabic' => 'Arabic',
             'back' => 'Back',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'bagisto-info' => 'a Community Project by',
-            'bagisto-logo' => 'Bagisto Logo',
+            'bagisto-logo' => 'Sinica Logo',
             'bengali' => 'Bengali',
             'catalan' => 'Catalan',
             'chinese' => 'Chinese',
@@ -803,7 +803,7 @@ return [
             'hebrew' => 'Hebrew',
             'hindi' => 'Hindi',
             'indonesian' => 'Indonesian',
-            'installation-description' => 'Bagisto installation typically involves several steps. Here\'s a general outline of the installation process for Bagisto',
+            'installation-description' => 'Sinica installation typically involves several steps. Here\'s a general outline of the installation process for Sinica',
             'installation-info' => 'We are happy to see you here!',
             'installation-title' => 'Welcome to Installation',
             'italian' => 'Italian',
@@ -814,7 +814,7 @@ return [
             'russian' => 'Russian',
             'sinhala' => 'Sinhala',
             'spanish' => 'Spanish',
-            'title' => 'Bagisto Installer',
+            'title' => 'Sinica Installer',
             'turkish' => 'Turkish',
             'ukrainian' => 'Ukrainian',
             'webkul' => 'Webkul',

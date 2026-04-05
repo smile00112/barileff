@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Attributes',
+    'name' => 'Webkul Sinica Attributes',
     'version' => core()->version(),
 ];

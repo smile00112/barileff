@@ -5,7 +5,7 @@ return [
         'forgot-password' => [
             'already-sent' => 'Już zresetuj hasło. Wiadomość została wysłana.',
             'back' => 'Powrót do logowania?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'email' => 'Email',
             'email-not-exist' => 'Nie możemy znaleźć użytkownika z tym adresem e-mail.',
             'footer' => '© Prawa autorskie 2010 - :current_year, Webkul Software (zarejestrowane w Indiach). Wszelkie prawa zastrzeżone.',
@@ -19,7 +19,7 @@ return [
 
         'reset-password' => [
             'back-link-title' => 'Powrót do logowania',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'confirm-password' => 'Potwierdź hasło',
             'email' => 'Zarejestrowany adres e-mail',
             'footer' => '© Prawa autorskie 2010 - :current_year, Webkul Software (zarejestrowane w Indiach). Wszelkie prawa zastrzeżone.',
@@ -29,7 +29,7 @@ return [
         ],
 
         'login-form' => [
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Zaloguj się',
             'create-your-account' => 'Stwórz swoje konto',
             'email' => 'Email',
@@ -48,7 +48,7 @@ return [
 
         'signup-form' => [
             'account-exists' => 'Masz już konto?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Zarejestruj',
             'click-here' => 'Kliknij tutaj',
             'confirm-pass' => 'Potwierdź hasło',
@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => 'Wszystko',
                         'back-button' => 'Powrót do menu głównego',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => 'Kategorie',
                         'compare' => 'Porównaj',
                         'dropdown-text' => 'Zarządzaj koszykiem, zamówieniami i listą życzeń',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => 'Konto',
                     'back-button' => 'Powrót do menu głównego',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => 'Porównaj',
                     'currencies' => 'Waluty',
                     'dropdown-text' => 'Zarządzaj koszykiem, zamówieniami i listą życzeń',
@@ -937,7 +937,7 @@ return [
             'suspended-account-message' => 'Twoje konto zostało zawieszone',
 
             'index' => [
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'cart' => 'Koszyk',
                 'continue-shopping' => 'Kontynuuj zakupy',
                 'empty-product' => 'Nie masz produktu w koszyku',

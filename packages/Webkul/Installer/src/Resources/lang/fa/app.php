@@ -624,7 +624,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'مدیر',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'confirm-password' => 'تأیید رمز عبور',
                 'email' => 'ایمیل',
                 'email-address' => 'admin@example.com',
@@ -639,7 +639,7 @@ return [
                 'application-name' => 'نام برنامه',
                 'argentine-peso' => 'پزوی آرژانتین (ARS)',
                 'australian-dollar' => 'دلار استرالیا (AUD)',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'bangladeshi-taka' => 'تاکای بنگلادش (BDT)',
                 'bahraini-dinar' => 'دینار بحرین (BHD)',
                 'brazilian-real' => 'رئال برزیل (BRL)',
@@ -732,24 +732,24 @@ return [
             ],
 
             'installation-processing' => [
-                'bagisto' => 'نصب Bagisto',
+                'bagisto' => 'نصب Sinica',
                 'bagisto-info' => 'ایجاد جداول پایگاه داده، این ممکن است چند لحظه طول بکشد',
                 'title' => 'نصب',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'پنل مدیریت',
-                'bagisto-forums' => 'انجمن Bagisto',
+                'bagisto-forums' => 'انجمن Sinica',
                 'customer-panel' => 'پنل مشتریان',
-                'explore-bagisto-extensions' => 'کاوش در افزونه‌های Bagisto',
+                'explore-bagisto-extensions' => 'کاوش در افزونه‌های Sinica',
                 'title' => 'نصب با موفقیت انجام شد',
-                'title-info' => 'Bagisto با موفقیت بر روی سیستم شما نصب شده است.',
+                'title-info' => 'Sinica با موفقیت بر روی سیستم شما نصب شده است.',
             ],
 
             'ready-for-installation' => [
                 'create-database-table' => 'ایجاد جدول پایگاه‌داده',
                 'install' => 'نصب',
-                'install-info' => 'Bagisto برای نصب',
+                'install-info' => 'Sinica برای نصب',
                 'install-info-button' => 'برای شروع کلیک کنید',
                 'populate-database-table' => 'پر کردن جدول‌های پایگاه‌داده',
                 'start-installation' => 'شروع نصب',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'محلی',
                 'main' => 'شروع',
                 'select-locale' => 'انتخاب محلی',
-                'title' => 'نصب Bagisto شما',
-                'welcome-title' => 'خوش آمدید به Bagisto',
+                'title' => 'نصب Sinica شما',
+                'welcome-title' => 'خوش آمدید به Sinica',
             ],
 
             'server-requirements' => [
@@ -789,9 +789,9 @@ return [
 
             'arabic' => 'عربی',
             'back' => 'بازگشت',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'bagisto-info' => 'یک پروژه جامعه‌ای توسط',
-            'bagisto-logo' => 'لوگوی Bagisto',
+            'bagisto-logo' => 'لوگوی Sinica',
             'bengali' => 'بنگالی',
             'catalan' => 'کاتالان',
             'chinese' => 'چینی',
@@ -803,9 +803,9 @@ return [
             'hebrew' => 'عبری',
             'hindi' => 'هندی',
             'indonesian' => 'اندونزیایی',
-            'installation-description' => 'نصب Bagisto معمولاً شامل چندین مرحله است. در اینجا یک نمای کلی از فرآیند نصب برای Bagisto آورده شده است',
+            'installation-description' => 'نصب Sinica معمولاً شامل چندین مرحله است. در اینجا یک نمای کلی از فرآیند نصب برای Sinica آورده شده است',
             'installation-info' => 'خوشحالیم که شما را اینجا می‌بینیم!',
-            'installation-title' => 'به نصب Bagisto خوش آمدید',
+            'installation-title' => 'به نصب Sinica خوش آمدید',
             'italian' => 'ایتالیایی',
             'japanese' => 'ژاپنی',
             'persian' => 'فارسی',
@@ -814,7 +814,7 @@ return [
             'russian' => 'روسی',
             'sinhala' => 'سینهالا',
             'spanish' => 'اسپانیایی',
-            'title' => 'نصب‌کننده Bagisto',
+            'title' => 'نصب‌کننده Sinica',
             'turkish' => 'ترکی',
             'ukrainian' => 'اوکراینی',
             'webkul' => 'Webkul',

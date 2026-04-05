@@ -4,7 +4,7 @@ namespace Webkul\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class BagistoVersion extends Command
+class SinicaVersion extends Command
 {
     /**
      * The name and signature of the console command.
@@ -18,7 +18,7 @@ class BagistoVersion extends Command
      *
      * @var string
      */
-    protected $description = 'Displays current version of Bagisto installed';
+    protected $description = 'Displays current version of Sinica installed';
 
     /**
      * Create a new command instance.

@@ -5,7 +5,7 @@ return [
         'forgot-password' => [
             'already-sent' => 'Already Password Reset Mail Sent.',
             'back' => 'Back to sign In ?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'email' => 'Email',
             'email-not-exist' => 'We cannot find a user with that email address.',
             'footer' => '© Copyright 2010 - :current_year, Webkul Software (Registered in India). All rights reserved.',
@@ -19,7 +19,7 @@ return [
 
         'reset-password' => [
             'back-link-title' => 'Back to Sign In',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'confirm-password' => 'Confirm Password',
             'email' => 'Registered Email',
             'footer' => '© Copyright 2010 - :current_year, Webkul Software (Registered in India). All rights reserved.',
@@ -29,7 +29,7 @@ return [
         ],
 
         'login-form' => [
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Sign In',
             'create-your-account' => 'Create your account',
             'email' => 'Email',
@@ -48,7 +48,7 @@ return [
 
         'signup-form' => [
             'account-exists' => 'Already have an account ?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Register',
             'click-here' => 'Click Here',
             'confirm-pass' => 'Confirm Password',
@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => 'All',
                         'back-button' => 'Back to Main Menu',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => 'Categories',
                         'compare' => 'Compare',
                         'dropdown-text' => 'Manage Cart, Orders & Wishlist',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => 'Account',
                     'back-button' => 'Back to Main Menu',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => 'Compare',
                     'currencies' => 'Currencies',
                     'dropdown-text' => 'Manage Cart, Orders & Wishlist',
@@ -944,7 +944,7 @@ return [
             'suspended-account-message' => 'Your account has been suspended.',
 
             'index' => [
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'cart' => 'Cart',
                 'continue-shopping' => 'Continue Shopping',
                 'empty-product' => 'You don’t have a product in your cart.',

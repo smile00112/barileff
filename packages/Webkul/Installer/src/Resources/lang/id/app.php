@@ -624,7 +624,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'Admin',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'confirm-password' => 'Konfirmasi Kata Sandi',
                 'email' => 'Email',
                 'email-address' => 'admin@example.com',
@@ -639,7 +639,7 @@ return [
                 'application-name' => 'Nama Aplikasi',
                 'argentine-peso' => 'Peso Argentina (ARS)',
                 'australian-dollar' => 'Dolar Australia (AUD)',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'bangladeshi-taka' => 'Taka Bangladesh (BDT)',
                 'bahraini-dinar' => 'Dinar Bahrain (BHD)',
                 'brazilian-real' => 'Real Brasil (BRL)',
@@ -732,24 +732,24 @@ return [
             ],
 
             'installation-processing' => [
-                'bagisto' => 'Instalasi Bagisto',
+                'bagisto' => 'Instalasi Sinica',
                 'bagisto-info' => 'Membuat tabel database, ini dapat memakan waktu beberapa saat',
                 'title' => 'Instalasi',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'Panel Admin',
-                'bagisto-forums' => 'Forum Bagisto',
+                'bagisto-forums' => 'Forum Sinica',
                 'customer-panel' => 'Panel Pelanggan',
-                'explore-bagisto-extensions' => 'Jelajahi Ekstensi Bagisto',
+                'explore-bagisto-extensions' => 'Jelajahi Ekstensi Sinica',
                 'title' => 'Instalasi Selesai',
-                'title-info' => 'Bagisto berhasil diinstal di sistem Anda.',
+                'title-info' => 'Sinica berhasil diinstal di sistem Anda.',
             ],
 
             'ready-for-installation' => [
                 'create-database-table' => 'Buat tabel database',
                 'install' => 'Instalasi',
-                'install-info' => 'Bagisto untuk Instalasi',
+                'install-info' => 'Sinica untuk Instalasi',
                 'install-info-button' => 'Klik tombol di bawah untuk',
                 'populate-database-table' => 'Isi tabel database',
                 'start-installation' => 'Mulai Instalasi',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'Locale',
                 'main' => 'Mulai',
                 'select-locale' => 'Pilih Locale',
-                'title' => 'Instalasi Bagisto Anda',
-                'welcome-title' => 'Selamat datang di Bagisto',
+                'title' => 'Instalasi Sinica Anda',
+                'welcome-title' => 'Selamat datang di Sinica',
             ],
 
             'server-requirements' => [
@@ -789,9 +789,9 @@ return [
 
             'arabic' => 'Arab',
             'back' => 'Kembali',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'bagisto-info' => 'Proyek Komunitas oleh',
-            'bagisto-logo' => 'Logo Bagisto',
+            'bagisto-logo' => 'Logo Sinica',
             'bengali' => 'Bengali',
             'catalan' => 'Katalan',
             'chinese' => 'Cina',
@@ -803,7 +803,7 @@ return [
             'hebrew' => 'Ibrani',
             'hindi' => 'Hindi',
             'indonesian' => 'Indonesia',
-            'installation-description' => 'Instalasi Bagisto umumnya melibatkan beberapa langkah. Berikut adalah gambaran umum proses instalasi untuk Bagisto',
+            'installation-description' => 'Instalasi Sinica umumnya melibatkan beberapa langkah. Berikut adalah gambaran umum proses instalasi untuk Sinica',
             'installation-info' => 'Kami senang melihat Anda di sini!',
             'installation-title' => 'Selamat datang di Instalasi',
             'italian' => 'Italia',
@@ -814,7 +814,7 @@ return [
             'russian' => 'Rusia',
             'sinhala' => 'Sinhala',
             'spanish' => 'Spanyol',
-            'title' => 'Pemasang Bagisto',
+            'title' => 'Pemasang Sinica',
             'turkish' => 'Turki',
             'ukrainian' => 'Ukraina',
             'webkul' => 'Webkul',

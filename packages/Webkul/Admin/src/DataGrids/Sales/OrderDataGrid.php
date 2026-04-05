@@ -47,6 +47,20 @@ class OrderDataGrid extends DataGrid
         $this->addFilter('full_name', DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, \' \', '.DB::getTablePrefix().'orders.customer_last_name)'));
         $this->addFilter('created_at', 'orders.created_at');
 
+        $admin = auth()->guard('admin')->user();
+
+        if ($admin->isInventorySourceRestricted()) {
+            $sourceIds = $admin->getRestrictedInventorySourceIds();
+
+            $queryBuilder->whereExists(function ($sub) use ($sourceIds) {
+                $sub->select(DB::raw(1))
+                    ->from('order_items')
+                    ->join('product_inventories', 'product_inventories.product_id', '=', 'order_items.product_id')
+                    ->whereColumn('order_items.order_id', 'orders.id')
+                    ->whereIn('product_inventories.inventory_source_id', $sourceIds);
+            });
+        }
+
         return $queryBuilder;
     }
 

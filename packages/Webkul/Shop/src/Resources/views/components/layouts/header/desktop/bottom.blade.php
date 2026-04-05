@@ -448,7 +448,7 @@
                 </div>
             </div>
 
-            <!-- Bagisto Drawer Integration -->
+            <!-- Sinica Drawer Integration -->
             <x-shop::drawer
                 position="left"
                 width="400px"

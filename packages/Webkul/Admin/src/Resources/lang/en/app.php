@@ -1727,12 +1727,12 @@ return [
             'show' => [
                 'back-btn' => 'Back to list',
                 'back-to-list' => 'Back to list',
-                'bagisto-field' => 'Bagisto Field',
+                'bagisto-field' => 'Sinica Field',
                 'batches-label' => 'Batches',
                 'completed-title' => 'Import completed successfully!',
                 'csv-column' => 'CSV Column',
                 'failed-title' => 'Import failed.',
-                'mapping-hint' => 'Map each CSV column to the corresponding Bagisto product field. Unmapped columns will be skipped.',
+                'mapping-hint' => 'Map each CSV column to the corresponding Sinica product field. Unmapped columns will be skipped.',
                 'mapping-title' => 'Column Mapping',
                 'polling-hint' => 'Import is running in the background. This page updates automatically.',
                 'processing-title' => 'Import in progress…',
@@ -5281,7 +5281,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'Powered by <a href="https://bagisto.com/" target="_blank">Bagisto</a>, A Community Project by <a href="https://webkul.com/" target="_blank">Webkul</a>',
+        'copy-right' => 'Powered by <a href="https://bagisto.com/" target="_blank">Sinica</a>, A Community Project by <a href="https://webkul.com/" target="_blank">Webkul</a>',
     ],
 
     'emails' => [

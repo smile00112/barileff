@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Data Transfer',
+    'name' => 'Webkul Sinica Data Transfer',
     'version' => core()->version(),
 ];

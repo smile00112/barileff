@@ -20,7 +20,7 @@ class Core
     use CurrencyFormatter;
 
     /**
-     * The Bagisto version.
+     * The Sinica version.
      *
      * @var string
      */
@@ -106,7 +106,7 @@ class Core
     ) {}
 
     /**
-     * Get the version number of the Bagisto.
+     * Get the version number of the Sinica.
      *
      * @return string
      */

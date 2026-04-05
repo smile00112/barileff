@@ -8,7 +8,7 @@
 
 </>
 
-Welcome to the <info>Bagisto</info> project! Bagisto Community is an <comment>open-source e-commerce ecosystem </comment>
+Welcome to the <info>Sinica</info> project! Sinica Community is an <comment>open-source e-commerce ecosystem </comment>
 which is built on top of Laravel and Vue.js.
 
-Made with 💖  by the Bagisto Team. Happy helping :)
+Made with 💖  by the Sinica Team. Happy helping :)

@@ -739,9 +739,9 @@ return [
 
             'installation-completed' => [
                 'admin-panel' => 'व्यवस्थापक पैनल',
-                'bagisto-forums' => 'Bagisto फ़ोरम',
+                'bagisto-forums' => 'Sinica फ़ोरम',
                 'customer-panel' => 'ग्राहक पैनल',
-                'explore-bagisto-extensions' => 'Bagisto एक्सटेंशन अन्वेषण करें',
+                'explore-bagisto-extensions' => 'Sinica एक्सटेंशन अन्वेषण करें',
                 'title' => 'स्थापना पूर्ण',
                 'title-info' => 'बैगिस्टो को आपके सिस्टम पर सफलतापूर्वक स्थापित किया गया है।',
             ],
@@ -749,7 +749,7 @@ return [
             'ready-for-installation' => [
                 'create-database-table' => 'डेटाबेस तालिका बनाएं',
                 'install' => 'स्थापना',
-                'install-info' => 'स्थापना के लिए Bagisto',
+                'install-info' => 'स्थापना के लिए Sinica',
                 'install-info-button' => 'नीचे दिए गए बटन पर क्लिक करें',
                 'populate-database-table' => 'डेटाबेस तालिकाओं को पॉप्युलेट करें',
                 'start-installation' => 'स्थापना शुरू करें',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'स्थान',
                 'main' => 'शुरू',
                 'select-locale' => 'स्थान चुनें',
-                'title' => 'आपका Bagisto स्थापित करें',
-                'welcome-title' => 'Bagisto में आपका स्वागत है।',
+                'title' => 'आपका Sinica स्थापित करें',
+                'welcome-title' => 'Sinica में आपका स्वागत है।',
             ],
 
             'server-requirements' => [

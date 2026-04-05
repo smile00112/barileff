@@ -22,7 +22,7 @@ class Installer
     public function __construct(protected AdminRepository $adminRepository) {}
 
     /**
-     * After Bagisto is successfully installed
+     * After Sinica is successfully installed
      *
      * @return void
      */

@@ -5,7 +5,7 @@ return [
         'forgot-password' => [
             'already-sent' => 'Mail de réinitialisation de mot de passe déjà envoyé.',
             'back' => 'Retour à la connexion ?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'email' => 'E-mail',
             'email-not-exist' => 'Nous ne pouvons pas trouver d\'utilisateur avec cette adresse e-mail',
             'footer' => '© Droits d’auteur 2010 - :current_year, Webkul Software (enregistré en Inde). Tous droits réservés.',
@@ -19,7 +19,7 @@ return [
 
         'reset-password' => [
             'back-link-title' => 'Retour à la connexion',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'confirm-password' => 'Confirmer le mot de passe',
             'email' => 'E-mail enregistré',
             'footer' => '© Droits d’auteur 2010 - :current_year, Webkul Software (enregistré en Inde). Tous droits réservés.',
@@ -29,7 +29,7 @@ return [
         ],
 
         'login-form' => [
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Se connecter',
             'create-your-account' => 'Créez votre compte',
             'email' => 'E-mail',
@@ -48,7 +48,7 @@ return [
 
         'signup-form' => [
             'account-exists' => 'Vous avez déjà un compte ?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'S\'inscrire',
             'click-here' => 'Cliquez ici',
             'confirm-pass' => 'Confirmer le mot de passe',
@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => 'Tout',
                         'back-button' => 'Retour au menu principal',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => 'Catégories',
                         'compare' => 'Comparer',
                         'dropdown-text' => 'Gérer le panier, les commandes et la liste de souhaits',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => 'Compte',
                     'back-button' => 'Retour au menu principal',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => 'Comparer',
                     'currencies' => 'Devises',
                     'dropdown-text' => 'Gérer le panier, les commandes et la liste de souhaits',
@@ -937,7 +937,7 @@ return [
             'suspended-account-message' => 'Votre compte a été suspendu.',
 
             'index' => [
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'cart' => 'Panier',
                 'continue-shopping' => 'Continuer vos achats',
                 'empty-product' => 'Vous n\'avez pas de produit dans votre panier.',

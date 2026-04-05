@@ -56,7 +56,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                \Webkul\Core\Console\Commands\BagistoVersion::class,
+                \Webkul\Core\Console\Commands\SinicaVersion::class,
                 \Webkul\Core\Console\Commands\ExchangeRateUpdate::class,
                 \Webkul\Core\Console\Commands\InvoiceOverdueCron::class,
                 \Webkul\Core\Console\Commands\TranslationsChecker::class,

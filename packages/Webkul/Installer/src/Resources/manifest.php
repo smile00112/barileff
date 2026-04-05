@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Installer',
+    'name' => 'Webkul Sinica Installer',
     'version' => core()->version(),
 ];

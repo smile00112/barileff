@@ -564,8 +564,8 @@
                                         type="text"
                                         name="db_prefix"
                                         ::value="envData.db_prefix"
-                                        ::rules="{ 
-                                            max: 4, 
+                                        ::rules="{
+                                            max: 4,
                                             regex: /^[a-zA-Z0-9_]*$/
                                         }"
                                         :label="trans('installer::app.installer.index.environment-configuration.database-prefix')"
@@ -771,7 +771,7 @@
                                     <x-installer::form.control-group.control
                                         type="text"
                                         name="app_name"
-                                        ::value="envData.app_name ?? 'Bagisto'"
+                                        ::value="envData.app_name ?? 'Sinica'"
                                         rules="required"
                                         :label="trans('installer::app.installer.index.environment-configuration.application-name')"
                                         :placeholder="trans('installer::app.installer.index.environment-configuration.bagisto')"
@@ -1302,7 +1302,7 @@
 
                                         this.envData = { ...this.envData, ...params };
                                     } else {
-                                        setErrors({ 'db_connection': ["Bagisto currently supports MySQL only."] });
+                                        setErrors({ 'db_connection': ["Sinica currently supports MySQL only."] });
                                     }
                                 },
 

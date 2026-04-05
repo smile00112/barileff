@@ -624,7 +624,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'Administrator',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'confirm-password' => 'Potwierdź hasło',
                 'email' => 'Email',
                 'email-address' => 'admin@example.com',
@@ -639,7 +639,7 @@ return [
                 'application-name' => 'Nazwa Aplikacji',
                 'argentine-peso' => 'Peso Argentyńskie (ARS)',
                 'australian-dollar' => 'Dolar Australijski (AUD)',
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'bangladeshi-taka' => 'Taka Banglijska (BDT)',
                 'bahraini-dinar' => 'Dinar Bahrajnu (BHD)',
                 'brazilian-real' => 'Real Brazylijski (BRL)',
@@ -732,24 +732,24 @@ return [
             ],
 
             'installation-processing' => [
-                'bagisto' => 'Instalacja Bagisto',
+                'bagisto' => 'Instalacja Sinica',
                 'bagisto-info' => 'Tworzenie tabel w bazie danych może zająć kilka chwil',
                 'title' => 'Instalacja',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'Panel administratora',
-                'bagisto-forums' => 'Forum Bagisto',
+                'bagisto-forums' => 'Forum Sinica',
                 'customer-panel' => 'Panel klienta',
-                'explore-bagisto-extensions' => 'Przeglądaj rozszerzenia Bagisto',
+                'explore-bagisto-extensions' => 'Przeglądaj rozszerzenia Sinica',
                 'title' => 'Instalacja zakończona',
-                'title-info' => 'Bagisto został pomyślnie zainstalowany na Twoim systemie.',
+                'title-info' => 'Sinica został pomyślnie zainstalowany na Twoim systemie.',
             ],
 
             'ready-for-installation' => [
                 'create-database-table' => 'Maak de databasetabel aan',
                 'install' => 'Installatie',
-                'install-info' => 'Bagisto Voor Installatie',
+                'install-info' => 'Sinica Voor Installatie',
                 'install-info-button' => 'Klik op de knop hieronder om',
                 'populate-database-table' => 'Vul de databasetabellen',
                 'start-installation' => 'Start Installatie',
@@ -760,8 +760,8 @@ return [
                 'locale' => 'Locatie',
                 'main' => 'Rozpocznij',
                 'select-locale' => 'Selecteer Locatie',
-                'title' => 'Uw Bagisto-installatie',
-                'welcome-title' => 'Welkom bij Bagisto',
+                'title' => 'Uw Sinica-installatie',
+                'welcome-title' => 'Welkom bij Sinica',
             ],
 
             'server-requirements' => [
@@ -789,9 +789,9 @@ return [
 
             'arabic' => 'Arabski',
             'back' => 'Wstecz',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'bagisto-info' => 'Projekt społecznościowy',
-            'bagisto-logo' => 'Logo Bagisto',
+            'bagisto-logo' => 'Logo Sinica',
             'bengali' => 'Bengalski',
             'catalan' => 'Kataloński',
             'chinese' => 'Chiński',
@@ -803,7 +803,7 @@ return [
             'hebrew' => 'Hebrajski',
             'hindi' => 'Hinduski',
             'indonesian' => 'Indonezyjski',
-            'installation-description' => 'Instalacja Bagisto zazwyczaj obejmuje kilka kroków. Oto ogólny zarys procesu instalacji Bagisto',
+            'installation-description' => 'Instalacja Sinica zazwyczaj obejmuje kilka kroków. Oto ogólny zarys procesu instalacji Sinica',
             'installation-info' => 'Cieszymy się, że tu jesteś!',
             'installation-title' => 'Witaj w instalacji',
             'italian' => 'Włoski',
@@ -814,7 +814,7 @@ return [
             'russian' => 'Rosyjski',
             'sinhala' => 'Syngaleski',
             'spanish' => 'Hiszpański',
-            'title' => 'Instalator Bagisto',
+            'title' => 'Instalator Sinica',
             'turkish' => 'Turecki',
             'ukrainian' => 'Ukraiński',
             'webkul' => 'Webkul',

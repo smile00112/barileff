@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Webkul\Admin\DataGrids\Settings\UserDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\UserForm;
+use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\User\Repositories\AdminRepository;
 use Webkul\User\Repositories\RoleRepository;
 
@@ -22,7 +23,8 @@ class UserController extends Controller
      */
     public function __construct(
         protected AdminRepository $adminRepository,
-        protected RoleRepository $roleRepository
+        protected RoleRepository $roleRepository,
+        protected InventorySourceRepository $inventorySourceRepository
     ) {}
 
     /**
@@ -38,7 +40,9 @@ class UserController extends Controller
 
         $roles = $this->roleRepository->all();
 
-        return view('admin::settings.users.index', compact('roles'));
+        $inventorySources = $this->inventorySourceRepository->all(['id', 'name']);
+
+        return view('admin::settings.users.index', compact('roles', 'inventorySources'));
     }
 
     /**
@@ -65,6 +69,8 @@ class UserController extends Controller
 
         $admin = $this->adminRepository->create($data);
 
+        $admin->inventorySources()->sync($request->input('inventory_source_ids', []));
+
         if (request()->hasFile('image')) {
             $admin->image = current(request()->file('image'))->store('admins/'.$admin->id);
 
@@ -85,13 +91,14 @@ class UserController extends Controller
      */
     public function edit($id): JsonResponse
     {
-        $user = $this->adminRepository->findOrFail($id);
+        $user = $this->adminRepository->with('inventorySources')->findOrFail($id);
 
         $roles = $this->roleRepository->all();
 
         return new JsonResponse([
             'roles' => $roles,
             'user' => $user,
+            'userInventorySourceIds' => $user->inventorySources->pluck('id')->toArray(),
         ]);
     }
 
@@ -135,6 +142,8 @@ class UserController extends Controller
         }
 
         $admin->save();
+
+        $admin->inventorySources()->sync(request()->input('inventory_source_ids', []));
 
         if (! empty($data['password'])) {
             Event::dispatch('admin.password.update.after', $admin);

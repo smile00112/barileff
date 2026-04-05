@@ -97,7 +97,7 @@ class ImportController extends Controller
     public function show(int $id): View
     {
         $session = CatalogImportSession::findOrFail($id);
-        $bagistoFields = $this->getBagistoFields();
+        $bagistoFields = $this->getSinicaFields();
 
         return view('admin::catalog.imports.show', compact('session', 'bagistoFields'));
     }
@@ -237,11 +237,11 @@ class ImportController extends Controller
     }
 
     /**
-     * Build the ordered list of Bagisto fields available for column mapping.
+     * Build the ordered list of Sinica fields available for column mapping.
      *
      * @return array<string, string>
      */
-    protected function getBagistoFields(): array
+    protected function getSinicaFields(): array
     {
         $coreFields = [
             '__skip__' => '— '.trans('admin::app.catalog.imports.mapping.skip').' —',

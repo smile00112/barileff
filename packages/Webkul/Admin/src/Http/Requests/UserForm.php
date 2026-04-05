@@ -32,6 +32,8 @@ class UserForm extends FormRequest
             'role_id' => 'required',
             'image' => 'array',
             'image.*' => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'inventory_source_ids' => 'nullable|array',
+            'inventory_source_ids.*' => 'integer|exists:inventory_sources,id',
         ];
     }
 }

@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Webkul\Installer\Database\Seeders\DatabaseSeeder as BagistoDatabaseSeeder;
+use Webkul\Installer\Database\Seeders\DatabaseSeeder as SinicaDatabaseSeeder;
 use Webkul\Installer\Database\Seeders\ProductTableSeeder;
 
 class DatabaseManager
@@ -79,7 +79,7 @@ class DatabaseManager
         ];
 
         try {
-            app(BagistoDatabaseSeeder::class)->run($data['parameter']);
+            app(SinicaDatabaseSeeder::class)->run($data['parameter']);
 
             $this->storageLink();
         } catch (Exception $e) {

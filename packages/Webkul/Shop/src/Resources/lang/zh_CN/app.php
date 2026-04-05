@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => '全部',
                         'back-button' => '返回主菜单',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => '分类',
                         'compare' => '比较',
                         'dropdown-text' => '管理购物车、订单和愿望清单',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => '账户',
                     'back-button' => '返回主菜单',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => '比较',
                     'currencies' => '货币',
                     'dropdown-text' => '管理购物车、订单和愿望清单',

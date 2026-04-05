@@ -5,7 +5,7 @@ return [
         'forgot-password' => [
             'already-sent' => 'Wachtwoord al opnieuw ingesteld E-mail verzonden.',
             'back' => 'Terug naar Aanmelden?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'email' => 'E-mail',
             'email-not-exist' => 'We kunnen geen gebruiker vinden met dat e-mailadres.',
             'footer' => '© Auteursrecht 2010 - :current_year, Webkul Software (geregistreerd in India). Alle rechten voorbehouden.',
@@ -19,7 +19,7 @@ return [
 
         'reset-password' => [
             'back-link-title' => 'Terug naar Aanmelden',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'confirm-password' => 'Bevestig Wachtwoord',
             'email' => 'Geregistreerde E-mail',
             'footer' => '© Auteursrecht 2010 - :current_year, Webkul Software (geregistreerd in India). Alle rechten voorbehouden.',
@@ -29,7 +29,7 @@ return [
         ],
 
         'login-form' => [
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Aanmelden',
             'create-your-account' => 'Maak uw account aan',
             'email' => 'E-mail',
@@ -48,7 +48,7 @@ return [
 
         'signup-form' => [
             'account-exists' => 'Heeft u al een account?',
-            'bagisto' => 'Bagisto',
+            'bagisto' => 'Sinica',
             'button-title' => 'Registreren',
             'click-here' => 'Klik Hier',
             'confirm-pass' => 'Bevestig Wachtwoord',
@@ -490,7 +490,7 @@ return [
                     'bottom' => [
                         'all' => 'Alles',
                         'back-button' => 'Terug naar hoofdmenu',
-                        'bagisto' => 'Bagisto',
+                        'bagisto' => 'Sinica',
                         'categories' => 'Categorieën',
                         'compare' => 'Vergelijken',
                         'dropdown-text' => 'Winkelwagen, bestellingen & verlanglijst beheren',
@@ -511,7 +511,7 @@ return [
                 'mobile' => [
                     'account' => 'Account',
                     'back-button' => 'Terug naar hoofdmenu',
-                    'bagisto' => 'Bagisto',
+                    'bagisto' => 'Sinica',
                     'compare' => 'Vergelijken',
                     'currencies' => 'Valuta',
                     'dropdown-text' => 'Winkelwagen, bestellingen & verlanglijst beheren',
@@ -937,7 +937,7 @@ return [
             'suspended-account-message' => 'Uw account is opgeschort.',
 
             'index' => [
-                'bagisto' => 'Bagisto',
+                'bagisto' => 'Sinica',
                 'cart' => 'Winkelwagen',
                 'continue-shopping' => 'Doorgaan met winkelen',
                 'empty-product' => 'U heeft geen product in uw winkelwagen.',

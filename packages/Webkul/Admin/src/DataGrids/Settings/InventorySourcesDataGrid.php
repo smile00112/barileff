@@ -14,7 +14,7 @@ class InventorySourcesDataGrid extends DataGrid
      */
     public function prepareQueryBuilder()
     {
-        return DB::table('inventory_sources')
+        $queryBuilder = DB::table('inventory_sources')
             ->select(
                 'id',
                 'code',
@@ -22,6 +22,14 @@ class InventorySourcesDataGrid extends DataGrid
                 'priority',
                 'status'
             );
+
+        $admin = auth()->guard('admin')->user();
+
+        if ($admin->isInventorySourceRestricted()) {
+            $queryBuilder->whereIn('id', $admin->getRestrictedInventorySourceIds());
+        }
+
+        return $queryBuilder;
     }
 
     /**

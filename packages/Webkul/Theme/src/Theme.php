@@ -107,7 +107,7 @@ class Theme
      *
      * @return \Illuminate\Foundation\Vite
      */
-    public function setBagistoVite(array $entryPoints)
+    public function setSinicaVite(array $entryPoints)
     {
         return Vite::useHotFile($this->vite['hot_file'])
             ->useBuildDirectory($this->vite['build_directory'])

@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto Customer',
+    'name' => 'Webkul Sinica Customer',
     'version' => core()->version(),
 ];

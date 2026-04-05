@@ -39,7 +39,7 @@ class ThemeServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
         Blade::directive('bagistoVite', function ($expression) {
-            return "<?php echo themes()->setBagistoVite({$expression})->toHtml(); ?>";
+            return "<?php echo themes()->setSinicaVite({$expression})->toHtml(); ?>";
         });
     }
 }

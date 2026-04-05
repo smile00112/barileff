@@ -3,6 +3,7 @@
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
 
 use function Pest\Laravel\deleteJson;
@@ -218,6 +219,68 @@ it('should delete the existing admin', function () {
     $this->assertDatabaseMissing('admins', [
         'id' => $admin->id,
     ]);
+});
+
+it('should sync inventory sources when storing a new admin', function () {
+    // Arrange.
+    $source = InventorySource::factory()->create();
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    postJson(route('admin.settings.users.store'), [
+        'name' => fake()->name(),
+        'email' => fake()->email(),
+        'role_id' => 1,
+        'password' => $password = 'admin1234',
+        'password_confirmation' => $password,
+        'inventory_source_ids' => [$source->id],
+    ])->assertOk();
+
+    $createdAdmin = Admin::latest('id')->first();
+
+    $this->assertDatabaseHas('admin_inventory_sources', [
+        'admin_id' => $createdAdmin->id,
+        'inventory_source_id' => $source->id,
+    ]);
+});
+
+it('should sync inventory sources when updating an admin', function () {
+    // Arrange.
+    $admin = Admin::factory()->create();
+    $source = InventorySource::factory()->create();
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    putJson(route('admin.settings.users.update'), [
+        'id' => $admin->id,
+        'name' => $admin->name,
+        'email' => fake()->email(),
+        'role_id' => 1,
+        'password' => $password = 'admin1234',
+        'password_confirmation' => $password,
+        'inventory_source_ids' => [$source->id],
+    ])->assertOk();
+
+    $this->assertDatabaseHas('admin_inventory_sources', [
+        'admin_id' => $admin->id,
+        'inventory_source_id' => $source->id,
+    ]);
+});
+
+it('should return assigned inventory source ids when editing an admin', function () {
+    // Arrange.
+    $source = InventorySource::factory()->create();
+    $admin = Admin::factory()->create();
+    $admin->inventorySources()->attach($source->id);
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    get(route('admin.settings.users.edit', $admin->id))
+        ->assertOk()
+        ->assertJsonPath('userInventorySourceIds.0', $source->id);
 });
 
 it('should delete self admin', function () {

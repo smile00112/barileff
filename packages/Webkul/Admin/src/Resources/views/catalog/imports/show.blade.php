@@ -246,7 +246,7 @@
             </div>
         </script>
 
-        <script>
+        <script type="module">
             app.component('v-catalog-import', {
                 template: '#v-catalog-import-template',
 

@@ -4985,7 +4985,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => 'Napędzane przez <a href="https://bagisto.com/" target="_blank">Bagisto</a>, Projekt społecznościowy <a href="https://webkul.com/" target="_blank">Webkul</a>',
+        'copy-right' => 'Napędzane przez <a href="https://bagisto.com/" target="_blank">Sinica</a>, Projekt społecznościowy <a href="https://webkul.com/" target="_blank">Webkul</a>',
     ],
 
     'emails' => [

@@ -27,9 +27,9 @@
         name="base-url"
         content="{{ url()->to('/') }}"
     >
-    <meta 
-        name="generator" 
-        content="Bagisto"
+    <meta
+        name="generator"
+        content="Sinica"
     >
 
     @stack('meta')
@@ -74,7 +74,7 @@
 <body>
     {!! view_render_event('bagisto.admin.layout.body.before') !!}
 
-    <!-- Built With Bagisto -->
+    <!-- Built With Sinica -->
     <div id="app">
         <!-- Flash Message Blade Component -->
         <x-admin::flash-group />

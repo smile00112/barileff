@@ -33,9 +33,9 @@
         name="currency"
         content="{{ core()->getBaseCurrency()->toJson() }}"
     >
-    <meta 
-        name="generator" 
-        content="Bagisto"
+    <meta
+        name="generator"
+        content="Sinica"
     >
 
     @stack('meta')
@@ -86,7 +86,7 @@
 <body class="h-full dark:bg-gray-950">
     {!! view_render_event('bagisto.admin.layout.body.before') !!}
 
-    <!-- Built With Bagisto -->
+    <!-- Built With Sinica -->
     <div
         id="app"
         class="h-full"
@@ -127,15 +127,15 @@
                     </div>
                 </div>
 
-                <!-- Powered By -->
+                <!-- Powered By
                 <div class="mt-auto">
                     <div class="border-t bg-white py-2 text-center text-xs sm:text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-white">
                         @lang('admin::app.components.layouts.powered-by.description', [
-                            'bagisto' => '<a class="text-blue-600 hover:underline dark:text-darkBlue" href="https://bagisto.com/en/">Bagisto</a>',
+                            'bagisto' => '<a class="text-blue-600 hover:underline dark:text-darkBlue" href="https://bagisto.com/en/">Sinica</a>',
                             'webkul' => '<a class="text-blue-600 hover:underline dark:text-darkBlue" href="https://webkul.com/">Webkul</a>',
                         ])
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 

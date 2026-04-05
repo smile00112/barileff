@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Webkul\Installer\Database\Seeders\DatabaseSeeder as BagistoDatabaseSeeder;
+use Webkul\Installer\Database\Seeders\DatabaseSeeder as SinicaDatabaseSeeder;
 use Webkul\Installer\Events\ComposerEvents;
 use Webkul\Installer\Helpers\DatabaseManager;
 
@@ -36,7 +36,7 @@ class Installer extends Command
      *
      * @var string
      */
-    protected $description = 'Bagisto installer.';
+    protected $description = 'Sinica installer.';
 
     /**
      * Environment details.
@@ -202,8 +202,8 @@ class Installer extends Command
         $this->call('db:wipe');
         $this->call('migrate:fresh');
 
-        $this->warn('Step: Seeding basic data for Bagisto kickstart...');
-        app(BagistoDatabaseSeeder::class)->run($this->getSeederConfiguration());
+        $this->warn('Step: Seeding basic data for Sinica kickstart...');
+        app(SinicaDatabaseSeeder::class)->run($this->getSeederConfiguration());
         $this->components->info('Basic data seeded successfully.');
 
         $this->warn('Step: Linking storage directory...');
@@ -247,7 +247,7 @@ class Installer extends Command
         $this->updateTextTypeEnv(
             'APP_NAME',
             'Please enter the application name',
-            $this->getEnvVariable('APP_NAME', 'Bagisto')
+            $this->getEnvVariable('APP_NAME', 'Sinica')
         );
 
         $this->updateTextTypeEnv(
@@ -435,11 +435,11 @@ class Installer extends Command
 
             $filePath = storage_path('installed');
 
-            File::put($filePath, 'Bagisto is successfully installed.');
+            File::put($filePath, 'Sinica is successfully installed.');
 
             $this->info('-----------------------------');
             $this->info('Congratulations!');
-            $this->info('The installation has been finished and you can now use Bagisto.');
+            $this->info('The installation has been finished and you can now use Sinica.');
             $this->info('Go to '.$this->getEnvVariable('APP_URL').'/'.$this->getEnvVariable('APP_ADMIN_URL', 'admin').' and authenticate with:');
             $this->info('Email: '.$adminEmail);
             $this->info('Password: '.$adminPassword);

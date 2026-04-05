@@ -128,6 +128,24 @@ class Admin extends Authenticatable implements AdminContract
     }
 
     /**
+     * Determine if this admin is restricted to specific inventory sources.
+     */
+    public function isInventorySourceRestricted(): bool
+    {
+        return $this->inventorySources()->exists();
+    }
+
+    /**
+     * Get the IDs of inventory sources this admin is restricted to.
+     *
+     * @return array<int>
+     */
+    public function getRestrictedInventorySourceIds(): array
+    {
+        return $this->inventorySources()->pluck('inventory_sources.id')->toArray();
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory(): Factory

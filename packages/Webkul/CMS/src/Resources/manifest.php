@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Webkul Bagisto CMS',
+    'name' => 'Webkul Sinica CMS',
     'version' => core()->version(),
 ];

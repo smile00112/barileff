@@ -4985,7 +4985,7 @@ return [
     ],
 
     'footer' => [
-        'copy-right' => '由 <a href="https://bagisto.com/" target="_blank">Bagisto</a> 提供支持，一个由 <a href="https://webkul.com/" target="_blank">Webkul</a> 社区支持的项目',
+        'copy-right' => '由 <a href="https://bagisto.com/" target="_blank">Sinica</a> 提供支持，一个由 <a href="https://webkul.com/" target="_blank">Webkul</a> 社区支持的项目',
     ],
 
     'emails' => [
