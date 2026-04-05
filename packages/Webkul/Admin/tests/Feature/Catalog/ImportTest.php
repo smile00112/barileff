@@ -3,6 +3,7 @@
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Admin\Models\CatalogImportSession;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
 
 use function Pest\Laravel\deleteJson;
@@ -284,4 +285,72 @@ it('should mass delete own catalog import sessions', function () {
     expect(CatalogImportSession::query()->whereIn('id', [$sessionA->id, $sessionB->id])->count())->toBe(0)
         ->and(Storage::disk('private')->exists('catalog-imports/a.csv'))->toBeFalse()
         ->and(Storage::disk('private')->exists('catalog-imports/b.csv'))->toBeFalse();
+});
+
+it('should pass inventory sources to the show view', function () {
+    $this->loginAsAdmin();
+
+    $inventorySource = InventorySource::factory()->create(['status' => 1]);
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/inv_show_test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'name'],
+        'created_by' => 1,
+    ]);
+
+    get(route('admin.catalog.imports.show', $session->id))
+        ->assertOk()
+        ->assertViewHas('inventorySources', function ($sources) use ($inventorySource): bool {
+            return $sources->contains('id', $inventorySource->id);
+        });
+});
+
+it('should save inventory_source_id when starting import', function () {
+    $admin = $this->loginAsAdmin();
+
+    Storage::fake('private');
+
+    $inventorySource = InventorySource::factory()->create(['status' => 1]);
+
+    Storage::disk('private')->put('catalog-imports/inv_start_test.csv', "sku,name\nSKU001,Test\n");
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/inv_start_test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'name'],
+        'created_by' => $admin->id,
+    ]);
+
+    postJson(route('admin.catalog.imports.start', $session->id), [
+        'column_mapping' => ['sku' => 'sku', 'name' => 'name'],
+        'inventory_source_id' => $inventorySource->id,
+    ]);
+
+    expect($session->fresh()->inventory_source_id)->toBe($inventorySource->id);
+});
+
+it('should reject non-existent inventory_source_id when starting import', function () {
+    $admin = $this->loginAsAdmin();
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/inv_invalid_test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'name'],
+        'created_by' => $admin->id,
+    ]);
+
+    postJson(route('admin.catalog.imports.start', $session->id), [
+        'column_mapping' => ['sku' => 'sku', 'name' => 'name'],
+        'inventory_source_id' => 999999,
+    ])->assertStatus(422);
 });

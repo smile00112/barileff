@@ -25,13 +25,14 @@ class DeliveryZonesController
      * Возвращает список городов с зонами, привязанными к inventory sources текущего канала.
      * Используется для отображения карты доставки.
      *
-     * @response 200 scenario="Есть зоны" {"data":{"data":[{"id":1,"name":"Москва","center_lat":55.7558,"center_lng":37.6173,"zones":[{"id":1,"name":"Центр","polygon_json":[[55.75,37.61],[55.76,37.62]],"polygon_color":"#0077cc","inventory_source_id":1,"rates":[{"min_order_total":0,"price":300,"sort_order":1},{"min_order_total":2000,"price":0,"sort_order":2}]}]}]}}
+     * @response 200 scenario="Есть зоны" {"data":{"data":[{"id":1,"name":"Москва","center_lat":55.7558,"center_lng":37.6173,"polygon_json":[[55.7,37.5],[55.8,37.5],[55.8,37.7]],"zones":[{"id":1,"name":"Центр","polygon_json":[[55.75,37.61],[55.76,37.62]],"polygon_color":"#0077cc","inventory_source_id":1,"rates":[{"min_order_total":0,"price":300,"sort_order":1},{"min_order_total":2000,"price":0,"sort_order":2}]}]}]}}
      * @response 200 scenario="Нет зон" {"data":{"data":[]}}
      *
      * @responseField data.*.id integer ID города.
      * @responseField data.*.name string Название города.
      * @responseField data.*.center_lat number Широта центра города.
      * @responseField data.*.center_lng number Долгота центра города.
+     * @responseField data.*.polygon_json array Полигон границы города (массив координат [lat, lng]).
      * @responseField data.*.zones object[] Зоны доставки города.
      * @responseField data.*.zones.*.id integer ID зоны.
      * @responseField data.*.zones.*.name string Название зоны.
@@ -76,6 +77,7 @@ class DeliveryZonesController
                 'name' => $city->name,
                 'center_lat' => (float) ($city->center_lat ?? 0),
                 'center_lng' => (float) ($city->center_lng ?? 0),
+                'polygon_json' => $city->polygon_json ?? [],
                 'zones' => $city->zones->map(function ($zone) {
                     return [
                         'id' => $zone->id,

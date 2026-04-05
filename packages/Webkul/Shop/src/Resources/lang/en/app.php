@@ -915,6 +915,15 @@ return [
         'page-title' => 'Delivery Zones',
         'select-zone' => 'Select your delivery zone',
         'map-link' => 'View delivery zones on map',
+        'city-label' => 'City',
+        'address-label' => 'Address search',
+        'address-placeholder' => 'Search address in this city',
+        'zones-load-error' => 'Unable to load delivery zones. Please refresh the page.',
+        'geocode-no-results' => 'No addresses found.',
+        'geocode-no-matches-in-city' => 'No addresses inside the city boundary.',
+        'geocode-boundary-disabled' => 'City boundary is not set; showing all search results.',
+        'geocode-error' => 'Address search failed. Please try again.',
+        'zone-selected-suffix' => '— selected',
     ],
 
     'checkout' => [

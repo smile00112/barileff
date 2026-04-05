@@ -15,6 +15,7 @@ use Webkul\Admin\Models\CatalogImportSession;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Repositories\ImportRepository;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
 
 class ImportController extends Controller
@@ -99,8 +100,9 @@ class ImportController extends Controller
     {
         $session = CatalogImportSession::findOrFail($id);
         $bagistoFields = $this->getSinicaFields();
+        $inventorySources = InventorySource::where('status', 1)->orderBy('name')->get(['id', 'name', 'code']);
 
-        return view('admin::catalog.imports.show', compact('session', 'bagistoFields'));
+        return view('admin::catalog.imports.show', compact('session', 'bagistoFields', 'inventorySources'));
     }
 
     /**
@@ -113,10 +115,14 @@ class ImportController extends Controller
         $session = CatalogImportSession::findOrFail($id);
 
         if ($request->has('column_mapping')) {
-            $request->validate(['column_mapping' => ['required', 'array']]);
+            $request->validate([
+                'column_mapping' => ['required', 'array'],
+                'inventory_source_id' => ['nullable', 'integer', 'exists:inventory_sources,id'],
+            ]);
 
             $session->update([
                 'column_mapping' => $request->column_mapping,
+                'inventory_source_id' => $request->input('inventory_source_id'),
                 'state' => CatalogImportSession::STATE_READY,
             ]);
 
@@ -371,6 +377,23 @@ class ImportController extends Controller
             return null;
         }
 
+        // If the user mapped a plain `qty` column and selected an inventory source,
+        // rewrite that column as `inventories` with the format `{source_code}={qty}`
+        // that the DataTransfer Importer expects.  Skip this when there is already
+        // an explicit `inventories` column in the mapping.
+        $inventorySourceCode = null;
+
+        if (isset($columnMap['qty']) && ! isset($columnMap['inventories']) && $session->inventory_source_id) {
+            $inventorySource = InventorySource::find($session->inventory_source_id);
+
+            if ($inventorySource) {
+                $inventorySourceCode = $inventorySource->code;
+                $qtyColumnIndex = $columnMap['qty'];
+                unset($columnMap['qty']);
+                $columnMap = array_merge(['inventories' => $qtyColumnIndex], $columnMap);
+            }
+        }
+
         $addLocaleColumn = ! isset($columnMap['locale']);
         $newHeaders = array_keys($columnMap);
 
@@ -400,7 +423,14 @@ class ImportController extends Controller
             $newRow = [];
 
             foreach (array_keys($columnMap) as $field) {
-                $newRow[] = $row[$columnMap[$field]] ?? '';
+                $rawValue = $row[$columnMap[$field]] ?? '';
+
+                // Wrap the qty value in `source_code=qty` format for the inventories column.
+                if ($field === 'inventories' && $inventorySourceCode !== null) {
+                    $rawValue = $rawValue !== '' ? $inventorySourceCode.'='.$rawValue : '';
+                }
+
+                $newRow[] = $rawValue;
             }
 
             if ($addLocaleColumn) {

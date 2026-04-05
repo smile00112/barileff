@@ -22,6 +22,7 @@ class CatalogImportSession extends Model
         'file_path',
         'delimiter',
         'locale',
+        'inventory_source_id',
         'headers',
         'column_mapping',
         'import_ref_id',

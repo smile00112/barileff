@@ -28,6 +28,12 @@ beforeEach(function () {
         'is_active' => true,
         'center_lat' => 55.75,
         'center_lng' => 37.62,
+        'polygon_json' => [
+            [55.76, 37.60],
+            [55.76, 37.70],
+            [55.70, 37.70],
+            [55.70, 37.60],
+        ],
     ]);
 
     $this->zone = DeliveryZone::query()->create([
@@ -63,33 +69,43 @@ it('returns delivery zones for map with zone rates', function () {
     $response->assertOk()
         ->assertJsonStructure([
             'data' => [
-                [
+                '*' => [
                     'id',
                     'name',
                     'center_lat',
                     'center_lng',
+                    'polygon_json',
                     'zones' => [
-                        [
+                        '*' => [
                             'id',
                             'name',
                             'polygon_json',
                             'polygon_color',
                             'inventory_source_id',
                             'rates' => [
-                                ['min_order_total', 'price', 'sort_order'],
+                                '*' => [
+                                    'min_order_total',
+                                    'price',
+                                    'sort_order',
+                                ],
                             ],
                         ],
                     ],
                 ],
             ],
-        ])
-        ->assertJsonPath('data.0.name', 'Test City')
-        ->assertJsonPath('data.0.zones.0.name', 'Test Zone')
-        ->assertJsonPath('data.0.zones.0.inventory_source_id', $this->inventorySource->id)
-        ->assertJsonPath('data.0.zones.0.rates.0.min_order_total', 5000)
-        ->assertJsonPath('data.0.zones.0.rates.0.price', 0)
-        ->assertJsonPath('data.0.zones.0.rates.1.min_order_total', 0)
-        ->assertJsonPath('data.0.zones.0.rates.1.price', 350);
+        ]);
+
+    $cityPayload = collect($response->json('data'))->firstWhere('id', $this->city->id);
+    expect($cityPayload)->not->toBeNull()
+        ->and($cityPayload['name'])->toBe('Test City')
+        ->and($cityPayload['polygon_json'][0][0])->toBe(55.76)
+        ->and($cityPayload['polygon_json'][0][1])->toBe(37.60)
+        ->and($cityPayload['zones'][0]['name'])->toBe('Test Zone')
+        ->and($cityPayload['zones'][0]['inventory_source_id'])->toBe($this->inventorySource->id)
+        ->and($cityPayload['zones'][0]['rates'][0]['min_order_total'])->toBe(5000.0)
+        ->and($cityPayload['zones'][0]['rates'][0]['price'])->toBe(0.0)
+        ->and($cityPayload['zones'][0]['rates'][1]['min_order_total'])->toBe(0.0)
+        ->and($cityPayload['zones'][0]['rates'][1]['price'])->toBe(350.0);
 });
 
 it('selects zone and sets session when no cart', function () {

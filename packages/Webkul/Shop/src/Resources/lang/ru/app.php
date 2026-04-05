@@ -915,6 +915,15 @@ return [
         'page-title' => 'Зоны доставки',
         'select-zone' => 'Выберите зону доставки',
         'map-link' => 'Зоны доставки на карте',
+        'city-label' => 'Город',
+        'address-label' => 'Поиск адреса',
+        'address-placeholder' => 'Поиск адреса в этом городе',
+        'zones-load-error' => 'Не удалось загрузить зоны доставки. Обновите страницу.',
+        'geocode-no-results' => 'Адреса не найдены.',
+        'geocode-no-matches-in-city' => 'Нет адресов внутри границы города.',
+        'geocode-boundary-disabled' => 'Граница города не задана; показаны все результаты поиска.',
+        'geocode-error' => 'Не удалось выполнить поиск адреса. Попробуйте ещё раз.',
+        'zone-selected-suffix' => '— выбрано',
     ],
 
     'checkout' => [

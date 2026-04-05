@@ -79,6 +79,30 @@
                         @lang('admin::app.catalog.imports.show.mapping-hint')
                     </p>
 
+                    <!-- Inventory source selector -->
+                    <div class="mb-6 rounded-sm border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            @lang('admin::app.catalog.imports.mapping.inventory-source-label')
+                        </label>
+
+                        <select
+                            v-model="inventorySourceId"
+                            class="block w-full max-w-sm rounded-sm border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 focus:border-indigo-500 focus:outline-none"
+                        >
+                            <option :value="null">@lang('admin::app.catalog.imports.mapping.inventory-source-placeholder')</option>
+
+                            <option
+                                v-for="source in inventorySources"
+                                :key="source.id"
+                                :value="source.id"
+                            >@{{ source.name }} (@{{ source.code }})</option>
+                        </select>
+
+                        <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.mapping.inventory-source-hint')
+                        </p>
+                    </div>
+
                     <!-- Validation notice – SKU required -->
                     <div
                         v-if="!hasMappedSku"
@@ -262,6 +286,8 @@
                         headers: @json($session->headers ?? []),
                         mapping: @json($session->column_mapping ?? []),
                         bagistoFields: @json($bagistoFields),
+                        inventorySources: @json($inventorySources),
+                        inventorySourceId: {{ $session->inventory_source_id ?? 'null' }},
                         isLoading: false,
                         error: null,
                         stats: {
@@ -501,7 +527,10 @@
 
                         this.$axios.post(
                             '{{ route('admin.catalog.imports.start', $session->id) }}',
-                            { column_mapping: this.mapping }
+                            {
+                                column_mapping: this.mapping,
+                                inventory_source_id: this.inventorySourceId,
+                            }
                         )
                             .then(response => {
                                 this.state = response.data.state;
