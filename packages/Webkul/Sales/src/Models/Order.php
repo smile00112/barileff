@@ -67,6 +67,11 @@ class Order extends Model implements OrderContract
     public const STATUS_FRAUD = 'fraud';
 
     /**
+     * Awaiting confirmation state.
+     */
+    public const STATUS_AWAITING_CONFIRMATION = 'awaiting_confirmation';
+
+    /**
      * The attributes that aren't mass assignable.
      *
      * @var array
@@ -96,6 +101,7 @@ class Order extends Model implements OrderContract
         self::STATUS_CANCELED => 'Canceled',
         self::STATUS_CLOSED => 'Closed',
         self::STATUS_FRAUD => 'Fraud',
+        self::STATUS_AWAITING_CONFIRMATION => 'Awaiting Confirmation',
     ];
 
     /**

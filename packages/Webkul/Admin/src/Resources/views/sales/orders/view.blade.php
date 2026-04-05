@@ -563,6 +563,10 @@
                     @endforeach
                 </div>
 
+                @if ($order->payment?->method === 'paymentconfirmation')
+                    @include('paymentconfirmation::admin.orders.payment-confirmation', ['order' => $order])
+                @endif
+
                 {!! view_render_event('bagisto.admin.sales.order.left_component.after', ['order' => $order]) !!}
             </div>
 

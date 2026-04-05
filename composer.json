@@ -106,7 +106,8 @@
             "Webkul\\ProductTag\\": "packages/Webkul/ProductTag/src",
             "Webkul\\Tax\\": "packages/Webkul/Tax/src",
             "Webkul\\Theme\\": "packages/Webkul/Theme/src",
-            "Webkul\\User\\": "packages/Webkul/User/src"
+            "Webkul\\User\\": "packages/Webkul/User/src",
+            "Webkul\\PaymentConfirmation\\": "packages/Webkul/PaymentConfirmation/src/"
         }
     },
     "autoload-dev": {
