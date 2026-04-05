@@ -8,6 +8,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -72,6 +74,11 @@ class Importer extends AbstractImporter
      * Product type grouped
      */
     const PRODUCT_TYPE_GROUPED = 'grouped';
+
+    /**
+     * Maximum remote image size in bytes.
+     */
+    const MAX_REMOTE_IMAGE_BYTES = 12582912;
 
     /**
      * Error code for invalid product type
@@ -184,6 +191,7 @@ class Importer extends AbstractImporter
         'parent_sku',
         'categories',
         'images',
+        'image_url',
         'customer_group_prices',
         'tax_category_name',
         'inventories',
@@ -966,6 +974,11 @@ class Importer extends AbstractImporter
             $this->prepareImages($rowData, $imagesData);
 
             /**
+             * Prepare products images from remote URLs
+             */
+            $this->prepareImageUrls($rowData, $imagesData);
+
+            /**
              * Prepare products data for product_flat table
              */
             $this->prepareFlatData($rowData, $flatData);
@@ -1125,7 +1138,10 @@ class Importer extends AbstractImporter
          */
         $categories[$rowData['sku']] = [];
 
-        $names = explode('/', $rowData['categories'] ?? '');
+        $names = array_values(array_filter(array_map(
+            'trim',
+            explode(',', $rowData['categories'] ?? '')
+        )));
 
         $categoryIds = [];
 
@@ -1360,15 +1376,17 @@ class Importer extends AbstractImporter
             return;
         }
 
-        /**
-         * Reset the sku images data to prevent
-         * data duplication in case of multiple locales
-         */
-        $imagesData[$rowData['sku']] = [];
-
         $imageNames = array_map('trim', explode(',', $rowData['images']));
 
-        foreach ($imageNames as $key => $image) {
+        if (! isset($imagesData[$rowData['sku']])) {
+            $imagesData[$rowData['sku']] = [];
+        }
+
+        foreach ($imageNames as $image) {
+            if ($image === '') {
+                continue;
+            }
+
             $path = 'import/'.$this->import->images_directory_path.'/'.$image;
 
             if (! Storage::disk('local')->has($path)) {
@@ -1376,8 +1394,49 @@ class Importer extends AbstractImporter
             }
 
             $imagesData[$rowData['sku']][] = [
+                'source' => 'local',
                 'name' => $image,
                 'path' => Storage::disk('local')->path($path),
+            ];
+        }
+    }
+
+    /**
+     * Prepare remote image URLs from current batch.
+     */
+    public function prepareImageUrls(array $rowData, array &$imagesData): void
+    {
+        if (empty($rowData['image_url'])) {
+            return;
+        }
+
+        /**
+         * Skip the image upload if product is already created
+         */
+        if ($this->skuStorage->has($rowData['sku'])) {
+            return;
+        }
+
+        $urls = array_values(array_filter(array_map('trim', explode(',', $rowData['image_url']))));
+
+        if (! isset($imagesData[$rowData['sku']])) {
+            $imagesData[$rowData['sku']] = [];
+        }
+
+        foreach ($urls as $url) {
+            if (! filter_var($url, FILTER_VALIDATE_URL)) {
+                Log::warning('Catalog import: invalid image_url skipped.', [
+                    'import_id' => $this->import->id,
+                    'sku' => $rowData['sku'],
+                    'url' => $url,
+                ]);
+
+                continue;
+            }
+
+            $imagesData[$rowData['sku']][] = [
+                'source' => 'remote',
+                'url' => $url,
             ];
         }
     }
@@ -1396,27 +1455,98 @@ class Importer extends AbstractImporter
         foreach ($imagesData as $sku => $images) {
             $product = $this->skuStorage->get($sku);
 
-            foreach ($images as $key => $image) {
-                $file = new UploadedFile($image['path'], $image['name']);
+            $uniqueImages = [];
 
-                $image = (new ImageManager)->make($file)->encode('webp');
+            foreach ($images as $imageData) {
+                $identity = ($imageData['source'] ?? 'local') === 'remote'
+                    ? 'remote:'.($imageData['url'] ?? '')
+                    : 'local:'.($imageData['path'] ?? '');
 
-                $imageDirectory = $this->productImageRepository->getProductDirectory((object) $product);
+                if ($identity === 'remote:' || $identity === 'local:' || isset($uniqueImages[$identity])) {
+                    continue;
+                }
 
-                $path = $imageDirectory.'/'.Str::random(40).'.webp';
+                $uniqueImages[$identity] = $imageData;
+            }
 
-                $productImages[] = [
-                    'type' => 'images',
-                    'path' => $path,
-                    'product_id' => $product['id'],
-                    'position' => $key + 1,
-                ];
+            $imageDirectory = $this->productImageRepository->getProductDirectory((object) $product);
 
-                Storage::put($path, $image);
+            foreach (array_values($uniqueImages) as $key => $imageData) {
+                try {
+                    if (($imageData['source'] ?? 'local') === 'remote') {
+                        $response = Http::timeout(15)
+                            ->accept('image/*')
+                            ->get($imageData['url']);
+
+                        if (! $response->successful()) {
+                            Log::warning('Catalog import: remote image request failed.', [
+                                'import_id' => $this->import->id,
+                                'sku' => $sku,
+                                'url' => $imageData['url'],
+                                'status' => $response->status(),
+                            ]);
+
+                            continue;
+                        }
+
+                        $contentLength = (int) $response->header('Content-Length', 0);
+
+                        if ($contentLength > self::MAX_REMOTE_IMAGE_BYTES) {
+                            Log::warning('Catalog import: remote image too large by content-length.', [
+                                'import_id' => $this->import->id,
+                                'sku' => $sku,
+                                'url' => $imageData['url'],
+                                'content_length' => $contentLength,
+                            ]);
+
+                            continue;
+                        }
+
+                        $content = $response->body();
+
+                        if (strlen($content) > self::MAX_REMOTE_IMAGE_BYTES) {
+                            Log::warning('Catalog import: remote image body too large.', [
+                                'import_id' => $this->import->id,
+                                'sku' => $sku,
+                                'url' => $imageData['url'],
+                                'bytes' => strlen($content),
+                            ]);
+
+                            continue;
+                        }
+
+                        $image = (new ImageManager)->make($content)->encode('webp');
+                    } else {
+                        $file = new UploadedFile($imageData['path'], $imageData['name']);
+                        $image = (new ImageManager)->make($file)->encode('webp');
+                    }
+
+                    $path = $imageDirectory.'/'.Str::random(40).'.webp';
+
+                    $productImages[] = [
+                        'type' => 'images',
+                        'path' => $path,
+                        'product_id' => $product['id'],
+                        'position' => $key + 1,
+                    ];
+
+                    Storage::put($path, $image);
+                } catch (\Throwable $exception) {
+                    Log::warning('Catalog import: image processing failed.', [
+                        'import_id' => $this->import->id,
+                        'sku' => $sku,
+                        'source' => $imageData['source'] ?? 'local',
+                        'path' => $imageData['path'] ?? null,
+                        'url' => $imageData['url'] ?? null,
+                        'message' => $exception->getMessage(),
+                    ]);
+                }
             }
         }
 
-        $this->productImageRepository->insert($productImages);
+        if (! empty($productImages)) {
+            $this->productImageRepository->insert($productImages);
+        }
     }
 
     /**

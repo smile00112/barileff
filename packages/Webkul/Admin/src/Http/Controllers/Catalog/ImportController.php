@@ -237,28 +237,102 @@ class ImportController extends Controller
     }
 
     /**
-     * Build the ordered list of Sinica fields available for column mapping.
+     * Build grouped Sinica fields available for column mapping.
      *
-     * @return array<string, string>
+     * @return array<int, array{label: string, children: array<int, array{code: string, name: string}>}>
      */
     protected function getSinicaFields(): array
     {
-        $coreFields = [
-            '__skip__' => '— '.trans('admin::app.catalog.imports.mapping.skip').' —',
+        $fieldLabels = [
             'sku' => trans('admin::app.catalog.imports.fields.sku'),
             'type' => trans('admin::app.catalog.imports.fields.type'),
             'attribute_family_code' => trans('admin::app.catalog.imports.fields.attribute-family'),
             'locale' => trans('admin::app.catalog.imports.fields.locale'),
             'qty' => trans('admin::app.catalog.imports.fields.qty'),
+            'categories' => trans('admin::app.catalog.imports.fields.categories'),
+            'images' => trans('admin::app.catalog.imports.fields.images'),
+            'image_url' => trans('admin::app.catalog.imports.fields.image-url'),
+            'inventories' => trans('admin::app.catalog.imports.fields.inventories'),
+            'parent_sku' => trans('admin::app.catalog.imports.fields.parent-sku'),
+            'related_skus' => trans('admin::app.catalog.imports.fields.related-skus'),
+            'cross_sell_skus' => trans('admin::app.catalog.imports.fields.cross-sell-skus'),
+            'up_sell_skus' => trans('admin::app.catalog.imports.fields.up-sell-skus'),
         ];
 
         $attributeFields = $this->attributeRepository
             ->all(['code', 'admin_name'])
             ->sortBy('admin_name')
-            ->mapWithKeys(fn ($a) => [$a->code => ($a->admin_name ?: $a->code)])
+            ->map(fn ($attribute) => [
+                'code' => $attribute->code,
+                'name' => $attribute->admin_name ?: $attribute->code,
+            ])
+            ->values()
             ->all();
 
-        return array_merge($coreFields, $attributeFields);
+        $attributeFieldsByCode = collect($attributeFields)->keyBy('code');
+
+        $groupCodes = [
+            'product-data' => ['sku', 'type', 'attribute_family_code', 'locale'],
+            'prices-and-inventory' => ['qty', 'price', 'cost', 'special_price', 'special_price_from', 'special_price_to', 'inventories'],
+            'content-and-media' => ['name', 'short_description', 'description', 'url_key', 'images', 'image_url', 'weight'],
+            'categories-and-relations' => ['categories', 'parent_sku', 'related_skus', 'cross_sell_skus', 'up_sell_skus'],
+        ];
+
+        $groupedFields = [
+            [
+                'label' => trans('admin::app.catalog.imports.mapping.group-select'),
+                'children' => [[
+                    'code' => '__skip__',
+                    'name' => '— '.trans('admin::app.catalog.imports.mapping.skip').' —',
+                ]],
+            ],
+        ];
+
+        $usedCodes = ['__skip__' => true];
+
+        foreach ($groupCodes as $groupKey => $codes) {
+            $children = [];
+
+            foreach ($codes as $code) {
+                if (isset($usedCodes[$code])) {
+                    continue;
+                }
+
+                $attribute = $attributeFieldsByCode->get($code);
+
+                if (! $attribute && ! isset($fieldLabels[$code])) {
+                    continue;
+                }
+
+                $children[] = [
+                    'code' => $code,
+                    'name' => $fieldLabels[$code] ?? $attribute['name'],
+                ];
+
+                $usedCodes[$code] = true;
+            }
+
+            if (! empty($children)) {
+                $groupedFields[] = [
+                    'label' => trans('admin::app.catalog.imports.mapping.group-'.$groupKey),
+                    'children' => $children,
+                ];
+            }
+        }
+
+        $remainingAttributes = array_values(array_filter(
+            $attributeFields,
+            fn (array $attribute): bool => ! isset($usedCodes[$attribute['code']])
+        ));
+
+        if (! empty($remainingAttributes)) {
+            $groupedFields[] = [
+                'label' => trans('admin::app.catalog.imports.mapping.group-attributes'),
+                'children' => $remainingAttributes,
+            ];
+        }
+
+        return $groupedFields;
     }
 
     /**

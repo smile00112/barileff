@@ -1750,13 +1750,27 @@ return [
 
             'fields' => [
                 'attribute-family' => 'Код набора атрибутов',
+                'categories' => 'Категории (через запятую)',
+                'cross-sell-skus' => 'SKU кросс-селл',
+                'image-url' => 'URL изображений (через запятую)',
+                'images' => 'Имена файлов изображений (через запятую)',
+                'inventories' => 'Складские остатки',
                 'locale' => 'Язык',
+                'parent-sku' => 'Родительский SKU',
                 'qty' => 'Количество (склад)',
+                'related-skus' => 'Связанные SKU',
                 'sku' => 'SKU',
                 'type' => 'Тип товара',
+                'up-sell-skus' => 'SKU апселл',
             ],
 
             'mapping' => [
+                'group-attributes' => 'Атрибуты товара',
+                'group-categories-and-relations' => 'Категории и связи',
+                'group-content-and-media' => 'Контент и медиа',
+                'group-prices-and-inventory' => 'Цены и остатки',
+                'group-product-data' => 'Данные товара',
+                'group-select' => 'Выбор действия',
                 'saved' => 'Маппинг сохранён.',
                 'skip' => 'Пропустить столбец',
             ],

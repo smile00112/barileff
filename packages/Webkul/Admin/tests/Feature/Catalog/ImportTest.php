@@ -102,6 +102,30 @@ it('should return show page for an existing session', function () {
         ->assertOk();
 });
 
+it('should show grouped mapping fields including categories and image urls', function () {
+    $this->loginAsAdmin();
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'name', 'categories', 'image_link'],
+        'created_by' => 1,
+    ]);
+
+    get(route('admin.catalog.imports.show', $session->id))
+        ->assertOk()
+        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-product-data'))
+        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-prices-and-inventory'))
+        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-content-and-media'))
+        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-categories-and-relations'))
+        ->assertSeeText(trans('admin::app.catalog.imports.mapping.group-attributes'))
+        ->assertSeeText(trans('admin::app.catalog.imports.fields.categories'))
+        ->assertSeeText(trans('admin::app.catalog.imports.fields.image-url'));
+});
+
 it('should return 422 when starting import without mapping', function () {
     $this->loginAsAdmin();
 

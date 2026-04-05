@@ -1750,13 +1750,27 @@ return [
 
             'fields' => [
                 'attribute-family' => 'Attribute Family Code',
+                'categories' => 'Categories (comma-separated)',
+                'cross-sell-skus' => 'Cross-sell SKUs',
+                'image-url' => 'Image URLs (comma-separated)',
+                'images' => 'Image file names (comma-separated)',
+                'inventories' => 'Inventories',
                 'locale' => 'Locale',
+                'parent-sku' => 'Parent SKU',
                 'qty' => 'Quantity (stock)',
+                'related-skus' => 'Related SKUs',
                 'sku' => 'SKU',
                 'type' => 'Product Type',
+                'up-sell-skus' => 'Up-sell SKUs',
             ],
 
             'mapping' => [
+                'group-attributes' => 'Product Attributes',
+                'group-categories-and-relations' => 'Categories and Relations',
+                'group-content-and-media' => 'Content and Media',
+                'group-prices-and-inventory' => 'Prices and Inventory',
+                'group-product-data' => 'Product Data',
+                'group-select' => 'Select Action',
                 'saved' => 'Mapping saved.',
                 'skip' => 'Skip this column',
             ],
