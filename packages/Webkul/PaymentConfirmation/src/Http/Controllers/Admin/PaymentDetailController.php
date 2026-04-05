@@ -34,7 +34,7 @@ class PaymentDetailController extends Controller
     {
         $this->paymentDetailRepository->create(array_merge(
             $request->validated(),
-            ['is_active' => $request->boolean('is_active', true)]
+            ['is_active' => $request->boolean('is_active', false)]
         ));
 
         session()->flash('success', 'Payment detail created successfully.');
