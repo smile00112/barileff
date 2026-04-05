@@ -109,17 +109,11 @@
                                             v-model="mapping[header]"
                                             class="block w-full rounded-sm border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:outline-none"
                                         >
-                                            <optgroup
-                                                v-for="group in bagistoFields"
-                                                :key="group.label"
-                                                :label="group.label"
-                                            >
-                                                <option
-                                                    v-for="field in group.children"
-                                                    :key="field.code"
-                                                    :value="field.code"
-                                                >@{{ field.name }}</option>
-                                            </optgroup>
+                                            <option
+                                                v-for="(label, code) in bagistoFields"
+                                                :key="code"
+                                                :value="code"
+                                            >@{{ label }}</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -252,7 +246,7 @@
             </div>
         </script>
 
-        <script type="module">
+        <script>
             app.component('v-catalog-import', {
                 template: '#v-catalog-import-template',
 
