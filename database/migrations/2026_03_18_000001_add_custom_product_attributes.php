@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Skip if attribute families haven't been seeded yet (e.g. migrate:fresh)
+        if (! DB::table('attribute_families')->where('id', 1)->exists()) {
+            return;
+        }
+
         $now = Carbon::now();
 
         // 1. Shift settings(3→4) and inventories(4→5) groups to make room for product_data at position 3

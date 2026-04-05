@@ -30,3 +30,8 @@ yarn.lock
 yarn-error.log
 /test-results
 /playwright-report
+
+run_test.php
+_test_api.php
+test_output*.txt
+test_results*.txt

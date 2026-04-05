@@ -53,6 +53,21 @@ it('displays the "Sign In" and "Sign Up" buttons when the customer is not logged
         ->toBeTruthy();
 });
 
+it('renders delivery selector modal labels on the home page', function () {
+    $response = get(route('shop.home.index'));
+
+    $response->assertOk();
+
+    expect(Str::contains($response->content(), trans('shop::app.components.layouts.header.delivery-method-selector.delivery')))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), trans('shop::app.components.layouts.header.delivery-method-selector.pickup')))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), trans('shop::app.components.layouts.header.delivery-method-selector.private-house')))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'delivery-selector-map'))
+        ->toBeTruthy();
+});
+
 it('displays navigation buttons when the customer is logged in', function () {
     // Act
     $this->loginAsCustomer();

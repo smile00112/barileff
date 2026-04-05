@@ -230,6 +230,9 @@
     </form>
 
     {!! view_render_event('bagisto.shop.components.layouts.header.mobile.search.after') !!}
+
+    <!-- Mobile Delivery Method Selector -->
+    @include('shop::components.layouts.header.delivery-method-selector')
 </div>
 
 @pushOnce('scripts')

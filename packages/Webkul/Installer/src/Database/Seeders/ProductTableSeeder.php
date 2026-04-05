@@ -37,6 +37,15 @@ class ProductTableSeeder extends Seeder
     const BASE_PATH = 'packages/Webkul/Installer/src/Resources/assets/images/seeders/products/';
 
     /**
+     * Determine whether an attribute value should be skipped for a locale.
+     */
+    public function shouldSkipAttributeValue(string $attributeCode, string $locale, string $defaultLocale, array $localeSpecificAttributes): bool
+    {
+        return $locale !== $defaultLocale
+            && ! in_array($attributeCode, $localeSpecificAttributes, true);
+    }
+
+    /**
      * Seed the application's database.
      *
      * @param  array  $parameters
@@ -90,7 +99,7 @@ class ProductTableSeeder extends Seeder
                         continue;
                     }
 
-                    if ($locale !== 'en' && ! in_array($attributeCode, $localeSpecificAttributes)) {
+                    if ($this->shouldSkipAttributeValue($attributeCode, $locale, $defaultLocale, $localeSpecificAttributes)) {
                         continue;
                     }
 

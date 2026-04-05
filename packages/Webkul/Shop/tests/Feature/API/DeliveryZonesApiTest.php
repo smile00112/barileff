@@ -4,10 +4,10 @@ use Webkul\Checkout\Models\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Checkout\Models\CartItem;
 use Webkul\Core\Models\CoreConfig;
+use Webkul\DeliveryZones\Models\DeliveryCity;
+use Webkul\DeliveryZones\Models\DeliveryZone;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Inventory\Models\InventorySource;
-use Webkul\Shipping\Models\DeliveryCity;
-use Webkul\Shipping\Models\DeliveryZone;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -34,6 +34,7 @@ beforeEach(function () {
         'city_id' => $this->city->id,
         'code' => 'test-zone',
         'name' => 'Test Zone',
+        'delivery_time_minutes' => 65,
         'polygon_json' => [
             [55.76, 37.60],
             [55.76, 37.70],
@@ -84,8 +85,12 @@ it('returns delivery zones for map with zone rates', function () {
             ],
         ])
         ->assertJsonPath('data.0.name', 'Test City')
+        ->assertJsonPath('data.0.country', 'RU')
+        ->assertJsonPath('data.0.state', 'MOW')
         ->assertJsonPath('data.0.zones.0.name', 'Test Zone')
-        ->assertJsonPath('data.0.zones.0.inventory_source_id', $this->inventorySource->id)
+        ->assertJsonPath('data.0.zones.0.city_name', 'Test City')
+        ->assertJsonPath('data.0.zones.0.country', 'RU')
+        ->assertJsonPath('data.0.zones.0.state', 'MOW')
         ->assertJsonPath('data.0.zones.0.rates.0.min_order_total', 5000)
         ->assertJsonPath('data.0.zones.0.rates.0.price', 0)
         ->assertJsonPath('data.0.zones.0.rates.1.min_order_total', 0)

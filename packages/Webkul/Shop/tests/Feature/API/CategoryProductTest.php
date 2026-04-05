@@ -174,3 +174,22 @@ it('returns category products sorted by price ascending', function () {
         ->assertOk()
         ->assertSeeTextInOrder($expectedPricesInAscOrder);
 });
+
+it('returns descendant category products for a parent category', function () {
+    $parentCategory = (new CategoryFaker)->factory()->create();
+
+    $childCategory = (new CategoryFaker)->factory()->create([
+        'parent_id' => $parentCategory->id,
+    ]);
+
+    $product = (new ProductFaker)
+        ->getSimpleProductFactory()
+        ->hasAttached($childCategory)
+        ->create();
+
+    getJson(route('shop.api.products.index', ['category_id' => $parentCategory->id]))
+        ->assertOk()
+        ->assertJsonFragment([
+            'id' => $product->id,
+        ]);
+});

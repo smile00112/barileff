@@ -482,6 +482,43 @@ return [
 
         'layouts' => [
             'header' => [
+                'delivery-method-selector' => [
+                    'title' => 'Как хотите получить заказ ?',
+                    'subtitle' => 'Выберите способ получения',
+                    'delivery' => 'Доставка',
+                    'pickup' => 'Самовывоз',
+                    'delivery-address' => 'Адрес доставки',
+                    'delivery-hint' => 'Введите адрес, а зону мы определим автоматически',
+                    'free' => 'Бесплатно',
+                    'loading' => 'Загрузка...',
+                    'zone-selected' => 'выбрана',
+                    'error' => 'Не удалось сохранить адрес доставки',
+                    'pickup-title' => 'Пункты самовывоза',
+                    'pickup-hint' => 'Выберите удобный пункт самовывоза',
+                    'no-pickup-points' => 'Нет доступных пунктов самовывоза',
+                    'outside-zones' => 'Адрес вне зон доставки',
+                    'private-house' => 'Дом / участок',
+                    'saved-addresses' => 'Сохранённые адреса',
+                    'no-saved-addresses' => 'У вас пока нет сохранённых адресов.',
+                    'edit' => 'Изменить',
+                    'delete' => 'Удалить',
+                    'delete-confirm' => 'Удалить этот адрес?',
+                    'confirm-address' => 'Подтвердить адрес',
+                    'address-placeholder' => 'улица, дом',
+                    'address-placeholder-full' => 'Город, улица, дом',
+                    'address-required' => 'Введите адрес доставки.',
+                    'address-number-required' => 'Укажите номер дома или включите режим частного дома.',
+                    'apartment-fields-required' => 'Для квартиры заполните квартиру, подъезд и этаж.',
+                    'apartment' => 'Квартира',
+                    'entrance' => 'Подъезд',
+                    'floor' => 'Этаж',
+                    'intercom' => 'Домофон',
+                    'minutes' => 'мин',
+                    'delivery-time-unknown' => 'Срок уточняется',
+                    'price-unavailable' => 'Стоимость уточняется',
+                    'free-from' => 'Бесплатно от',
+                ],
+
                 'desktop' => [
                     'top' => [
                         'default-locale' => 'Язык по умолчанию',

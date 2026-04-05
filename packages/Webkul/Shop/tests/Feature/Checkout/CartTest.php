@@ -193,6 +193,12 @@ it('should display the cart items for a customer', function () {
     }
 });
 
+it('returns null summary when there is no active cart', function () {
+    getJson(route('shop.checkout.onepage.summary'))
+        ->assertOk()
+        ->assertJsonPath('data', null);
+});
+
 it('should fails the validation error when the cart item id not provided when remove product items into the cart for a guest user', function () {
     // Arrange.
     $product = (new ProductFaker([

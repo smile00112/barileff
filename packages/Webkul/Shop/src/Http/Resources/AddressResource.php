@@ -2,6 +2,7 @@
 
 namespace Webkul\Shop\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AddressResource extends JsonResource
@@ -9,7 +10,7 @@ class AddressResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request
+     * @param  Request
      * @return array
      */
     public function toArray($request)
@@ -35,7 +36,7 @@ class AddressResource extends JsonResource
             'vat_id' => $this->vat_id,
             'default_address' => $this->default_address,
             'use_for_shipping' => $this->use_for_shipping,
-            'additional' => $this->additional,
+            'additional' => $this->resource->additional,
         ];
     }
 }

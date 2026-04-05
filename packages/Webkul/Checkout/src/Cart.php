@@ -25,7 +25,7 @@ class Cart
     /**
      * The cart instance.
      *
-     * @var \Webkul\Checkout\Contracts\Cart
+     * @var Contracts\Cart
      */
     private $cart;
 
@@ -451,6 +451,7 @@ class Cart
                 'city',
                 'postcode',
                 'phone',
+                'additional',
             ])
             ->merge([
                 'address_type' => CartAddress::ADDRESS_TYPE_BILLING,
@@ -501,6 +502,7 @@ class Cart
             'city',
             'postcode',
             'phone',
+            'additional',
         ];
 
         if ($this->cart->billing_address->use_for_shipping) {

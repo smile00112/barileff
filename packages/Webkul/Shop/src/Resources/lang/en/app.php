@@ -482,6 +482,43 @@ return [
 
         'layouts' => [
             'header' => [
+                'delivery-method-selector' => [
+                    'title' => 'How do you want to receive your order?',
+                    'subtitle' => 'Choose a delivery method',
+                    'delivery' => 'Delivery',
+                    'pickup' => 'Pickup',
+                    'delivery-address' => 'Delivery address',
+                    'delivery-hint' => 'Enter the address and the zone will be detected automatically',
+                    'free' => 'Free',
+                    'loading' => 'Loading...',
+                    'zone-selected' => 'selected',
+                    'error' => 'Failed to save delivery address',
+                    'pickup-title' => 'Pickup points',
+                    'pickup-hint' => 'Choose a convenient pickup point',
+                    'no-pickup-points' => 'No pickup points available',
+                    'outside-zones' => 'Address is outside delivery zones',
+                    'private-house' => 'House / land plot',
+                    'saved-addresses' => 'Saved addresses',
+                    'no-saved-addresses' => 'You do not have any saved addresses yet.',
+                    'edit' => 'Edit',
+                    'delete' => 'Delete',
+                    'delete-confirm' => 'Delete this address?',
+                    'confirm-address' => 'Confirm address',
+                    'address-placeholder' => 'street, building',
+                    'address-placeholder-full' => 'City, street, building',
+                    'address-required' => 'Enter a delivery address.',
+                    'address-number-required' => 'Enter a building number or enable the private house option.',
+                    'apartment-fields-required' => 'For apartment delivery, fill in apartment, entrance, and floor.',
+                    'apartment' => 'Apartment',
+                    'entrance' => 'Entrance',
+                    'floor' => 'Floor',
+                    'intercom' => 'Intercom',
+                    'minutes' => 'min',
+                    'delivery-time-unknown' => 'Delivery time will be confirmed',
+                    'price-unavailable' => 'Price will be confirmed',
+                    'free-from' => 'Free from',
+                ],
+
                 'desktop' => [
                     'top' => [
                         'default-locale' => 'Default locale',

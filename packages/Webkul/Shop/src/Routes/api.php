@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\DeliveryZones\Http\Controllers\Shop\DeliveryZonesController;
+use Webkul\DeliveryZones\Http\Controllers\Shop\GeocodingController;
 use Webkul\Shop\Http\Controllers\API\AddressController;
 use Webkul\Shop\Http\Controllers\API\CartController;
 use Webkul\Shop\Http\Controllers\API\CategoryController;
@@ -20,6 +21,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::middleware('cache.response:3600')->group(function () {
         Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
             Route::get('', 'index')->name('shop.api.delivery_zones.index');
+            Route::get('pickup-points', 'pickupPoints')->name('shop.api.delivery_zones.pickup_points');
         });
 
         Route::controller(CoreController::class)->prefix('core')->group(function () {
@@ -73,6 +75,11 @@ Route::group(['prefix' => 'api'], function () {
      */
     Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
         Route::post('select', 'select')->name('shop.api.delivery_zones.select');
+    });
+
+    Route::controller(GeocodingController::class)->prefix('geocode')->group(function () {
+        Route::get('reverse', 'reverse')->name('shop.api.geocode.reverse');
+        Route::get('suggest', 'suggest')->name('shop.api.geocode.suggest');
     });
 
     Route::controller(ReviewController::class)->prefix('product/{id}')->group(function () {
@@ -143,6 +150,10 @@ Route::group(['prefix' => 'api'], function () {
             Route::put('edit/{id?}', 'update')
                 ->whereNumber('id')
                 ->name('shop.api.customers.account.addresses.update');
+
+            Route::delete('{id}', 'delete')
+                ->whereNumber('id')
+                ->name('shop.api.customers.account.addresses.delete');
         });
 
         Route::controller(WishlistController::class)->prefix('wishlist')->group(function () {

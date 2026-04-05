@@ -50,6 +50,9 @@
     <!-- Right Nagivation Section -->
     <div class="flex items-center gap-x-9 max-[1100px]:gap-x-6 max-lg:gap-x-8">
 
+        <!-- Delivery Method Selector -->
+        @include('shop::components.layouts.header.delivery-method-selector')
+
         {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.search_bar.before') !!}
 
         <!-- Search Bar Container -->

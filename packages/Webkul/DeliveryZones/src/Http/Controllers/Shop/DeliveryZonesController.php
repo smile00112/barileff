@@ -9,6 +9,7 @@ use Webkul\Checkout\Models\CartAddress;
 use Webkul\DeliveryZones\Models\DeliveryCity;
 use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\DeliveryZones\Services\ZoneSelector;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\Shipping\Facades\Shipping;
 use Webkul\Shop\Http\Resources\CartResource;
 
@@ -82,6 +83,9 @@ class DeliveryZonesController
                         'name' => $zone->name,
                         'polygon_json' => $zone->polygon_json ?? [],
                         'polygon_color' => (string) ($zone->polygon_color ?? '#0077cc'),
+                        'polygon_fill_opacity' => (float) ($zone->polygon_fill_opacity ?? 0.2),
+                        'polygon_stroke_opacity' => (float) ($zone->polygon_stroke_opacity ?? 1.0),
+                        'delivery_time_minutes' => $zone->delivery_time_minutes ? (int) $zone->delivery_time_minutes : null,
                         'inventory_source_id' => (int) $zone->inventory_sources->first()?->id,
                         'rates' => $zone->rates()
                             ->orderByDesc('min_order_total')
@@ -219,5 +223,45 @@ class DeliveryZonesController
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Получить точки самовывоза.
+     *
+     * Возвращает активные inventory sources текущего канала с адресами и координатами.
+     *
+     * @response 200 {"data":[{"id":1,"name":"Склад Центр","street":"ул. Ленина, 1","city":"Москва","state":"МО","country":"RU","postcode":"101000","latitude":55.7558,"longitude":37.6173,"contact_number":"+7 999 123-45-67"}]}
+     */
+    public function pickupPoints(): JsonResource
+    {
+        $channel = core()->getCurrentChannel();
+        $sourceIds = $channel->inventory_sources->pluck('id')->all();
+
+        if (empty($sourceIds)) {
+            return new JsonResource([]);
+        }
+
+        $sources = InventorySource::query()
+            ->whereIn('id', $sourceIds)
+            ->where('status', true)
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->orderBy('priority')
+            ->get();
+
+        $data = $sources->map(fn (InventorySource $source) => [
+            'id' => $source->id,
+            'name' => $source->name,
+            'street' => $source->street,
+            'city' => $source->city,
+            'state' => $source->state,
+            'country' => $source->country,
+            'postcode' => $source->postcode,
+            'latitude' => (float) $source->latitude,
+            'longitude' => (float) $source->longitude,
+            'contact_number' => $source->contact_number,
+        ])->values()->all();
+
+        return new JsonResource($data);
     }
 }

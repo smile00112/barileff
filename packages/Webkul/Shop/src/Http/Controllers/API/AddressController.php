@@ -54,6 +54,7 @@ class AddressController extends APIController
             'phone',
             'default_address',
             'email',
+            'additional',
         ]), [
             'customer_id' => $customer->id,
             'address' => implode(PHP_EOL, array_filter($request->input('address'))),
@@ -107,6 +108,7 @@ class AddressController extends APIController
             'phone',
             'default_address',
             'email',
+            'additional',
         ]), [
             'customer_id' => $customer->id,
             'address' => implode(PHP_EOL, array_filter($request->input('address'))),
@@ -117,6 +119,30 @@ class AddressController extends APIController
         return new JsonResource([
             'data' => new AddressResource($customerAddress),
             'message' => trans('shop::app.customers.account.addresses.index.update-success'),
+        ]);
+    }
+
+    /**
+     * Удалить адрес покупателя.
+     */
+    public function delete(int $id): JsonResource
+    {
+        $customer = auth()->guard('customer')->user();
+
+        $address = $this->customerAddressRepository->findOrFail($id);
+
+        if ($address->customer_id !== $customer->id) {
+            abort(403);
+        }
+
+        Event::dispatch('customer.addresses.delete.before', $id);
+
+        $this->customerAddressRepository->delete($id);
+
+        Event::dispatch('customer.addresses.delete.after', $id);
+
+        return new JsonResource([
+            'message' => trans('shop::app.customers.account.addresses.index.delete-success'),
         ]);
     }
 }
