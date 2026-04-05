@@ -83,6 +83,10 @@
 
         {!! view_render_event('bagisto.shop.customers.account.orders.view.before', ['order' => $order]) !!}
 
+        @if ($order->payment?->method === 'paymentconfirmation')
+            @include('paymentconfirmation::shop.orders.payment-confirmation', ['order' => $order])
+        @endif
+
         <!-- Order view tabs -->
         <div class="mt-8 max-md:mt-5 max-md:grid max-md:gap-4">
             <x-shop::tabs>
