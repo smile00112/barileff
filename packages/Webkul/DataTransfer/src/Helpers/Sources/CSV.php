@@ -103,6 +103,8 @@ class CSV extends AbstractSource
 
         $writer->setDelimiter(',');
 
+        Storage::disk('private')->makeDirectory('imports');
+
         $writer->save(Storage::disk('private')->path($this->errorFilePath()));
 
         return $this->errorFilePath();

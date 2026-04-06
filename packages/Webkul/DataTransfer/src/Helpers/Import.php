@@ -264,28 +264,38 @@ class Import
 
     /**
      * Starts import process.
+     *
+     * When dispatching to queue (no $importBatch), we must NOT wrap the
+     * Bus::chain()->dispatch() in a DB transaction. In sync-queue mode
+     * every batch job executes inside the same HTTP request; if any SQL
+     * inside a job fails, PostgreSQL marks the connection-level
+     * transaction as "aborted", causing every subsequent statement
+     * (including model deserialization for the next job) to fail with
+     * SQLSTATE[25P02]. Without an outer transaction each statement runs
+     * in autocommit mode and a failure is fully isolated.
+     *
+     * When processing a single batch directly ($importBatch provided) we
+     * do want an atomic transaction so a partial failure is rolled back.
      */
     public function start(?ImportBatchContract $importBatch = null): bool
     {
+        if ($importBatch === null) {
+            $this->getTypeImporter()->importData(null);
+
+            return true;
+        }
+
         DB::beginTransaction();
 
         try {
-            $typeImporter = $this->getTypeImporter();
-
-            $typeImporter->importData($importBatch);
+            $this->getTypeImporter()->importData($importBatch);
         } catch (\Exception $e) {
-            /**
-             * Rollback transaction
-             */
             DB::rollBack();
 
             throw $e;
-        } finally {
-            /**
-             * Commit transaction
-             */
-            DB::commit();
         }
+
+        DB::commit();
 
         return true;
     }
@@ -298,22 +308,14 @@ class Import
         DB::beginTransaction();
 
         try {
-            $typeImporter = $this->getTypeImporter();
-
-            $typeImporter->linkData($importBatch);
+            $this->getTypeImporter()->linkData($importBatch);
         } catch (\Exception $e) {
-            /**
-             * Rollback transaction
-             */
             DB::rollBack();
 
             throw $e;
-        } finally {
-            /**
-             * Commit transaction
-             */
-            DB::commit();
         }
+
+        DB::commit();
 
         return true;
     }
@@ -326,22 +328,14 @@ class Import
         DB::beginTransaction();
 
         try {
-            $typeImporter = $this->getTypeImporter();
-
-            $typeImporter->indexData($importBatch);
+            $this->getTypeImporter()->indexData($importBatch);
         } catch (\Exception $e) {
-            /**
-             * Rollback transaction
-             */
             DB::rollBack();
 
             throw $e;
-        } finally {
-            /**
-             * Commit transaction
-             */
-            DB::commit();
         }
+
+        DB::commit();
 
         return true;
     }

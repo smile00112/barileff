@@ -106,6 +106,8 @@ class XLSX extends AbstractSource
 
         $writer = new XLSXWriter($spreadsheet);
 
+        Storage::disk('private')->makeDirectory('imports');
+
         $writer->save(Storage::disk('private')->path($this->errorFilePath()));
 
         return $this->errorFilePath();

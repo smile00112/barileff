@@ -106,6 +106,8 @@ class XLS extends AbstractSource
 
         $writer = new XLSWriter($spreadsheet);
 
+        Storage::disk('private')->makeDirectory('imports');
+
         $writer->save(Storage::disk('private')->path($this->errorFilePath()));
 
         return $this->errorFilePath();

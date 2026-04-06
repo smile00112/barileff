@@ -395,10 +395,56 @@ class ImportController extends Controller
         }
 
         $addLocaleColumn = ! isset($columnMap['locale']);
+        $addTypeColumn = ! isset($columnMap['type']);
+        $addFamilyColumn = ! isset($columnMap['attribute_family_code']);
+
+        // Required by the DataTransfer product importer — static defaults for boolean/numeric fields.
+        $staticRequiredDefaults = [];
+
+        foreach (['status' => '1', 'visible_individually' => '1', 'guest_checkout' => '1', 'weight' => '0'] as $field => $default) {
+            if (! isset($columnMap[$field])) {
+                $staticRequiredDefaults[$field] = $default;
+            }
+        }
+
+        // url_key: auto-generated per row from the mapped SKU value.
+        $autoUrlKey = ! isset($columnMap['url_key']);
+
+        // short_description / description: copied from mapped `name` column when not mapped.
+        $autoShortDescription = ! isset($columnMap['short_description']);
+        $autoDescription = ! isset($columnMap['description']);
+
+        $skuColumnIndex = $columnMap['sku'] ?? null;
+        $nameColumnIndex = $columnMap['name'] ?? null;
+
         $newHeaders = array_keys($columnMap);
 
         if ($addLocaleColumn) {
             $newHeaders[] = 'locale';
+        }
+
+        if ($addTypeColumn) {
+            $newHeaders[] = 'type';
+        }
+
+        if ($addFamilyColumn) {
+            $newHeaders[] = 'attribute_family_code';
+        }
+
+        foreach (array_keys($staticRequiredDefaults) as $field) {
+            $newHeaders[] = $field;
+        }
+
+        if ($autoUrlKey) {
+            $newHeaders[] = 'url_key';
+        }
+
+        if ($autoShortDescription) {
+            $newHeaders[] = 'short_description';
+        }
+
+        if ($autoDescription) {
+            $newHeaders[] = 'description';
         }
 
         $remappedName = 'catalog-imports/remapped_'.basename($session->file_path);
@@ -437,6 +483,31 @@ class ImportController extends Controller
                 $newRow[] = $locale;
             }
 
+            if ($addTypeColumn) {
+                $newRow[] = 'simple';
+            }
+
+            if ($addFamilyColumn) {
+                $newRow[] = 'default';
+            }
+
+            foreach ($staticRequiredDefaults as $default) {
+                $newRow[] = $default;
+            }
+
+            if ($autoUrlKey) {
+                $rawSku = $skuColumnIndex !== null ? ($row[$skuColumnIndex] ?? '') : '';
+                $newRow[] = $this->toUrlKey($rawSku ?: uniqid('p'));
+            }
+
+            if ($autoShortDescription) {
+                $newRow[] = $nameColumnIndex !== null ? ($row[$nameColumnIndex] ?? '-') : '-';
+            }
+
+            if ($autoDescription) {
+                $newRow[] = $nameColumnIndex !== null ? ($row[$nameColumnIndex] ?? '-') : '-';
+            }
+
             fputcsv($writeHandle, $newRow);
         }
 
@@ -444,6 +515,20 @@ class ImportController extends Controller
         fclose($writeHandle);
 
         return $remappedName;
+    }
+
+    /**
+     * Convert a raw string to a url_key-compatible slug.
+     *
+     * Preserves Unicode letters/numbers (as required by the Slug validation rule)
+     * and joins word groups with a single hyphen.
+     */
+    protected function toUrlKey(string $value): string
+    {
+        $value = mb_strtolower(trim($value));
+        $value = (string) preg_replace('/[^\p{L}\p{M}\p{N}]+/u', '-', $value);
+
+        return trim($value, '-') ?: 'product';
     }
 
     /**

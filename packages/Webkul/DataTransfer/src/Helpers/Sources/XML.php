@@ -130,6 +130,8 @@ class XML extends AbstractSource
             $this->next();
         }
 
+        Storage::disk('private')->makeDirectory('imports');
+
         $writer->saveXML(Storage::disk('private')->path($this->errorFilePath()));
 
         return $this->errorFilePath();

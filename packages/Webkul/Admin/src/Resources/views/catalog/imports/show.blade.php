@@ -285,7 +285,7 @@
                     return {
                         state: '{{ $session->state }}',
                         headers: @json($session->headers ?? []),
-                        mapping: @json($session->column_mapping ?? []),
+                        mapping: @json((object)($session->column_mapping ?? [])),
                         bagistoFields: @json($bagistoFields),
                         inventorySources: @json($inventorySources),
                         inventorySourceId: {{ $session->inventory_source_id ?? 'null' }},
@@ -332,13 +332,8 @@
                 },
 
                 methods: {
-                    logMappingOnFieldSelect(header) {
-                        const snapshot = JSON.parse(JSON.stringify(this.mapping));
-
-                        console.log('[catalog-import] mapping after field select', snapshot);
-                        console.log('[catalog-import] column', header, '=>', this.mapping[header]);
-                        console.log('[catalog-import] hasMappedSku', this.hasMappedSku);
-                        console.log('[catalog-import] Object.values(mapping)', Object.values(snapshot));
+                    logMappingOnFieldSelect() {
+                        // debug stub removed
                     },
 
                     initializeMapping() {

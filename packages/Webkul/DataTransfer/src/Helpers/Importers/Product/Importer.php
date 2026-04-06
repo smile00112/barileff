@@ -361,19 +361,24 @@ class Importer extends AbstractImporter
         /**
          * Check if url_key is unique
          */
+        $urlKey = $rowData['url_key'] ?? '';
+
         if (
-            empty($this->urlKeys[$rowData['url_key']])
-            || ($this->urlKeys[$rowData['url_key']]['sku'] == $rowData['sku'])
+            $urlKey === ''
+            || empty($this->urlKeys[$urlKey])
+            || ($this->urlKeys[$urlKey]['sku'] == $rowData['sku'])
         ) {
-            $this->urlKeys[$rowData['url_key']] = [
-                'sku' => $rowData['sku'],
-                'row_number' => $rowNumber,
-            ];
+            if ($urlKey !== '') {
+                $this->urlKeys[$urlKey] = [
+                    'sku' => $rowData['sku'],
+                    'row_number' => $rowNumber,
+                ];
+            }
         } else {
             $message = sprintf(
                 trans($this->messages[self::ERROR_DUPLICATE_URL_KEY]),
                 'url_key',
-                $this->urlKeys[$rowData['url_key']]['sku']
+                $this->urlKeys[$urlKey]['sku']
             );
 
             $this->skipRow($rowNumber, self::ERROR_DUPLICATE_URL_KEY, 'url_key', $message);
@@ -1308,7 +1313,13 @@ class Importer extends AbstractImporter
         $inventorySources = explode(',', $rowData['inventories'] ?? '');
 
         foreach ($inventorySources as $inventorySource) {
-            [$inventorySource, $qty] = explode('=', $inventorySource ?? '');
+            $parts = explode('=', $inventorySource ?? '');
+
+            if (count($parts) < 2) {
+                continue;
+            }
+
+            [$inventorySource, $qty] = $parts;
 
             $inventories[$rowData['sku']][] = [
                 'source' => $inventorySource,
