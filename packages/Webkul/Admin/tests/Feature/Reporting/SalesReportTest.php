@@ -31,6 +31,24 @@ it('should return the sales index page', function () {
         ->assertSeeText(trans('admin::app.reporting.sales.index.total-sales'));
 });
 
+it('should return the purchase funnel stats', function () {
+    $this->loginAsAdmin();
+
+    get(route('admin.reporting.sales.stats', [
+        'type' => 'purchase-funnel',
+    ]))
+        ->assertOk()
+        ->assertJsonStructure([
+            'statistics' => [
+                'visitors' => ['total', 'progress'],
+                'product_visitors' => ['total', 'progress'],
+                'carts' => ['total', 'progress'],
+                'orders' => ['total', 'progress'],
+            ],
+            'date_range',
+        ]);
+});
+
 it('should returns the sales stats', function () {
     // Arrange.
     $product = (new ProductFaker([

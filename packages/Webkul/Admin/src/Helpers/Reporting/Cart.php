@@ -164,12 +164,13 @@ class Cart extends AbstractReporting
         return $this->cartItemRepository
             ->resetModel()
             ->leftJoin('cart', 'cart_items.cart_id', '=', 'cart.id')
-            ->select('product_id as id', 'name')
+            ->select(DB::raw('cart_items.product_id as id'))
+            ->addSelect(DB::raw('MAX(cart_items.name) as name'))
             ->addSelect(DB::raw('COUNT(*) as count'))
             ->where('is_active', 1)
             ->whereIn('cart.channel_id', $this->channelIds)
             ->whereBetween('cart.created_at', [$this->startDate, $this->endDate->subDays(2)])
-            ->groupBy('product_id')
+            ->groupBy('cart_items.product_id')
             ->limit($limit)
             ->orderByDesc('count')
             ->get();
@@ -195,16 +196,16 @@ class Cart extends AbstractReporting
      *
      * @param  \Carbon\Carbon  $startDate
      * @param  \Carbon\Carbon  $endDate
-     * @return array
      */
     public function getTotalUniqueCartsUsers($startDate, $endDate): int
     {
-        return $this->cartRepository
+        $uniqueCartUsers = $this->cartRepository
             ->resetModel()
-            ->groupBy(DB::raw("CONCAT(customer_email, '-', customer_id)"))
             ->whereIn('cart.channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get()
-            ->count();
+            ->selectRaw('1')
+            ->groupBy(DB::raw("CONCAT(customer_email, '-', customer_id)"));
+
+        return (int) DB::query()->fromSub($uniqueCartUsers, 'unique_cart_users')->count();
     }
 }

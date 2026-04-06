@@ -81,30 +81,28 @@ class Visitor extends AbstractReporting
      *
      * @param  \Carbon\Carbon  $startDate
      * @param  \Carbon\Carbon  $endDate
-     * @param  string  $visitableType
-     * @return array
+     * @param  string|null  $visitableType
      */
     public function getTotalUniqueVisitors($startDate, $endDate, $visitableType = null): int
     {
+        $query = $this->visitRepository
+            ->resetModel()
+            ->whereIn('channel_id', $this->channelIds)
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
         if ($visitableType) {
-            return $this->visitRepository
-                ->resetModel()
-                ->where('visitable_type', $visitableType)
-                ->groupBy(DB::raw("CONCAT(ip, '-', visitor_id, '-', visitable_type)"))
-                ->whereIn('channel_id', $this->channelIds)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->get()
-                ->count();
+            $query->where('visitable_type', $visitableType);
+
+            $groupKey = DB::raw("CONCAT(ip, '-', visitor_id, '-', visitable_type)");
+        } else {
+            $query->whereNull('visitable_id');
+
+            $groupKey = DB::raw("CONCAT(ip, '-', visitor_id)");
         }
 
-        return $this->visitRepository
-            ->resetModel()
-            ->whereNull('visitable_id')
-            ->groupBy(DB::raw("CONCAT(ip, '-', visitor_id)"))
-            ->whereIn('channel_id', $this->channelIds)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get()
-            ->count();
+        $uniqueVisitors = $query->selectRaw('1')->groupBy($groupKey);
+
+        return (int) DB::query()->fromSub($uniqueVisitors, 'unique_visitors')->count();
     }
 
     /**

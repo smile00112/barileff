@@ -579,21 +579,21 @@ class Sale extends AbstractReporting
     }
 
     /**
-     * Retrieves total unique cart users
+     * Retrieves total unique order users
      *
      * @param  \Carbon\Carbon  $startDate
      * @param  \Carbon\Carbon  $endDate
-     * @return array
      */
     public function getTotalUniqueOrdersUsers($startDate, $endDate): int
     {
-        return $this->orderRepository
+        $uniqueOrdersUsers = $this->orderRepository
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy(DB::raw("CONCAT(customer_email, '-', customer_id)"))
-            ->get()
-            ->count();
+            ->selectRaw('1')
+            ->groupBy(DB::raw("CONCAT(customer_email, '-', customer_id)"));
+
+        return (int) DB::query()->fromSub($uniqueOrdersUsers, 'unique_orders_users')->count();
     }
 
     /**

@@ -132,6 +132,7 @@
                                         <select
                                             v-model="mapping[header]"
                                             class="block w-full rounded-sm border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:outline-none"
+                                            @change="logMappingOnFieldSelect(header)"
                                         >
                                             <optgroup
                                                 v-for="group in bagistoFields"
@@ -331,6 +332,15 @@
                 },
 
                 methods: {
+                    logMappingOnFieldSelect(header) {
+                        const snapshot = JSON.parse(JSON.stringify(this.mapping));
+
+                        console.log('[catalog-import] mapping after field select', snapshot);
+                        console.log('[catalog-import] column', header, '=>', this.mapping[header]);
+                        console.log('[catalog-import] hasMappedSku', this.hasMappedSku);
+                        console.log('[catalog-import] Object.values(mapping)', Object.values(snapshot));
+                    },
+
                     initializeMapping() {
                         this.headers.forEach((header) => {
                             if (typeof this.mapping[header] === 'undefined') {
