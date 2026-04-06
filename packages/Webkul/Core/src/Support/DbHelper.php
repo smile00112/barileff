@@ -105,6 +105,68 @@ class DbHelper
     }
 
     /**
+     * Reporting: group by calendar month (1–12).
+     *
+     * MySQL: MONTH(column)
+     * PG:    EXTRACT(MONTH FROM column)
+     */
+    public static function reportingGroupByMonth(string $column): string
+    {
+        if (DB::getDriverName() === 'pgsql') {
+            return "EXTRACT(MONTH FROM {$column})";
+        }
+
+        return "MONTH({$column})";
+    }
+
+    /**
+     * Reporting: group by ISO 8601 week number (aligned with Carbon week / getWeeksInterval filters).
+     *
+     * MySQL: WEEK(column, 3) — mode 3 is ISO 8601
+     * PG:    EXTRACT(WEEK FROM column)
+     */
+    public static function reportingGroupByIsoWeek(string $column): string
+    {
+        if (DB::getDriverName() === 'pgsql') {
+            return "EXTRACT(WEEK FROM {$column})";
+        }
+
+        return "WEEK({$column}, 3)";
+    }
+
+    /**
+     * Reporting: group by day-of-year (1–366).
+     *
+     * MySQL: DAYOFYEAR(column)
+     * PG:    EXTRACT(DOY FROM column)
+     */
+    public static function reportingGroupByDayOfYear(string $column): string
+    {
+        if (DB::getDriverName() === 'pgsql') {
+            return "EXTRACT(DOY FROM {$column})";
+        }
+
+        return "DAYOFYEAR({$column})";
+    }
+
+    /**
+     * Reporting: English weekday name (Sunday … Saturday), for grouping / display.
+     *
+     * MySQL: DAYNAME(column)
+     * PG:    CASE EXTRACT(DOW FROM column) — DOW: 0 = Sunday … 6 = Saturday
+     */
+    public static function reportingDayNameEnglish(string $column): string
+    {
+        if (DB::getDriverName() === 'pgsql') {
+            return 'CASE EXTRACT(DOW FROM '.$column.')::integer '
+                ."WHEN 0 THEN 'Sunday' WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' "
+                ."WHEN 3 THEN 'Wednesday' WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' WHEN 6 THEN 'Saturday' END";
+        }
+
+        return "DAYNAME({$column})";
+    }
+
+    /**
      * Convert MySQL date format specifiers to PostgreSQL TO_CHAR format.
      */
     protected static function mysqlFormatToPostgres(string $format): string

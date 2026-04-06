@@ -41,6 +41,7 @@
         "minishlink/web-push": "^10.0",
         "mpdf/mpdf": "^8.2",
         "nesbot/carbon": "^2.72.2",
+        "opcodesio/log-viewer": "^3.24",
         "openai-php/laravel": "^0.10.1",
         "predis/predis": "^2.2",
         "prettus/l5-repository": "^2.6",

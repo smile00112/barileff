@@ -20,6 +20,7 @@ use Webkul\Shop\Mail\Order\CanceledNotification as ShopOrderCanceledNotification
 use Webkul\Shop\Mail\Order\CommentedNotification;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 it('should return the index page of Orders page', function () {
@@ -1390,4 +1391,18 @@ it('should search the order', function () {
             $this->prepareOrderPayment($orderPayment),
         ],
     ]);
+});
+
+it('should return orders index datagrid as json for ajax pagination', function () {
+    $this->loginAsAdmin();
+
+    getJson(
+        route('admin.sales.orders.index').'?'.http_build_query([
+            'pagination' => [
+                'page' => 1,
+                'per_page' => 10,
+            ],
+        ]),
+        ['X-Requested-With' => 'XMLHttpRequest']
+    )->assertOk();
 });

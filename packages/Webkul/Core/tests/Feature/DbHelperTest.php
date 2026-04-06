@@ -118,3 +118,53 @@ it('generates concatWs for both drivers', function () {
     expect($result)->toBeString();
     expect($result)->toBe("CONCAT_WS(' ', first_name, last_name)");
 });
+
+it('generates reportingGroupByMonth for current driver', function () {
+    $result = DbHelper::reportingGroupByMonth('created_at');
+
+    expect($result)->toBeString();
+
+    if (DB::getDriverName() === 'pgsql') {
+        expect($result)->toBe('EXTRACT(MONTH FROM created_at)');
+    } else {
+        expect($result)->toBe('MONTH(created_at)');
+    }
+});
+
+it('generates reportingGroupByIsoWeek for current driver', function () {
+    $result = DbHelper::reportingGroupByIsoWeek('created_at');
+
+    expect($result)->toBeString();
+
+    if (DB::getDriverName() === 'pgsql') {
+        expect($result)->toBe('EXTRACT(WEEK FROM created_at)');
+    } else {
+        expect($result)->toBe('WEEK(created_at, 3)');
+    }
+});
+
+it('generates reportingGroupByDayOfYear for current driver', function () {
+    $result = DbHelper::reportingGroupByDayOfYear('created_at');
+
+    expect($result)->toBeString();
+
+    if (DB::getDriverName() === 'pgsql') {
+        expect($result)->toBe('EXTRACT(DOY FROM created_at)');
+    } else {
+        expect($result)->toBe('DAYOFYEAR(created_at)');
+    }
+});
+
+it('generates reportingDayNameEnglish for current driver', function () {
+    $result = DbHelper::reportingDayNameEnglish('created_at');
+
+    expect($result)->toBeString();
+
+    if (DB::getDriverName() === 'pgsql') {
+        expect($result)->toContain('EXTRACT(DOW FROM created_at)');
+        expect($result)->toContain("WHEN 0 THEN 'Sunday'");
+        expect($result)->toContain("WHEN 6 THEN 'Saturday'");
+    } else {
+        expect($result)->toBe('DAYNAME(created_at)');
+    }
+});

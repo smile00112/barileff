@@ -24,6 +24,20 @@ it('should returns the customers page', function () {
         ->assertSeeText(trans('admin::app.customers.customers.index.create.create-btn'));
 });
 
+it('should return customers index datagrid as json for ajax pagination', function () {
+    $this->loginAsAdmin();
+
+    getJson(
+        route('admin.customers.customers.index').'?'.http_build_query([
+            'pagination' => [
+                'page' => 1,
+                'per_page' => 10,
+            ],
+        ]),
+        ['X-Requested-With' => 'XMLHttpRequest']
+    )->assertOk();
+});
+
 it('should return listing items of customers', function () {
     // Arrange.
     $customer = (new CustomerFaker)->factory()->create([

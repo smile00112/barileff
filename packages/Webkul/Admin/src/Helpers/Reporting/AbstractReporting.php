@@ -185,6 +185,8 @@ abstract class AbstractReporting
      */
     public function getTimeInterval($startDate, $endDate, $period)
     {
+        $dateColumn = 'created_at';
+
         if ($period == 'auto') {
             $totalMonths = $startDate->diffInMonths($endDate) + 1;
 
@@ -195,7 +197,7 @@ abstract class AbstractReporting
 
             if (! empty($intervals)) {
                 return [
-                    'group_column' => 'MONTH(created_at)',
+                    'group_column' => DbHelper::reportingGroupByMonth($dateColumn),
                     'intervals' => $intervals,
                 ];
             }
@@ -207,7 +209,7 @@ abstract class AbstractReporting
 
             if (! empty($intervals)) {
                 return [
-                    'group_column' => 'WEEK(created_at)',
+                    'group_column' => DbHelper::reportingGroupByIsoWeek($dateColumn),
                     'intervals' => $intervals,
                 ];
             }
@@ -216,7 +218,7 @@ abstract class AbstractReporting
              * If the difference between the start and end date is less than 6 weeks
              */
             return [
-                'group_column' => 'DAYOFYEAR(created_at)',
+                'group_column' => DbHelper::reportingGroupByDayOfYear($dateColumn),
                 'intervals' => $this->getDaysInterval($startDate, $endDate),
             ];
         } else {

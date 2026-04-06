@@ -5,6 +5,7 @@ namespace Webkul\Admin\Helpers\Reporting;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Webkul\Core\Repositories\VisitRepository;
+use Webkul\Core\Support\DbHelper;
 
 class Visitor extends AbstractReporting
 {
@@ -89,7 +90,7 @@ class Visitor extends AbstractReporting
             return $this->visitRepository
                 ->resetModel()
                 ->where('visitable_type', $visitableType)
-                ->groupBy(DB::raw('CONCAT(ip, "-", visitor_id, "-", visitable_type)'))
+                ->groupBy(DB::raw("CONCAT(ip, '-', visitor_id, '-', visitable_type)"))
                 ->whereIn('channel_id', $this->channelIds)
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->get()
@@ -99,7 +100,7 @@ class Visitor extends AbstractReporting
         return $this->visitRepository
             ->resetModel()
             ->whereNull('visitable_id')
-            ->groupBy(DB::raw('CONCAT(ip, "-", visitor_id)'))
+            ->groupBy(DB::raw("CONCAT(ip, '-', visitor_id)"))
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get()
@@ -233,7 +234,7 @@ class Visitor extends AbstractReporting
         $visits = $this->visitRepository
             ->resetModel()
             ->select(
-                DB::raw('DAYNAME(created_at) AS day'),
+                DB::raw(DbHelper::reportingDayNameEnglish('created_at').' AS day'),
                 DB::raw('COUNT(*) AS count')
             )
             ->whereNull('visitable_id')

@@ -21,6 +21,20 @@ it('should show category page', function () {
         ->assertSeeText(trans('admin::app.catalog.categories.index.title'));
 });
 
+it('should return categories index datagrid as json for ajax pagination', function () {
+    $this->loginAsAdmin();
+
+    getJson(
+        route('admin.catalog.categories.index').'?'.http_build_query([
+            'pagination' => [
+                'page' => 1,
+                'per_page' => 10,
+            ],
+        ]),
+        ['X-Requested-With' => 'XMLHttpRequest']
+    )->assertOk();
+});
+
 it('should show category edit page', function () {
     // Arrange.
     $category = (new CategoryFaker)->factory()->create();

@@ -1,14 +1,8 @@
 <?php
 
 return [
-    /**
-     * Application service providers.
-     */
     App\Providers\AppServiceProvider::class,
-
-    /**
-     * Webkul's service providers.
-     */
+    App\Providers\TelescopeServiceProvider::class,
     Webkul\Admin\Providers\AdminServiceProvider::class,
     Webkul\Attribute\Providers\AttributeServiceProvider::class,
     Webkul\BookingProduct\Providers\BookingProductServiceProvider::class,
@@ -22,19 +16,22 @@ return [
     Webkul\Customer\Providers\CustomerServiceProvider::class,
     Webkul\DataGrid\Providers\DataGridServiceProvider::class,
     Webkul\DataTransfer\Providers\DataTransferServiceProvider::class,
-    Webkul\DeliveryZones\Providers\DeliveryZonesServiceProvider::class,
     Webkul\DebugBar\Providers\DebugBarServiceProvider::class,
+    Webkul\DeliveryZones\Providers\DeliveryZonesServiceProvider::class,
     Webkul\FPC\Providers\FPCServiceProvider::class,
     Webkul\GDPR\Providers\GDPRServiceProvider::class,
     Webkul\Installer\Providers\InstallerServiceProvider::class,
     Webkul\Inventory\Providers\InventoryServiceProvider::class,
     Webkul\MagicAI\Providers\MagicAIServiceProvider::class,
     Webkul\Marketing\Providers\MarketingServiceProvider::class,
+    Webkul\Markup\Providers\MarkupServiceProvider::class,
     Webkul\Notification\Providers\NotificationServiceProvider::class,
-    Webkul\PushNotification\Providers\PushNotificationServiceProvider::class,
+    Webkul\PaymentConfirmation\Providers\PaymentConfirmationServiceProvider::class,
     Webkul\Payment\Providers\PaymentServiceProvider::class,
     Webkul\Paypal\Providers\PaypalServiceProvider::class,
+    Webkul\ProductTag\Providers\ProductTagServiceProvider::class,
     Webkul\Product\Providers\ProductServiceProvider::class,
+    Webkul\PushNotification\Providers\PushNotificationServiceProvider::class,
     Webkul\Rule\Providers\RuleServiceProvider::class,
     Webkul\Sales\Providers\SalesServiceProvider::class,
     Webkul\Shipping\Providers\ShippingServiceProvider::class,
@@ -43,10 +40,7 @@ return [
     Webkul\SocialLogin\Providers\SocialLoginServiceProvider::class,
     Webkul\SocialShare\Providers\SocialShareServiceProvider::class,
     Webkul\Supplier\Providers\SupplierServiceProvider::class,
-    Webkul\Markup\Providers\MarkupServiceProvider::class,
-    Webkul\ProductTag\Providers\ProductTagServiceProvider::class,
     Webkul\Tax\Providers\TaxServiceProvider::class,
     Webkul\Theme\Providers\ThemeServiceProvider::class,
     Webkul\User\Providers\UserServiceProvider::class,
-    Webkul\PaymentConfirmation\Providers\PaymentConfirmationServiceProvider::class,
 ];

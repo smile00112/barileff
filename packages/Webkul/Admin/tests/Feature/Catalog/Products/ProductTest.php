@@ -4,6 +4,7 @@ use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Product\Contracts\ProductFlat;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 it('should return the product index page', function () {
@@ -14,6 +15,20 @@ it('should return the product index page', function () {
         ->assertOk()
         ->assertSeeText(trans('admin::app.catalog.products.index.title'))
         ->assertSeeText(trans('admin::app.catalog.products.index.create-btn'));
+});
+
+it('should return product index datagrid as json for ajax pagination', function () {
+    $this->loginAsAdmin();
+
+    getJson(
+        route('admin.catalog.products.index').'?'.http_build_query([
+            'pagination' => [
+                'page' => 1,
+                'per_page' => 10,
+            ],
+        ]),
+        ['X-Requested-With' => 'XMLHttpRequest']
+    )->assertOk();
 });
 
 it('should copy the existing product', function () {

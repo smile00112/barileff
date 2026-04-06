@@ -18,6 +18,12 @@ class OrderDataGrid extends DataGrid
      */
     public function prepareQueryBuilder()
     {
+        $prefix = DB::getTablePrefix();
+
+        $fullNameSql = 'CONCAT('.$prefix.'orders.customer_first_name, \' \', '.$prefix.'orders.customer_last_name)';
+
+        $locationSql = 'CONCAT('.$prefix.'order_address_billing.city, \', \', '.$prefix.'order_address_billing.state,\', \', '.$prefix.'order_address_billing.country)';
+
         $queryBuilder = DB::table('orders')
             ->leftJoin('addresses as order_address_shipping', function ($leftJoin) {
                 $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
@@ -34,17 +40,29 @@ class OrderDataGrid extends DataGrid
                 'orders.increment_id',
                 'orders.base_grand_total',
                 'orders.created_at',
-                'channel_name',
-                'channel_id',
-                'status',
-                'customer_email',
+                'orders.channel_name',
+                'orders.channel_id',
+                'orders.status',
+                'orders.customer_email',
                 'orders.cart_id as items',
-                DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, \' \', '.DB::getTablePrefix().'orders.customer_last_name) as full_name'),
-                DB::raw('CONCAT('.DB::getTablePrefix().'order_address_billing.city, \', \', '.DB::getTablePrefix().'order_address_billing.state,\', \', '.DB::getTablePrefix().'order_address_billing.country) as location')
+                DB::raw($fullNameSql.' as full_name'),
+                DB::raw($locationSql.' as location')
             )
-            ->groupBy('orders.id');
+            ->groupBy([
+                'orders.id',
+                'orders.increment_id',
+                'orders.base_grand_total',
+                'orders.created_at',
+                'orders.channel_name',
+                'orders.channel_id',
+                'orders.status',
+                'orders.customer_email',
+                'orders.cart_id',
+                DB::raw($fullNameSql),
+                DB::raw($locationSql),
+            ]);
 
-        $this->addFilter('full_name', DB::raw('CONCAT('.DB::getTablePrefix().'orders.customer_first_name, \' \', '.DB::getTablePrefix().'orders.customer_last_name)'));
+        $this->addFilter('full_name', DB::raw($fullNameSql));
         $this->addFilter('created_at', 'orders.created_at');
 
         $admin = auth()->guard('admin')->user();

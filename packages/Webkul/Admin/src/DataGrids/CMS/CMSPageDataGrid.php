@@ -31,7 +31,12 @@ class CMSPageDataGrid extends DataGrid
             })
             ->leftJoin('cms_page_channels', 'cms_pages.id', '=', 'cms_page_channels.cms_page_id')
             ->leftJoin('channels', 'cms_page_channels.channel_id', '=', 'channels.id')
-            ->groupBy('cms_pages.id', 'cms_page_translations.locale');
+            ->groupBy([
+                'cms_pages.id',
+                'cms_page_translations.page_title',
+                'cms_page_translations.url_key',
+                'cms_page_translations.locale',
+            ]);
 
         $this->addFilter('id', 'cms_pages.id');
         $this->addFilter('channel', 'cms_page_channels.channel_id');

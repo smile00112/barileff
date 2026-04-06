@@ -20,6 +20,20 @@ it('should returns the cms page', function () {
         ->assertSeeText(trans('admin::app.cms.index.create-btn'));
 });
 
+it('should return cms index datagrid as json for ajax pagination', function () {
+    $this->loginAsAdmin();
+
+    getJson(
+        route('admin.cms.index').'?'.http_build_query([
+            'pagination' => [
+                'page' => 1,
+                'per_page' => 10,
+            ],
+        ]),
+        ['X-Requested-With' => 'XMLHttpRequest']
+    )->assertOk();
+});
+
 it('should returns the listing cms', function () {
     // Act and Assert.
     $this->loginAsAdmin();
