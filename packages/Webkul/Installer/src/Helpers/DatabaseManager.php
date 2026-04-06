@@ -2,6 +2,7 @@
 
 namespace Webkul\Installer\Helpers;
 
+use Database\Seeders\CustomProductAttributesSeeder;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -80,6 +81,7 @@ class DatabaseManager
 
         try {
             app(SinicaDatabaseSeeder::class)->run($data['parameter']);
+            app(CustomProductAttributesSeeder::class)->run();
 
             $this->storageLink();
         } catch (Exception $e) {

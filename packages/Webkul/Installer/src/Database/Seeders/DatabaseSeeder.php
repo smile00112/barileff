@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      *
+     * InventorySeeder runs before CoreSeeder so inventory_sources exist before
+     * ChannelTableSeeder inserts channel_inventory_sources (PostgreSQL enforces FKs).
+     *
      * @param  array  $parameters
      * @return void
      */
@@ -25,10 +28,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AttributeSeeder::class, false, ['parameters' => $parameters]);
         $this->call(CategorySeeder::class, false, ['parameters' => $parameters]);
+        $this->call(InventorySeeder::class, false, ['parameters' => $parameters]);
         $this->call(CoreSeeder::class, false, ['parameters' => $parameters]);
         $this->call(CustomerSeeder::class, false, ['parameters' => $parameters]);
         $this->call(CMSSeeder::class, false, ['parameters' => $parameters]);
-        $this->call(InventorySeeder::class, false, ['parameters' => $parameters]);
         $this->call(SocialLoginSeeder::class, false, ['parameters' => $parameters]);
         $this->call(ShopSeeder::class, false, ['parameters' => $parameters]);
         $this->call(UserSeeder::class, false, ['parameters' => $parameters]);

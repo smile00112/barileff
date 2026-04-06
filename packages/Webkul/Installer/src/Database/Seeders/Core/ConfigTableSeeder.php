@@ -169,5 +169,25 @@ class ConfigTableSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+
+        $this->syncPostgreSqlCoreConfigIdSequence();
+    }
+
+    /**
+     * Explicit primary keys above do not advance PostgreSQL's sequence; later inserts without id would get duplicate keys.
+     */
+    private function syncPostgreSqlCoreConfigIdSequence(): void
+    {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
+        DB::statement('
+            SELECT setval(
+                pg_get_serial_sequence(\'core_config\', \'id\')::regclass,
+                COALESCE((SELECT MAX(id) FROM core_config), 1),
+                true
+            )
+        ');
     }
 }

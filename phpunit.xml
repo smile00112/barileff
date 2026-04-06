@@ -35,6 +35,12 @@
         <testsuite name="Markup Feature Test">
             <directory suffix="Test.php">packages/Webkul/Markup/tests/Feature</directory>
         </testsuite>
+
+        <!-- Application Feature tests. -->
+        <testsuite name="Application Feature Test">
+            <directory suffix="Test.php">tests/Feature</directory>
+        </testsuite>
+
     </testsuites>
 
     <source>

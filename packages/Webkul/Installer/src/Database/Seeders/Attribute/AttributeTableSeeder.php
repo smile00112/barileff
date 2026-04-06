@@ -707,5 +707,25 @@ class AttributeTableSeeder extends Seeder
                 ],
             ]);
         }
+
+        $this->syncPostgreSqlAttributesIdSequence();
+    }
+
+    /**
+     * Explicit primary keys do not advance PostgreSQL sequences; later inserts without id would collide.
+     */
+    private function syncPostgreSqlAttributesIdSequence(): void
+    {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
+        DB::statement('
+            SELECT setval(
+                pg_get_serial_sequence(\'attributes\', \'id\')::regclass,
+                COALESCE((SELECT MAX(id) FROM attributes), 1),
+                true
+            )
+        ');
     }
 }

@@ -235,6 +235,26 @@ class AttributeGroupTableSeeder extends Seeder
             ],
         ]);
 
-        Schema::disableForeignKeyConstraints();
+        $this->syncPostgreSqlAttributeGroupsIdSequence();
+
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Explicit primary keys do not advance PostgreSQL sequences; later inserts without id would collide.
+     */
+    private function syncPostgreSqlAttributeGroupsIdSequence(): void
+    {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
+        DB::statement('
+            SELECT setval(
+                pg_get_serial_sequence(\'attribute_groups\', \'id\')::regclass,
+                COALESCE((SELECT MAX(id) FROM attribute_groups), 1),
+                true
+            )
+        ');
     }
 }

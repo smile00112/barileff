@@ -2,6 +2,7 @@
 
 namespace Webkul\Installer\Console\Commands;
 
+use Database\Seeders\CustomProductAttributesSeeder;
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -204,6 +205,7 @@ class Installer extends Command
 
         $this->warn('Step: Seeding basic data for Sinica kickstart...');
         app(SinicaDatabaseSeeder::class)->run($this->getSeederConfiguration());
+        app(CustomProductAttributesSeeder::class)->run();
         $this->components->info('Basic data seeded successfully.');
 
         $this->warn('Step: Linking storage directory...');
