@@ -156,7 +156,6 @@ class Visitor extends AbstractReporting
         $visits = $this->visitRepository
             ->resetModel()
             ->addSelect(
-                'id',
                 'visitable_type',
                 'visitable_id',
                 DB::raw('COUNT(*) as visits')
@@ -164,7 +163,7 @@ class Visitor extends AbstractReporting
             ->where('visitable_type', $visitableType)
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
-            ->groupBy('visitable_id')
+            ->groupBy('visitable_id', 'visitable_type')
             ->orderByDesc('visits')
             ->limit($limit)
             ->get();
@@ -199,7 +198,7 @@ class Visitor extends AbstractReporting
             ->whereNull('visitable_id')
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('date')
+            ->groupBy(DB::raw($groupColumn))
             ->get();
 
         $stats = [];
@@ -238,7 +237,7 @@ class Visitor extends AbstractReporting
             ->whereNull('visitable_id')
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('day')
+            ->groupBy(DB::raw(DbHelper::reportingDayNameEnglish('created_at')))
             ->get();
 
         foreach ($weekDays as $day) {

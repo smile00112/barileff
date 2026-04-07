@@ -455,7 +455,7 @@ class Sale extends AbstractReporting
             ->whereIn('orders.channel_id', $this->channelIds)
             ->whereBetween('order_items.created_at', [$this->startDate, $this->endDate])
             ->whereNotNull('tax_category_id')
-            ->groupBy('tax_category_id')
+            ->groupBy('tax_categories.id', 'tax_categories.name')
             ->orderByDesc('total')
             ->limit($limit)
             ->get();
@@ -543,7 +543,7 @@ class Sale extends AbstractReporting
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
             ->whereNotNull('shipping_method')
-            ->groupBy('shipping_method')
+            ->groupBy('shipping_method', 'shipping_title')
             ->orderByDesc('total')
             ->limit($limit)
             ->get();
@@ -564,7 +564,7 @@ class Sale extends AbstractReporting
             ->addSelect(DB::raw('SUM(base_grand_total) as base_total'))
             ->whereIn('orders.channel_id', $this->channelIds)
             ->whereBetween('orders.created_at', [$this->startDate, $this->endDate])
-            ->groupBy('method')
+            ->groupBy('method', 'method_title')
             ->orderByDesc('total')
             ->limit($limit)
             ->get();
@@ -619,7 +619,7 @@ class Sale extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('date')
+            ->groupBy(DB::raw($groupColumn))
             ->get();
 
         foreach ($config['intervals'] as $interval) {

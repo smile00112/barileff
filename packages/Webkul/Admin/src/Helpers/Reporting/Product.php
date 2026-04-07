@@ -173,7 +173,7 @@ class Product extends AbstractReporting
             ->resetModel()
             ->with(['product', 'product.attribute_family', 'product.attribute_values', 'product.images'])
             ->leftJoin('product_channels', 'product_inventories.product_id', '=', 'product_channels.product_id')
-            ->select('*', DB::raw('SUM(qty) as total_qty'))
+            ->select('product_inventories.product_id', DB::raw('SUM(product_inventories.qty) as total_qty'))
             ->whereIn('channel_id', $this->channelIds)
             ->groupBy('product_inventories.product_id')
             ->orderBy('total_qty', 'ASC')
@@ -192,7 +192,7 @@ class Product extends AbstractReporting
             ->resetModel()
             ->with(['product', 'product.attribute_family', 'product.attribute_values', 'product.images'])
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
-            ->addSelect('*', DB::raw('SUM(base_total_invoiced - base_amount_refunded) as revenue'))
+            ->select('product_id', DB::raw('MIN(order_items.name) as name'), DB::raw('MIN(order_items.price) as price'), DB::raw('SUM(base_total_invoiced - base_amount_refunded) as revenue'))
             ->whereNull('parent_id')
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('order_items.created_at', [$this->startDate, $this->endDate])
@@ -228,7 +228,7 @@ class Product extends AbstractReporting
             ->resetModel()
             ->with(['product', 'product.attribute_family', 'product.attribute_values', 'product.images'])
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
-            ->addSelect('*', DB::raw('SUM(qty_invoiced - qty_refunded) as total_qty_ordered'))
+            ->select('product_id', DB::raw('MIN(order_items.name) as name'), DB::raw('MIN(order_items.price) as price'), DB::raw('SUM(qty_invoiced - qty_refunded) as total_qty_ordered'))
             ->whereNull('parent_id')
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('order_items.created_at', [$this->startDate, $this->endDate])
@@ -338,7 +338,7 @@ class Product extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('order_items.created_at', [$startDate, $endDate])
-            ->groupBy('date')
+            ->groupBy(DB::raw($groupColumn))
             ->get();
 
         $stats = [];
@@ -376,7 +376,7 @@ class Product extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('date')
+            ->groupBy(DB::raw($groupColumn))
             ->get();
 
         $stats = [];
