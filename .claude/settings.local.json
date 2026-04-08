@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(docker compose:*)",
-      "Bash(grep -n \"inventory_sources\" D:/_WORK_/laragon_2025/www/my_bagisto/packages/Webkul/Inventory/src/Database/Migrations/*.php)"
+      "Bash(grep -n \"inventory_sources\" D:/_WORK_/laragon_2025/www/my_bagisto/packages/Webkul/Inventory/src/Database/Migrations/*.php)",
+      "Bash(xargs grep:*)",
+      "Read(//tmp/**)",
+      "Bash(xargs cat:*)",
+      "Bash(grep -E \"\\\\.\\(php|json\\)$\")"
     ]
   }
 }

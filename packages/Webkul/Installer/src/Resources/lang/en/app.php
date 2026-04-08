@@ -364,6 +364,11 @@ return [
             'roles' => [
                 'description' => 'This role users will have all the access',
                 'name' => 'Administrator',
+
+                'store_manager' => [
+                    'description' => 'Operational access without user/role administration or system configuration',
+                    'name' => 'Store Manager',
+                ],
             ],
 
             'users' => [

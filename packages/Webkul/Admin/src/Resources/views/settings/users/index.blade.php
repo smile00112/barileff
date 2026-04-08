@@ -328,9 +328,10 @@
 
                                             <option
                                                 v-for="role in roles"
+                                                :key="role.id"
                                                 :value="role.id"
-                                                :text="role.name"
                                             >
+                                                @{{ role.name }}
                                             </option>
                                         </select>
                                     </v-field>
@@ -385,13 +386,13 @@
                                                 type="checkbox"
                                                 name="inventory_source_ids[]"
                                                 :value="source.id"
-                                                :checked="data.inventorySourceIds.includes(source.id)"
-                                                @change="toggleInventorySource(source.id)"
+                                                :checked="data.inventorySourceIds.includes(Number(source.id))"
+                                                @change="toggleInventorySource(Number(source.id))"
                                                 class="peer hidden"
                                                 :id="'inv_src_' + source.id"
                                             />
 
-                                            <span class="icon-uncheckbox cursor-pointer rounded-md text-2xl peer-checked:icon-checked-box peer-checked:text-blue-600 dark:peer-checked:text-blue-400"></span>
+                                            <span class="icon-uncheckbox cursor-pointer rounded-md text-2xl peer-checked:icon-checked peer-checked:text-blue-600 dark:peer-checked:text-blue-400"></span>
 
                                             <span class="text-sm text-gray-600 dark:text-gray-300">@{{ source.name }}</span>
                                         </label>

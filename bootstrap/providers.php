@@ -20,6 +20,7 @@ return [
     Webkul\DeliveryZones\Providers\DeliveryZonesServiceProvider::class,
     Webkul\FPC\Providers\FPCServiceProvider::class,
     Webkul\GDPR\Providers\GDPRServiceProvider::class,
+    Webkul\ImportExport\Providers\ImportExportServiceProvider::class,
     Webkul\Installer\Providers\InstallerServiceProvider::class,
     Webkul\Inventory\Providers\InventoryServiceProvider::class,
     Webkul\MagicAI\Providers\MagicAIServiceProvider::class,

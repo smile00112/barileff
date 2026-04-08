@@ -86,6 +86,7 @@
             "Webkul\\DebugBar\\": "packages/Webkul/DebugBar/src",
             "Webkul\\FPC\\": "packages/Webkul/FPC/src",
             "Webkul\\GDPR\\": "packages/Webkul/GDPR/src",
+            "Webkul\\ImportExport\\": "packages/Webkul/ImportExport/src",
             "Webkul\\Installer\\": "packages/Webkul/Installer/src",
             "Webkul\\Inventory\\": "packages/Webkul/Inventory/src",
             "Webkul\\MagicAI\\": "packages/Webkul/MagicAI/src",

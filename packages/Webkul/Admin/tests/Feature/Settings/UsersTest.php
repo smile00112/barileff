@@ -5,6 +5,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
+use Webkul\User\Models\Role;
+use Webkul\User\Support\StoreManagerRolePermissions;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\get;
@@ -61,7 +63,7 @@ it('should store the newly created admin', function () {
         ],
     ])
         ->assertOk()
-        ->assertSeeText(trans('admin::app.settings.users.create-success'));
+        ->assertJsonPath('message', trans('admin::app.settings.users.create-success'));
 
     $this->assertModelWise([
         Admin::class => [
@@ -99,12 +101,44 @@ it('should returns the user and its roles', function () {
     // Act and Assert.
     $this->loginAsAdmin();
 
-    get(route('admin.settings.users.edit', $admin->id))
-        ->assertOk()
-        ->assertJsonPath('roles.0.id', 1)
-        ->assertJsonPath('roles.0.name', 'Administrator')
-        ->assertJsonPath('user.id', $admin->id)
+    $response = get(route('admin.settings.users.edit', $admin->id))
+        ->assertOk();
+
+    $roles = collect($response->json('roles'));
+    $administrator = $roles->firstWhere('id', 1);
+
+    expect($administrator)->not->toBeNull()
+        ->and($administrator['name'])->toBe(trans('installer::app.seeders.user.roles.name'));
+
+    $response->assertJsonPath('user.id', $admin->id)
         ->assertJsonPath('user.email', $admin->email);
+});
+
+it('computes store manager permission keys excluding configuration and users or roles settings', function () {
+    $keys = StoreManagerRolePermissions::keys();
+
+    expect($keys)->not->toBeEmpty()
+        ->not->toContain('configuration')
+        ->not->toContain('settings.users')
+        ->not->toContain('settings.users.create')
+        ->not->toContain('settings.roles')
+        ->not->toContain('settings.roles.edit');
+});
+
+it('store manager role has custom permissions when present in database', function () {
+    $role = Role::query()->find(2);
+
+    if ($role === null) {
+        $this->markTestSkipped('Store Manager role (id=2) is not present; run migrations.');
+    }
+
+    expect($role->permission_type)->toBe('custom');
+
+    $permissions = $role->permissions;
+    expect($permissions)->toBeArray()->not->toBeEmpty()
+        ->and($permissions)->not->toContain('configuration')
+        ->not->toContain('settings.users')
+        ->not->toContain('settings.roles');
 });
 
 it('should fail the validation with errors when certain field not provided when update the users', function () {
@@ -144,7 +178,7 @@ it('should update the existing admin', function () {
         'password_confirmation' => $password,
     ])
         ->assertOk()
-        ->assertSeeText(trans('admin::app.settings.users.update-success'));
+        ->assertJsonPath('message', trans('admin::app.settings.users.update-success'));
 
     $this->assertModelWise([
         Admin::class => [
@@ -214,7 +248,7 @@ it('should delete the existing admin', function () {
 
     deleteJson(route('admin.settings.users.delete', $admin->id))
         ->assertOk()
-        ->assertSeeText(trans('admin::app.settings.users.delete-success'));
+        ->assertJsonPath('message', trans('admin::app.settings.users.delete-success'));
 
     $this->assertDatabaseMissing('admins', [
         'id' => $admin->id,
