@@ -6,6 +6,7 @@
     <x-admin::form
         :action="route('admin.suppliers.update', $supplier->id)"
         method="PUT"
+        enctype="multipart/form-data"
     >
         <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
             <p class="text-xl font-bold text-gray-800 dark:text-white">
@@ -49,6 +50,73 @@
                         />
 
                         <x-admin::form.control-group.error control-name="name" />
+                    </x-admin::form.control-group>
+
+                    {{-- Description --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.edit.description')
+                        </x-admin::form.control-group.label>
+
+                        <x-admin::form.control-group.control
+                            type="textarea"
+                            name="description"
+                            rows="3"
+                            :value="$supplier->description"
+                            :placeholder="trans('supplier::app.admin.edit.description')"
+                        />
+
+                        <x-admin::form.control-group.error control-name="description" />
+                    </x-admin::form.control-group>
+
+                    {{-- Image --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.edit.image')
+                        </x-admin::form.control-group.label>
+
+                        @if($supplier->image)
+                            <div class="mb-2">
+                                <img src="{{ Storage::url($supplier->image) }}"
+                                     alt="{{ $supplier->name }}"
+                                     class="w-32 h-32 object-cover rounded">
+                            </div>
+
+                            <x-admin::form.control-group.control
+                                type="checkbox"
+                                name="remove_image"
+                                id="remove_image"
+                                value="1"
+                            />
+                            <label for="remove_image" class="ml-1 cursor-pointer">
+                                @lang('supplier::app.admin.edit.remove-image')
+                            </label>
+                        @endif
+
+                        <x-admin::form.control-group.control
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                        />
+
+                        <x-admin::form.control-group.error control-name="image" />
+                    </x-admin::form.control-group>
+
+                    {{-- Sort Order --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.edit.sort-order')
+                        </x-admin::form.control-group.label>
+
+                        <x-admin::form.control-group.control
+                            type="number"
+                            name="sort_order"
+                            min="0"
+                            :value="$supplier->sort_order ?? 0"
+                            :placeholder="trans('supplier::app.admin.edit.sort-order')"
+                        />
+
+                        <x-admin::form.control-group.error control-name="sort_order" />
                     </x-admin::form.control-group>
 
                     {{-- Contact Name --}}
