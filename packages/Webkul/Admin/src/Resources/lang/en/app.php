@@ -836,6 +836,12 @@ return [
                     'title' => 'Categories',
                 ],
 
+                'supplier' => [
+                    'title' => 'Supplier',
+                    'name' => 'Supplier',
+                    'select' => '-- Select Supplier --',
+                ],
+
                 'images' => [
                     'info' => 'Image resolution should be like 560px X 609px',
                     'title' => 'Images',

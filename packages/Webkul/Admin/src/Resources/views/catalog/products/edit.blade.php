@@ -254,6 +254,9 @@
 
                         <!-- Categories View Blade File -->
                         @include('admin::catalog.products.edit.categories')
+
+                        <!-- Supplier View Blade File -->
+                        @include('admin::catalog.products.edit.supplier')
                     @endif
                 </div>
 
@@ -283,6 +286,9 @@
 
                         <!-- Categories View Blade File -->
                         @include('admin::catalog.products.edit.categories')
+
+                        <!-- Supplier View Blade File -->
+                        @include('admin::catalog.products.edit.supplier')
                     </div>
                 @endif
 
