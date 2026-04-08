@@ -2,7 +2,7 @@
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Webkul\Admin\Models\CatalogImportSession;
+use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
 

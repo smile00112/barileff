@@ -31,6 +31,11 @@
             <directory suffix="Test.php">packages/Webkul/Shop/tests/Feature</directory>
         </testsuite>
 
+        <!-- ImportExport package testsuites. -->
+        <testsuite name="ImportExport Feature Test">
+            <directory suffix="Test.php">packages/Webkul/ImportExport/tests/Feature</directory>
+        </testsuite>
+
         <!-- Markup package testsuites. -->
         <testsuite name="Markup Feature Test">
             <directory suffix="Test.php">packages/Webkul/Markup/tests/Feature</directory>

@@ -6,7 +6,13 @@
       "Bash(xargs grep:*)",
       "Read(//tmp/**)",
       "Bash(xargs cat:*)",
-      "Bash(grep -E \"\\\\.\\(php|json\\)$\")"
+      "Bash(grep -E \"\\\\.\\(php|json\\)$\")",
+      "Bash(where php:*)",
+      "Bash(ls /usr/bin/php*)",
+      "Bash(ls /usr/local/bin/php*)",
+      "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php -r ':*)",
+      "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php vendor/bin/pint packages/Webkul/ImportExport/)",
+      "Bash(grep:*)"
     ]
   }
 }

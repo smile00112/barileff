@@ -14,6 +14,7 @@ ini_set('memory_limit', '1024M');
 */
 
 uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/Admin/tests');
+uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/ImportExport/tests');
 uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/Markup/tests');
 uses(Webkul\Core\Tests\CoreTestCase::class)->in('../packages/Webkul/Core/tests');
 uses(Webkul\DataGrid\Tests\DataGridTestCase::class)->in('../packages/Webkul/DataGrid/tests');

@@ -92,12 +92,6 @@ return [
         'route' => 'admin.catalog.families.index',
         'sort' => 4,
         'icon' => '',
-    ], [
-        'key' => 'catalog.imports',
-        'name' => 'admin::app.components.layouts.sidebar.catalog-imports',
-        'route' => 'admin.catalog.imports.index',
-        'sort' => 5,
-        'icon' => '',
     ],
 
     /**
@@ -353,18 +347,6 @@ return [
         'name' => 'admin::app.components.layouts.sidebar.tax-rates',
         'route' => 'admin.settings.taxes.rates.index',
         'sort' => 2,
-        'icon' => '',
-    ], [
-        'key' => 'settings.data_transfer',
-        'name' => 'admin::app.components.layouts.sidebar.data-transfer',
-        'route' => 'admin.settings.data_transfer.imports.index',
-        'sort' => 12,
-        'icon' => '',
-    ], [
-        'key' => 'settings.data_transfer.imports',
-        'name' => 'admin::app.components.layouts.sidebar.imports',
-        'route' => 'admin.settings.data_transfer.imports.index',
-        'sort' => 1,
         'icon' => '',
     ], [
         'key' => 'settings.push_notifications',

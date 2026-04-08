@@ -66,7 +66,7 @@
                             :label="trans('admin::app.settings.data-transfer.imports.edit.type')"
                         >
                             @foreach (config('importers') as $code => $importer)
-                                <option 
+                                <option
                                     value="{{ $code }}"
                                     v-pre
                                 >
@@ -122,8 +122,8 @@
                         @if(isset($import) && $import->file_path)
                             <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                                 @lang('admin::app.settings.data-transfer.imports.edit.current-file'):
-                                <a 
-                                    href="{{ route('admin.settings.data_transfer.imports.download', $import->id) }}" 
+                                <a
+                                    href="{{ route('admin.settings.data_transfer.imports.download', $import->id) }}"
                                     class="cursor-pointer text-sm text-blue-600 transition-all hover:underline"
                                     target="_blank"
                                     v-pre
