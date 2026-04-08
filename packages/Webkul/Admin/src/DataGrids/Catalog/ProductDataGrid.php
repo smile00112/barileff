@@ -6,9 +6,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Attribute\Repositories\AttributeFamilyRepository;
+use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Core\Facades\ElasticSearch;
 use Webkul\Core\Support\DbHelper;
 use Webkul\DataGrid\DataGrid;
+use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Product\Helpers\Product;
 
 class ProductDataGrid extends DataGrid
@@ -25,7 +27,11 @@ class ProductDataGrid extends DataGrid
      *
      * @return void
      */
-    public function __construct(protected AttributeFamilyRepository $attributeFamilyRepository) {}
+    public function __construct(
+        protected AttributeFamilyRepository $attributeFamilyRepository,
+        protected CategoryRepository $categoryRepository,
+        protected InventorySourceRepository $inventorySourceRepository,
+    ) {}
 
     /**
      * Prepare query builder.
@@ -49,6 +55,8 @@ class ProductDataGrid extends DataGrid
                 $leftJoin->on('pc.category_id', '=', 'ct.category_id')
                     ->where('ct.locale', app()->getLocale());
             })
+            ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+            ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->select(
                 'product_flat.locale',
                 'product_flat.channel',
@@ -64,6 +72,7 @@ class ProductDataGrid extends DataGrid
                 'product_flat.url_key',
                 'product_flat.visible_individually',
                 'af.name as attribute_family',
+                'suppliers.name as supplier_name',
             )
             ->addSelect(DB::raw('SUM(DISTINCT '.$tablePrefix.'product_inventories.qty) as quantity'))
             ->addSelect(DB::raw('COUNT(DISTINCT '.$tablePrefix.'product_images.id) as images_count'))
@@ -83,6 +92,7 @@ class ProductDataGrid extends DataGrid
                 'product_flat.url_key',
                 'product_flat.visible_individually',
                 'af.name',
+                'suppliers.name',
             ]);
 
         $this->addFilter('product_id', 'product_flat.product_id');
@@ -92,6 +102,9 @@ class ProductDataGrid extends DataGrid
         $this->addFilter('type', 'product_flat.type');
         $this->addFilter('status', 'product_flat.status');
         $this->addFilter('attribute_family', 'af.id');
+        $this->addFilter('category_name', 'pc.category_id');
+        $this->addFilter('inventory_source', 'product_inventories.inventory_source_id');
+        $this->addFilter('supplier_name', 'suppliers.id');
 
         $admin = auth()->guard('admin')->user();
 
@@ -194,6 +207,15 @@ class ProductDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
+            'index' => 'supplier_name',
+            'label' => trans('admin::app.catalog.products.index.datagrid.supplier'),
+            'type' => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable' => true,
+        ]);
+
+        $this->addColumn([
             'index' => 'status',
             'label' => trans('admin::app.catalog.products.index.datagrid.status'),
             'type' => 'boolean',
@@ -215,6 +237,21 @@ class ProductDataGrid extends DataGrid
             'index' => 'category_name',
             'label' => trans('admin::app.catalog.products.index.datagrid.category'),
             'type' => 'string',
+            'filterable' => true,
+            'filterable_type' => 'dropdown',
+            'filterable_options' => $this->categoryRepository->all()
+                ->map(fn ($c) => ['label' => $c->name, 'value' => $c->id])
+                ->toArray(),
+        ]);
+
+        $this->addColumn([
+            'index' => 'inventory_source',
+            'label' => trans('admin::app.catalog.products.index.datagrid.inventory-source'),
+            'type' => 'string',
+            'filterable' => true,
+            'filterable_type' => 'dropdown',
+            'filterable_options' => $this->inventorySourceRepository->all(['name as label', 'id as value'])->toArray(),
+            'visibility' => false,
         ]);
 
         $this->addColumn([
@@ -383,7 +420,7 @@ class ProductDataGrid extends DataGrid
         $filters = [];
 
         foreach ($params as $attribute => $value) {
-            if (in_array($attribute, ['channel', 'locale'])) {
+            if (in_array($attribute, ['channel', 'locale', 'category_name', 'inventory_source'])) {
                 continue;
             }
 
