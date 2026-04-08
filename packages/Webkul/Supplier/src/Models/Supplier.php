@@ -14,6 +14,9 @@ class Supplier extends Model implements SupplierContract
 
     protected $fillable = [
         'name',
+        'description',
+        'image',
+        'sort_order',
         'contact_name',
         'contact_email',
         'contact_phone',
