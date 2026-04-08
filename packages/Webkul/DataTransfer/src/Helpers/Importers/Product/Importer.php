@@ -1605,19 +1605,26 @@ class Importer extends AbstractImporter
      */
     public function saveFlatData(array &$flatData): void
     {
-        $products = [];
+        $indexed = [];
 
         foreach ($flatData as $attributes) {
             $product = $this->skuStorage->get($attributes['sku']);
 
-            $products[] = array_merge($attributes, [
+            $row = array_merge($attributes, [
                 'product_id' => $product['id'],
                 'attribute_family_id' => $product['attribute_family_id'],
             ]);
+
+            // Deduplicate by the upsert conflict key to avoid PostgreSQL
+            // "ON CONFLICT DO UPDATE cannot affect row a second time" error
+            // when the same batch contains duplicate (product_id, channel, locale).
+            $key = $row['product_id'].'|'.$row['channel'].'|'.$row['locale'];
+
+            $indexed[$key] = $row;
         }
 
         $this->productFlatRepository->upsert(
-            $products,
+            array_values($indexed),
             [
                 'product_id',
                 'channel',

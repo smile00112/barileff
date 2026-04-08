@@ -148,16 +148,19 @@
                 (function () {
                     const massDeleteUrl = @json(route('admin.catalog.imports.mass_delete'));
                     const massConfirm = @json(__('admin::app.catalog.imports.index.confirm-mass-delete'));
-                    const selectAll = document.getElementById('catalog-imports-select-all');
-                    const massBtn = document.getElementById('catalog-imports-mass-delete');
-                    const rowChecks = () => Array.from(document.querySelectorAll('.catalog-import-row-checkbox'));
+
+                    const rowChecks = () =>
+                        Array.from(document.querySelectorAll('.catalog-import-row-checkbox'));
 
                     function syncMassButton() {
                         const checked = rowChecks().filter((el) => el.checked);
+                        const massBtn = document.getElementById('catalog-imports-mass-delete');
 
                         if (massBtn) {
                             massBtn.disabled = checked.length === 0;
                         }
+
+                        const selectAll = document.getElementById('catalog-imports-select-all');
 
                         if (selectAll) {
                             const boxes = rowChecks();
@@ -178,25 +181,32 @@
                         }
                     }
 
-                    rowChecks().forEach((el) => el.addEventListener('change', syncMassButton));
+                    document.addEventListener('change', function (e) {
+                        const target = e.target;
 
-                    if (selectAll) {
-                        selectAll.addEventListener('change', function () {
-                            const on = selectAll.checked;
+                        if (target && target.id === 'catalog-imports-select-all') {
+                            const on = target.checked;
 
                             rowChecks().forEach((el) => {
                                 el.checked = on;
                             });
+
                             syncMassButton();
-                        });
-                    }
 
-                    syncMassButton();
+                            return;
+                        }
 
-                    document.querySelectorAll('[data-catalog-import-delete]').forEach((btn) => {
-                        btn.addEventListener('click', async function () {
-                            const url = btn.getAttribute('data-catalog-import-delete');
-                            const msg = btn.getAttribute('data-catalog-import-confirm');
+                        if (target && target.classList && target.classList.contains('catalog-import-row-checkbox')) {
+                            syncMassButton();
+                        }
+                    });
+
+                    document.addEventListener('click', async function (e) {
+                        const deleteBtn = e.target.closest('[data-catalog-import-delete]');
+
+                        if (deleteBtn) {
+                            const url = deleteBtn.getAttribute('data-catalog-import-delete');
+                            const msg = deleteBtn.getAttribute('data-catalog-import-confirm');
 
                             if (! url || ! window.confirm(msg)) {
                                 return;
@@ -213,37 +223,45 @@
 
                                 window.alert(message);
                             }
-                        });
+
+                            return;
+                        }
+
+                        const massBtn = e.target.closest('#catalog-imports-mass-delete');
+
+                        if (! massBtn) {
+                            return;
+                        }
+
+                        const indices = rowChecks()
+                            .filter((el) => el.checked)
+                            .map((el) => parseInt(el.value, 10))
+                            .filter((id) => ! Number.isNaN(id));
+
+                        if (indices.length === 0) {
+                            return;
+                        }
+
+                        if (! window.confirm(massConfirm)) {
+                            return;
+                        }
+
+                        try {
+                            await window.axios.post(massDeleteUrl, { indices });
+
+                            window.location.reload();
+                        } catch (err) {
+                            const message =
+                                err.response?.data?.message ||
+                                @json(__('admin::app.catalog.imports.index.delete-failed'));
+
+                            window.alert(message);
+                        }
                     });
 
-                    if (massBtn) {
-                        massBtn.addEventListener('click', async function () {
-                            const indices = rowChecks()
-                                .filter((el) => el.checked)
-                                .map((el) => parseInt(el.value, 10))
-                                .filter((id) => ! Number.isNaN(id));
-
-                            if (indices.length === 0) {
-                                return;
-                            }
-
-                            if (! window.confirm(massConfirm)) {
-                                return;
-                            }
-
-                            try {
-                                await window.axios.post(massDeleteUrl, { indices });
-
-                                window.location.reload();
-                            } catch (err) {
-                                const message =
-                                    err.response?.data?.message ||
-                                    @json(__('admin::app.catalog.imports.index.delete-failed'));
-
-                                window.alert(message);
-                            }
-                        });
-                    }
+                    window.addEventListener('load', function () {
+                        syncMassButton();
+                    });
                 })();
             </script>
         @endpush

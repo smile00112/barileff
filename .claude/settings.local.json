@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(grep -n \"inventory_sources\" D:/_WORK_/laragon_2025/www/my_bagisto/packages/Webkul/Inventory/src/Database/Migrations/*.php)"
     ]
   }
 }

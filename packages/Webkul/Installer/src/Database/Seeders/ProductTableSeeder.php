@@ -738,63 +738,54 @@ class ProductTableSeeder extends Seeder
 
         DB::table('product_inventory_indices')->insert([
             [
-                'id' => 1,
                 'qty' => 100,
                 'product_id' => 1,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 2,
                 'qty' => 100,
                 'product_id' => 2,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 3,
                 'qty' => 100,
                 'product_id' => 3,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 4,
                 'qty' => 100,
                 'product_id' => 4,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 5,
                 'qty' => 100,
                 'product_id' => 8,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 6,
                 'qty' => 100,
                 'product_id' => 9,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 7,
                 'qty' => 100,
                 'product_id' => 10,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'id' => 8,
                 'qty' => 100,
                 'product_id' => 11,
                 'channel_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
-            ],  [
-                'id' => 9,
+            ], [
                 'qty' => 0,
                 'product_id' => 7,
                 'channel_id' => 1,

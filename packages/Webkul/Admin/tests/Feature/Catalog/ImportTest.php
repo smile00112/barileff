@@ -16,7 +16,8 @@ it('should return catalog imports index page', function () {
 
     get(route('admin.catalog.imports.index'))
         ->assertOk()
-        ->assertSeeText(trans('admin::app.catalog.imports.index.title'));
+        ->assertSeeText(trans('admin::app.catalog.imports.index.title'))
+        ->assertSee('document.addEventListener', false);
 });
 
 it('should return the create/upload page', function () {

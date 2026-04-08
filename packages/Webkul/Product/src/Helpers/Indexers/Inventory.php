@@ -109,7 +109,7 @@ class Inventory extends AbstractIndexer
      */
     public function reindexBatch($products)
     {
-        $newIndices = [];
+        $indices = [];
 
         foreach ($products as $product) {
             $this->setProduct($product);
@@ -117,33 +117,17 @@ class Inventory extends AbstractIndexer
             foreach ($this->getChannels() as $channel) {
                 $this->setChannel($channel);
 
-                $channelIndex = $product->inventory_indices
-                    ->where('channel_id', $channel->id)
-                    ->where('product_id', $product->id)
-                    ->first();
-
-                $newIndex = $this->getIndices();
-
-                if ($channelIndex) {
-                    $oldIndex = collect($channelIndex->toArray())
-                        ->except('id', 'created_at', 'updated_at')
-                        ->toArray();
-
-                    $isIndexChanged = $this->isIndexChanged(
-                        $oldIndex,
-                        $newIndex
-                    );
-
-                    if ($isIndexChanged) {
-                        $this->productInventoryIndexRepository->update($newIndex, $channelIndex->id);
-                    }
-                } else {
-                    $newIndices[] = $newIndex;
-                }
+                $indices[] = $this->getIndices();
             }
         }
 
-        $this->productInventoryIndexRepository->insert($newIndices);
+        if (! empty($indices)) {
+            $this->productInventoryIndexRepository->upsert(
+                $indices,
+                ['product_id', 'channel_id'],
+                ['qty']
+            );
+        }
     }
 
     /**
