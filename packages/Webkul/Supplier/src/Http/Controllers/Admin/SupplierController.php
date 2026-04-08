@@ -4,6 +4,7 @@ namespace Webkul\Supplier\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Supplier\DataGrids\SupplierDataGrid;
@@ -30,11 +31,22 @@ class SupplierController extends Controller
 
     public function store(SupplierRequest $request): RedirectResponse
     {
-        $this->supplierRepository->create($request->validated());
+        try {
+            $this->supplierRepository->create($request->validated());
 
-        session()->flash('success', trans('supplier::app.admin.created'));
+            session()->flash('success', trans('supplier::app.admin.created'));
 
-        return redirect()->route('admin.suppliers.index');
+            return redirect()->route('admin.suppliers.index');
+        } catch (\Exception $e) {
+            Log::error('Supplier creation failed', [
+                'error' => $e->getMessage(),
+                'data' => $request->safe()->only(['name', 'sort_order']),
+            ]);
+
+            session()->flash('error', trans('supplier::app.admin.create-failed'));
+
+            return redirect()->back()->withInput();
+        }
     }
 
     public function edit(int $id): View
@@ -46,17 +58,42 @@ class SupplierController extends Controller
 
     public function update(SupplierRequest $request, int $id): RedirectResponse
     {
-        $this->supplierRepository->update($request->validated(), $id);
+        try {
+            $this->supplierRepository->update($request->validated(), $id);
 
-        session()->flash('success', trans('supplier::app.admin.updated'));
+            session()->flash('success', trans('supplier::app.admin.updated'));
 
-        return redirect()->route('admin.suppliers.index');
+            return redirect()->route('admin.suppliers.index');
+        } catch (\Exception $e) {
+            Log::error('Supplier update failed', [
+                'supplier_id' => $id,
+                'error' => $e->getMessage(),
+                'data' => $request->safe()->only(['name', 'sort_order']),
+            ]);
+
+            session()->flash('error', trans('supplier::app.admin.update-failed'));
+
+            return redirect()->back()->withInput();
+        }
     }
 
     public function destroy(int $id): JsonResponse
     {
-        $this->supplierRepository->delete($id);
+        try {
+            $this->supplierRepository->delete($id);
 
-        return new JsonResponse(['message' => trans('supplier::app.admin.deleted')]);
+            return new JsonResponse([
+                'message' => trans('supplier::app.admin.deleted'),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Supplier deletion failed', [
+                'supplier_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return new JsonResponse([
+                'message' => trans('supplier::app.admin.delete-failed', ['count' => 0]),
+            ], 400);
+        }
     }
 }
