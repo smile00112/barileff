@@ -3,7 +3,7 @@
         @lang('supplier::app.admin.create.title')
     </x-slot>
 
-    <x-admin::form :action="route('admin.suppliers.store')">
+    <x-admin::form :action="route('admin.suppliers.store')" enctype="multipart/form-data">
         <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
             <p class="text-xl font-bold text-gray-800 dark:text-white">
                 @lang('supplier::app.admin.create.title')
@@ -45,6 +45,54 @@
                         />
 
                         <x-admin::form.control-group.error control-name="name" />
+                    </x-admin::form.control-group>
+
+                    {{-- Description --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.create.description')
+                        </x-admin::form.control-group.label>
+
+                        <x-admin::form.control-group.control
+                            type="textarea"
+                            name="description"
+                            rows="3"
+                            :placeholder="trans('supplier::app.admin.create.description')"
+                        />
+
+                        <x-admin::form.control-group.error control-name="description" />
+                    </x-admin::form.control-group>
+
+                    {{-- Image --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.create.image')
+                        </x-admin::form.control-group.label>
+
+                        <x-admin::form.control-group.control
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                        />
+
+                        <x-admin::form.control-group.error control-name="image" />
+                    </x-admin::form.control-group>
+
+                    {{-- Sort Order --}}
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            @lang('supplier::app.admin.create.sort-order')
+                        </x-admin::form.control-group.label>
+
+                        <x-admin::form.control-group.control
+                            type="number"
+                            name="sort_order"
+                            min="0"
+                            value="0"
+                            :placeholder="trans('supplier::app.admin.create.sort-order')"
+                        />
+
+                        <x-admin::form.control-group.error control-name="sort_order" />
                     </x-admin::form.control-group>
 
                     {{-- Contact Name --}}
