@@ -64,6 +64,16 @@ class ProductForm extends FormRequest
     }
 
     /**
+     * Convert empty supplier selection to null so nullable FK does not receive '' (stored as 0 in MySQL).
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('supplier_id') && $this->input('supplier_id') === '') {
+            $this->merge(['supplier_id' => null]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -73,6 +83,7 @@ class ProductForm extends FormRequest
         $this->product = $this->productRepository->find($this->id);
 
         $this->rules = array_merge($this->product->getTypeInstance()->getTypeValidationRules(), [
+            'supplier_id' => ['nullable', 'exists:suppliers,id'],
             'sku' => ['required', 'unique:products,sku,'.$this->id, new Slug],
             'url_key' => ['required', new ProductCategoryUniqueSlug('products', $this->id)],
             'images.files.*' => ['nullable', 'mimes:bmp,jpeg,jpg,png,webp'],

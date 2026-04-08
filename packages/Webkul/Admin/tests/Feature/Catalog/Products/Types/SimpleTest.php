@@ -111,6 +111,30 @@ it('should fail the validation with errors if certain data is not provided corre
         ->assertUnprocessable();
 });
 
+it('updates simple product when supplier_id is submitted as empty string', function () {
+    $product = (new ProductFaker)->getSimpleProductFactory()->create();
+
+    $this->loginAsAdmin();
+
+    putJson(route('admin.catalog.products.update', $product->id), [
+        'sku' => $product->sku,
+        'url_key' => $product->url_key,
+        'short_description' => fake()->sentence(),
+        'description' => fake()->paragraph(),
+        'name' => fake()->words(3, true),
+        'price' => fake()->randomFloat(2, 1, 1000),
+        'weight' => fake()->numberBetween(0, 100),
+        'channel' => core()->getCurrentChannelCode(),
+        'locale' => app()->getLocale(),
+        'supplier_id' => '',
+    ])
+        ->assertRedirect(route('admin.catalog.products.index'));
+
+    $product->refresh();
+
+    expect($product->supplier_id)->toBeNull();
+});
+
 it('should update the simple product', function () {
     // Arrange.
     $product = (new ProductFaker)->getSimpleProductFactory()->create();
