@@ -3,6 +3,7 @@
 namespace Webkul\Supplier\DataGrids;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Webkul\DataGrid\DataGrid;
 
 class SupplierDataGrid extends DataGrid
@@ -11,15 +12,27 @@ class SupplierDataGrid extends DataGrid
 
     public function prepareQueryBuilder(): \Illuminate\Database\Query\Builder
     {
+        $tablePrefix = DB::getTablePrefix();
+
         return DB::table('suppliers')
+            ->leftJoin('products', 'suppliers.id', '=', 'products.supplier_id')
             ->select(
-                'id as supplier_id',
-                'name',
-                'contact_name',
-                'contact_email',
-                'contact_phone',
-                'status',
-            );
+                'suppliers.id as supplier_id',
+                'suppliers.name',
+                'suppliers.image',
+                'suppliers.sort_order',
+                'suppliers.status',
+            )
+            ->addSelect(DB::raw('COUNT(DISTINCT '.$tablePrefix.'products.id) as products_count'))
+            ->groupBy([
+                'suppliers.id',
+                'suppliers.name',
+                'suppliers.image',
+                'suppliers.sort_order',
+                'suppliers.status',
+            ])
+            ->orderBy('suppliers.sort_order', 'asc')
+            ->orderBy('suppliers.name', 'asc');
     }
 
     public function prepareColumns(): void
@@ -34,6 +47,30 @@ class SupplierDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
+            'index' => 'image',
+            'label' => trans('supplier::app.admin.datagrid.image'),
+            'type' => 'string',
+            'searchable' => false,
+            'filterable' => false,
+            'sortable' => false,
+            'closure' => function ($row) {
+                if ($row->image) {
+                    $url = Storage::url($row->image);
+
+                    return sprintf(
+                        '<img src="%s" class="w-12 h-12 object-cover rounded" alt="%s">',
+                        $url,
+                        htmlspecialchars($row->name)
+                    );
+                }
+
+                return '<div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                            <i class="icon-image text-gray-400"></i>
+                        </div>';
+            },
+        ]);
+
+        $this->addColumn([
             'index' => 'name',
             'label' => trans('supplier::app.admin.datagrid.name'),
             'type' => 'string',
@@ -43,21 +80,36 @@ class SupplierDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index' => 'contact_name',
-            'label' => trans('supplier::app.admin.datagrid.contact-name'),
-            'type' => 'string',
-            'searchable' => true,
+            'index' => 'products_count',
+            'label' => trans('supplier::app.admin.datagrid.products-count'),
+            'type' => 'integer',
+            'searchable' => false,
             'filterable' => false,
-            'sortable' => false,
+            'sortable' => true,
+            'closure' => function ($row) {
+                if ($row->products_count > 0) {
+                    $url = route('admin.catalog.products.index', [
+                        'filters[supplier_id]' => $row->supplier_id,
+                    ]);
+
+                    return sprintf(
+                        '<a href="%s" class="text-blue-600 hover:underline">%d</a>',
+                        $url,
+                        $row->products_count
+                    );
+                }
+
+                return '<span class="text-gray-400">0</span>';
+            },
         ]);
 
         $this->addColumn([
-            'index' => 'contact_email',
-            'label' => trans('supplier::app.admin.datagrid.contact-email'),
-            'type' => 'string',
-            'searchable' => true,
-            'filterable' => false,
-            'sortable' => false,
+            'index' => 'sort_order',
+            'label' => trans('supplier::app.admin.datagrid.sort-order'),
+            'type' => 'integer',
+            'searchable' => false,
+            'filterable' => true,
+            'sortable' => true,
         ]);
 
         $this->addColumn([
