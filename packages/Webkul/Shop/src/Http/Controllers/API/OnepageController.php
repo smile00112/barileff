@@ -38,6 +38,12 @@ class OnepageController extends APIController
     {
         $cart = Cart::getCart();
 
+        if (! $cart) {
+            return new JsonResource([
+                'data' => null,
+            ]);
+        }
+
         return new CartResource($cart);
     }
 
@@ -131,7 +137,7 @@ class OnepageController extends APIController
     /**
      * Сохранить способ доставки.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function storeShippingMethod()
     {

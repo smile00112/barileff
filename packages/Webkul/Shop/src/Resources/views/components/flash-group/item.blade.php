@@ -94,7 +94,7 @@
 
                 setTimeout(function() {
                     self.remove()
-                }, 1000)
+                }, Number(this.flash?.duration ?? 1000))
             },
 
             methods: {

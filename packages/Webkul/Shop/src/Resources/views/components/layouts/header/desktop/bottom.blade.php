@@ -66,40 +66,8 @@
     <!-- Right Nagivation Section -->
     <div class="flex items-center gap-x-9 max-[1100px]:gap-x-6 max-lg:gap-x-8">
 
-        @if ($admin && $inventorySources->isNotEmpty())
-            <form
-                method="POST"
-                action="{{ route('shop.inventory_sources.switch') }}"
-                class="flex items-center gap-2"
-            >
-                @csrf
-
-                <label
-                    for="inventory-source-switcher"
-                    class="text-xs font-medium text-zinc-700"
-                >
-                    Source
-                </label>
-
-                <select
-                    id="inventory-source-switcher"
-                    name="inventory_source_id"
-                    class="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-800 focus:border-zinc-400 focus:outline-none"
-                    onchange="this.form.submit()"
-                >
-                    <option value="">All</option>
-
-                    @foreach ($inventorySources as $source)
-                        <option
-                            value="{{ $source->id }}"
-                            @selected((int) $selectedInventorySourceId === (int) $source->id)
-                        >
-                            {{ $source->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </form>
-        @endif
+        <!-- Delivery Method Selector -->
+        @include('shop::components.layouts.header.delivery-method-selector')
 
         {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.search_bar.before') !!}
 

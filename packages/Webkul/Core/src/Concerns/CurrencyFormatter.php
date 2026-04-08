@@ -8,10 +8,22 @@ use Webkul\Core\Enums\CurrencyPositionEnum;
 trait CurrencyFormatter
 {
     /**
+     * Determine whether the intl formatter is available in the current PHP runtime.
+     */
+    protected function hasIntlCurrencyFormatter(): bool
+    {
+        return class_exists(\NumberFormatter::class);
+    }
+
+    /**
      * Format currency.
      */
     public function formatCurrency(?float $price, Currency $currency): string
     {
+        if (! $this->hasIntlCurrencyFormatter()) {
+            return $this->useFallbackCurrencyFormatter($price, $currency);
+        }
+
         if ($currency->currency_position) {
             return $this->useCustomCurrencyFormatter($price, $currency);
         }
@@ -88,13 +100,43 @@ trait CurrencyFormatter
     }
 
     /**
+     * Use a lightweight fallback formatter when ext-intl is not installed.
+     */
+    protected function useFallbackCurrencyFormatter(?float $price, Currency $currency): string
+    {
+        $decimals = (int) ($currency->decimal ?? 2);
+        $decimalSeparator = $currency->decimal_separator ?: '.';
+        $groupSeparator = $currency->group_separator ?: ',';
+        $formattedCurrency = number_format((float) ($price ?? 0), $decimals, $decimalSeparator, $groupSeparator);
+
+        $symbol = $currency->symbol ?: $currency->code;
+
+        if (! $currency->currency_position) {
+            return $symbol.' '.$formattedCurrency;
+        }
+
+        return match ($currency->currency_position) {
+            CurrencyPositionEnum::LEFT->value => $symbol.$formattedCurrency,
+            CurrencyPositionEnum::LEFT_WITH_SPACE->value => $symbol.' '.$formattedCurrency,
+            CurrencyPositionEnum::RIGHT->value => $formattedCurrency.$symbol,
+            CurrencyPositionEnum::RIGHT_WITH_SPACE->value => $formattedCurrency.' '.$symbol,
+        };
+    }
+
+    /**
      * Return currency symbol from currency code.
      *
-     * @param  string|\Webkul\Core\Contracts\Currency  $currency
+     * @param  string|Currency  $currency
      */
     public function currencySymbol($currency): string
     {
-        $code = $currency instanceof \Webkul\Core\Contracts\Currency ? $currency->code : $currency;
+        $code = $currency instanceof Currency ? $currency->code : $currency;
+
+        if (! $this->hasIntlCurrencyFormatter()) {
+            return $currency instanceof Currency
+                ? ($currency->symbol ?: $currency->code)
+                : $code;
+        }
 
         $formatter = new \NumberFormatter(app()->getLocale().'@currency='.$code, \NumberFormatter::CURRENCY);
 

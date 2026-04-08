@@ -38,6 +38,17 @@ class AddressRequest extends FormRequest
             'phone' => ['required', new PhoneNumber],
             'vat_id' => [(new VatIdRule)->setCountry($this->input('country'))],
             'email' => ['required'],
+            'additional' => ['nullable', 'array'],
+            'additional.label' => ['nullable', 'string', 'max:255'],
+            'additional.latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'additional.longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'additional.zone_id' => ['nullable', 'integer', 'exists:delivery_zones,id'],
+            'additional.zone_name' => ['nullable', 'string', 'max:255'],
+            'additional.is_private_house' => ['nullable', 'boolean'],
+            'additional.apartment' => ['nullable', 'string', 'max:255'],
+            'additional.entrance' => ['nullable', 'string', 'max:255'],
+            'additional.floor' => ['nullable', 'string', 'max:255'],
+            'additional.intercom' => ['nullable', 'string', 'max:255'],
         ];
     }
 

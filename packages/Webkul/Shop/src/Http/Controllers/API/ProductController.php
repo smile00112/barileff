@@ -47,9 +47,14 @@ class ProductController extends APIController
 
         $query = $searchData['effective_query'] ?? $searchData['original_query'];
 
+        $categoryIds = request()->filled('category_id')
+            ? $this->resolveCategoryIds((int) request()->query('category_id'))
+            : null;
+
         $products = $this->productRepository
             ->setSearchEngine($searchEngine)
             ->getAll(array_merge(request()->query(), [
+                'category_id' => $categoryIds,
                 'query' => $query,
                 'channel_id' => core()->getCurrentChannel()->id,
                 'status' => 1,
@@ -73,6 +78,23 @@ class ProductController extends APIController
         }
 
         return ProductResource::collection($products);
+    }
+
+    /**
+     * Resolve the current category together with all descendant category ids.
+     */
+    protected function resolveCategoryIds(int $categoryId): string
+    {
+        $category = $this->categoryRepository->find($categoryId);
+
+        if (! $category) {
+            return (string) $categoryId;
+        }
+
+        return $category->descendants()
+            ->pluck('id')
+            ->prepend($category->id)
+            ->implode(',');
     }
 
     /**

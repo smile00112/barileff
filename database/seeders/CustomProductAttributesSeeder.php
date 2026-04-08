@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use Database\Seeders\Concerns\SyncsPostgreSqlIdentitySequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -308,7 +307,15 @@ class CustomProductAttributesSeeder extends Seeder
         foreach ($translations as $code => $locales) {
             $attributeId = DB::table('attributes')->where('code', $code)->value('id');
 
+            if (! $attributeId) {
+                continue;
+            }
+
             foreach ($locales as $locale => $name) {
+                if (DB::table('attribute_translations')->where('attribute_id', $attributeId)->where('locale', $locale)->exists()) {
+                    continue;
+                }
+
                 DB::table('attribute_translations')->insert([
                     'locale' => $locale,
                     'name' => $name,
@@ -317,7 +324,7 @@ class CustomProductAttributesSeeder extends Seeder
             }
         }
 
-        // 6. Map attributes to groups in the default family
+        // 6. Map attributes to groups
         $priceGroupId = DB::table('attribute_groups')->where('code', 'price')->where('attribute_family_id', 1)->value('id');
         $generalGroupId = DB::table('attribute_groups')->where('code', 'general')->where('attribute_family_id', 1)->value('id');
         $settingsGroupId = DB::table('attribute_groups')->where('code', 'settings')->where('attribute_family_id', 1)->value('id');
@@ -337,7 +344,19 @@ class CustomProductAttributesSeeder extends Seeder
         ];
 
         foreach ($groupMappings as $code => $mapping) {
+            if (! $mapping['group_id']) {
+                continue;
+            }
+
             $attributeId = DB::table('attributes')->where('code', $code)->value('id');
+
+            if (! $attributeId) {
+                continue;
+            }
+
+            if (DB::table('attribute_group_mappings')->where('attribute_id', $attributeId)->where('attribute_group_id', $mapping['group_id'])->exists()) {
+                continue;
+            }
 
             DB::table('attribute_group_mappings')->insert([
                 'attribute_id' => $attributeId,

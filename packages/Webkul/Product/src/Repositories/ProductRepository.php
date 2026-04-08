@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Webkul\Attribute\Enums\AttributeTypeEnum;
 use Webkul\Attribute\Repositories\AttributeRepository;
@@ -49,7 +50,7 @@ class ProductRepository extends Repository
     /**
      * Create product.
      *
-     * @return \Webkul\Product\Contracts\Product
+     * @return Product
      */
     public function create(array $data)
     {
@@ -65,7 +66,7 @@ class ProductRepository extends Repository
      *
      * @param  int  $id
      * @param  array  $attributes
-     * @return \Webkul\Product\Contracts\Product
+     * @return Product
      */
     public function update(array $data, $id, $attributes = [])
     {
@@ -97,7 +98,7 @@ class ProductRepository extends Repository
      * Copy product.
      *
      * @param  int  $id
-     * @return \Webkul\Product\Contracts\Product
+     * @return Product
      */
     public function copy($id)
     {
@@ -135,7 +136,7 @@ class ProductRepository extends Repository
      *
      * @param  string  $code
      * @param  mixed  $value
-     * @return \Webkul\Product\Contracts\Product
+     * @return Product
      */
     public function findByAttributeCode($code, $value)
     {
@@ -219,7 +220,7 @@ class ProductRepository extends Repository
     /**
      * Get all products.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getAll(array $params = [])
     {
@@ -233,7 +234,7 @@ class ProductRepository extends Repository
     /**
      * Search product from database.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function searchFromDatabase(array $params = [])
     {
@@ -283,20 +284,20 @@ class ProductRepository extends Repository
 
             if (! empty($params['inventory_source_id'])) {
                 $sourceId = (int) $params['inventory_source_id'];
-                $qb->where(function ($q) use ($sourceId, $prefix) {
+                $qb->where(function ($q) use ($sourceId) {
                     $q->whereIn('products.type', ['virtual', 'downloadable'])
-                        ->orWhereExists(function ($sub) use ($sourceId, $prefix) {
+                        ->orWhereExists(function ($sub) use ($sourceId) {
                             $sub->select(DB::raw(1))
                                 ->from('product_inventories as pi_filter')
-                                ->whereColumn('pi_filter.product_id', $prefix.'products.id')
+                                ->whereColumn('pi_filter.product_id', 'products.id')
                                 ->where('pi_filter.inventory_source_id', $sourceId)
                                 ->where('pi_filter.qty', '>', 0);
                         })
-                        ->orWhereExists(function ($sub) use ($sourceId, $prefix) {
+                        ->orWhereExists(function ($sub) use ($sourceId) {
                             $sub->select(DB::raw(1))
                                 ->from('product_inventories as pi_var')
                                 ->join('products as p_var', 'pi_var.product_id', '=', 'p_var.id')
-                                ->whereColumn('p_var.parent_id', $prefix.'products.id')
+                                ->whereColumn('p_var.parent_id', 'products.id')
                                 ->where('pi_var.inventory_source_id', $sourceId)
                                 ->where('pi_var.qty', '>', 0);
                         });
@@ -480,7 +481,7 @@ class ProductRepository extends Repository
     /**
      * Search product from elastic search.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function searchFromElastic(array $params = [])
     {
@@ -559,8 +560,8 @@ class ProductRepository extends Repository
     /**
      * Returns product's super attribute with options.
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return \Illuminate\Support\Collection
+     * @param  Product  $product
+     * @return Collection
      */
     public function getSuperAttributes($product)
     {

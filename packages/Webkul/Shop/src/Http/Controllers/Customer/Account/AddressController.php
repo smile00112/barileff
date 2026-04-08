@@ -2,6 +2,8 @@
 
 namespace Webkul\Shop\Http\Controllers\Customer\Account;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Webkul\Customer\Repositories\CustomerAddressRepository;
 use Webkul\Shop\Http\Controllers\Controller;
@@ -60,6 +62,7 @@ class AddressController extends Controller
             'phone',
             'email',
             'default_address',
+            'additional',
         ]), [
             'customer_id' => $customer->id,
             'address' => implode(PHP_EOL, array_filter($request->input('address'))),
@@ -71,7 +74,7 @@ class AddressController extends Controller
                 ->update(['default_address' => 0]);
         }
 
-        $customerAddress = $this->customerAddressRepository->create($data);
+        $customerAddress = $this->customerAddressRepository->create($data)->fresh();
 
         Event::dispatch('customer.addresses.create.after', $customerAddress);
 
@@ -102,7 +105,7 @@ class AddressController extends Controller
     /**
      * Edit's the pre-made resource of customer called Address.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(int $id, AddressRequest $request)
     {
@@ -128,12 +131,13 @@ class AddressController extends Controller
             'postcode',
             'phone',
             'email',
+            'additional',
         ]), [
             'customer_id' => $customer->id,
             'address' => implode(PHP_EOL, array_filter($request->input('address'))),
         ]);
 
-        $customerAddress = $this->customerAddressRepository->update($data, $id);
+        $customerAddress = $this->customerAddressRepository->update($data, $id)->fresh();
 
         Event::dispatch('customer.addresses.update.after', $customerAddress);
 
@@ -146,7 +150,7 @@ class AddressController extends Controller
      * To change the default address or make the default address,
      * by default when first address is created will be the default address.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function makeDefault(int $id)
     {
@@ -172,7 +176,7 @@ class AddressController extends Controller
     /**
      * Delete address of the current customer.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(int $id)
     {

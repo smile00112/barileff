@@ -35,6 +35,7 @@ abstract class Address extends Model implements AddressContract
     protected $casts = [
         'use_for_shipping' => 'boolean',
         'default_address' => 'boolean',
+        'additional' => 'array',
     ];
 
     /**
