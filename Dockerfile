@@ -88,6 +88,9 @@ COPY docker/php/php.ini /usr/local/etc/php/php.ini
 
 RUN php artisan package:discover --ansi || true
 
+# Генерация .rr.yaml конфига для RoadRunner (требуется Octane)
+RUN php artisan octane:install --server=roadrunner --no-interaction || true
+
 # Установка RoadRunner (прямая загрузка, т.к. spiral/roadrunner-cli — dev-зависимость)
 RUN set -eux; \
     ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/'); \
