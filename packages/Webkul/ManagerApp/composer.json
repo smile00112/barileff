@@ -1,0 +1,25 @@
+{
+    "name": "webkul/manager-app",
+    "description": "Manager PWA — warehouse order management",
+    "type": "library",
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\ManagerApp\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\ManagerApp\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\ManagerApp\\Providers\\ManagerAppServiceProvider"
+            ]
+        }
+    }
+}

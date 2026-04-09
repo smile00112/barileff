@@ -24,6 +24,7 @@ return [
     Webkul\Installer\Providers\InstallerServiceProvider::class,
     Webkul\Inventory\Providers\InventoryServiceProvider::class,
     Webkul\MagicAI\Providers\MagicAIServiceProvider::class,
+    Webkul\ManagerApp\Providers\ManagerAppServiceProvider::class,
     Webkul\Marketing\Providers\MarketingServiceProvider::class,
     Webkul\Markup\Providers\MarkupServiceProvider::class,
     Webkul\Notification\Providers\NotificationServiceProvider::class,
