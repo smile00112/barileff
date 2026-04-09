@@ -552,6 +552,149 @@ class ImportController extends Controller
     }
 
     /**
+     * Create missing categories referenced in the import file.
+     *
+     * Reads the original CSV, collects all category names from the mapped
+     * `categories` column and creates any that do not yet exist under the
+     * configured parent category.
+     */
+    protected function createMissingCategories(CatalogImportSession $session): void
+    {
+        $mapping = $session->column_mapping ?? [];
+        $originalPath = Storage::disk('private')->path($session->file_path);
+        $delimiter = $session->delimiter;
+        $parentId = $session->parent_category_id ?? 1;
+        $locale = $session->locale;
+
+        // Find which original CSV header is mapped to `categories`.
+        $categoriesHeader = null;
+
+        foreach ($mapping as $header => $field) {
+            if ($field === 'categories') {
+                $categoriesHeader = $header;
+
+                break;
+            }
+        }
+
+        if ($categoriesHeader === null) {
+            return;
+        }
+
+        $handle = fopen($originalPath, 'r');
+
+        if (! $handle) {
+            return;
+        }
+
+        $originalHeaders = fgetcsv($handle, 4096, $delimiter) ?: [];
+        $categoriesColIndex = array_search($categoriesHeader, $originalHeaders, true);
+
+        if ($categoriesColIndex === false) {
+            fclose($handle);
+
+            return;
+        }
+
+        $allNames = [];
+
+        while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
+            $cell = trim($row[$categoriesColIndex] ?? '');
+
+            if ($cell === '') {
+                continue;
+            }
+
+            foreach (explode(',', $cell) as $name) {
+                $name = trim($name);
+
+                if ($name !== '') {
+                    $allNames[$name] = true;
+                }
+            }
+        }
+
+        fclose($handle);
+
+        foreach (array_keys($allNames) as $name) {
+            $exists = $this->categoryRepository
+                ->whereTranslation('name', $name)
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
+            $slug = Str::slug($name);
+
+            if ($slug === '' || DB::table('category_translations')->where('slug', $slug)->exists()) {
+                $slug = Str::slug($name).'-'.substr(md5($name.microtime()), 0, 6);
+            }
+
+            $this->categoryRepository->create([
+                'locale' => 'all',
+                $locale => [
+                    'name' => $name,
+                    'description' => '',
+                    'meta_title' => '',
+                    'meta_description' => '',
+                    'meta_keywords' => '',
+                    'slug' => $slug,
+                ],
+                'position' => 1,
+                'status' => 1,
+                'display_mode' => 'products_and_description',
+                'parent_id' => $parentId,
+            ]);
+        }
+    }
+
+    /**
+     * Build a flat option list of categories for the parent select.
+     *
+     * Returns the root category node plus first-level children so the admin
+     * can choose where new categories will be created.
+     *
+     * @return array<int, array{id: int, label: string}>
+     */
+    protected function buildParentCategoryOptions(): array
+    {
+        $localeCode = app()->getLocale();
+
+        $rows = DB::table('categories as c')
+            ->leftJoin('category_translations as ct', function ($join) use ($localeCode) {
+                $join->on('ct.category_id', '=', 'c.id')
+                    ->where('ct.locale', $localeCode);
+            })
+            ->select('c.id', 'c.parent_id', DB::raw("COALESCE(ct.name, CAST(c.id AS CHAR)) as name"))
+            ->where('c.status', 1)
+            ->orderBy('c.parent_id')
+            ->orderBy('c.position')
+            ->orderBy('c.id')
+            ->get();
+
+        $options = [];
+        $rootIds = [];
+
+        // Root node (parent_id IS NULL)
+        foreach ($rows as $row) {
+            if ($row->parent_id === null) {
+                $options[] = ['id' => (int) $row->id, 'label' => $row->name];
+                $rootIds[] = (int) $row->id;
+            }
+        }
+
+        // First-level children
+        foreach ($rows as $row) {
+            if ($row->parent_id !== null && in_array((int) $row->parent_id, $rootIds, true)) {
+                $options[] = ['id' => (int) $row->id, 'label' => '— '.$row->name];
+            }
+        }
+
+        return $options;
+    }
+
+    /**
      * Convert a raw string to a url_key-compatible slug.
      *
      * Preserves Unicode letters/numbers (as required by the Slug validation rule)

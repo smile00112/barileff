@@ -33,7 +33,13 @@
       "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -r ':*)",
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
-      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -m)"
+      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -m)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(ls \"D:\\\\\\\\__Work__\\\\\\\\laragon_2025\\\\\\\\www\\\\\\\\my_bagisto\\\\\\\\public\\\\\\\\manager\\\\\\\\\")",
+      "Bash(cmd //c \"dir D:\\\\__Work__\\\\laragon_2025\\\\www\\\\my_bagisto\\\\public\")",
+      "Bash(cmd //c \"dir D:\\\\__Work__\\\\laragon_2025\\\\www\\\\my_bagisto\\\\public /s /b\")",
+      "Bash(node -e ':*)"
     ]
   }
 }

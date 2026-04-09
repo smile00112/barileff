@@ -1,0 +1,45 @@
+{
+  "__plugin-vue_export-helper-DlAUqK2U.js": {
+    "file": "assets/_plugin-vue_export-helper-DlAUqK2U.js",
+    "name": "_plugin-vue_export-helper"
+  },
+  "resources/js/main.js": {
+    "file": "assets/main-BtkuhXjb.js",
+    "name": "main",
+    "src": "resources/js/main.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/pages/LoginPage.vue",
+      "resources/js/pages/OrdersPage.vue"
+    ],
+    "css": [
+      "assets/main-eFsNFqca.css"
+    ]
+  },
+  "resources/js/pages/LoginPage.vue": {
+    "file": "assets/LoginPage-CYYtUboc.js",
+    "name": "LoginPage",
+    "src": "resources/js/pages/LoginPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/main.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/LoginPage-HFLAbGOe.css"
+    ]
+  },
+  "resources/js/pages/OrdersPage.vue": {
+    "file": "assets/OrdersPage-DmgCs9T3.js",
+    "name": "OrdersPage",
+    "src": "resources/js/pages/OrdersPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/main.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/OrdersPage-Jrm-p49X.css"
+    ]
+  }
+}

@@ -1729,6 +1729,15 @@ return [
                     'file-hint' => 'Accepted: .csv, .txt  •  Max 50 MB',
                     'locale' => 'Import Locale',
                     'locale-hint' => 'Locale for text attributes (name, description, etc.)',
+                    'options-title' => 'Import Options',
+                    'allow-insert' => 'Add new products',
+                    'allow-insert-hint' => 'Create products whose SKU is not yet in the catalog.',
+                    'allow-update' => 'Update existing products',
+                    'allow-update-hint' => 'Update products whose SKU already exists in the catalog.',
+                    'create-categories' => 'Create missing categories',
+                    'create-categories-hint' => 'Automatically create categories that are listed in the CSV but do not exist yet.',
+                    'parent-category' => 'Parent category for new categories',
+                    'parent-category-hint' => 'New categories will be created as children of the selected category.',
                 ],
 
                 'validation' => [

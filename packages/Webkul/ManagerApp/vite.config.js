@@ -8,7 +8,7 @@ export default defineConfig({
         vue(),
         VitePWA({
             registerType: 'autoUpdate',
-            outDir: '../../public/manager',
+            outDir: '../../../public/manager',
             base: '/manager/',
             scope: '/manager/',
             manifest: {
@@ -47,8 +47,9 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: '../../public/manager',
+        outDir: '../../../public/manager',
         emptyOutDir: true,
+        manifest: true,
         rollupOptions: {
             input: path.resolve(__dirname, 'resources/js/main.js'),
         },
