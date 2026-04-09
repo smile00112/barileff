@@ -105,10 +105,14 @@ services:
     networks:
       - app-network
     depends_on:
-      - app
-      - reverb
-      - adminer
-      - kibana
+      app:
+        condition: service_healthy
+      reverb:
+        condition: service_started
+      adminer:
+        condition: service_started
+      kibana:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/health || nc -z localhost 80"]
       interval: 30s
