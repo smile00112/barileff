@@ -89,9 +89,16 @@ COPY docker/php/php.ini /usr/local/etc/php/php.ini
 RUN php artisan package:discover --ansi || true
 
 # Установка RoadRunner (прямая загрузка, т.к. spiral/roadrunner-cli — dev-зависимость)
-RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
-    && curl -sSfL "https://github.com/roadrunner-server/roadrunner/releases/latest/download/roadrunner-linux-${ARCH}" -o /usr/local/bin/rr \
-    && chmod +x /usr/local/bin/rr
+RUN set -eux; \
+    ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/'); \
+    RR_VER=$(curl -sSfL https://api.github.com/repos/roadrunner-server/roadrunner/releases/latest \
+        | grep '"tag_name"' | sed 's/.*"tag_name": "v\([^"]*\)".*/\1/'); \
+    curl -sSfL "https://github.com/roadrunner-server/roadrunner/releases/download/v${RR_VER}/roadrunner-${RR_VER}-linux-${ARCH}.tar.gz" \
+        -o /tmp/rr.tar.gz; \
+    tar -xzf /tmp/rr.tar.gz -C /tmp; \
+    find /tmp -maxdepth 3 -name 'rr' -type f | head -1 | xargs -I{} mv {} /usr/local/bin/rr; \
+    chmod +x /usr/local/bin/rr; \
+    rm -rf /tmp/rr*
 
 # Настройка прав
 RUN chown -R www-data:www-data /var/www/html \
