@@ -381,7 +381,7 @@ services:
       start_period: 90s
 
   certbot:
-    image: certbot/certbot:v2
+    image: certbot/certbot:latest
     container_name: ${APP_NAME:-Surprise}_certbot
     restart: unless-stopped
     volumes:
