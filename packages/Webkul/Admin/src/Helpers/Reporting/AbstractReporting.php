@@ -103,12 +103,25 @@ abstract class AbstractReporting
 
     /**
      * Sets the inventory source ID to filter results by shipment source.
+     *
+     * @param  int|null  $id
+     * @return static
      */
     public function setInventorySource(?int $id): static
     {
         $this->inventorySourceId = $id;
 
         return $this;
+    }
+
+    /**
+     * Get the inventory source ID.
+     *
+     * @return int|null
+     */
+    public function getInventorySourceId(): ?int
+    {
+        return $this->inventorySourceId;
     }
 
     /**
