@@ -51,6 +51,8 @@ abstract class AbstractReporting
         $this->setStartDate(request()->date('start'));
 
         $this->setEndDate(request()->date('end'));
+
+        $this->setInventorySource(request()->integer('inventory_source') ?: null);
     }
 
     /**
