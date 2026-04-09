@@ -35,6 +35,11 @@ abstract class AbstractReporting
     protected Carbon $lastEndDate;
 
     /**
+     * The inventory source id to filter by.
+     */
+    protected ?int $inventorySourceId = null;
+
+    /**
      * Create a helper instance.
      *
      * @return void
@@ -92,6 +97,16 @@ abstract class AbstractReporting
         $this->endDate = ($endDate && $endDate->endOfDay() <= now()) ? $endDate->endOfDay() : now();
 
         $this->setLastEndDate();
+
+        return $this;
+    }
+
+    /**
+     * Sets the inventory source ID to filter results by shipment source.
+     */
+    public function setInventorySource(?int $id): static
+    {
+        $this->inventorySourceId = $id;
 
         return $this;
     }
