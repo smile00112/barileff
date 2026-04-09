@@ -41,9 +41,9 @@ The `ManagerAuthenticate` middleware enforces both on every API request after Sa
 
 **Route prefix:** `/api/manager` (registered in `routes/api.php`, protected by `sanctum` + `manager.authenticate` middleware, except login)
 
-**Served from:** separate subdomain (e.g. `manager.example.com`). API at `/api/manager/*`, SPA shell at `/*` (via `routes/web.php`).
+**Served from:** same domain, subfolder `/manager`. SPA shell at `GET /manager/{any?}` (via `routes/web.php`), API at `/api/manager/*`. No CORS configuration needed — same origin.
 
-**CORS:** `config/cors.php` must allow `manager.example.com` origin for `/api/manager/*` and `/broadcasting/auth`. Add to the `allowed_origins` list before deploying.
+**PWA note:** subfolder hosting is fully compatible with PWA installation. The `manifest.json` must set `"scope": "/manager/"` and `"start_url": "/manager/"`, and the service worker must be registered at `/manager/sw.js` with the same scope.
 
 ### Auth
 
@@ -118,7 +118,7 @@ The same `BroadcastOrderEvents` listener triggers both broadcast and WebPush —
 
 Location: `packages/Webkul/ManagerApp/resources/js/`
 Own `vite.config.js` in the package root using `vite-plugin-pwa`.
-Output: `public/manager-app/` (referenced by the Blade SPA shell).
+Output: `public/manager/` (served at `/manager/`, referenced by the Blade SPA shell at `GET /manager/{any?}`).
 
 ```
 npm install          # inside packages/Webkul/ManagerApp/
@@ -133,7 +133,7 @@ Dependencies: `vue@3`, `pinia`, `vue-router@4`, `axios`, `laravel-echo`, `pusher
 resources/js/
   main.js
   App.vue
-  router/index.js       # / → OrdersPage, /login → LoginPage (redirects if authed)
+  router/index.js       # /manager → OrdersPage, /manager/login → LoginPage (redirects if authed)
   stores/
     auth.js             # Pinia: token, user, inventorySources
     orders.js           # Pinia: list, filters, pagination, update in-place
@@ -151,7 +151,7 @@ resources/js/
 
 ### Pages
 
-**LoginPage:** centered card, email + password inputs, "Sign in" button, inline error. On success: store token in `localStorage`, redirect to `/`.
+**LoginPage:** centered card, email + password inputs, "Sign in" button, inline error. On success: store token in `localStorage`, redirect to `/manager`.
 
 **OrdersPage:**
 - Top bar: app name, manager name, logout button
@@ -215,7 +215,7 @@ Push permission prompt shown after first login (with a "Enable notifications" bu
 
 `ManagerAppServiceProvider` registers:
 - Config merges: `acl.php`
-- Route files: `routes/api.php` (middleware: `api`, `auth:sanctum`, `manager.authenticate`) and `routes/web.php`
+- Route files: `routes/api.php` (middleware: `api`, `auth:sanctum`, `manager.authenticate`) and `routes/web.php` (serves SPA shell at `/manager/{any?}`)
 - Broadcasts channel: `routes/channels.php`
 - Migration path
 - View path (for `app.blade.php` SPA shell)
