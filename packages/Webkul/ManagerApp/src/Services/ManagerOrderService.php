@@ -3,6 +3,8 @@
 namespace Webkul\ManagerApp\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
+use Webkul\ManagerApp\Events\OrderStatusUpdated;
 use Webkul\Sales\Models\Order;
 use Webkul\User\Contracts\Admin;
 
@@ -65,7 +67,11 @@ class ManagerOrderService
     {
         $order->update(['status' => $status]);
 
-        return $order->refresh();
+        $order = $order->refresh();
+
+        Event::dispatch(new OrderStatusUpdated($order));
+
+        return $order;
     }
 
     /**

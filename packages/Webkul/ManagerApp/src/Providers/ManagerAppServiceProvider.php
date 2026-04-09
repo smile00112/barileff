@@ -2,6 +2,7 @@
 
 namespace Webkul\ManagerApp\Providers;
 
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,5 +29,24 @@ class ManagerAppServiceProvider extends ServiceProvider
         Route::middleware(['api'])->group(__DIR__.'/../Routes/api.php');
 
         Route::middleware(['web'])->group(__DIR__.'/../Routes/web.php');
+
+        $this->registerBroadcastChannels();
+    }
+
+    /**
+     * Register private channel authorization for warehouse channels.
+     *
+     * Channel: manager.warehouse.{sourceId}
+     * Only admins with that inventory source assigned can subscribe.
+     */
+    protected function registerBroadcastChannels(): void
+    {
+        Broadcast::channel('manager.warehouse.{sourceId}', function ($user, int $sourceId) {
+            if (! $user instanceof \Webkul\User\Models\Admin) {
+                return false;
+            }
+
+            return in_array($sourceId, $user->getRestrictedInventorySourceIds(), true);
+        });
     }
 }
