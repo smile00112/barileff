@@ -7,6 +7,9 @@ export default defineConfig({
     plugins: [
         vue(),
         VitePWA({
+            strategies: 'injectManifest',
+            srcDir: 'resources/js',
+            filename: 'sw.js',
             registerType: 'autoUpdate',
             outDir: '../../../public/manager',
             base: '/manager/',
@@ -34,10 +37,8 @@ export default defineConfig({
                     },
                 ],
             },
-            workbox: {
+            injectManifest: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-                navigateFallback: '/manager/',
-                navigateFallbackDenylist: [/^\/manager\/api\//],
             },
         }),
     ],
