@@ -14,3 +14,9 @@ it('creates a manager with an inventory source assigned', function () {
     expect($admin->inventorySources()->exists())->toBeTrue();
     expect($admin->isInventorySourceRestricted())->toBeTrue();
 });
+
+it('returns 401 when unauthenticated request hits manager api', function () {
+    $response = $this->getJson('/manager/api/orders');
+
+    $response->assertStatus(401);
+});
