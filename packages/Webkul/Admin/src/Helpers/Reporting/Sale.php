@@ -4,6 +4,7 @@ namespace Webkul\Admin\Helpers\Reporting;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Webkul\Sales\Models\Shipment;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
@@ -73,6 +74,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->count();
     }
 
@@ -172,6 +176,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->sum(DB::raw('base_grand_total_invoiced - base_grand_total_refunded'));
     }
 
@@ -187,6 +194,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->sum(DB::raw('base_sub_total_invoiced - base_sub_total_refunded'));
     }
 
@@ -256,6 +266,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->avg(DB::raw('base_grand_total_invoiced - base_grand_total_refunded'));
     }
 
@@ -325,6 +338,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->sum(DB::raw('base_grand_total_refunded'));
     }
 
@@ -394,6 +410,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->sum(DB::raw('base_tax_amount_invoiced - base_tax_amount_refunded'));
     }
 
@@ -486,6 +505,9 @@ class Sale extends AbstractReporting
             ->resetModel()
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->sum(DB::raw('base_shipping_invoiced - base_shipping_refunded'));
     }
 
@@ -543,6 +565,9 @@ class Sale extends AbstractReporting
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
             ->whereNotNull('shipping_method')
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->groupBy('shipping_method', 'shipping_title')
             ->orderByDesc('total')
             ->limit($limit)
@@ -564,6 +589,9 @@ class Sale extends AbstractReporting
             ->addSelect(DB::raw('SUM(base_grand_total) as base_total'))
             ->whereIn('orders.channel_id', $this->channelIds)
             ->whereBetween('orders.created_at', [$this->startDate, $this->endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('orders.id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->groupBy('method', 'method_title')
             ->orderByDesc('total')
             ->limit($limit)
@@ -619,6 +647,9 @@ class Sale extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->groupBy(DB::raw($groupColumn))
             ->get();
 
