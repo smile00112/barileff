@@ -56,6 +56,10 @@ class ImportUploadRequest extends FormRequest
             ],
             'delimiter' => ['required', 'in:comma,semicolon,tab,pipe'],
             'locale' => ['required', 'string', 'max:20'],
+            'create_categories' => ['nullable', 'boolean'],
+            'parent_category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'allow_insert' => ['nullable', 'boolean'],
+            'allow_update' => ['nullable', 'boolean'],
         ];
     }
 

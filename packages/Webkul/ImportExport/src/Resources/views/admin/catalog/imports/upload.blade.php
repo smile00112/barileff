@@ -110,6 +110,97 @@
                 </p>
             </div>
 
+            <!-- Import Options -->
+            <div class="mb-6 rounded-sm border border-gray-200 p-4 dark:border-gray-700">
+                <p class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    @lang('admin::app.catalog.imports.upload.fields.options-title')
+                </p>
+
+                <!-- allow_insert -->
+                <label class="mb-3 flex cursor-pointer items-start gap-3">
+                    <input
+                        type="checkbox"
+                        name="allow_insert"
+                        value="1"
+                        {{ old('allow_insert', '1') ? 'checked' : '' }}
+                        class="mt-0.5 accent-indigo-600"
+                    />
+                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                        @lang('admin::app.catalog.imports.upload.fields.allow-insert')
+                        <span class="block text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.upload.fields.allow-insert-hint')
+                        </span>
+                    </span>
+                </label>
+
+                <!-- allow_update -->
+                <label class="mb-3 flex cursor-pointer items-start gap-3">
+                    <input
+                        type="checkbox"
+                        name="allow_update"
+                        value="1"
+                        {{ old('allow_update', '1') ? 'checked' : '' }}
+                        class="mt-0.5 accent-indigo-600"
+                    />
+                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                        @lang('admin::app.catalog.imports.upload.fields.allow-update')
+                        <span class="block text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.upload.fields.allow-update-hint')
+                        </span>
+                    </span>
+                </label>
+
+                <!-- create_categories -->
+                <label
+                    class="mb-2 flex cursor-pointer items-start gap-3"
+                    x-data="{ createCategories: {{ old('create_categories') ? 'true' : 'false' }} }"
+                >
+                    <input
+                        type="checkbox"
+                        name="create_categories"
+                        value="1"
+                        x-model="createCategories"
+                        {{ old('create_categories') ? 'checked' : '' }}
+                        class="mt-0.5 accent-indigo-600"
+                    />
+                    <span class="w-full text-sm text-gray-700 dark:text-gray-300">
+                        @lang('admin::app.catalog.imports.upload.fields.create-categories')
+                        <span class="block text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.upload.fields.create-categories-hint')
+                        </span>
+
+                        <!-- parent category select, shown only when create_categories is checked -->
+                        <div x-show="createCategories" x-cloak class="mt-2">
+                            <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">
+                                @lang('admin::app.catalog.imports.upload.fields.parent-category')
+                            </label>
+
+                            <select
+                                name="parent_category_id"
+                                class="block w-full max-w-xs rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:border-indigo-500"
+                            >
+                                @foreach ($parentCategoryOptions as $cat)
+                                    <option
+                                        value="{{ $cat['id'] }}"
+                                        {{ (int) old('parent_category_id', 1) === $cat['id'] ? 'selected' : '' }}
+                                    >
+                                        {{ $cat['label'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                                @lang('admin::app.catalog.imports.upload.fields.parent-category-hint')
+                            </p>
+
+                            @error('parent_category_id')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </span>
+                </label>
+            </div>
+
             <button type="submit" class="primary-button">
                 @lang('admin::app.catalog.imports.upload.submit')
             </button>

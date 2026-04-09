@@ -23,6 +23,10 @@ class CatalogImportSession extends Model
         'delimiter',
         'locale',
         'inventory_source_id',
+        'create_categories',
+        'parent_category_id',
+        'allow_insert',
+        'allow_update',
         'headers',
         'column_mapping',
         'import_ref_id',
@@ -36,6 +40,10 @@ class CatalogImportSession extends Model
         return [
             'headers' => 'array',
             'column_mapping' => 'array',
+            'create_categories' => 'boolean',
+            'parent_category_id' => 'integer',
+            'allow_insert' => 'boolean',
+            'allow_update' => 'boolean',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
         ];

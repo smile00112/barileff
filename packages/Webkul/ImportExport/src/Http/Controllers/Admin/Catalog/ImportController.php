@@ -5,11 +5,14 @@ namespace Webkul\ImportExport\Http\Controllers\Admin\Catalog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\MassDestroyRequest;
 use Webkul\Attribute\Repositories\AttributeRepository;
+use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Repositories\ImportRepository;
 use Webkul\ImportExport\Events\CatalogImportCompleted;
@@ -35,7 +38,8 @@ class ImportController extends Controller
     public function __construct(
         protected ImportHelper $importHelper,
         protected ImportRepository $importRepository,
-        protected AttributeRepository $attributeRepository
+        protected AttributeRepository $attributeRepository,
+        protected CategoryRepository $categoryRepository
     ) {}
 
     /**
@@ -56,8 +60,9 @@ class ImportController extends Controller
     public function create(): View
     {
         $locales = core()->getAllLocales();
+        $parentCategoryOptions = $this->buildParentCategoryOptions();
 
-        return view('import_export::admin.catalog.imports.upload', compact('locales'));
+        return view('import_export::admin.catalog.imports.upload', compact('locales', 'parentCategoryOptions'));
     }
 
     /**
@@ -85,6 +90,10 @@ class ImportController extends Controller
             'file_path' => $storagePath,
             'delimiter' => $delimiter,
             'locale' => $request->locale,
+            'create_categories' => (bool) $request->input('create_categories', false),
+            'parent_category_id' => (int) $request->input('parent_category_id', 1),
+            'allow_insert' => (bool) $request->input('allow_insert', true),
+            'allow_update' => (bool) $request->input('allow_update', true),
             'headers' => array_values($headers),
             'created_by' => auth()->guard('admin')->id(),
         ]);
@@ -133,6 +142,10 @@ class ImportController extends Controller
             return new JsonResponse([
                 'message' => trans('admin::app.catalog.imports.errors.map-first'),
             ], 422);
+        }
+
+        if ($session->create_categories) {
+            $this->createMissingCategories($session);
         }
 
         $remappedPath = $this->createRemappedCsv($session);
@@ -465,7 +478,28 @@ class ImportController extends Controller
 
         fputcsv($writeHandle, $newHeaders);
 
+        // Pre-load existing SKUs for insert/update filtering when needed.
+        $existingSkus = null;
+
+        if (! $session->allow_insert || ! $session->allow_update) {
+            $existingSkus = DB::table('products')->pluck('sku', 'sku')->all();
+        }
+
         while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
+            $skuValue = $skuColumnIndex !== null ? trim($row[$skuColumnIndex] ?? '') : '';
+
+            if ($existingSkus !== null && $skuValue !== '') {
+                $skuExists = isset($existingSkus[$skuValue]);
+
+                if (! $session->allow_insert && ! $skuExists) {
+                    continue;
+                }
+
+                if (! $session->allow_update && $skuExists) {
+                    continue;
+                }
+            }
+
             $newRow = [];
 
             foreach (array_keys($columnMap) as $field) {

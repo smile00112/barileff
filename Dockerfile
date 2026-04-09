@@ -88,8 +88,10 @@ COPY docker/php/php.ini /usr/local/etc/php/php.ini
 
 RUN php artisan package:discover --ansi || true
 
-# Установка RoadRunner
-RUN php vendor/bin/rr get-binary --location /usr/local/bin
+# Установка RoadRunner (прямая загрузка, т.к. spiral/roadrunner-cli — dev-зависимость)
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
+    && curl -sSfL "https://github.com/roadrunner-server/roadrunner/releases/latest/download/roadrunner-linux-${ARCH}" -o /usr/local/bin/rr \
+    && chmod +x /usr/local/bin/rr
 
 # Настройка прав
 RUN chown -R www-data:www-data /var/www/html \
