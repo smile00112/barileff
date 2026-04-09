@@ -5,6 +5,7 @@ namespace Webkul\ManagerApp\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Webkul\ManagerApp\Listeners\BroadcastOrderEvents;
 use Webkul\ManagerApp\Listeners\CopyInventorySourceToOrder;
+use Webkul\ManagerApp\Listeners\SendOrderPushNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,7 @@ class EventServiceProvider extends ServiceProvider
         'checkout.order.save.after' => [
             CopyInventorySourceToOrder::class,
             BroadcastOrderEvents::class,
+            SendOrderPushNotification::class,
         ],
     ];
 }
