@@ -2,6 +2,8 @@
 
 namespace Webkul\Admin\Http\Controllers\Reporting;
 
+use Webkul\Inventory\Repositories\InventorySourceRepository;
+
 class SaleController extends Controller
 {
     /**
@@ -10,16 +12,26 @@ class SaleController extends Controller
      * @var array
      */
     protected $typeFunctions = [
-        'total-sales' => 'getTotalSalesStats',
-        'average-sales' => 'getAverageSalesStats',
-        'total-orders' => 'getTotalOrdersStats',
-        'purchase-funnel' => 'getPurchaseFunnelStats',
-        'abandoned-carts' => 'getAbandonedCartsStats',
-        'refunds' => 'getRefundsStats',
-        'tax-collected' => 'getTaxCollectedStats',
+        'total-sales'        => 'getTotalSalesStats',
+        'average-sales'      => 'getAverageSalesStats',
+        'total-orders'       => 'getTotalOrdersStats',
+        'purchase-funnel'    => 'getPurchaseFunnelStats',
+        'abandoned-carts'    => 'getAbandonedCartsStats',
+        'refunds'            => 'getRefundsStats',
+        'tax-collected'      => 'getTaxCollectedStats',
         'shipping-collected' => 'getShippingCollectedStats',
         'top-payment-methods' => 'getTopPaymentMethods',
     ];
+
+    /**
+     * Create a controller instance.
+     */
+    public function __construct(
+        protected InventorySourceRepository $inventorySourceRepository,
+        \Webkul\Admin\Helpers\Reporting $reportingHelper,
+    ) {
+        parent::__construct($reportingHelper);
+    }
 
     /**
      * Display a listing of the resource.
@@ -29,8 +41,9 @@ class SaleController extends Controller
     public function index()
     {
         return view('admin::reporting.sales.index')->with([
-            'startDate' => $this->reportingHelper->getStartDate(),
-            'endDate' => $this->reportingHelper->getEndDate(),
+            'startDate'        => $this->reportingHelper->getStartDate(),
+            'endDate'          => $this->reportingHelper->getEndDate(),
+            'inventorySources' => $this->inventorySourceRepository->findWhere(['status' => 1]),
         ]);
     }
 
@@ -46,9 +59,10 @@ class SaleController extends Controller
         }
 
         return view('admin::reporting.view')->with([
-            'entity' => 'sales',
-            'startDate' => $this->reportingHelper->getStartDate(),
-            'endDate' => $this->reportingHelper->getEndDate(),
+            'entity'           => 'sales',
+            'startDate'        => $this->reportingHelper->getStartDate(),
+            'endDate'          => $this->reportingHelper->getEndDate(),
+            'inventorySources' => $this->inventorySourceRepository->findWhere(['status' => 1]),
         ]);
     }
 }

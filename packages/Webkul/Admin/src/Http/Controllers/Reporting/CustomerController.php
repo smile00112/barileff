@@ -2,6 +2,8 @@
 
 namespace Webkul\Admin\Http\Controllers\Reporting;
 
+use Webkul\Inventory\Repositories\InventorySourceRepository;
+
 class CustomerController extends Controller
 {
     /**
@@ -10,13 +12,23 @@ class CustomerController extends Controller
      * @var array
      */
     protected $typeFunctions = [
-        'total-customers' => 'getTotalCustomersStats',
-        'customers-traffic' => 'getCustomersTrafficStats',
+        'total-customers'           => 'getTotalCustomersStats',
+        'customers-traffic'         => 'getCustomersTrafficStats',
         'customers-with-most-sales' => 'getCustomersWithMostSales',
         'customers-with-most-orders' => 'getCustomersWithMostOrders',
         'customers-with-most-reviews' => 'getCustomersWithMostReviews',
-        'top-customer-groups' => 'getTopCustomerGroups',
+        'top-customer-groups'       => 'getTopCustomerGroups',
     ];
+
+    /**
+     * Create a controller instance.
+     */
+    public function __construct(
+        protected InventorySourceRepository $inventorySourceRepository,
+        \Webkul\Admin\Helpers\Reporting $reportingHelper,
+    ) {
+        parent::__construct($reportingHelper);
+    }
 
     /**
      * Display a listing of the resource.
@@ -26,8 +38,9 @@ class CustomerController extends Controller
     public function index()
     {
         return view('admin::reporting.customers.index')->with([
-            'startDate' => $this->reportingHelper->getStartDate(),
-            'endDate' => $this->reportingHelper->getEndDate(),
+            'startDate'        => $this->reportingHelper->getStartDate(),
+            'endDate'          => $this->reportingHelper->getEndDate(),
+            'inventorySources' => $this->inventorySourceRepository->findWhere(['status' => 1]),
         ]);
     }
 
@@ -43,9 +56,10 @@ class CustomerController extends Controller
         }
 
         return view('admin::reporting.view')->with([
-            'entity' => 'customers',
-            'startDate' => $this->reportingHelper->getStartDate(),
-            'endDate' => $this->reportingHelper->getEndDate(),
+            'entity'           => 'customers',
+            'startDate'        => $this->reportingHelper->getStartDate(),
+            'endDate'          => $this->reportingHelper->getEndDate(),
+            'inventorySources' => $this->inventorySourceRepository->findWhere(['status' => 1]),
         ]);
     }
 }
