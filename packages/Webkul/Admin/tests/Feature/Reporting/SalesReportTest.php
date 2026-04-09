@@ -10,6 +10,7 @@ use Webkul\Checkout\Models\CartShippingRate;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Models\CustomerAddress;
 use Webkul\Faker\Helpers\Product as ProductFaker;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\Sales\Models\Invoice;
 use Webkul\Sales\Models\InvoiceItem;
 use Webkul\Sales\Models\Order;
@@ -17,6 +18,7 @@ use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Models\OrderItem;
 use Webkul\Sales\Models\OrderPayment;
 use Webkul\Sales\Models\OrderTransaction;
+use Webkul\Sales\Models\Shipment;
 
 use function Pest\Laravel\get;
 
@@ -2410,4 +2412,42 @@ it('should export the sales stats', function () {
             $this->prepareOrderPayment($orderPayment),
         ],
     ]);
+});
+
+it('should filter total orders stats by inventory source', function () {
+    // Arrange.
+    $this->loginAsAdmin();
+
+    $source1 = InventorySource::factory()->create(['status' => 1]);
+    $source2 = InventorySource::factory()->create(['status' => 1]);
+
+    $channel = core()->getCurrentChannel();
+
+    $order1 = Order::factory()->create([
+        'channel_id' => $channel->id,
+        'created_at' => now(),
+    ]);
+
+    Shipment::factory()->create([
+        'order_id'            => $order1->id,
+        'inventory_source_id' => $source1->id,
+    ]);
+
+    $order2 = Order::factory()->create([
+        'channel_id' => $channel->id,
+        'created_at' => now(),
+    ]);
+
+    Shipment::factory()->create([
+        'order_id'            => $order2->id,
+        'inventory_source_id' => $source2->id,
+    ]);
+
+    // Act and Assert.
+    get(route('admin.reporting.sales.stats', [
+        'type'             => 'total-orders',
+        'inventory_source' => $source1->id,
+    ]))
+        ->assertOk()
+        ->assertJsonPath('statistics.orders.current', 1);
 });

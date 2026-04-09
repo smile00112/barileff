@@ -7,6 +7,7 @@ use Webkul\Checkout\Models\CartPayment;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Models\CustomerAddress;
 use Webkul\Faker\Helpers\Product as ProductFaker;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\Product\Models\ProductReview;
 use Webkul\Sales\Models\Invoice;
 use Webkul\Sales\Models\InvoiceItem;
@@ -14,6 +15,7 @@ use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Models\OrderItem;
 use Webkul\Sales\Models\OrderPayment;
+use Webkul\Sales\Models\Shipment;
 
 use function Pest\Laravel\get;
 
@@ -530,4 +532,54 @@ it('should return the customers with most sales stats report', function () {
             $this->prepareInvoiceItem($invoiceItem),
         ],
     ]);
+});
+
+it('should filter customers with most orders by inventory source', function () {
+    // Arrange.
+    $source1 = InventorySource::factory()->create(['status' => 1]);
+    $source2 = InventorySource::factory()->create(['status' => 1]);
+
+    $channel = core()->getCurrentChannel();
+
+    $customer1 = Customer::factory()->create();
+
+    $order1 = Order::factory()->create([
+        'channel_id'          => $channel->id,
+        'customer_id'         => $customer1->id,
+        'customer_email'      => $customer1->email,
+        'customer_first_name' => $customer1->first_name,
+        'customer_last_name'  => $customer1->last_name,
+        'created_at'          => now(),
+    ]);
+
+    Shipment::factory()->create([
+        'order_id'            => $order1->id,
+        'inventory_source_id' => $source1->id,
+    ]);
+
+    $customer2 = Customer::factory()->create();
+
+    $order2 = Order::factory()->create([
+        'channel_id'          => $channel->id,
+        'customer_id'         => $customer2->id,
+        'customer_email'      => $customer2->email,
+        'customer_first_name' => $customer2->first_name,
+        'customer_last_name'  => $customer2->last_name,
+        'created_at'          => now(),
+    ]);
+
+    Shipment::factory()->create([
+        'order_id'            => $order2->id,
+        'inventory_source_id' => $source2->id,
+    ]);
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    get(route('admin.reporting.customers.stats', [
+        'type'             => 'customers-with-most-orders',
+        'inventory_source' => $source1->id,
+    ]))
+        ->assertOk()
+        ->assertJsonCount(1, 'statistics');
 });
