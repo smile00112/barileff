@@ -465,6 +465,7 @@ class Sale extends AbstractReporting
     {
         $tablePrefix = DB::getTablePrefix();
 
+        // Note: inventory source filter not applied here (queries order_items, not orders directly).
         return $this->orderItemRepository
             ->resetModel()
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
