@@ -22,9 +22,7 @@ RUN apk add --no-cache \
     autoconf \
     g++ \
     make \
-    pcre-dev \
-    nodejs \
-    npm
+    pcre-dev
 
 # Установка PHP расширений
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
@@ -71,16 +69,6 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --prefer-dist
 
 COPY . .
-
-RUN set -eux; \
-    npm ci || npm install; \
-    npm run build; \
-    if [ -f packages/Webkul/Shop/package-lock.json ]; then npm --prefix packages/Webkul/Shop ci; else npm --prefix packages/Webkul/Shop install; fi; \
-    if [ -f packages/Webkul/Admin/package-lock.json ]; then npm --prefix packages/Webkul/Admin ci; else npm --prefix packages/Webkul/Admin install; fi; \
-    if [ -f packages/Webkul/Installer/package-lock.json ]; then npm --prefix packages/Webkul/Installer ci; else npm --prefix packages/Webkul/Installer install; fi; \
-    npm --prefix packages/Webkul/Shop run build; \
-    npm --prefix packages/Webkul/Admin run build; \
-    npm --prefix packages/Webkul/Installer run build
 
 RUN composer dump-autoload --optimize --no-dev
 

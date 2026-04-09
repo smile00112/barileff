@@ -1,0 +1,4 @@
+node_modules
+packages/Webkul/Shop/node_modules
+packages/Webkul/Admin/node_modules
+packages/Webkul/Installer/node_modules
