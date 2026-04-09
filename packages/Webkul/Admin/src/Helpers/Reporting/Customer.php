@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Product\Repositories\ProductReviewRepository;
+use Webkul\Sales\Models\Shipment;
 use Webkul\Sales\Repositories\OrderRepository;
 
 class Customer extends AbstractReporting
@@ -133,6 +134,9 @@ class Customer extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('orders.id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->groupBy('orders.customer_id', 'orders.customer_email', 'orders.customer_first_name', 'orders.customer_last_name')
             ->orderByDesc('total')
             ->limit($limit)
@@ -158,6 +162,9 @@ class Customer extends AbstractReporting
             )
             ->whereIn('channel_id', $this->channelIds)
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->when($this->inventorySourceId, fn ($q) => $q->whereIn('orders.id',
+                Shipment::where('inventory_source_id', $this->inventorySourceId)->select('order_id')
+            ))
             ->groupBy('orders.customer_id', 'orders.customer_email', 'orders.customer_first_name', 'orders.customer_last_name')
             ->orderByDesc('orders')
             ->limit($limit)
