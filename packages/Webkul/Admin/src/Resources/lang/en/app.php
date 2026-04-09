@@ -3865,6 +3865,7 @@ return [
                 'added-to-cart' => 'Added to Cart',
                 'added-to-cart-info' => 'Only :progress visitors added products to cart',
                 'all-channels' => 'All Channels',
+                'all-inventory-sources' => 'All Inventory Sources',
                 'average-order-value-over-time' => 'Average Order Value Over Time',
                 'average-sales' => 'Average Order Value',
                 'count' => 'Count',
@@ -3904,6 +3905,7 @@ return [
         'customers' => [
             'index' => [
                 'all-channels' => 'All Channels',
+                'all-inventory-sources' => 'All Inventory Sources',
                 'count' => 'Count',
                 'customers' => 'Customers',
                 'customers-over-time' => 'Customers Over Time',
@@ -3967,6 +3969,7 @@ return [
 
         'view' => [
             'all-channels' => 'All Channels',
+            'all-inventory-sources' => 'All Inventory Sources',
             'back-btn' => 'Back',
             'day' => 'Day',
             'end-date' => 'End Date',

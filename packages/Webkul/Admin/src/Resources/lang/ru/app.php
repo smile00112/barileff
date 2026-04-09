@@ -3839,6 +3839,7 @@ return [
                 'added-to-cart' => 'Добавлено в корзину',
                 'added-to-cart-info' => 'Только :progress посетителей добавили продукты в корзину',
                 'all-channels' => 'Все каналы',
+                'all-inventory-sources' => 'Все склады',
                 'average-order-value-over-time' => 'Средний объем заказа со временем',
                 'average-sales' => 'Средний объем продаж',
                 'count' => 'Количество',
@@ -3878,6 +3879,7 @@ return [
         'customers' => [
             'index' => [
                 'all-channels' => 'Все каналы',
+                'all-inventory-sources' => 'Все склады',
                 'count' => 'Количество',
                 'customers' => 'Клиенты',
                 'customers-over-time' => 'Клиенты со временем',
@@ -3941,6 +3943,7 @@ return [
 
         'view' => [
             'all-channels' => 'All Channels',
+            'all-inventory-sources' => 'Все склады',
             'back-btn' => 'Назад',
             'day' => 'День',
             'end-date' => 'Дата окончания',
