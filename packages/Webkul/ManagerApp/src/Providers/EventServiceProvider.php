@@ -2,14 +2,19 @@
 
 namespace Webkul\ManagerApp\Providers;
 
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Webkul\ManagerApp\Listeners\CopyInventorySourceToOrder;
 
 class EventServiceProvider extends ServiceProvider
 {
-    public function boot(): void
-    {
-        // Listeners registered in Tasks 5 and 10
-    }
+    /**
+     * The event listener mappings for the application.
+     *
+     * @var array<string, array<int, string>>
+     */
+    protected $listen = [
+        'checkout.order.save.after' => [
+            CopyInventorySourceToOrder::class,
+        ],
+    ];
 }
