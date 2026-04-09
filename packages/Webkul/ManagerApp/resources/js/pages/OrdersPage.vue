@@ -109,11 +109,13 @@ onMounted(async () => {
   await store.fetchStatuses();
   await load();
 
+  // Refresh admin profile to get inventory_sources list
+  const me = await authStore.fetchMe().catch(() => authStore.admin);
+
   // Register push subscription silently (no-op if VAPID not configured)
   registerPush().catch(() => {});
 
   // Subscribe to warehouse broadcast channels
-  const me = authStore.admin;
   if (me?.inventory_sources) {
     for (const source of me.inventory_sources) {
       subscribeWarehouse(source.id, {

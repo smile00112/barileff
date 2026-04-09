@@ -4,7 +4,7 @@
     "name": "_plugin-vue_export-helper"
   },
   "resources/js/main.js": {
-    "file": "assets/main-BtkuhXjb.js",
+    "file": "assets/main-DLkaKq2U.js",
     "name": "main",
     "src": "resources/js/main.js",
     "isEntry": true,
@@ -17,7 +17,7 @@
     ]
   },
   "resources/js/pages/LoginPage.vue": {
-    "file": "assets/LoginPage-CYYtUboc.js",
+    "file": "assets/LoginPage-BdM_J6CK.js",
     "name": "LoginPage",
     "src": "resources/js/pages/LoginPage.vue",
     "isDynamicEntry": true,
@@ -30,7 +30,7 @@
     ]
   },
   "resources/js/pages/OrdersPage.vue": {
-    "file": "assets/OrdersPage-DmgCs9T3.js",
+    "file": "assets/OrdersPage-BewF8bwY.js",
     "name": "OrdersPage",
     "src": "resources/js/pages/OrdersPage.vue",
     "isDynamicEntry": true,
@@ -39,7 +39,7 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/OrdersPage-Jrm-p49X.css"
+      "assets/OrdersPage-Dsom5MSn.css"
     ]
   }
 }

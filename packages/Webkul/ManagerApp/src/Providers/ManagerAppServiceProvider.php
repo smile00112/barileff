@@ -30,6 +30,10 @@ class ManagerAppServiceProvider extends ServiceProvider
 
         Route::middleware(['web'])->group(__DIR__.'/../Routes/web.php');
 
+        // Register /broadcasting/auth with sanctum so private channel auth works
+        // for managers authenticating via bearer tokens.
+        Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
         $this->registerBroadcastChannels();
     }
 
