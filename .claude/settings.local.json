@@ -12,7 +12,28 @@
       "Bash(ls /usr/local/bin/php*)",
       "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php -r ':*)",
       "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php vendor/bin/pint packages/Webkul/ImportExport/)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(composer show:*)",
+      "Bash(dir \"D:\\\\__Work__\\\\laragon_2025\\\\www\\\\my_bagisto\\\\vendor\\\\laravel\")",
+      "Read(//d/Work/laragon_2025/www/**)",
+      "Bash(composer require:*)",
+      "Read(//d/__Work__/laragon_2025/bin//**)",
+      "Read(//d/__Work__/laragon_2025//**)",
+      "Bash(export PHP_PATH=\"/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64\")",
+      "Bash(export COMPOSER_PATH=\"/d/__Work__/laragon_2025/bin/composer\")",
+      "Bash(export PATH=\"$PHP_PATH:$COMPOSER_PATH:$PATH\")",
+      "Bash(php --version)",
+      "Bash(composer --version)",
+      "Bash(php artisan:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(php composer.phar dump-autoload)",
+      "Bash(/c/laragon/bin/php/php8.3.14/php.exe composer.phar dump-autoload)",
+      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe /d/__Work__/laragon_2025/bin/composer/composer.phar dump-autoload)",
+      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe artisan:*)",
+      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -r ':*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(/d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -m)"
     ]
   }
 }

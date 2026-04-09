@@ -1,0 +1,109 @@
+FROM php:8.4-cli-alpine AS base
+
+# Установка системных зависимостей (БЕЗ изменения /etc/resolv.conf)
+RUN apk add --no-cache \
+    libpq-dev \
+    git \
+    curl \
+    curl-dev \
+    libpng-dev \
+    libzip-dev \
+    oniguruma-dev \
+    icu-dev \
+    libxml2-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    unzip \
+    bash \
+    supervisor \
+    netcat-openbsd \
+    linux-headers \
+    autoconf \
+    g++ \
+    make \
+    pcre-dev \
+    nodejs \
+    npm
+
+# Установка PHP расширений
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    pdo_pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    intl \
+    opcache \
+    calendar \
+    xml \
+    dom \
+    fileinfo \
+    sockets
+
+# Установка Redis через PECL с использованием curl (более надежно)
+RUN curl -sSL https://pecl.php.net/get/redis -o /tmp/redis.tar.gz \
+    && tar xzf /tmp/redis.tar.gz -C /tmp \
+    && cd /tmp/redis-* \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable redis \
+    && rm -rf /tmp/redis*
+
+# Очистка
+RUN apk del autoconf g++ make pcre-dev
+
+# Установка Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --prefer-dist
+
+COPY . .
+
+RUN set -eux; \
+    npm ci || npm install; \
+    npm run build; \
+    if [ -f packages/Webkul/Shop/package-lock.json ]; then npm --prefix packages/Webkul/Shop ci; else npm --prefix packages/Webkul/Shop install; fi; \
+    if [ -f packages/Webkul/Admin/package-lock.json ]; then npm --prefix packages/Webkul/Admin ci; else npm --prefix packages/Webkul/Admin install; fi; \
+    if [ -f packages/Webkul/Installer/package-lock.json ]; then npm --prefix packages/Webkul/Installer ci; else npm --prefix packages/Webkul/Installer install; fi; \
+    npm --prefix packages/Webkul/Shop run build; \
+    npm --prefix packages/Webkul/Admin run build; \
+    npm --prefix packages/Webkul/Installer run build
+
+RUN composer dump-autoload --optimize --no-dev
+
+COPY docker/php/php.ini /usr/local/etc/php/php.ini
+
+RUN php artisan package:discover --ansi || true
+
+# Установка RoadRunner
+RUN php vendor/bin/rr get-binary --location /usr/local/bin
+
+# Настройка прав
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD php artisan octane:status || wget --quiet --tries=1 --spider http://localhost:8000 || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php", "artisan", "octane:start", "--server=roadrunner", "--host=0.0.0.0", "--port=8000"]
