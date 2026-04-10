@@ -30,6 +30,14 @@ yarn.lock
 yarn-error.log
 /test-results
 /playwright-report
-
-# Git worktrees
-.worktrees/
+/.ssh
+/packages/Webkul/Admin/node_modules
+*access.log*
+*error.log*
+/docker/nginx/logs
+/docker/nginx/ssl-logs
+/storage/app/public/category
+/storage/app/public/product
+/public/build/assets
+/tmp/*
+/test
