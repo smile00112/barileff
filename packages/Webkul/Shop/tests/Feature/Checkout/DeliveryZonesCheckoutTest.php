@@ -4,6 +4,7 @@ use Webkul\Checkout\Models\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Checkout\Models\CartItem;
 use Webkul\Core\Models\CoreConfig;
+use Webkul\Customer\Models\Customer;
 use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Inventory\Models\InventorySource;
@@ -183,6 +184,82 @@ it('should resolve delivery zone mode consistently through service', function ()
     expect($manager->resolveMode(55.73, 37.65, 10))->toBe('manual')
         ->and($manager->resolveMode(55.73, 37.65, null))->toBe('auto')
         ->and($manager->resolveMode(null, null, null))->toBeNull();
+});
+
+it('preserves delivery zone and inventory source after checkout address submission', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create(['status' => true]);
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-preserve',
+        'name' => 'Москва',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'preserve-zone',
+        'name' => 'Preserve Zone',
+        'polygon_json' => [
+            [55.70, 37.50],
+            [55.80, 37.50],
+            [55.80, 37.70],
+            [55.70, 37.70],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 0, 'price' => 300, 'sort_order' => 0]);
+
+    $customer = Customer::factory()->create();
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'customer_id' => $customer->id,
+        'customer_first_name' => $customer->first_name,
+        'customer_last_name' => $customer->last_name,
+        'customer_email' => $customer->email,
+        'is_guest' => 0,
+        'sub_total' => 500,
+        'base_sub_total' => 500,
+        'delivery_zone_id' => $zone->id,
+        'delivery_point_lat' => 55.75,
+        'delivery_point_lng' => 37.61,
+        'delivery_zone_mode' => 'auto',
+        'inventory_source_id' => $inventorySource->id,
+    ]);
+
+    cart()->setCart($cart);
+
+    $this->loginAsCustomer($customer);
+
+    // Post address WITHOUT delivery_zone_id / lat / lng — simulates the real frontend
+    postJson(route('shop.checkout.onepage.addresses.store'), [
+        'billing' => [
+            'first_name' => 'Ivan',
+            'last_name' => 'Petrov',
+            'email' => 'ivan@example.com',
+            'address' => ['ул. Ленина, 5'],
+            'city' => 'Москва',
+            'country' => 'RU',
+            'state' => 'MOW',
+            'postcode' => '101000',
+            'phone' => '+79991234567',
+            'use_for_shipping' => true,
+        ],
+    ])->assertStatus(200);
+
+    $cart->refresh();
+
+    expect($cart->delivery_zone_id)->toBe($zone->id)
+        ->and($cart->inventory_source_id)->toBe($inventorySource->id)
+        ->and($cart->delivery_point_lat)->not->toBeNull();
 });
 
 it('should set inventory_source_id when zone is resolved via estimate shipping', function () {

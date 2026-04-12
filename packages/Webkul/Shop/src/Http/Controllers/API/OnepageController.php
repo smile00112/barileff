@@ -75,12 +75,19 @@ class OnepageController extends APIController
 
         $cart = Cart::getCart();
 
-        app(CartDeliveryZoneManager::class)->applySelection(
-            $cart,
-            isset($params['delivery_point_lat']) ? (float) $params['delivery_point_lat'] : null,
-            isset($params['delivery_point_lng']) ? (float) $params['delivery_point_lng'] : null,
-            ! empty($params['delivery_zone_id']) ? (int) $params['delivery_zone_id'] : null
-        );
+        $deliveryLat = isset($params['delivery_point_lat'])
+            ? (float) $params['delivery_point_lat']
+            : ($cart->delivery_point_lat !== null ? (float) $cart->delivery_point_lat : null);
+
+        $deliveryLng = isset($params['delivery_point_lng'])
+            ? (float) $params['delivery_point_lng']
+            : ($cart->delivery_point_lng !== null ? (float) $cart->delivery_point_lng : null);
+
+        $deliveryZoneId = ! empty($params['delivery_zone_id'])
+            ? (int) $params['delivery_zone_id']
+            : ($cart->delivery_zone_id ? (int) $cart->delivery_zone_id : null);
+
+        app(CartDeliveryZoneManager::class)->applySelection($cart, $deliveryLat, $deliveryLng, $deliveryZoneId);
 
         Cart::collectTotals();
 
