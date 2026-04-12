@@ -2,6 +2,7 @@
 
 namespace Webkul\Admin\DataGrids\Catalog;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Webkul\DataGrid\DataGrid;
 
@@ -101,6 +102,27 @@ class CategoryDataGrid extends DataGrid
                 }
 
                 return '<span class="badge badge-md badge-danger">'.trans('admin::app.catalog.categories.index.datagrid.inactive').'</span>';
+            },
+        ]);
+
+        $this->addColumn([
+            'index' => 'products_count',
+            'label' => trans('admin::app.catalog.categories.index.datagrid.no-of-products'),
+            'type' => 'string',
+            'sortable' => false,
+            'closure' => function ($row) {
+                $count = Cache::remember(
+                    'cat_product_count_'.$row->category_id,
+                    3600,
+                    fn () => DB::table('product_categories')
+                        ->where('category_id', $row->category_id)
+                        ->count()
+                );
+
+                $url = route('admin.catalog.products.index')
+                    .'?filters[category_name][0]='.$row->category_id;
+
+                return '<a href="'.$url.'">'.$count.'</a>';
             },
         ]);
     }

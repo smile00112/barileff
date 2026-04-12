@@ -4,6 +4,7 @@ namespace Webkul\Admin\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Webkul\Admin\Listeners\Admin;
+use Webkul\Admin\Listeners\Category;
 use Webkul\Admin\Listeners\Customer;
 use Webkul\Admin\Listeners\GDPR;
 use Webkul\Admin\Listeners\Invoice;
@@ -19,6 +20,22 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        'catalog.product.create.after' => [
+            [Category::class, 'afterProductCreated'],
+        ],
+
+        'catalog.product.update.before' => [
+            [Category::class, 'beforeProductUpdated'],
+        ],
+
+        'catalog.product.update.after' => [
+            [Category::class, 'afterProductUpdated'],
+        ],
+
+        'catalog.product.delete.before' => [
+            [Category::class, 'beforeProductDeleted'],
+        ],
+
         'customer.create.after' => [
             [Customer::class, 'afterCreated'],
         ],

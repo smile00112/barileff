@@ -6,9 +6,10 @@
     mobile-columns="{{ (int) ($mobileColumns ?? 2) }}"
     show-name="{{ (int) ((bool) ($showName ?? true)) }}"
 >
-    <x-shop::shimmer.categories.carousel
+    <x-shop::shimmer.categories.grid
         :count="8"
-        :navigation-link="$navigationLink ?? false"
+        :desktop-columns="(int) ($desktopColumns ?? 4)"
+        :mobile-columns="(int) ($mobileColumns ?? 2)"
     />
 </v-categories-grid>
 
@@ -59,9 +60,10 @@
         </div>
 
         <template v-if="isLoading">
-            <x-shop::shimmer.categories.carousel
+            <x-shop::shimmer.categories.grid
                 :count="8"
-                :navigation-link="$navigationLink ?? false"
+                :desktop-columns="(int) ($desktopColumns ?? 4)"
+                :mobile-columns="(int) ($mobileColumns ?? 2)"
             />
         </template>
     </script>
