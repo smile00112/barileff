@@ -60,6 +60,8 @@ class ImportUploadRequest extends FormRequest
             'parent_category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'allow_insert' => ['nullable', 'boolean'],
             'allow_update' => ['nullable', 'boolean'],
+            'new_products_active' => ['nullable', 'boolean'],
+            'new_products_in_stock' => ['nullable', 'boolean'],
         ];
     }
 

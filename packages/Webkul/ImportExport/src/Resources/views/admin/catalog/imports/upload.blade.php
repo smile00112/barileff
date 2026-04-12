@@ -150,6 +150,40 @@
                     </span>
                 </label>
 
+                <!-- new_products_active -->
+                <label class="mb-3 flex cursor-pointer items-start gap-3">
+                    <input
+                        type="checkbox"
+                        name="new_products_active"
+                        value="1"
+                        {{ old('new_products_active', '1') ? 'checked' : '' }}
+                        class="mt-0.5 accent-indigo-600"
+                    />
+                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                        @lang('admin::app.catalog.imports.upload.fields.new-products-active')
+                        <span class="block text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.upload.fields.new-products-active-hint')
+                        </span>
+                    </span>
+                </label>
+
+                <!-- new_products_in_stock -->
+                <label class="mb-3 flex cursor-pointer items-start gap-3">
+                    <input
+                        type="checkbox"
+                        name="new_products_in_stock"
+                        value="1"
+                        {{ old('new_products_in_stock', '1') ? 'checked' : '' }}
+                        class="mt-0.5 accent-indigo-600"
+                    />
+                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                        @lang('admin::app.catalog.imports.upload.fields.new-products-in-stock')
+                        <span class="block text-xs text-gray-400 dark:text-gray-500">
+                            @lang('admin::app.catalog.imports.upload.fields.new-products-in-stock-hint')
+                        </span>
+                    </span>
+                </label>
+
                 <!-- create_categories -->
                 <label
                     class="mb-2 flex cursor-pointer items-start gap-3"

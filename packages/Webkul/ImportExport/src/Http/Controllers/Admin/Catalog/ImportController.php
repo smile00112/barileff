@@ -19,6 +19,7 @@ use Webkul\ImportExport\Events\CatalogImportCompleted;
 use Webkul\ImportExport\Http\Requests\Catalog\ImportUploadRequest;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
+use Webkul\Supplier\Models\Supplier;
 use Webkul\User\Models\Admin;
 
 class ImportController extends Controller
@@ -228,10 +229,24 @@ class ImportController extends Controller
 
         $this->importHelper->setImport($dtImport);
 
-        $stats = $this->importHelper->stats(ImportHelper::STATE_PROCESSED);
+        $statsState = match ($dtImport->state) {
+            ImportHelper::STATE_INDEXED,
+            ImportHelper::STATE_COMPLETED => ImportHelper::STATE_INDEXED,
+            ImportHelper::STATE_LINKED,
+            ImportHelper::STATE_INDEXING,
+            ImportHelper::STATE_LINKING => ImportHelper::STATE_LINKED,
+            default => ImportHelper::STATE_PROCESSED,
+        };
+
+        $stats = $this->importHelper->stats($statsState);
 
         if ($dtImport->state === ImportHelper::STATE_COMPLETED) {
             $stats['progress'] = 100;
+            $stats['summary'] = array_merge([
+                'created' => 0,
+                'updated' => 0,
+                'deleted' => 0,
+            ], $dtImport->summary ?? $stats['summary'] ?? []);
 
             $session->update([
                 'state' => CatalogImportSession::STATE_COMPLETED,
@@ -277,6 +292,7 @@ class ImportController extends Controller
             'related_skus' => trans('admin::app.catalog.imports.fields.related-skus'),
             'cross_sell_skus' => trans('admin::app.catalog.imports.fields.cross-sell-skus'),
             'up_sell_skus' => trans('admin::app.catalog.imports.fields.up-sell-skus'),
+            'supplier' => trans('admin::app.catalog.imports.fields.supplier'),
         ];
 
         $attributeFields = $this->attributeRepository
@@ -292,7 +308,7 @@ class ImportController extends Controller
         $attributeFieldsByCode = collect($attributeFields)->keyBy('code');
 
         $groupCodes = [
-            'product-data' => ['sku', 'type', 'attribute_family_code', 'locale'],
+            'product-data' => ['sku', 'type', 'attribute_family_code', 'locale', 'supplier'],
             'prices-and-inventory' => ['qty', 'price', 'cost', 'special_price', 'special_price_from', 'special_price_to', 'inventories'],
             'content-and-media' => ['name', 'short_description', 'description', 'url_key', 'images', 'image_url', 'weight'],
             'categories-and-relations' => ['categories', 'parent_sku', 'related_skus', 'cross_sell_skus', 'up_sell_skus'],
@@ -407,17 +423,41 @@ class ImportController extends Controller
             }
         }
 
+        // If the user mapped a `supplier` column, rename it to `supplier_id` so the
+        // DataTransfer importer recognises it as a base-table column.  Supplier names
+        // are resolved (and missing suppliers auto-created) before the main row loop.
+        $supplierColumnIndex = null;
+
+        if (isset($columnMap['supplier'])) {
+            $supplierColumnIndex = $columnMap['supplier'];
+            unset($columnMap['supplier']);
+            $columnMap = array_merge(['supplier_id' => $supplierColumnIndex], $columnMap);
+        }
+
         $addLocaleColumn = ! isset($columnMap['locale']);
         $addTypeColumn = ! isset($columnMap['type']);
         $addFamilyColumn = ! isset($columnMap['attribute_family_code']);
+
+        // When new_products_active=false and status is not mapped, set status per-row
+        // (0 for new products, 1 for existing) instead of using a static column default.
+        $handleStatusPerRow = ! isset($columnMap['status']) && ! ($session->new_products_active ?? true);
+
+        // When new_products_in_stock=false, zero out inventory for new products per-row.
+        $handleInventoryPerRow = ! ($session->new_products_in_stock ?? true) && isset($columnMap['inventories']);
 
         // Required by the DataTransfer product importer — static defaults for boolean/numeric fields.
         $staticRequiredDefaults = [];
 
         foreach (['status' => '1', 'visible_individually' => '1', 'guest_checkout' => '1', 'weight' => '0'] as $field => $default) {
-            if (! isset($columnMap[$field])) {
-                $staticRequiredDefaults[$field] = $default;
+            if (isset($columnMap[$field])) {
+                continue;
             }
+
+            if ($field === 'status' && $handleStatusPerRow) {
+                continue; // handled per-row below
+            }
+
+            $staticRequiredDefaults[$field] = $default;
         }
 
         // url_key: auto-generated per row from the mapped SKU value.
@@ -460,6 +500,10 @@ class ImportController extends Controller
             $newHeaders[] = 'description';
         }
 
+        if ($handleStatusPerRow) {
+            $newHeaders[] = 'status';
+        }
+
         $remappedName = 'catalog-imports/remapped_'.basename($session->file_path);
         $remappedFullPath = Storage::disk('private')->path($remappedName);
         $dir = dirname($remappedFullPath);
@@ -478,10 +522,50 @@ class ImportController extends Controller
 
         fputcsv($writeHandle, $newHeaders);
 
-        // Pre-load existing SKUs for insert/update filtering when needed.
+        // Pre-scan the CSV to resolve supplier names → IDs (create missing suppliers).
+        // Uses a second pass over the original file so we can bulk-create in one go.
+        $supplierNameToId = [];
+
+        if ($supplierColumnIndex !== null) {
+            rewind($handle);
+            fgetcsv($handle, 4096, $delimiter); // skip header row
+
+            $uniqueSupplierNames = [];
+
+            while (($scanRow = fgetcsv($handle, 4096, $delimiter)) !== false) {
+                $name = trim($scanRow[$supplierColumnIndex] ?? '');
+
+                if ($name !== '') {
+                    $uniqueSupplierNames[$name] = true;
+                }
+            }
+
+            if (! empty($uniqueSupplierNames)) {
+                // Build a lowercase-name → id map from all existing suppliers.
+                $supplierNameToId = Supplier::all(['id', 'name'])
+                    ->mapWithKeys(fn (Supplier $s) => [mb_strtolower($s->name) => $s->id])
+                    ->all();
+
+                // Create any suppliers that are not yet in the database.
+                foreach (array_keys($uniqueSupplierNames) as $name) {
+                    $lower = mb_strtolower($name);
+
+                    if (! isset($supplierNameToId[$lower])) {
+                        $newSupplier = Supplier::create(['name' => $name, 'status' => true]);
+                        $supplierNameToId[$lower] = $newSupplier->id;
+                    }
+                }
+            }
+
+            // Rewind to data rows for the main processing loop below.
+            rewind($handle);
+            fgetcsv($handle, 4096, $delimiter); // skip header row
+        }
+
+        // Pre-load existing SKUs for insert/update filtering and per-row flag handling.
         $existingSkus = null;
 
-        if (! $session->allow_insert || ! $session->allow_update) {
+        if (! $session->allow_insert || ! $session->allow_update || $handleStatusPerRow || $handleInventoryPerRow) {
             $existingSkus = DB::table('products')->pluck('sku', 'sku')->all();
         }
 
@@ -508,6 +592,23 @@ class ImportController extends Controller
                 // Wrap the qty value in `source_code=qty` format for the inventories column.
                 if ($field === 'inventories' && $inventorySourceCode !== null) {
                     $rawValue = $rawValue !== '' ? $inventorySourceCode.'='.$rawValue : '';
+                }
+
+                // Zero out inventory for new products when new_products_in_stock=false.
+                if ($field === 'inventories' && $handleInventoryPerRow) {
+                    $skuIsNew = $existingSkus !== null && ! isset($existingSkus[$skuValue]);
+
+                    if ($skuIsNew) {
+                        $rawValue = '';
+                    }
+                }
+
+                // Resolve supplier name → supplier_id (empty string when name not found/blank).
+                if ($field === 'supplier_id' && $supplierColumnIndex !== null) {
+                    $supplierName = trim($rawValue);
+                    $rawValue = $supplierName !== ''
+                        ? (string) ($supplierNameToId[mb_strtolower($supplierName)] ?? '')
+                        : '';
                 }
 
                 $newRow[] = $rawValue;
@@ -540,6 +641,11 @@ class ImportController extends Controller
 
             if ($autoDescription) {
                 $newRow[] = $nameColumnIndex !== null ? ($row[$nameColumnIndex] ?? '-') : '-';
+            }
+
+            // Per-row status: 0 for new products when new_products_active=false, 1 for existing.
+            if ($handleStatusPerRow) {
+                $newRow[] = ($existingSkus !== null && isset($existingSkus[$skuValue])) ? '1' : '0';
             }
 
             fputcsv($writeHandle, $newRow);
@@ -666,7 +772,7 @@ class ImportController extends Controller
                 $join->on('ct.category_id', '=', 'c.id')
                     ->where('ct.locale', $localeCode);
             })
-            ->select('c.id', 'c.parent_id', DB::raw("COALESCE(ct.name, CAST(c.id AS CHAR)) as name"))
+            ->select('c.id', 'c.parent_id', DB::raw('COALESCE(ct.name, CAST(c.id AS CHAR)) as name'))
             ->where('c.status', 1)
             ->orderBy('c.parent_id')
             ->orderBy('c.position')

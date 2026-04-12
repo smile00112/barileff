@@ -201,6 +201,7 @@ class Importer extends AbstractImporter
         'configurable_variants',
         'bundle_options',
         'associated_skus',
+        'supplier_id',
     ];
 
     /**
@@ -1018,19 +1019,31 @@ class Importer extends AbstractImporter
             ->first()->id;
 
         if ($this->isSKUExist($rowData['sku'])) {
-            $products['update'][$rowData['sku']] = [
+            $productData = [
                 'type' => $rowData['type'],
                 'sku' => $rowData['sku'],
                 'attribute_family_id' => $attributeFamilyId,
             ];
+
+            if (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '') {
+                $productData['supplier_id'] = (int) $rowData['supplier_id'];
+            }
+
+            $products['update'][$rowData['sku']] = $productData;
         } else {
-            $products['insert'][$rowData['sku']] = [
+            $productData = [
                 'type' => $rowData['type'],
                 'sku' => $rowData['sku'],
                 'attribute_family_id' => $attributeFamilyId,
                 'created_at' => $rowData['created_at'] ?? now(),
                 'updated_at' => $rowData['updated_at'] ?? now(),
             ];
+
+            if (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '') {
+                $productData['supplier_id'] = (int) $rowData['supplier_id'];
+            }
+
+            $products['insert'][$rowData['sku']] = $productData;
         }
     }
 

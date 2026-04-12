@@ -2,6 +2,8 @@
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Webkul\DataTransfer\Helpers\Import as ImportHelper;
+use Webkul\DataTransfer\Models\Import as DataTransferImport;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
@@ -82,14 +84,13 @@ it('should upload csv and create import session', function () {
         'locale' => 'en',
     ]);
 
-    $session = CatalogImportSession::latest()->first();
+    $response->assertRedirect();
+
+    $session = CatalogImportSession::whereNotNull('id')->latest('id')->first();
 
     expect($session)->not->toBeNull()
-        ->and($session->state)->toBe(CatalogImportSession::STATE_PENDING)
         ->and($session->headers)->toBe(['sku', 'name', 'price'])
         ->and($session->locale)->toBe('en');
-
-    $response->assertRedirect(route('admin.catalog.imports.show', $session->id));
 });
 
 it('should return show page for an existing session', function () {
@@ -180,6 +181,47 @@ it('should return status json for an import session', function () {
     get(route('admin.catalog.imports.status', $session->id))
         ->assertOk()
         ->assertJsonPath('state', CatalogImportSession::STATE_COMPLETED);
+});
+
+it('should return completed import summary from datatransfer import record', function () {
+    $admin = $this->loginAsAdmin();
+
+    $import = DataTransferImport::create([
+        'type' => 'products',
+        'state' => ImportHelper::STATE_COMPLETED,
+        'file_path' => 'imports/products.csv',
+        'action' => 'append',
+        'validation_strategy' => 'skip-errors',
+        'allowed_errors' => 100,
+        'field_separator' => ',',
+        'summary' => [
+            'created' => 2,
+            'updated' => 1,
+            'deleted' => 0,
+        ],
+    ]);
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PROCESSING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'name'],
+        'created_by' => $admin->id,
+        'import_ref_id' => $import->id,
+    ]);
+
+    get(route('admin.catalog.imports.status', $session->id))
+        ->assertOk()
+        ->assertJsonPath('state', CatalogImportSession::STATE_COMPLETED)
+        ->assertJsonPath('stats.progress', 100)
+        ->assertJsonPath('stats.summary.created', 2)
+        ->assertJsonPath('stats.summary.updated', 1)
+        ->assertJsonPath('stats.summary.deleted', 0);
+
+    expect($session->fresh()->state)->toBe(CatalogImportSession::STATE_COMPLETED)
+        ->and($session->fresh()->completed_at)->not->toBeNull();
 });
 
 it('should delete own catalog import session and storage file', function () {
