@@ -79,7 +79,9 @@ class DeliveryZonesController
                 'center_lat' => (float) ($city->center_lat ?? 0),
                 'center_lng' => (float) ($city->center_lng ?? 0),
                 'polygon_json' => $city->polygon_json ?? [],
-                'zones' => $city->zones->map(function ($zone) {
+                'country' => (string) ($city->country ?? ''),
+                'state' => (string) ($city->state ?? ''),
+                'zones' => $city->zones->map(function ($zone) use ($city) {
                     return [
                         'id' => $zone->id,
                         'name' => $zone->name,
@@ -89,6 +91,9 @@ class DeliveryZonesController
                         'polygon_stroke_opacity' => (float) ($zone->polygon_stroke_opacity ?? 1.0),
                         'delivery_time_minutes' => $zone->delivery_time_minutes ? (int) $zone->delivery_time_minutes : null,
                         'inventory_source_id' => (int) $zone->inventory_sources->first()?->id,
+                        'city_name' => $city->name,
+                        'city_country' => (string) ($city->country ?? ''),
+                        'city_state' => (string) ($city->state ?? ''),
                         'rates' => $zone->rates()
                             ->orderByDesc('min_order_total')
                             ->orderByDesc('sort_order')
