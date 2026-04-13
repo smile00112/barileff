@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
+use Webkul\User\Models\Admin;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
@@ -56,8 +56,17 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewTelescope', function (User $user) {
-            return in_array($user->email, config('telescope.allowed_emails', []));
+        Gate::define('viewTelescope', function ($user) {
+            /** @var Admin|null $admin */
+            $admin = auth()->guard('admin')->user();
+
+            if (! $admin) {
+                return false;
+            }
+
+            $allowedEmails = config('telescope.allowed_emails', []);
+
+            return empty($allowedEmails) || in_array($admin->email, $allowedEmails);
         });
     }
 }
