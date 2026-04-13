@@ -406,6 +406,133 @@ it('should allow creating a delivery zone without a city', function () {
         ->and($zone->code)->toBe('cityless-zone-test');
 });
 
+it('should render the import delivery zones page', function () {
+    $this->loginAsAdmin();
+
+    get(route('admin.settings.delivery_zones.import'))
+        ->assertOk()
+        ->assertSee(route('admin.settings.delivery_zones.import.store'), false)
+        ->assertSee('name="file"', false);
+});
+
+it('should import delivery zones from a GeoJSON file', function () {
+    $this->loginAsAdmin();
+
+    $city = \Webkul\Shipping\Models\DeliveryCity::query()->create([
+        'code'      => 'novosibirsksuharnayaz4',
+        'name'      => 'Novosibirsk Test',
+        'country'   => 'RU',
+        'state'     => 'NSK',
+        'is_active' => true,
+    ]);
+
+    $inventorySource = InventorySource::factory()->create();
+
+    $geojson = [
+        'type'     => 'FeatureCollection',
+        'metadata' => ['name' => 'Delivery Zones', 'creator' => 'Admin App Zone Editor'],
+        'features' => [
+            [
+                'type' => 'Feature',
+                'id'   => 0,
+                'geometry' => [
+                    'type'        => 'Polygon',
+                    'coordinates' => [
+                        [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23], [82.93, 55.24]],
+                    ],
+                ],
+                'properties' => [
+                    'description'    => '#cid=novosibirsksuharnayaz4',
+                    'fill'           => '#b51eff',
+                    'fill-opacity'   => 0.1,
+                    'stroke'         => '#b51eff',
+                    'stroke-width'   => '1',
+                    'stroke-opacity' => 0.1,
+                ],
+            ],
+        ],
+    ];
+
+    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent(
+        'zones.json',
+        json_encode($geojson)
+    );
+
+    post(route('admin.settings.delivery_zones.import.store'), [
+        'file'                => $file,
+        'inventory_source_id' => $inventorySource->id,
+        'default_rate'        => ['min_order_total' => 0, 'price' => 300],
+    ])->assertRedirect(route('admin.settings.delivery_zones.index'));
+
+    $zone = \Webkul\Shipping\Models\DeliveryZone::query()
+        ->where('code', 'novosibirsksuharnayaz4')
+        ->firstOrFail();
+
+    expect($zone->city_id)->toBe($city->id)
+        ->and($zone->polygon_color)->toBe('#b51eff')
+        ->and($zone->polygon_fill_opacity)->toBe(0.1)
+        ->and($zone->polygon_stroke_opacity)->toBe(0.1)
+        ->and($zone->rates()->count())->toBe(1)
+        ->and((float) $zone->rates()->first()->price)->toBe(300.0)
+        ->and($zone->inventory_sources()->count())->toBe(1);
+});
+
+it('should fall back to default city when zone city code is not found', function () {
+    $this->loginAsAdmin();
+
+    $defaultCity = \Webkul\Shipping\Models\DeliveryCity::query()->create([
+        'code'      => 'default-fallback-city',
+        'name'      => 'Fallback City',
+        'country'   => 'RU',
+        'state'     => 'NSK',
+        'is_active' => true,
+    ]);
+
+    $inventorySource = InventorySource::factory()->create();
+
+    $geojson = [
+        'type'     => 'FeatureCollection',
+        'features' => [
+            [
+                'type' => 'Feature',
+                'id'   => 0,
+                'geometry' => [
+                    'type'        => 'Polygon',
+                    'coordinates' => [
+                        [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23], [82.93, 55.24]],
+                    ],
+                ],
+                'properties' => [
+                    'description'    => '#cid=unknown-city-xyz',
+                    'fill'           => '#ff0000',
+                    'fill-opacity'   => 0.2,
+                    'stroke'         => '#ff0000',
+                    'stroke-width'   => '1',
+                    'stroke-opacity' => 0.8,
+                ],
+            ],
+        ],
+    ];
+
+    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent(
+        'zones.json',
+        json_encode($geojson)
+    );
+
+    post(route('admin.settings.delivery_zones.import.store'), [
+        'file'                => $file,
+        'inventory_source_id' => $inventorySource->id,
+        'default_city_id'     => $defaultCity->id,
+        'default_rate'        => ['min_order_total' => 0, 'price' => 150],
+    ])->assertRedirect(route('admin.settings.delivery_zones.index'));
+
+    $zone = \Webkul\Shipping\Models\DeliveryZone::query()
+        ->where('code', 'unknown-city-xyz')
+        ->firstOrFail();
+
+    expect($zone->city_id)->toBe($defaultCity->id);
+});
+
 it('should export delivery zones as GeoJSON download', function () {
     $this->loginAsAdmin();
 

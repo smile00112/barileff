@@ -4,7 +4,9 @@ namespace Webkul\DeliveryZones\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\DeliveryZones\DataGrids\DeliveryZonesDataGrid;
 use Webkul\DeliveryZones\Http\Requests\DeliveryZoneRequest;
@@ -135,6 +137,92 @@ class DeliveryZoneController extends Controller
         return response()->json([
             'message' => trans('admin::app.settings.delivery_zones.response.zone-deleted'),
         ]);
+    }
+
+    public function importForm()
+    {
+        return view('delivery-zones::settings.delivery-zones.import', [
+            'cities'           => DeliveryCity::query()->where('is_active', true)->orderBy('name')->get(),
+            'inventorySources' => InventorySource::query()->where('status', true)->orderBy('name')->get(),
+        ]);
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file'                         => ['required', 'file'],
+            'inventory_source_id'          => ['required', 'integer', 'exists:inventory_sources,id'],
+            'default_city_id'              => ['nullable', 'integer', 'exists:delivery_cities,id'],
+            'default_rate'                 => ['required', 'array'],
+            'default_rate.min_order_total' => ['required', 'numeric', 'min:0'],
+            'default_rate.price'           => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $contents = file_get_contents($request->file('file')->getRealPath());
+        $data = json_decode($contents, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return back()->withErrors(['file' => trans('admin::app.settings.delivery_zones.response.import-invalid-json')]);
+        }
+
+        if (($data['type'] ?? '') !== 'FeatureCollection') {
+            return back()->withErrors(['file' => trans('admin::app.settings.delivery_zones.response.import-invalid-geojson')]);
+        }
+
+        $features = $data['features'] ?? [];
+
+        if (empty($features)) {
+            return back()->withErrors(['file' => trans('admin::app.settings.delivery_zones.response.import-no-features')]);
+        }
+
+        $inventorySourceId = (int) $request->input('inventory_source_id');
+        $defaultCityId     = $request->filled('default_city_id') ? (int) $request->input('default_city_id') : null;
+        $defaultRate       = $request->input('default_rate');
+
+        $citiesByCode = DeliveryCity::query()->pluck('id', 'code');
+
+        try {
+            DB::transaction(function () use ($features, $citiesByCode, $defaultCityId, $inventorySourceId, $defaultRate): void {
+                foreach ($features as $feature) {
+                    $description = $feature['properties']['description'] ?? '';
+                    $code        = str_starts_with($description, '#cid=') ? substr($description, 5) : null;
+
+                    $cityId = ($code !== null && $citiesByCode->has($code))
+                        ? $citiesByCode->get($code)
+                        : $defaultCityId;
+
+                    $properties  = $feature['properties'] ?? [];
+                    $coordinates = $feature['geometry']['coordinates'][0] ?? [];
+
+                    $zone = DeliveryZone::query()->create([
+                        'city_id'                => $cityId,
+                        'code'                   => $code ?? 'zone_'.uniqid(),
+                        'name'                   => $code ?? 'Imported Zone',
+                        'polygon_json'           => $coordinates,
+                        'polygon_color'          => $properties['fill'] ?? '#0077cc',
+                        'polygon_fill_opacity'   => (float) ($properties['fill-opacity'] ?? 0.2),
+                        'polygon_stroke_opacity' => (float) ($properties['stroke-opacity'] ?? 1.0),
+                        'is_active'              => true,
+                    ]);
+
+                    $zone->inventory_sources()->sync([$inventorySourceId]);
+
+                    $zone->rates()->create([
+                        'min_order_total' => $defaultRate['min_order_total'],
+                        'price'           => $defaultRate['price'],
+                        'sort_order'      => 0,
+                    ]);
+                }
+            });
+        } catch (\Throwable $e) {
+            return back()->withErrors([
+                'file' => trans('admin::app.settings.delivery_zones.response.import-failed', ['error' => $e->getMessage()]),
+            ]);
+        }
+
+        session()->flash('success', trans('admin::app.settings.delivery_zones.response.zones-imported', ['count' => count($features)]));
+
+        return redirect()->route('admin.settings.delivery_zones.index');
     }
 
     public function export(): Response
