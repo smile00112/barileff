@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    <div class="box-shadow mt-3.5 rounded-sm bg-white p-6 dark:bg-gray-900">
+    <div class="box-shadow mt-3.5 rounded-sm bg-white p-4 dark:bg-gray-900">
         <form
             method="POST"
             action="{{ route('admin.catalog.imports.store') }}"

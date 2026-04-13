@@ -162,7 +162,7 @@
         </div>
 
         <div class="flex min-w-0 flex-col gap-3.5">
-            <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <p class="mb-3 text-base font-semibold text-gray-800 dark:text-white">
                     @lang('admin::app.settings.delivery_zones.zones.zones-map')
                 </p>
@@ -187,7 +187,7 @@
                 <p id="polygon-error" class="mt-2 hidden text-sm text-red-600 dark:text-red-400"></p>
             </div>
 
-            <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <form id="zone-form" method="POST" action="{{ route('admin.settings.delivery_zones.store') }}">
                     @csrf
 

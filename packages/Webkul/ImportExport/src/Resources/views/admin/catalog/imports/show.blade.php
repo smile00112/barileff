@@ -69,7 +69,7 @@
                 <!-- Step 1: Column Mapping -->
                 <div
                     v-if="['pending','ready'].includes(state)"
-                    class="box-shadow rounded-sm bg-white p-6 dark:bg-gray-900"
+                    class="box-shadow rounded-sm bg-white p-4 dark:bg-gray-900"
                 >
                     <h3 class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
                         @lang('admin::app.catalog.imports.show.mapping-title')
@@ -179,7 +179,7 @@
                 <!-- Step 2: Processing -->
                 <div
                     v-if="state === 'processing'"
-                    class="box-shadow rounded-sm bg-white p-6 dark:bg-gray-900"
+                    class="box-shadow rounded-sm bg-white p-4 dark:bg-gray-900"
                 >
                     <h3 class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
                         @lang('admin::app.catalog.imports.show.processing-title')
@@ -216,7 +216,7 @@
                 <!-- Step 3a: Completed -->
                 <div
                     v-if="state === 'completed'"
-                    class="box-shadow rounded-sm border border-green-200 bg-green-50 p-6 dark:border-gray-700 dark:bg-gray-900"
+                    class="box-shadow rounded-sm border border-green-200 bg-green-50 p-4 dark:border-gray-700 dark:bg-gray-900"
                 >
                     <div class="mb-3 flex items-center gap-2">
                         <i class="icon-done h-fit rounded-full bg-green-200 text-2xl text-green-600"></i>
@@ -253,7 +253,7 @@
                 <!-- Step 3b: Failed -->
                 <div
                     v-if="state === 'failed'"
-                    class="box-shadow rounded-sm border border-red-200 bg-red-50 p-6 dark:border-gray-700 dark:bg-gray-900"
+                    class="box-shadow rounded-sm border border-red-200 bg-red-50 p-4 dark:border-gray-700 dark:bg-gray-900"
                 >
                     <div class="flex items-center gap-2">
                         <i class="icon-cross h-fit rounded-full bg-red-200 text-2xl text-red-600"></i>

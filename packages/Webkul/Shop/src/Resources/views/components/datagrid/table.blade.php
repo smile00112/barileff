@@ -136,7 +136,7 @@
                                     >
                                     </p>
                                 </template>
-                                
+
                                 <!-- Actions -->
                                 <p v-if="available.actions.length">
                                     <span
@@ -173,7 +173,7 @@
 
                     <template v-else>
                         <!-- Information Panel -->
-                        <div v-if="$parent.available.records.length" class="flex items-center justify-between p-6 max-md:p-2">
+                        <div v-if="$parent.available.records.length" class="flex items-center justify-between p-4 max-md:p-2">
                             <p class="text-xs font-medium">
                                 @{{ "@lang('shop::app.components.datagrid.table.showing')".replace(':firstItem', $parent.available.meta.from) }}
                                 @{{ "@lang('shop::app.components.datagrid.table.to')".replace(':lastItem', $parent.available.meta.to) }}

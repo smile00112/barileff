@@ -280,7 +280,7 @@
         type="text/x-template"
         id="v-product-review-item-template"
     >
-        <div class="rounded-xl border border-zinc-200 p-6 max-md:hidden">
+        <div class="rounded-xl border border-zinc-200 p-4 max-md:hidden">
             <div class="flex gap-5">
                 <template v-if="review.profile">
                     <img

@@ -22,7 +22,7 @@
 
         <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
             <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-6">
                     @php
                         $selectedCityId = (string) old('city_id', $deliveryZone->city_id);
                     @endphp
@@ -119,7 +119,7 @@
                     </button>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-6">
                     <p class="text-lg font-semibold text-gray-900 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.zone-polygon')</p>
 
                     <div id="zone-map" class="h-[400px] w-full rounded-md border border-gray-300 dark:border-gray-600"></div>

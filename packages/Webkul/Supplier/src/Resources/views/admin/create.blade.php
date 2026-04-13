@@ -191,13 +191,13 @@
                             rules="required"
                             :label="trans('supplier::app.admin.create.status')"
                         >
-                            <x-admin::form.control-group.control.select-option value="1" :selected="true">
+                            <option value="1" @selected(true)>
                                 @lang('supplier::app.admin.datagrid.active')
-                            </x-admin::form.control-group.control.select-option>
+                            </option>
 
-                            <x-admin::form.control-group.control.select-option value="0">
+                            <option value="0">
                                 @lang('supplier::app.admin.datagrid.inactive')
-                            </x-admin::form.control-group.control.select-option>
+                            </option>
                         </x-admin::form.control-group.control>
 
                         <x-admin::form.control-group.error control-name="status" />

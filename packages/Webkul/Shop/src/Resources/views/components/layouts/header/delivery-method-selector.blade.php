@@ -107,7 +107,7 @@
             >
                 <div
                     v-show="isOpen"
-                    class="fixed inset-0 z-[1000] flex items-center justify-center p-6 max-md:p-0"
+                    class="fixed inset-0 z-[1000] flex items-center justify-center p-4 max-md:p-0"
                 >
                     <div
                         class="relative flex w-full overflow-hidden rounded-2xl bg-white shadow-2xl max-md:h-full max-md:rounded-none"
@@ -837,7 +837,7 @@
                                 }
 
                                 const coords = event.get('coords');
-    
+
                                 this.syncAddressFromCoords(coords);
                             });
 
