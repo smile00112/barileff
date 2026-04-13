@@ -37,8 +37,6 @@
 {!! view_render_event('bagisto.shop.components.layouts.header.delivery_method_selector.after') !!}
 
 @pushOnce('scripts')
-    <script src="{{ $yandexMapsScriptUrl }}"></script>
-
     <style>
         .delivery-left-panel { padding: 30px; }
     </style>
@@ -423,6 +421,9 @@
     <script type="module">
         const _ymapsRaw = { map: null, collection: null, zones: {}, marker: null };
 
+        // Shared promise so the script is injected only once across multiple openModal() calls
+        let _ymapsScriptPromise = null;
+
         app.component('v-delivery-method-selector', {
             template: '#v-delivery-method-selector-template',
 
@@ -467,6 +468,7 @@
                     addressOutsideZone: false,
                     cityDropdownOpen: false,
                     selectedCityId: null,
+                    ymapsScriptUrl: @json($yandexMapsScriptUrl),
                     zonesApiUrl: @json(route('shop.api.delivery_zones.index')),
                     selectApiUrl: @json(route('shop.api.delivery_zones.select')),
                     pickupApiUrl: @json(route('shop.api.delivery_zones.pickup_points')),
@@ -581,20 +583,36 @@
                     if (this.cities.length) {
                         this.selectedCityId = this.cities[0].id;
                     }
-
-                    this._preloadMap();
                 });
 
                 if (this.isCustomer) {
                     this._addressesPromise = this.loadCustomerAddresses();
                 }
-
-                if (typeof ymaps !== 'undefined') {
-                    ymaps.ready(() => console.log('[DS] ymaps ready (preload)'));
-                }
             },
 
             methods: {
+
+                loadYmapsScript() {
+                    if (_ymapsScriptPromise) {
+                        return _ymapsScriptPromise;
+                    }
+
+                    if (typeof ymaps !== 'undefined') {
+                        _ymapsScriptPromise = Promise.resolve();
+                        return _ymapsScriptPromise;
+                    }
+
+                    _ymapsScriptPromise = new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = this.ymapsScriptUrl;
+                        script.async = true;
+                        script.onload = () => resolve();
+                        script.onerror = () => reject(new Error('Yandex Maps script failed to load'));
+                        document.head.appendChild(script);
+                    });
+
+                    return _ymapsScriptPromise;
+                },
 
                 _preloadMap() {
                     if (this.mapPreloaded || typeof ymaps === 'undefined') {
@@ -650,6 +668,14 @@
 
                     if (this.activeTab === 'pickup' && !this.pickupPoints.length) {
                         this.loadPickupPoints();
+                    }
+
+                    // Load Yandex Maps API on first modal open, then preload tiles + init map
+                    try {
+                        await this.loadYmapsScript();
+                        this._preloadMap();
+                    } catch (e) {
+                        console.warn('[DS] Yandex Maps script load error:', e?.message);
                     }
 
                     this.$nextTick(() => {
