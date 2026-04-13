@@ -92,8 +92,8 @@ class DeliveryZonesController
                         'delivery_time_minutes' => $zone->delivery_time_minutes ? (int) $zone->delivery_time_minutes : null,
                         'inventory_source_id' => (int) $zone->inventory_sources->first()?->id,
                         'city_name' => $city->name,
-                        'city_country' => (string) ($city->country ?? ''),
-                        'city_state' => (string) ($city->state ?? ''),
+                        'country' => (string) ($city->country ?? ''),
+                        'state' => (string) ($city->state ?? ''),
                         'rates' => $zone->rates()
                             ->orderByDesc('min_order_total')
                             ->orderByDesc('sort_order')

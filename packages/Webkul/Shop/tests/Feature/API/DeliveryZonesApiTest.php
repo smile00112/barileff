@@ -7,18 +7,22 @@ use Webkul\Core\Models\CoreConfig;
 use Webkul\DeliveryZones\Models\DeliveryCity;
 use Webkul\DeliveryZones\Models\DeliveryZone;
 use Webkul\Faker\Helpers\Product as ProductFaker;
-use Webkul\Inventory\Models\InventorySource;
+use Webkul\Shop\Http\Middleware\CacheResponse;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 beforeEach(function () {
+    // Disable HTTP response cache so controller runs against the test's transactional DB state
+    $this->withoutMiddleware(CacheResponse::class);
+
     CoreConfig::factory()->create([
         'code' => 'sales.carriers.delivery_zones.active',
         'value' => 1,
     ]);
-    $this->inventorySource = InventorySource::factory()->create();
-    core()->getCurrentChannel()->inventory_sources()->sync([$this->inventorySource->id]);
+    // Use an existing inventory source already linked to the current channel
+    // to avoid relation-cache invalidation issues with Core::getCurrentChannel()
+    $this->inventorySource = core()->getCurrentChannel()->inventory_sources()->firstOrFail();
 
     $this->city = DeliveryCity::query()->create([
         'code' => 'test-city',
@@ -94,18 +98,23 @@ it('returns delivery zones for map with zone rates', function () {
                     ],
                 ],
             ],
-        ])
-        ->assertJsonPath('data.0.name', 'Test City')
-        ->assertJsonPath('data.0.country', 'RU')
-        ->assertJsonPath('data.0.state', 'MOW')
-        ->assertJsonPath('data.0.zones.0.name', 'Test Zone')
-        ->assertJsonPath('data.0.zones.0.city_name', 'Test City')
-        ->assertJsonPath('data.0.zones.0.country', 'RU')
-        ->assertJsonPath('data.0.zones.0.state', 'MOW')
-        ->assertJsonPath('data.0.zones.0.rates.0.min_order_total', 5000)
-        ->assertJsonPath('data.0.zones.0.rates.0.price', 0)
-        ->assertJsonPath('data.0.zones.0.rates.1.min_order_total', 0)
-        ->assertJsonPath('data.0.zones.0.rates.1.price', 350);
+        ]);
+
+    // Find 'Test City' by name (not index) since pre-existing DB cities may sort before it
+    $cityData = collect($response->json('data'))->firstWhere('name', 'Test City');
+    expect($cityData)->not->toBeNull('Test City not found in response')
+        ->and($cityData['country'])->toBe('RU')
+        ->and($cityData['state'])->toBe('MOW');
+
+    $zoneData = collect($cityData['zones'])->firstWhere('name', 'Test Zone');
+    expect($zoneData)->not->toBeNull('Test Zone not found in city zones')
+        ->and($zoneData['city_name'])->toBe('Test City')
+        ->and($zoneData['country'])->toBe('RU')
+        ->and($zoneData['state'])->toBe('MOW')
+        ->and((float) $zoneData['rates'][0]['min_order_total'])->toBe(5000.0)
+        ->and((float) $zoneData['rates'][0]['price'])->toBe(0.0)
+        ->and((float) $zoneData['rates'][1]['min_order_total'])->toBe(0.0)
+        ->and((float) $zoneData['rates'][1]['price'])->toBe(350.0);
 });
 
 it('selects zone and sets session when no cart', function () {
