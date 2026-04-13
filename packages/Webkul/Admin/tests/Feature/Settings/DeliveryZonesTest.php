@@ -405,3 +405,45 @@ it('should allow creating a delivery zone without a city', function () {
     expect($zone->city_id)->toBeNull()
         ->and($zone->code)->toBe('cityless-zone-test');
 });
+
+it('should export delivery zones as GeoJSON download', function () {
+    $this->loginAsAdmin();
+
+    $city = \Webkul\Shipping\Models\DeliveryCity::query()->create([
+        'code'      => 'export-test-city',
+        'name'      => 'Export Test City',
+        'country'   => 'RU',
+        'state'     => 'MSK',
+        'is_active' => true,
+    ]);
+
+    \Webkul\Shipping\Models\DeliveryZone::query()->create([
+        'city_id'                => $city->id,
+        'code'                   => 'export-test-city',
+        'name'                   => 'export-test-city',
+        'polygon_json'           => [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23]],
+        'polygon_color'          => '#b51eff',
+        'polygon_fill_opacity'   => 0.1,
+        'polygon_stroke_opacity' => 0.1,
+        'is_active'              => true,
+    ]);
+
+    $response = get(route('admin.settings.delivery_zones.export'));
+
+    $response->assertOk();
+    $response->assertHeader('Content-Disposition');
+
+    $data = json_decode($response->getContent(), true);
+
+    expect($data['type'])->toBe('FeatureCollection')
+        ->and($data['features'])->not->toBeEmpty();
+
+    $feature = collect($data['features'])
+        ->firstWhere('properties.description', '#cid=export-test-city');
+
+    expect($feature)->not->toBeNull()
+        ->and($feature['properties']['fill'])->toBe('#b51eff')
+        ->and($feature['properties']['fill-opacity'])->toBe(0.1)
+        ->and($feature['properties']['stroke-opacity'])->toBe(0.1)
+        ->and($feature['geometry']['type'])->toBe('Polygon');
+});

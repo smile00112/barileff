@@ -4,6 +4,8 @@ namespace Webkul\DeliveryZones\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\DeliveryZones\DataGrids\DeliveryZonesDataGrid;
 use Webkul\DeliveryZones\Http\Requests\DeliveryZoneRequest;
@@ -133,6 +135,46 @@ class DeliveryZoneController extends Controller
 
         return response()->json([
             'message' => trans('admin::app.settings.delivery_zones.response.zone-deleted'),
+        ]);
+    }
+
+    public function export(): Response
+    {
+        $zones = DeliveryZone::query()->with('city')->get();
+
+        $features = $zones->values()->map(function (DeliveryZone $zone, int $index): array {
+            return [
+                'type'     => 'Feature',
+                'id'       => $index,
+                'geometry' => [
+                    'type'        => 'Polygon',
+                    'coordinates' => [$zone->polygon_json],
+                ],
+                'properties' => [
+                    'description'    => $zone->city ? '#cid='.$zone->city->code : '',
+                    'fill'           => $zone->polygon_color,
+                    'fill-opacity'   => $zone->polygon_fill_opacity,
+                    'stroke'         => $zone->polygon_color,
+                    'stroke-width'   => '1',
+                    'stroke-opacity' => $zone->polygon_stroke_opacity,
+                ],
+            ];
+        })->all();
+
+        $geojson = [
+            'type'     => 'FeatureCollection',
+            'metadata' => [
+                'name'    => 'Delivery Zones',
+                'creator' => 'Admin App Zone Editor',
+            ],
+            'features' => $features,
+        ];
+
+        $content = json_encode($geojson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+        return response($content, 200, [
+            'Content-Type'        => 'application/json',
+            'Content-Disposition' => 'attachment; filename="delivery-zones.json"',
         ]);
     }
 }

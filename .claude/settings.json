@@ -23,7 +23,13 @@
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" add packages/Webkul/Shop/src/Http/Resources/CartResource.php)",
       "Bash(git -C d:/_WORK_/laragon_2025/www/my_bagisto commit -m ':*)",
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" add \"packages/Webkul/Shop/src/Resources/views/components/layouts/header/delivery-method-selector.blade.php\")",
-      "Bash(git -C d:/_WORK_/laragon_2025/www/my_bagisto add packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/form.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/guest.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/customer.blade.php packages/Webkul/Shop/src/Resources/lang/en/app.php packages/Webkul/Shop/src/Resources/lang/ru/app.php)"
+      "Bash(git -C d:/_WORK_/laragon_2025/www/my_bagisto add packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/form.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/guest.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/customer.blade.php packages/Webkul/Shop/src/Resources/lang/en/app.php packages/Webkul/Shop/src/Resources/lang/ru/app.php)",
+      "Bash(cat packages/Webkul/Admin/tests/Pest.php)",
+      "Bash(cat packages/Webkul/Admin/tests/Feature/Pest.php)",
+      "Bash(find packages/Webkul/Admin/tests -name \"Pest.php\" -exec cat {} \\\\;)",
+      "Bash(find packages/Webkul/Admin/tests -name \"AdminTestBench.php\" -exec cat {} \\\\;)",
+      "Bash(find tests:*)",
+      "Bash(git stash:*)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

@@ -106,13 +106,13 @@
                                         href="{{ route('admin.catalog.imports.show', $session->id) }}"
                                         class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
                                     >
-                                        @lang('admin::app.catalog.imports.index.columns.view')
+                                        <span class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center icon-edit"></span>
                                     </a>
 
                                     @if (bouncer()->hasPermission('catalog.imports'))
                                         <button
                                             type="button"
-                                            class="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300"
+                                            class="cursor-pointer inline-flex items-center p-1.5 gap-1 text-rose-600 hover:bg-gray-200 dark:hover:bg-gray-800"
                                             data-catalog-import-delete="{{ route('admin.catalog.imports.delete', $session->id) }}"
                                             data-catalog-import-confirm="{{ __('admin::app.catalog.imports.index.delete-confirm') }}"
                                             title="{{ __('admin::app.catalog.imports.index.columns.delete') }}"
