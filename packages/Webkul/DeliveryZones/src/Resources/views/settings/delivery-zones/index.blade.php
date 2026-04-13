@@ -8,11 +8,25 @@
             @lang('admin::app.settings.delivery_zones.zones-index.heading')
         </p>
 
-        <a href="{{ route('admin.settings.delivery_zones.create') }}">
-            <div class="primary-button">
-                @lang('admin::app.settings.delivery_zones.zones-index.add-zone')
-            </div>
-        </a>
+        <div class="flex items-center gap-x-2.5">
+            <a href="{{ route('admin.settings.delivery_zones.export') }}" download="delivery-zones.json">
+                <div class="transparent-button">
+                    @lang('admin::app.settings.delivery_zones.zones-index.export-zones')
+                </div>
+            </a>
+
+            <a href="{{ route('admin.settings.delivery_zones.import') }}">
+                <div class="transparent-button">
+                    @lang('admin::app.settings.delivery_zones.zones-index.import-zones')
+                </div>
+            </a>
+
+            <a href="{{ route('admin.settings.delivery_zones.create') }}">
+                <div class="primary-button">
+                    @lang('admin::app.settings.delivery_zones.zones-index.add-zone')
+                </div>
+            </a>
+        </div>
     </div>
 
     <x-admin::datagrid :src="route('admin.settings.delivery_zones.index')" />
