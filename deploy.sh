@@ -221,15 +221,15 @@ docker compose -f docker-compose.prod.yml exec app php artisan view:cache || tru
 
 # Прогрев кеша nomenclature (чтобы первый запрос /api/v1/nomenclature не был медленным)
 info "Прогрев кеша nomenclature..."
-docker compose -f docker-compose.prod.yml exec app php artisan nomenclature:warm-cache || true
+# docker compose -f docker-compose.prod.yml exec app php artisan nomenclature:warm-cache || true
 
 # Прогрев кеша mobile-settings (чтобы первый запрос /api/v1/mobile-settings не был медленным)
 info "Прогрев кеша mobile-settings..."
-docker compose -f docker-compose.prod.yml exec app php artisan mobile-settings:warm-cache || true
+# docker compose -f docker-compose.prod.yml exec app php artisan mobile-settings:warm-cache || true
 
 # Прогрев кеша catalog-v2 (чтобы первый запрос /api/v1/catalog-v2 не был медленным)
 info "Прогрев кеша catalog-v2..."
-docker compose -f docker-compose.prod.yml exec app php artisan catalog-v2:warm-cache || true
+# docker compose -f docker-compose.prod.yml exec app php artisan catalog-v2:warm-cache || true
 
 # Проверка статуса
 info "Проверка статуса сервисов..."
