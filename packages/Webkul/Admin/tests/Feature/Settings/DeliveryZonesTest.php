@@ -389,3 +389,19 @@ it('resolves delivery zones admin translation keys in english and russian', func
         ->and(__('admin::app.settings.delivery_zones.response.city-created'))->toBe('Город доставки успешно создан.')
         ->and(__('admin::app.components.layouts.sidebar.delivery-cities'))->toBe('Города доставки');
 });
+
+it('should allow creating a delivery zone without a city', function () {
+    $zone = \Webkul\Shipping\Models\DeliveryZone::query()->create([
+        'city_id'                => null,
+        'code'                   => 'cityless-zone-test',
+        'name'                   => 'Cityless Zone',
+        'polygon_json'           => [],
+        'polygon_color'          => '#0077cc',
+        'polygon_fill_opacity'   => 0.2,
+        'polygon_stroke_opacity' => 1.0,
+        'is_active'              => true,
+    ]);
+
+    expect($zone->city_id)->toBeNull()
+        ->and($zone->code)->toBe('cityless-zone-test');
+});
