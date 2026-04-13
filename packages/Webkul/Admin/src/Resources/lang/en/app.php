@@ -3349,14 +3349,31 @@ return [
             ],
 
             'zones-index' => [
-                'title' => 'Delivery Zones',
-                'heading' => 'Delivery Zones',
-                'add-zone' => 'Add Zone',
+                'title'        => 'Delivery Zones',
+                'heading'      => 'Delivery Zones',
+                'add-zone'     => 'Add Zone',
+                'import-zones' => 'Import',
+                'export-zones' => 'Export',
             ],
 
             'zones-create' => [
                 'title' => 'Create Delivery Zone',
                 'heading' => 'Create Delivery Zone',
+            ],
+
+            'zones-import' => [
+                'title'                    => 'Import Delivery Zones',
+                'heading'                  => 'Import Delivery Zones',
+                'import-btn'               => 'Import',
+                'back-btn'                 => 'Back',
+                'file'                     => 'GeoJSON File',
+                'default-city'             => 'Default City (fallback)',
+                'select-city'              => 'Select city (optional)',
+                'inventory-source'         => 'Inventory Source',
+                'select-inventory-source'  => 'Select inventory source',
+                'default-rate'             => 'Default Rate',
+                'min-order-total'          => 'Min Order Total',
+                'price'                    => 'Price',
             ],
 
             'datagrid' => [
@@ -3388,12 +3405,17 @@ return [
             ],
 
             'response' => [
-                'city-created' => 'Delivery city created successfully.',
-                'city-updated' => 'Delivery city updated successfully.',
-                'city-deleted' => 'Delivery city deleted successfully.',
-                'zone-created' => 'Delivery zone created successfully.',
-                'zone-updated' => 'Delivery zone updated successfully.',
-                'zone-deleted' => 'Delivery zone deleted successfully.',
+                'city-created'             => 'Delivery city created successfully.',
+                'city-updated'             => 'Delivery city updated successfully.',
+                'city-deleted'             => 'Delivery city deleted successfully.',
+                'zone-created'             => 'Delivery zone created successfully.',
+                'zone-updated'             => 'Delivery zone updated successfully.',
+                'zone-deleted'             => 'Delivery zone deleted successfully.',
+                'zones-imported'           => ':count zone(s) imported successfully.',
+                'import-invalid-json'      => 'The file is not valid JSON.',
+                'import-invalid-geojson'   => 'The file must be a GeoJSON FeatureCollection.',
+                'import-no-features'       => 'The file contains no features.',
+                'import-failed'            => 'Import failed: :error',
             ],
 
             'js' => [

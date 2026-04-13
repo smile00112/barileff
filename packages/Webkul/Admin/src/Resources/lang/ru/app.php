@@ -3349,14 +3349,31 @@ return [
             ],
 
             'zones-index' => [
-                'title' => 'Зоны доставки',
-                'heading' => 'Зоны доставки',
-                'add-zone' => 'Добавить зону',
+                'title'        => 'Зоны доставки',
+                'heading'      => 'Зоны доставки',
+                'add-zone'     => 'Добавить зону',
+                'import-zones' => 'Импорт',
+                'export-zones' => 'Экспорт',
             ],
 
             'zones-create' => [
                 'title' => 'Создание зоны доставки',
                 'heading' => 'Создание зоны доставки',
+            ],
+
+            'zones-import' => [
+                'title'                    => 'Импорт зон доставки',
+                'heading'                  => 'Импорт зон доставки',
+                'import-btn'               => 'Импортировать',
+                'back-btn'                 => 'Назад',
+                'file'                     => 'GeoJSON файл',
+                'default-city'             => 'Город по умолчанию (запасной)',
+                'select-city'              => 'Выберите город (необязательно)',
+                'inventory-source'         => 'Источник инвентаря',
+                'select-inventory-source'  => 'Выберите источник инвентаря',
+                'default-rate'             => 'Тариф по умолчанию',
+                'min-order-total'          => 'Мин. сумма заказа',
+                'price'                    => 'Цена',
             ],
 
             'datagrid' => [
@@ -3388,12 +3405,17 @@ return [
             ],
 
             'response' => [
-                'city-created' => 'Город доставки успешно создан.',
-                'city-updated' => 'Город доставки успешно обновлён.',
-                'city-deleted' => 'Город доставки успешно удалён.',
-                'zone-created' => 'Зона доставки успешно создана.',
-                'zone-updated' => 'Зона доставки успешно обновлена.',
-                'zone-deleted' => 'Зона доставки успешно удалена.',
+                'city-created'             => 'Город доставки успешно создан.',
+                'city-updated'             => 'Город доставки успешно обновлён.',
+                'city-deleted'             => 'Город доставки успешно удалён.',
+                'zone-created'             => 'Зона доставки успешно создана.',
+                'zone-updated'             => 'Зона доставки успешно обновлена.',
+                'zone-deleted'             => 'Зона доставки успешно удалена.',
+                'zones-imported'           => 'Импортировано зон: :count.',
+                'import-invalid-json'      => 'Файл содержит некорректный JSON.',
+                'import-invalid-geojson'   => 'Файл должен быть GeoJSON FeatureCollection.',
+                'import-no-features'       => 'Файл не содержит объектов.',
+                'import-failed'            => 'Ошибка импорта: :error',
             ],
 
             'js' => [
