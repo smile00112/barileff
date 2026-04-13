@@ -72,6 +72,11 @@
         if ($yandexMapsApiKey !== '') {
             $yandexMapsScriptUrl .= '&apikey='.urlencode($yandexMapsApiKey);
         }
+
+        $yandexMapsSuggestApiKey = (string) config('services.yandex_maps.suggest_api_key', '');
+        if ($yandexMapsSuggestApiKey !== '') {
+            $yandexMapsScriptUrl .= '&suggest_apikey='.urlencode($yandexMapsSuggestApiKey);
+        }
     @endphp
 
     <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">

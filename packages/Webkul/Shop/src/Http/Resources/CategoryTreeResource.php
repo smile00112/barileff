@@ -17,7 +17,7 @@ class CategoryTreeResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
-            'name' => $this->name,
+            'name' => html_entity_decode($this->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'slug' => $this->slug,
             'url' => $this->url,
             'status' => $this->status,

@@ -39,13 +39,19 @@
         </x-admin::form.control-group.label>
 
         <x-admin::form.control-group.control
-            type="text"
+            type="select"
             name="location"
             rules="required"
-            :value="old('location', $menu->location ?? '')"
             :label="trans('menu::app.admin.menus.fields.location')"
-            :placeholder="trans('menu::app.admin.menus.fields.location')"
-        />
+        >
+            <option value="">@lang('menu::app.admin.menus.fields.location-select-placeholder')</option>
+
+            @foreach (($locations ?? collect()) as $location)
+                <option value="{{ $location }}" @selected(old('location', $menu->location ?? '') === $location)>
+                    {{ $location }}
+                </option>
+            @endforeach
+        </x-admin::form.control-group.control>
 
         <x-admin::form.control-group.error control-name="location" />
     </x-admin::form.control-group>

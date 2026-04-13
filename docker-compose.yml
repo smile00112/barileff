@@ -22,6 +22,7 @@ services:
             DB_DATABASE: '${DB_PGSQL_DATABASE:-bagisto_pg}'
             DB_USERNAME: '${DB_PGSQL_USERNAME:-sail}'
             DB_PASSWORD: '${DB_PGSQL_PASSWORD:-secret}'
+            YANDEX_MAPS_SUGGEST_API_KEY: '${YANDEX_MAPS_SUGGEST_API_KEY:-}'
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'

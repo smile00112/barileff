@@ -112,6 +112,11 @@
             if ($yandexMapsApiKey !== '') {
                 $yandexMapsScriptUrl .= '&apikey='.urlencode($yandexMapsApiKey);
             }
+
+            $yandexMapsSuggestApiKey = (string) config('services.yandex_maps.suggest_api_key', '');
+            if ($yandexMapsSuggestApiKey !== '') {
+                $yandexMapsScriptUrl .= '&suggest_apikey='.urlencode($yandexMapsSuggestApiKey);
+            }
         @endphp
 
         <script src="{{ $yandexMapsScriptUrl }}"></script>

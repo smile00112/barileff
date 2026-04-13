@@ -24,12 +24,14 @@ return [
 
         'menus' => [
             'title' => 'Меню',
+            'cms-pages' => 'Страницы CMS',
             'create' => 'Создать меню',
             'edit' => 'Редактировать меню',
             'fields' => [
                 'name' => 'Название',
                 'code' => 'Код',
                 'location' => 'Локация',
+                'location-select-placeholder' => 'Выберите локацию',
                 'status' => 'Статус',
             ],
             'actions' => [

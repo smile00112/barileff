@@ -23,7 +23,9 @@ class MenuController extends Controller
 
     public function create()
     {
-        return view('menu::admin.menus.create');
+        $locations = $this->menuRepository->getAvailableLocations();
+
+        return view('menu::admin.menus.create', compact('locations'));
     }
 
     public function store(MenuRequest $request)
@@ -42,7 +44,13 @@ class MenuController extends Controller
     {
         $menu = $this->menuRepository->findOrFail($id);
 
-        return view('menu::admin.menus.edit', compact('menu'));
+        $locations = $this->menuRepository
+            ->getAvailableLocations()
+            ->prepend($menu->location)
+            ->unique()
+            ->values();
+
+        return view('menu::admin.menus.edit', compact('menu', 'locations'));
     }
 
     public function update(MenuRequest $request, int $id)

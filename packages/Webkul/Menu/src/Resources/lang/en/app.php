@@ -24,12 +24,14 @@ return [
 
         'menus' => [
             'title' => 'Menus',
+            'cms-pages' => 'CMS Pages',
             'create' => 'Create Menu',
             'edit' => 'Edit Menu',
             'fields' => [
                 'name' => 'Name',
                 'code' => 'Code',
                 'location' => 'Location',
+                'location-select-placeholder' => 'Select a location',
                 'status' => 'Status',
             ],
             'actions' => [
