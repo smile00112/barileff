@@ -40,12 +40,19 @@ class CartResource extends JsonResource
             'formatted_shipping_amount' => core()->formatPrice($this->shipping_amount),
             'shipping_amount_incl_tax' => $this->shipping_amount_incl_tax,
             'formatted_shipping_amount_incl_tax' => core()->formatPrice($this->shipping_amount_incl_tax),
-            'delivery_zone' => $this->delivery_zone ? [
-                'id' => $this->delivery_zone->id,
-                'name' => $this->delivery_zone->name,
-                'mode' => $this->delivery_zone_mode,
-                'delivery_time_minutes' => $this->delivery_zone->delivery_time_minutes,
-            ] : null,
+            'delivery_zone' => $this->delivery_zone ? (function () {
+                $this->delivery_zone->loadMissing('city');
+
+                return [
+                    'id' => $this->delivery_zone->id,
+                    'name' => $this->delivery_zone->name,
+                    'mode' => $this->delivery_zone_mode,
+                    'delivery_time_minutes' => $this->delivery_zone->delivery_time_minutes,
+                    'city_name' => $this->delivery_zone->city?->name ?? '',
+                    'city_country' => $this->delivery_zone->city?->country ?? '',
+                    'city_state' => $this->delivery_zone->city?->state ?? '',
+                ];
+            })() : null,
             'grand_total' => $this->grand_total,
             'formatted_grand_total' => core()->formatPrice($this->grand_total),
             'items' => CartItemResource::collection($this->items),
