@@ -27,6 +27,7 @@ return [
     Webkul\ManagerApp\Providers\ManagerAppServiceProvider::class,
     Webkul\Marketing\Providers\MarketingServiceProvider::class,
     Webkul\Markup\Providers\MarkupServiceProvider::class,
+    Webkul\Menu\Providers\MenuServiceProvider::class,
     Webkul\Notification\Providers\NotificationServiceProvider::class,
     Webkul\PaymentConfirmation\Providers\PaymentConfirmationServiceProvider::class,
     Webkul\Payment\Providers\PaymentServiceProvider::class,

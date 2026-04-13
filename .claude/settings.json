@@ -14,7 +14,16 @@
       "Bash(vendor/bin/pint --dirty)",
       "Bash(php -l \"D:/_WORK_/laragon_2025/www/my_bagisto/packages/Webkul/Admin/src/Helpers/Reporting/Sale.php\")",
       "Bash(gh pr create --title 'feat\\(reporting\\): add inventory source filter to sales and customer reports' --body ':*)",
-      "Bash(vendor/bin/pint packages/Webkul/Admin/src/DataGrids/Catalog/CategoryDataGrid.php packages/Webkul/Admin/src/Jobs/InvalidateCategoryProductCountCache.php packages/Webkul/Admin/src/Listeners/Category.php packages/Webkul/Admin/src/Providers/EventServiceProvider.php)"
+      "Bash(vendor/bin/pint packages/Webkul/Admin/src/DataGrids/Catalog/CategoryDataGrid.php packages/Webkul/Admin/src/Jobs/InvalidateCategoryProductCountCache.php packages/Webkul/Admin/src/Listeners/Category.php packages/Webkul/Admin/src/Providers/EventServiceProvider.php)",
+      "Bash(vendor/bin/pint packages/Webkul/Shop/src/Http/Controllers/API/OnepageController.php)",
+      "Bash(vendor/bin/pint packages/Webkul/DeliveryZones/src/Http/Controllers/Shop/DeliveryZonesController.php)",
+      "Read(//d/_WORK_/laragon_2025/packages/Webkul/Shop/tests/**)",
+      "Bash(vendor/bin/pint packages/Webkul/Shop/tests/Feature/API/DeliveryZonesApiTest.php --dirty)",
+      "Bash(vendor/bin/pint packages/Webkul/Shop/src/Http/Resources/CartResource.php)",
+      "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" add packages/Webkul/Shop/src/Http/Resources/CartResource.php)",
+      "Bash(git -C d:/_WORK_/laragon_2025/www/my_bagisto commit -m ':*)",
+      "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" add \"packages/Webkul/Shop/src/Resources/views/components/layouts/header/delivery-method-selector.blade.php\")",
+      "Bash(git -C d:/_WORK_/laragon_2025/www/my_bagisto add packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/form.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/guest.blade.php packages/Webkul/Shop/src/Resources/views/checkout/onepage/address/customer.blade.php packages/Webkul/Shop/src/Resources/lang/en/app.php packages/Webkul/Shop/src/Resources/lang/ru/app.php)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"
