@@ -3011,6 +3011,32 @@ return [
             ],
         ],
 
+        'push-notifications' => [
+            'index' => [
+                'title' => 'Push-уведомления',
+                'vapid-section' => 'Ключи VAPID',
+                'vapid-description' => 'Ключи VAPID необходимы для отправки Web Push-уведомлений. Сгенерируйте их один раз и используйте постоянно.',
+                'public-key' => 'Публичный ключ',
+                'subject' => 'Тема (mailto или URL)',
+                'generate-btn' => 'Сгенерировать новые ключи',
+                'save-subject-btn' => 'Сохранить тему',
+                'admin-events-tab' => 'События админки',
+                'shop-events-tab' => 'События магазина',
+                'event-col' => 'Событие',
+                'title-col' => 'Заголовок',
+                'body-col' => 'Текст сообщения',
+                'target-col' => 'Цель',
+                'active-col' => 'Активно',
+                'save-btn' => 'Сохранить',
+                'placeholders-hint' => 'Доступные плейсхолдеры',
+                'no-vapid-warning' => 'Ключи VAPID не настроены. Web Push не будет работать, пока вы не сгенерируете ключи.',
+            ],
+            'update-success' => 'Настройки push-уведомлений успешно сохранены.',
+            'vapid-generated' => 'Ключи VAPID успешно сгенерированы.',
+            'vapid-updated' => 'Тема VAPID успешно обновлена.',
+            'vapid-missing' => 'Сначала сгенерируйте ключи VAPID.',
+        ],
+
         'data-transfer' => [
             'imports' => [
                 'create' => [
@@ -4970,6 +4996,7 @@ return [
                 'orders' => 'Заказы',
                 'products' => 'Продукты',
                 'promotions' => 'Акции',
+                'push-notifications' => 'Push-уведомления',
                 'refunds' => 'Возвраты',
                 'reporting' => 'Отчетность',
                 'reviews' => 'Отзывы',
