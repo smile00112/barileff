@@ -37,7 +37,7 @@ class DeliveryZoneController extends Controller
         $redirectCityId = (int) $request->input('redirect_city_id', 0);
 
         $zone = DeliveryZone::query()->create([
-            'city_id' => (int) $validated['city_id'],
+            'city_id' => isset($validated['city_id']) ? (int) $validated['city_id'] : null,
             'code' => $validated['code'],
             'name' => $validated['name'],
             'polygon_json' => json_decode((string) $validated['polygon_json'], true),
@@ -70,14 +70,16 @@ class DeliveryZoneController extends Controller
     public function edit(int $id)
     {
         $deliveryZone = DeliveryZone::query()->with(['rates', 'inventory_sources'])->findOrFail($id);
-        $cityId = (int) $deliveryZone->city_id;
+        $cityId = $deliveryZone->city_id !== null ? (int) $deliveryZone->city_id : null;
 
         return view('delivery-zones::settings.delivery-zones.edit', [
             'deliveryZone' => $deliveryZone,
             'cities' => DeliveryCity::query()
                 ->where(function ($query) use ($cityId) {
-                    $query->where('is_active', true)
-                        ->orWhere('id', $cityId);
+                    $query->where('is_active', true);
+                    if ($cityId !== null) {
+                        $query->orWhere('id', $cityId);
+                    }
                 })
                 ->orderBy('name')
                 ->get(),
@@ -94,7 +96,7 @@ class DeliveryZoneController extends Controller
         $zone = DeliveryZone::query()->with('rates')->findOrFail($id);
 
         $zone->update([
-            'city_id' => (int) $validated['city_id'],
+            'city_id' => isset($validated['city_id']) ? (int) $validated['city_id'] : null,
             'code' => $validated['code'],
             'name' => $validated['name'],
             'polygon_json' => json_decode((string) $validated['polygon_json'], true),

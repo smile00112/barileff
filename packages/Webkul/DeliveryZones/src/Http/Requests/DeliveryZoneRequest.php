@@ -20,8 +20,8 @@ class DeliveryZoneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city_id' => ['required', 'exists:delivery_cities,id'],
-            'code' => ['required', 'alpha_dash', 'max:255', 'unique:delivery_zones,code,'.$this->id.',id,city_id,'.$this->city_id],
+            'city_id' => ['nullable', 'integer', 'exists:delivery_cities,id'],
+            'code' => ['required', 'alpha_dash', 'max:255', 'unique:delivery_zones,code,'.$this->id],
             'name' => ['required', 'string', 'max:255'],
             'polygon_json' => ['required', 'json'],
             'polygon_color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
