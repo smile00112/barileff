@@ -130,6 +130,12 @@ Route::prefix('settings')->group(function () {
         Route::put('edit/{id}', 'update')->name('admin.settings.delivery_zones.update');
 
         Route::delete('edit/{id}', 'destroy')->name('admin.settings.delivery_zones.delete');
+
+        Route::get('import', 'importForm')->name('admin.settings.delivery_zones.import');
+
+        Route::post('import', 'import')->name('admin.settings.delivery_zones.import.store');
+
+        Route::get('export', 'export')->name('admin.settings.delivery_zones.export');
     });
 
     Route::prefix('taxes')->group(function () {
