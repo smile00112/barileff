@@ -20,6 +20,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Telescope Allowed Emails
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated list of emails allowed to access Telescope in production.
+    |
+    */
+
+    'allowed_emails' => array_filter(explode(',', env('TELESCOPE_ALLOWED_EMAILS', ''))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Telescope Domain
     |--------------------------------------------------------------------------
     |
