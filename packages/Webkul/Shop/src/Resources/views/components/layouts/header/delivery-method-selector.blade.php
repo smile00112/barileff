@@ -864,6 +864,8 @@
                                     checkZoomRange: true,
                                     duration: 0,
                                 });
+                            } else if (this.activeCity) {
+                                this._flyToCity(this.activeCity);
                             }
 
                             this.mapReady = true;
@@ -1285,16 +1287,70 @@
                     this.updateZoneHighlight();
                 },
 
-                changeCity(cityId) {
-                    this.selectedCityId = Number(cityId);
-                    const city = this.cities.find((c) => c.id === this.selectedCityId);
+                _getCityBounds(cityId) {
+                    const numericCityId = Number(cityId);
+                    const cityZones = this.allZones.filter((zone) => zone.city_id === numericCityId);
+                    const points = [];
 
-                    if (city?.center_lat && city?.center_lng && _ymapsRaw.map) {
+                    for (const zone of cityZones) {
+                        const coords = this.parseCoordinatesValue(zone.polygon_json);
+
+                        for (const point of coords) {
+                            points.push(point);
+                        }
+                    }
+
+                    if (points.length < 3) {
+                        return null;
+                    }
+
+                    const minLat = points.reduce((min, p) => Math.min(min, p[0]), Infinity);
+                    const maxLat = points.reduce((max, p) => Math.max(max, p[0]), -Infinity);
+                    const minLng = points.reduce((min, p) => Math.min(min, p[1]), Infinity);
+                    const maxLng = points.reduce((max, p) => Math.max(max, p[1]), -Infinity);
+
+                    return [
+                        [minLat, minLng],
+                        [maxLat, maxLng],
+                    ];
+                },
+
+                _flyToCity(city) {
+                    if (!city) {
+                        return;
+                    }
+
+                    if (!_ymapsRaw.map) {
+                        return;
+                    }
+
+                    const bounds = this._getCityBounds(city.id);
+
+                    if (bounds) {
+                        _ymapsRaw.map.setBounds(bounds, {
+                            checkZoomRange: true,
+                            duration: 300,
+                            margin: [40, 40, 40, 40],
+                        });
+                        return;
+                    }
+
+                    if (city.center_lat && city.center_lng) {
                         _ymapsRaw.map.setCenter([city.center_lat, city.center_lng], 11, {
                             checkZoomRange: true,
                             duration: 300,
                         });
+                        return;
                     }
+
+                    _ymapsRaw.map.setCenter([40.1872, 44.5152], 11); // Yerevan, AM — default fallback
+                },
+
+                changeCity(cityId) {
+                    this.selectedCityId = Number(cityId);
+                    const city = this.cities.find((c) => c.id === this.selectedCityId);
+
+                    this._flyToCity(city);
 
                     this.selectedZone = null;
                     this.resolvedZone = null;
