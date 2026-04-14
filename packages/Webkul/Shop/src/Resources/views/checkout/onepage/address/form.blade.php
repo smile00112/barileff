@@ -122,6 +122,7 @@
                     ::name="controlName + '.email'"
                     ::value="address.email"
                     rules="required|email"
+                    data-mask-email="true"
                     :label="trans('shop::app.checkout.onepage.address.email')"
                     placeholder="email@example.com"
                 />
@@ -163,8 +164,9 @@
                     ::name="controlName + '.phone'"
                     ::value="address.phone"
                     rules="required|phone"
+                    data-mask-phone-ru="true"
                     :label="trans('shop::app.checkout.onepage.address.telephone')"
-                    :placeholder="trans('shop::app.checkout.onepage.address.telephone')"
+                    placeholder="+7 (___) ___-__-__"
                 />
 
                 <x-shop::form.control-group.error ::name="controlName + '.phone'" />

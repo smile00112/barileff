@@ -31,7 +31,12 @@
       "Bash(find tests:*)",
       "Bash(git stash:*)",
       "Bash(xargs ls:*)",
-      "mcp__plugin_laravel-boost_laravel-boost__database-schema"
+      "mcp__plugin_laravel-boost_laravel-boost__database-schema",
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/vendor/laravel/framework log --oneline -1)",
+      "Bash(composer update:*)",
+      "Read(//d/_WORK_/laragon_2025//**)",
+      "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php /d/_WORK_/laragon_2025/bin/composer/composer.phar update kalnoy/nestedset --ignore-platform-reqs)",
+      "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php /d/_WORK_/laragon_2025/bin/composer/composer.phar show kalnoy/nestedset --all)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

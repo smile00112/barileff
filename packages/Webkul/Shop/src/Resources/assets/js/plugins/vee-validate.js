@@ -65,8 +65,11 @@ export default {
             }
 
             const trimmedValue = value.trim();
+            const normalizedValue = trimmedValue
+                .replace(/\s+/g, "")
+                .replace(/[()-]/g, "");
 
-            if (!/^\+?\d+$/.test(trimmedValue)) {
+            if (!/^\+?\d+$/.test(normalizedValue)) {
                 return false;
             }
 

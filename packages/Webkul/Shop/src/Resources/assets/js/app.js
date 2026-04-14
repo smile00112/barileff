@@ -148,6 +148,7 @@ import Emitter from "./plugins/emitter";
 import Shop from "./plugins/shop";
 import VeeValidate from "./plugins/vee-validate";
 import Flatpickr from "./plugins/flatpickr";
+import InputMask from "./plugins/input-mask";
 
 [
     Axios,
@@ -155,6 +156,7 @@ import Flatpickr from "./plugins/flatpickr";
     Shop,
     VeeValidate,
     Flatpickr,
+    InputMask,
 ].forEach((plugin) => app.use(plugin));
 
 /**

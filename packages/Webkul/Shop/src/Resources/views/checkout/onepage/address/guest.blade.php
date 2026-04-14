@@ -181,6 +181,9 @@
                         use_for_shipping: true,
                     };
 
+                    params.billing.email = window.ShopInputMask?.normalizeEmailValue(params.billing.email) ?? params.billing.email;
+                    params.billing.phone = window.ShopInputMask?.normalizeRuPhoneValue(params.billing.phone) ?? params.billing.phone;
+
                     if (params['shipping']) {
                         params['shipping'] = { ...params['shipping'], ...locationPatch };
                     }

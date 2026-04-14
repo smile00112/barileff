@@ -189,6 +189,9 @@
                         delivery_point_lng: sel?.longitude ?? undefined,
                     };
 
+                    payload.billing.email = window.ShopInputMask?.normalizeEmailValue(payload.billing.email) ?? payload.billing.email;
+                    payload.billing.phone = window.ShopInputMask?.normalizeRuPhoneValue(payload.billing.phone) ?? payload.billing.phone;
+
                     this.isStoring = true;
 
                     this.moveToNextStep();

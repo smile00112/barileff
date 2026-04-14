@@ -58,6 +58,7 @@
                                     class="px-6 py-4"
                                     name="email"
                                     rules="required|email"
+                                    data-mask-email="true"
                                     :label="trans('shop::app.checkout.login.email')"
                                     placeholder="email@example.com"
                                     :aria-label="trans('shop::app.checkout.login.email')"
@@ -138,6 +139,7 @@
 
                     const captchaResponse = document.querySelector('[name="g-recaptcha-response"]')?.value
 
+                    params.email = window.ShopInputMask?.normalizeEmailValue(params.email) ?? params.email;
                     params['g-recaptcha-response'] = captchaResponse;
                    
                     this.$axios.post("{{ route('shop.api.customers.session.create') }}", params)

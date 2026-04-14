@@ -49,6 +49,16 @@ class TranslatableModel extends Model
         return false;
     }
 
+    /**
+     * Compatibility shim for kalnoy/nestedset: call the callback immediately during boot.
+     * Laravel added Model::whenBooted() in a later release; this polyfills it for models
+     * that use NodeTrait on the current framework version.
+     */
+    public static function whenBooted(callable $callback): void
+    {
+        $callback();
+    }
+
     public function scopeWhereTranslationIn(Builder $query, string $translationField, $value, ?string $locale = null, string $method = 'whereHas')
     {
         return $query->$method('translations', function (Builder $query) use ($translationField, $value, $locale) {

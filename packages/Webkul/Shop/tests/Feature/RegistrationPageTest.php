@@ -14,7 +14,8 @@ it('returns a successful response', function () {
     // Act and Assert.
     get(route('shop.customers.register.index'))
         ->assertOk()
-        ->assertSeeText(trans('shop::app.customers.signup-form.page-title'));
+        ->assertSeeText(trans('shop::app.customers.signup-form.page-title'))
+        ->assertSee('data-mask-email="true"', false);
 });
 
 it('should fails validation error when certain inputs are invalid when register', function () {

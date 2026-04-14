@@ -64,6 +64,7 @@
                             class="px-6 py-4 max-md:py-3 max-sm:py-2"
                             name="email"
                             rules="required|email"
+                            data-mask-email="true"
                             value=""
                             :label="trans('shop::app.customers.login-form.email')"
                             placeholder="email@example.com"
