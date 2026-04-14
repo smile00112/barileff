@@ -117,7 +117,7 @@
                         address: this.deliverySelection?.label ? [this.deliverySelection.label] : (b?.address ?? []),
                         city: this.cart.delivery_zone?.city_name || this.deliverySelection?.city || b?.city || '',
                         country: this.cart.delivery_zone?.city_country || this.deliverySelection?.country || b?.country || '',
-                        state: this.cart.delivery_zone?.city_state || this.deliverySelection?.state || b?.state || '',
+                        state: this.cart.delivery_zone?.city_state || this.cart.delivery_zone?.inventory_source_state || this.deliverySelection?.state || b?.state || '',
                         postcode: this.deliverySelection?.postcode || b?.postcode || '',
                     };
                 },
@@ -162,7 +162,7 @@
                         address: [sel?.label || this.deliveryStreetAddress || ''],
                         city: zone?.city_name || sel?.city || '',
                         country: zone?.city_country || sel?.country || 'RU',
-                        state: zone?.city_state || sel?.state || '',
+                        state: zone?.city_state || zone?.inventory_source_state || sel?.state || '',
                         postcode: sel?.postcode || '',
                         additional: {
                             label: sel?.label ?? '',

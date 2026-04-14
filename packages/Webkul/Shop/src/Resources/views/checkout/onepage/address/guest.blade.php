@@ -66,28 +66,8 @@
                             :address="prefillAddress"
                         ></v-checkout-address-form>
 
-                        <!-- Use for Shipping Checkbox -->
-                        <x-shop::form.control-group
-                            class="!mb-0 flex items-center gap-2.5"
-                            v-if="cart.have_stockable_items"
-                        >
-                            <x-shop::form.control-group.control
-                                type="checkbox"
-                                name="billing.use_for_shipping"
-                                id="use_for_shipping"
-                                for="use_for_shipping"
-                                value="1"
-                                @change="useBillingAddressForShipping = ! useBillingAddressForShipping"
-                                ::checked="!! useBillingAddressForShipping"
-                            />
-
-                            <label
-                                class="cursor-pointer select-none text-base text-zinc-500 max-md:text-sm max-sm:text-xs ltr:pl-0 rtl:pr-0"
-                                for="use_for_shipping"
-                            >
-                                @lang('shop::app.checkout.onepage.address.same-as-billing')
-                            </label>
-                        </x-shop::form.control-group>
+                        <!-- use_for_shipping is always true; hidden input ensures the value is submitted -->
+                        <input type="hidden" name="billing.use_for_shipping" value="1" />
 
                         {!! view_render_event('bagisto.shop.checkout.onepage.address.guest.billing.after') !!}
                     </div>
@@ -118,8 +98,6 @@
                 return {
                     deliverySelection: null,
 
-                    useBillingAddressForShipping: true,
-
                     isStoring: false,
                 }
             },
@@ -147,10 +125,6 @@
 
             mounted() {
                 this.loadDeliverySelection();
-
-                if (this.cart.billing_address) {
-                    this.useBillingAddressForShipping = this.cart.billing_address.use_for_shipping;
-                }
             },
 
             methods: {
@@ -185,7 +159,7 @@
                         address: [sel.label || ''],
                         city: sel.city || '',
                         country: sel.country || 'RU',
-                        state: sel.state || '',
+                        state: sel.state || this.cart.delivery_zone?.city_state || this.cart.delivery_zone?.inventory_source_state || '',
                         postcode: sel.postcode || '',
                         additional: {
                             label: sel.label || '',
@@ -204,7 +178,7 @@
                     params['billing'] = {
                         ...params['billing'],
                         ...locationPatch,
-                        use_for_shipping: this.useBillingAddressForShipping,
+                        use_for_shipping: true,
                     };
 
                     if (params['shipping']) {

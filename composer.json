@@ -52,7 +52,8 @@
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sitemap": "^7.3",
         "stevebauman/purify": "^6.3",
-        "tigusigalpa/gigachat-php": "^1.1"
+        "tigusigalpa/gigachat-php": "^1.1",
+        "torann/geoip": "^3.0"
     },
     "require-dev": {
         "bagisto/laravel-datafaker": "2.3.*",

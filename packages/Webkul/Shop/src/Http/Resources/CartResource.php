@@ -41,7 +41,7 @@ class CartResource extends JsonResource
             'shipping_amount_incl_tax' => $this->shipping_amount_incl_tax,
             'formatted_shipping_amount_incl_tax' => core()->formatPrice($this->shipping_amount_incl_tax),
             'delivery_zone' => $this->delivery_zone ? (function () {
-                $this->delivery_zone->loadMissing('city');
+                $this->delivery_zone->loadMissing('city', 'inventory_sources');
 
                 return [
                     'id' => $this->delivery_zone->id,
@@ -51,6 +51,8 @@ class CartResource extends JsonResource
                     'city_name' => $this->delivery_zone->city?->name ?? '',
                     'city_country' => $this->delivery_zone->city?->country ?? '',
                     'city_state' => $this->delivery_zone->city?->state ?? '',
+                    'inventory_source_state' => $this->delivery_zone->inventory_sources->first()?->state ?? '',
+                    'inventory_source_country' => $this->delivery_zone->inventory_sources->first()?->country ?? '',
                 ];
             })() : null,
             'grand_total' => $this->grand_total,
