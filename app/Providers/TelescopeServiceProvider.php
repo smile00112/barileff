@@ -50,6 +50,28 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     }
 
     /**
+     * Configure the Telescope authorization services.
+     */
+    protected function authorization(): void
+    {
+        Telescope::auth(function ($request) {
+            if (app()->environment('local')) {
+                return true;
+            }
+
+            $admin = auth()->guard('admin')->user();
+
+            if (! $admin) {
+                return false;
+            }
+
+            $allowedEmails = config('telescope.allowed_emails', []);
+
+            return empty($allowedEmails) || in_array($admin->email, $allowedEmails);
+        });
+    }
+
+    /**
      * Register the Telescope gate.
      *
      * This gate determines who can access Telescope in non-local environments.
