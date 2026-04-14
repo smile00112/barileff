@@ -1739,9 +1739,9 @@ return [
                     'new-products-in-stock' => 'Import new products with stock quantity',
                     'new-products-in-stock-hint' => 'New products will be imported with the quantity from the file. Uncheck to import them with qty=0 (out of stock).',
                     'create-categories' => 'Create missing categories',
-                    'create-categories-hint' => 'Automatically create categories that are listed in the CSV but do not exist yet.',
+                    'create-categories-hint' => 'Automatically create categories that are listed in the CSV but do not exist yet. If you list several names separated by commas in one cell, they are treated as a path: the first is a child of the parent you select below, each next name is a child of the previous one.',
                     'parent-category' => 'Parent category for new categories',
-                    'parent-category-hint' => 'New categories will be created as children of the selected category.',
+                    'parent-category-hint' => 'The first name in a comma-separated path is created under this category; deeper segments are nested under each other.',
                 ],
 
                 'validation' => [
@@ -3349,9 +3349,9 @@ return [
             ],
 
             'zones-index' => [
-                'title'        => 'Delivery Zones',
-                'heading'      => 'Delivery Zones',
-                'add-zone'     => 'Add Zone',
+                'title' => 'Delivery Zones',
+                'heading' => 'Delivery Zones',
+                'add-zone' => 'Add Zone',
                 'import-zones' => 'Import',
                 'export-zones' => 'Export',
             ],
@@ -3362,18 +3362,18 @@ return [
             ],
 
             'zones-import' => [
-                'title'                    => 'Import Delivery Zones',
-                'heading'                  => 'Import Delivery Zones',
-                'import-btn'               => 'Import',
-                'back-btn'                 => 'Back',
-                'file'                     => 'GeoJSON File',
-                'default-city'             => 'Default City (fallback)',
-                'select-city'              => 'Select city (optional)',
-                'inventory-source'         => 'Inventory Source',
-                'select-inventory-source'  => 'Select inventory source',
-                'default-rate'             => 'Default Rate',
-                'min-order-total'          => 'Min Order Total',
-                'price'                    => 'Price',
+                'title' => 'Import Delivery Zones',
+                'heading' => 'Import Delivery Zones',
+                'import-btn' => 'Import',
+                'back-btn' => 'Back',
+                'file' => 'GeoJSON File',
+                'default-city' => 'Default City (fallback)',
+                'select-city' => 'Select city (optional)',
+                'inventory-source' => 'Inventory Source',
+                'select-inventory-source' => 'Select inventory source',
+                'default-rate' => 'Default Rate',
+                'min-order-total' => 'Min Order Total',
+                'price' => 'Price',
             ],
 
             'datagrid' => [
@@ -3405,17 +3405,17 @@ return [
             ],
 
             'response' => [
-                'city-created'             => 'Delivery city created successfully.',
-                'city-updated'             => 'Delivery city updated successfully.',
-                'city-deleted'             => 'Delivery city deleted successfully.',
-                'zone-created'             => 'Delivery zone created successfully.',
-                'zone-updated'             => 'Delivery zone updated successfully.',
-                'zone-deleted'             => 'Delivery zone deleted successfully.',
-                'zones-imported'           => ':count zone(s) imported successfully.',
-                'import-invalid-json'      => 'The file is not valid JSON.',
-                'import-invalid-geojson'   => 'The file must be a GeoJSON FeatureCollection.',
-                'import-no-features'       => 'The file contains no features.',
-                'import-failed'            => 'Import failed: :error',
+                'city-created' => 'Delivery city created successfully.',
+                'city-updated' => 'Delivery city updated successfully.',
+                'city-deleted' => 'Delivery city deleted successfully.',
+                'zone-created' => 'Delivery zone created successfully.',
+                'zone-updated' => 'Delivery zone updated successfully.',
+                'zone-deleted' => 'Delivery zone deleted successfully.',
+                'zones-imported' => ':count zone(s) imported successfully.',
+                'import-invalid-json' => 'The file is not valid JSON.',
+                'import-invalid-geojson' => 'The file must be a GeoJSON FeatureCollection.',
+                'import-no-features' => 'The file contains no features.',
+                'import-failed' => 'Import failed: :error',
             ],
 
             'js' => [
@@ -4741,6 +4741,12 @@ return [
                             'per-unit' => 'Per Unit',
                             'title' => 'Type',
                         ],
+                    ],
+
+                    'delivery-zones' => [
+                        'welcome-modal-active' => 'Show welcome city modal',
+                        'welcome-modal-text' => 'Welcome modal text',
+                        'detect-city-by-ip' => 'Detect city by visitor IP',
                     ],
                 ],
 

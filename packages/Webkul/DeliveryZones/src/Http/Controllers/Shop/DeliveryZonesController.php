@@ -4,6 +4,7 @@ namespace Webkul\DeliveryZones\Http\Controllers\Shop;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Cache;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\DeliveryZones\Models\DeliveryCity;
@@ -270,5 +271,56 @@ class DeliveryZonesController
         ])->values()->all();
 
         return new JsonResource($data);
+    }
+
+    /**
+     * Определить город по IP-адресу.
+     *
+     * Использует torann/geoip для определения города из IP запроса.
+     * Результат кешируется на 1 час. Возвращает найденный город из базы зон доставки.
+     *
+     * @response 200 scenario="Город найден" {"data":{"city":"Казань","matched_city_id":3,"matched_city_name":"Казань"}}
+     * @response 200 scenario="Город не определён" {"data":{"city":null,"matched_city_id":null,"matched_city_name":null}}
+     *
+     * @responseField data.city string|null Название города из GeoIP (null если не определено).
+     * @responseField data.matched_city_id integer|null ID города в базе зон доставки.
+     * @responseField data.matched_city_name string|null Название города в базе зон доставки.
+     */
+    public function detectCity(): JsonResource
+    {
+        $ip = request()->ip();
+        $cacheKey = 'geoip_city_'.md5($ip);
+
+        $cityName = Cache::remember($cacheKey, 3600, function () use ($ip) {
+            try {
+                return geoip()->getLocation($ip)->city ?: null;
+            } catch (\Throwable) {
+                return null;
+            }
+        });
+
+        $matchedCity = null;
+
+        if ($cityName) {
+            $channel = core()->getCurrentChannel();
+            $sourceIds = $channel->inventory_sources->pluck('id')->all();
+
+            $matchedCity = DeliveryCity::query()
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower($cityName)])
+                ->where('is_active', true)
+                ->whereHas('zones', fn ($q) => $q
+                    ->where('is_active', true)
+                    ->whereHas('inventory_sources', fn ($qq) => $qq->whereIn('inventory_sources.id', $sourceIds))
+                )
+                ->first();
+        }
+
+        return new JsonResource([
+            'data' => [
+                'city' => $cityName,
+                'matched_city_id' => $matchedCity?->id,
+                'matched_city_name' => $matchedCity?->name,
+            ],
+        ]);
     }
 }

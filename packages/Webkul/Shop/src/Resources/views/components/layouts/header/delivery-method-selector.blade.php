@@ -597,6 +597,14 @@
                 if (this.isCustomer) {
                     this._addressesPromise = this.loadCustomerAddresses();
                 }
+
+                window.addEventListener('delivery-zone:open', (e) => {
+                    if (e.detail?.cityId) {
+                        this.selectedCityId = e.detail.cityId;
+                    }
+
+                    this.openModal();
+                });
             },
 
             methods: {
@@ -2002,3 +2010,5 @@
         });
     </script>
 @endPushOnce
+
+@includeOnce('delivery-zones::shop.components.welcome-modal')

@@ -961,6 +961,14 @@ return [
         'geocode-boundary-disabled' => 'City boundary is not set; showing all search results.',
         'geocode-error' => 'Address search failed. Please try again.',
         'zone-selected-suffix' => '— selected',
+
+        'welcome-modal' => [
+            'title' => 'Select your city for delivery',
+            'select-city' => 'Select your city:',
+            'specify-address' => 'Specify delivery address',
+            'close' => 'Skip',
+            'detected' => '(detected)',
+        ],
     ],
 
     'checkout' => [

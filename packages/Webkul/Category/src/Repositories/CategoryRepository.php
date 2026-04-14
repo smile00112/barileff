@@ -2,6 +2,7 @@
 
 namespace Webkul\Category\Repositories;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -67,7 +68,7 @@ class CategoryRepository extends Repository
     /**
      * Create category.
      *
-     * @return \Webkul\Category\Contracts\Category
+     * @return Category
      */
     public function create(array $data)
     {
@@ -106,7 +107,7 @@ class CategoryRepository extends Repository
      *
      * @param  int  $id
      * @param  string  $attribute
-     * @return \Webkul\Category\Contracts\Category
+     * @return Category
      */
     public function update(array $data, $id)
     {
@@ -130,7 +131,7 @@ class CategoryRepository extends Repository
     /**
      * Specify category tree.
      *
-     * @return \Webkul\Category\Contracts\Category
+     * @return Category
      */
     public function getCategoryTree(?int $id = null)
     {
@@ -142,7 +143,7 @@ class CategoryRepository extends Repository
     /**
      * Specify category tree.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getCategoryTreeWithoutDescendant(?int $id = null)
     {
@@ -154,7 +155,7 @@ class CategoryRepository extends Repository
     /**
      * Get root categories.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getRootCategories()
     {
@@ -164,7 +165,7 @@ class CategoryRepository extends Repository
     /**
      * Get child categories.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getChildCategories($parentId)
     {
@@ -175,7 +176,7 @@ class CategoryRepository extends Repository
      * get visible category tree.
      *
      * @param  int  $id
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getVisibleCategoryTree($id = null)
     {
@@ -206,7 +207,7 @@ class CategoryRepository extends Repository
      * Retrieve category from slug.
      *
      * @param  string  $slug
-     * @return \Webkul\Category\Contracts\Category
+     * @return Category
      */
     public function findBySlug($slug)
     {
@@ -219,7 +220,7 @@ class CategoryRepository extends Repository
      * Retrieve category from slug.
      *
      * @param  string  $slug
-     * @return \Webkul\Category\Contracts\Category
+     * @return Category
      */
     public function findBySlugOrFail($slug)
     {
@@ -230,7 +231,7 @@ class CategoryRepository extends Repository
      * Upload category's images.
      *
      * @param  array  $data
-     * @param  \Webkul\Category\Contracts\Category  $category
+     * @param  Category  $category
      * @param  string  $type
      * @return void
      */
@@ -320,5 +321,118 @@ class CategoryRepository extends Repository
         }
 
         return $data;
+    }
+
+    /**
+     * Find category id that is a direct child of parent with the given translated name.
+     */
+    public function findIdByParentAndName(int $parentId, string $name, string $locale): ?int
+    {
+        $id = DB::table('categories')
+            ->join('category_translations', 'category_translations.category_id', '=', 'categories.id')
+            ->where('categories.parent_id', $parentId)
+            ->where('category_translations.locale', $locale)
+            ->where('category_translations.name', $name)
+            ->value('categories.id');
+
+        if ($id !== null) {
+            return (int) $id;
+        }
+
+        return $this->findIdByParentAndNameAnyLocale($parentId, $name);
+    }
+
+    /**
+     * Same as findIdByParentAndName but ignores locale (used when only one translation row exists).
+     */
+    protected function findIdByParentAndNameAnyLocale(int $parentId, string $name): ?int
+    {
+        $id = DB::table('categories')
+            ->join('category_translations', 'category_translations.category_id', '=', 'categories.id')
+            ->where('categories.parent_id', $parentId)
+            ->where('category_translations.name', $name)
+            ->value('categories.id');
+
+        return $id !== null ? (int) $id : null;
+    }
+
+    /**
+     * Resolve an ordered category path under an anchor (no creation). Returns empty array if any segment is missing.
+     *
+     * @param  array<int, string>  $segments
+     * @return array<int, int>
+     */
+    public function resolveCategoryChainUnderParent(int $anchorId, array $segments, string $locale): array
+    {
+        $ids = [];
+        $currentParentId = $anchorId;
+
+        foreach ($segments as $name) {
+            $id = $this->findIdByParentAndName($currentParentId, $name, $locale);
+
+            if ($id === null) {
+                return [];
+            }
+
+            $ids[] = $id;
+            $currentParentId = $id;
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Ensure an ordered category path exists under an anchor, creating missing nodes.
+     *
+     * @param  array<int, string>  $segments
+     * @return array<int, int>
+     */
+    public function ensureCategoryChainUnderParent(int $anchorId, array $segments, string $locale): array
+    {
+        $ids = [];
+        $currentParentId = $anchorId;
+
+        foreach ($segments as $name) {
+            $id = $this->findIdByParentAndName($currentParentId, $name, $locale);
+
+            if ($id === null) {
+                $slug = $this->generateUniqueCategorySlug($name);
+
+                $category = $this->create([
+                    'locale' => 'all',
+                    'name' => $name,
+                    'description' => '',
+                    'meta_title' => '',
+                    'meta_description' => '',
+                    'meta_keywords' => '',
+                    'slug' => $slug,
+                    'position' => 1,
+                    'status' => 1,
+                    'display_mode' => 'products_and_description',
+                    'parent_id' => $currentParentId,
+                ]);
+
+                $id = (int) $category->id;
+            }
+
+            $ids[] = $id;
+            $currentParentId = $id;
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Generate a unique slug for category_translations.
+     */
+    protected function generateUniqueCategorySlug(string $name): string
+    {
+        $slug = Str::slug($name);
+
+        if ($slug === '' || DB::table('category_translations')->where('slug', $slug)->exists()) {
+            $slug = Str::slug($name).'-'.substr(md5($name.microtime()), 0, 6);
+        }
+
+        return $slug;
     }
 }

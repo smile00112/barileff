@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
+use Torann\GeoIP\GeoIP;
+use Torann\GeoIP\Location;
 use Webkul\Checkout\Models\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Checkout\Models\CartItem;
@@ -212,4 +215,69 @@ it('returns 422 when zone not found for select', function () {
 
     $response->assertStatus(422)
         ->assertJsonPath('data.zone', null);
+});
+
+it('returns detect city response structure', function () {
+    $response = getJson(route('shop.api.delivery_zones.detect_city'));
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                'city',
+                'matched_city_id',
+                'matched_city_name',
+            ],
+        ]);
+});
+
+it('returns matched city id when geoip detects known city', function () {
+    Cache::forget('geoip_city_'.md5('127.0.0.1'));
+
+    $location = new Location([
+        'default' => false,
+        'ip' => '127.0.0.1',
+        'iso_code' => 'RU',
+        'country' => 'Russia',
+        'city' => 'Test City',
+        'state' => 'MOW',
+        'state_name' => 'Moscow',
+        'postal_code' => '101000',
+        'lat' => 55.75,
+        'lon' => 37.62,
+        'timezone' => 'Europe/Moscow',
+        'continent' => 'EU',
+        'currency' => 'RUB',
+    ]);
+
+    $geoipMock = Mockery::mock(GeoIP::class);
+    $geoipMock->shouldReceive('getLocation')->once()->andReturn($location);
+    app()->instance('geoip', $geoipMock);
+
+    $response = getJson(route('shop.api.delivery_zones.detect_city'));
+
+    $response->assertOk()
+        ->assertJsonPath('data.city', 'Test City')
+        ->assertJsonPath('data.matched_city_id', $this->city->id)
+        ->assertJsonPath('data.matched_city_name', 'Test City');
+});
+
+it('returns null matched city when geoip detects unknown city', function () {
+    Cache::forget('geoip_city_'.md5('127.0.0.1'));
+
+    $location = new Location([
+        'default' => false,
+        'ip' => '127.0.0.1',
+        'city' => 'Unknown City',
+    ]);
+
+    $geoipMock = Mockery::mock(GeoIP::class);
+    $geoipMock->shouldReceive('getLocation')->once()->andReturn($location);
+    app()->instance('geoip', $geoipMock);
+
+    $response = getJson(route('shop.api.delivery_zones.detect_city'));
+
+    $response->assertOk()
+        ->assertJsonPath('data.city', 'Unknown City')
+        ->assertJsonPath('data.matched_city_id', null)
+        ->assertJsonPath('data.matched_city_name', null);
 });

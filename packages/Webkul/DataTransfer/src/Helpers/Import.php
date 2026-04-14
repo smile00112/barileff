@@ -154,7 +154,7 @@ class Import
     /**
      * Returns error helper instance.
      *
-     * @return \Webkul\DataTransfer\Helpers\Error
+     * @return Error
      */
     public function getErrorHelper()
     {
@@ -341,14 +341,32 @@ class Import
     }
 
     /**
+     * Keys in import summary that must survive the transition to processing state
+     * (e.g. catalog-import metadata for the product importer).
+     *
+     * @var array<int, string>
+     */
+    protected array $preservedImportSummaryKeys = [
+        'category_chain_anchor_id',
+    ];
+
+    /**
      * Started the import process.
      */
     public function started(): void
     {
+        $existing = $this->import->summary ?? [];
+        $existing = is_array($existing) ? $existing : [];
+
+        $preserved = array_intersect_key(
+            $existing,
+            array_flip($this->preservedImportSummaryKeys)
+        );
+
         $import = $this->importRepository->update([
             'state' => self::STATE_PROCESSING,
             'started_at' => now(),
-            'summary' => [],
+            'summary' => $preserved,
         ], $this->import->id);
 
         $this->setImport($import);

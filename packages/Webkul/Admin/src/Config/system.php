@@ -1850,6 +1850,27 @@ return [
                 'type' => 'boolean',
                 'channel_based' => true,
                 'locale_based' => false,
+            ], [
+                'name' => 'welcome_modal_active',
+                'title' => 'admin::app.configuration.index.sales.shipping-methods.delivery-zones.welcome-modal-active',
+                'type' => 'boolean',
+                'channel_based' => true,
+                'locale_based' => false,
+                'depends' => 'active:1',
+            ], [
+                'name' => 'welcome_modal_text',
+                'title' => 'admin::app.configuration.index.sales.shipping-methods.delivery-zones.welcome-modal-text',
+                'type' => 'textarea',
+                'channel_based' => true,
+                'locale_based' => true,
+                'depends' => 'welcome_modal_active:1',
+            ], [
+                'name' => 'detect_city_by_ip',
+                'title' => 'admin::app.configuration.index.sales.shipping-methods.delivery-zones.detect-city-by-ip',
+                'type' => 'boolean',
+                'channel_based' => true,
+                'locale_based' => false,
+                'depends' => 'welcome_modal_active:1',
             ],
         ],
     ], [

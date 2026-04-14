@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\MassDestroyRequest;
 use Webkul\Attribute\Repositories\AttributeRepository;
@@ -165,6 +164,9 @@ class ImportController extends Controller
             'allowed_errors' => 100,
             'field_separator' => ',',
             'file_path' => $remappedPath,
+            'summary' => [
+                'category_chain_anchor_id' => (int) ($session->parent_category_id ?? 1),
+            ],
         ]);
 
         $isValid = $this->importHelper->setImport($dtImport)->validate();
@@ -660,16 +662,16 @@ class ImportController extends Controller
     /**
      * Create missing categories referenced in the import file.
      *
-     * Reads the original CSV, collects all category names from the mapped
-     * `categories` column and creates any that do not yet exist under the
-     * configured parent category.
+     * Reads the original CSV; for each row, the mapped `categories` value is an
+     * ordered path (comma-separated): first segment is a child of the configured
+     * parent category, each next segment is a child of the previous one.
      */
     protected function createMissingCategories(CatalogImportSession $session): void
     {
         $mapping = $session->column_mapping ?? [];
         $originalPath = Storage::disk('private')->path($session->file_path);
         $delimiter = $session->delimiter;
-        $parentId = $session->parent_category_id ?? 1;
+        $anchorId = (int) ($session->parent_category_id ?? 1);
         $locale = $session->locale;
 
         // Find which original CSV header is mapped to `categories`.
@@ -702,7 +704,7 @@ class ImportController extends Controller
             return;
         }
 
-        $allNames = [];
+        $seenChains = [];
 
         while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
             $cell = trim($row[$categoriesColIndex] ?? '');
@@ -711,48 +713,24 @@ class ImportController extends Controller
                 continue;
             }
 
-            foreach (explode(',', $cell) as $name) {
-                $name = trim($name);
+            $segments = array_values(array_filter(array_map('trim', explode(',', $cell))));
 
-                if ($name !== '') {
-                    $allNames[$name] = true;
-                }
-            }
-        }
-
-        fclose($handle);
-
-        foreach (array_keys($allNames) as $name) {
-            $exists = $this->categoryRepository
-                ->whereTranslation('name', $name)
-                ->exists();
-
-            if ($exists) {
+            if ($segments === []) {
                 continue;
             }
 
-            $slug = Str::slug($name);
+            $chainKey = implode("\0", $segments);
 
-            if ($slug === '' || DB::table('category_translations')->where('slug', $slug)->exists()) {
-                $slug = Str::slug($name).'-'.substr(md5($name.microtime()), 0, 6);
+            if (isset($seenChains[$chainKey])) {
+                continue;
             }
 
-            $this->categoryRepository->create([
-                'locale' => 'all',
-                $locale => [
-                    'name' => $name,
-                    'description' => '',
-                    'meta_title' => '',
-                    'meta_description' => '',
-                    'meta_keywords' => '',
-                    'slug' => $slug,
-                ],
-                'position' => 1,
-                'status' => 1,
-                'display_mode' => 'products_and_description',
-                'parent_id' => $parentId,
-            ]);
+            $seenChains[$chainKey] = true;
+
+            $this->categoryRepository->ensureCategoryChainUnderParent($anchorId, $segments, $locale);
         }
+
+        fclose($handle);
     }
 
     /**

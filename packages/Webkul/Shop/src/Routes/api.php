@@ -75,6 +75,7 @@ Route::group(['prefix' => 'api'], function () {
      */
     Route::controller(DeliveryZonesController::class)->prefix('delivery-zones')->group(function () {
         Route::post('select', 'select')->name('shop.api.delivery_zones.select');
+        Route::get('detect-city', 'detectCity')->name('shop.api.delivery_zones.detect_city');
     });
 
     Route::controller(GeocodingController::class)->prefix('geocode')->group(function () {

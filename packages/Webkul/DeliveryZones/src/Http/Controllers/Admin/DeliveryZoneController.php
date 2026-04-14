@@ -142,7 +142,7 @@ class DeliveryZoneController extends Controller
     public function importForm()
     {
         return view('delivery-zones::settings.delivery-zones.import', [
-            'cities'           => DeliveryCity::query()->where('is_active', true)->orderBy('name')->get(),
+            'cities' => DeliveryCity::query()->where('is_active', true)->orderBy('name')->get(),
             'inventorySources' => InventorySource::query()->where('status', true)->orderBy('name')->get(),
         ]);
     }
@@ -150,12 +150,12 @@ class DeliveryZoneController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $request->validate([
-            'file'                         => ['required', 'file'],
-            'inventory_source_id'          => ['required', 'integer', 'exists:inventory_sources,id'],
-            'default_city_id'              => ['nullable', 'integer', 'exists:delivery_cities,id'],
-            'default_rate'                 => ['required', 'array'],
+            'file' => ['required', 'file'],
+            'inventory_source_id' => ['required', 'integer', 'exists:inventory_sources,id'],
+            'default_city_id' => ['nullable', 'integer', 'exists:delivery_cities,id'],
+            'default_rate' => ['required', 'array'],
             'default_rate.min_order_total' => ['required', 'numeric', 'min:0'],
-            'default_rate.price'           => ['required', 'numeric', 'min:0'],
+            'default_rate.price' => ['required', 'numeric', 'min:0'],
         ]);
 
         $contents = file_get_contents($request->file('file')->getRealPath());
@@ -176,8 +176,8 @@ class DeliveryZoneController extends Controller
         }
 
         $inventorySourceId = (int) $request->input('inventory_source_id');
-        $defaultCityId     = $request->filled('default_city_id') ? (int) $request->input('default_city_id') : null;
-        $defaultRate       = $request->input('default_rate');
+        $defaultCityId = $request->filled('default_city_id') ? (int) $request->input('default_city_id') : null;
+        $defaultRate = $request->input('default_rate');
 
         $citiesByCode = DeliveryCity::query()->pluck('id', 'code');
 
@@ -185,33 +185,39 @@ class DeliveryZoneController extends Controller
             DB::transaction(function () use ($features, $citiesByCode, $defaultCityId, $inventorySourceId, $defaultRate): void {
                 foreach ($features as $feature) {
                     $description = $feature['properties']['description'] ?? '';
-                    $code        = str_starts_with($description, '#cid=') ? substr($description, 5) : null;
+                    $code = str_starts_with($description, '#cid=') ? substr($description, 5) : null;
 
                     $cityId = ($code !== null && $citiesByCode->has($code))
                         ? $citiesByCode->get($code)
                         : $defaultCityId;
 
-                    $properties  = $feature['properties'] ?? [];
+                    $properties = $feature['properties'] ?? [];
                     $coordinates = $feature['geometry']['coordinates'][0] ?? [];
 
-                    $zone = DeliveryZone::query()->create([
-                        'city_id'                => $cityId,
-                        'code'                   => $code ?? 'zone_'.uniqid(),
-                        'name'                   => $code ?? 'Imported Zone',
-                        'polygon_json'           => $coordinates,
-                        'polygon_color'          => $properties['fill'] ?? '#0077cc',
-                        'polygon_fill_opacity'   => (float) ($properties['fill-opacity'] ?? 0.2),
-                        'polygon_stroke_opacity' => (float) ($properties['stroke-opacity'] ?? 1.0),
-                        'is_active'              => true,
-                    ]);
+                    $zoneCode = $code ?? 'zone_'.uniqid();
+
+                    $zone = DeliveryZone::query()->updateOrCreate(
+                        ['code' => $zoneCode],
+                        [
+                            'city_id' => $cityId,
+                            'name' => $code ?? 'Imported Zone',
+                            'polygon_json' => $coordinates,
+                            'polygon_color' => $properties['fill'] ?? '#0077cc',
+                            'polygon_fill_opacity' => (float) ($properties['fill-opacity'] ?? 0.2),
+                            'polygon_stroke_opacity' => (float) ($properties['stroke-opacity'] ?? 1.0),
+                            'is_active' => true,
+                        ]
+                    );
 
                     $zone->inventory_sources()->sync([$inventorySourceId]);
 
-                    $zone->rates()->create([
-                        'min_order_total' => $defaultRate['min_order_total'],
-                        'price'           => $defaultRate['price'],
-                        'sort_order'      => 0,
-                    ]);
+                    if (! $zone->rates()->exists()) {
+                        $zone->rates()->create([
+                            'min_order_total' => $defaultRate['min_order_total'],
+                            'price' => $defaultRate['price'],
+                            'sort_order' => 0,
+                        ]);
+                    }
                 }
             });
         } catch (\Throwable $e) {

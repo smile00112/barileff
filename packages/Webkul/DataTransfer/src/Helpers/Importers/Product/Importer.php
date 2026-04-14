@@ -147,9 +147,16 @@ class Importer extends AbstractImporter
     protected array $typeFamilyValidationRules = [];
 
     /**
-     * Cached categories
+     * Cached resolved category chains (keyed by anchor, locale, and path).
+     *
+     * @var array<string, array<int, int>>
      */
     protected array $categories = [];
+
+    /**
+     * Summary key for catalog import parent anchor (ImportExport).
+     */
+    protected const CATEGORY_CHAIN_ANCHOR_SUMMARY_KEY = 'category_chain_anchor_id';
 
     /**
      * Cached channels
@@ -1156,29 +1163,57 @@ class Importer extends AbstractImporter
          */
         $categories[$rowData['sku']] = [];
 
-        $names = array_values(array_filter(array_map(
+        $segments = array_values(array_filter(array_map(
             'trim',
             explode(',', $rowData['categories'] ?? '')
         )));
 
-        $categoryIds = [];
-
-        foreach ($names as $name) {
-            if (isset($this->categories[$name])) {
-                $categoryIds = array_merge($categoryIds, $this->categories[$name]);
-
-                continue;
-            }
-
-            $this->categories[$name] = $this->categoryRepository
-                ->whereTranslation('name', $name)
-                ->pluck('id')
-                ->toArray();
-
-            $categoryIds = array_merge($categoryIds, $this->categories[$name]);
+        if ($segments === []) {
+            return;
         }
 
+        $locale = $rowData['locale'] ?? app()->getLocale();
+
+        $anchorId = $this->getCategoryChainAnchorId($rowData);
+
+        if ($anchorId === null) {
+            return;
+        }
+
+        $cacheKey = $anchorId.'|'.$locale.'|'.implode('|', $segments);
+
+        if (isset($this->categories[$cacheKey])) {
+            $categories[$rowData['sku']] = $this->categories[$cacheKey];
+
+            return;
+        }
+
+        $categoryIds = $this->categoryRepository->resolveCategoryChainUnderParent(
+            $anchorId,
+            $segments,
+            $locale
+        );
+
+        $this->categories[$cacheKey] = $categoryIds;
         $categories[$rowData['sku']] = $categoryIds;
+    }
+
+    /**
+     * Root for category path: ImportExport session parent, else channel root category.
+     */
+    protected function getCategoryChainAnchorId(array $rowData): ?int
+    {
+        $summary = $this->import->summary ?? [];
+
+        if (is_array($summary) && isset($summary[self::CATEGORY_CHAIN_ANCHOR_SUMMARY_KEY])) {
+            return (int) $summary[self::CATEGORY_CHAIN_ANCHOR_SUMMARY_KEY];
+        }
+
+        $channel = $this->getChannels()
+            ->where('code', $rowData['channel'] ?? core()->getDefaultChannelCode())
+            ->first();
+
+        return $channel?->root_category_id !== null ? (int) $channel->root_category_id : null;
     }
 
     /**
