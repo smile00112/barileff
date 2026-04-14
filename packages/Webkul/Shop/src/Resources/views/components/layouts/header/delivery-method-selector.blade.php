@@ -6,6 +6,10 @@
         $yandexMapsScriptUrl .= '&apikey=' . urlencode($yandexMapsApiKey);
     }
 
+    $hasDeliveryMethod = (bool) core()->getConfigData('sales.carriers.flatrate.active')
+        || (bool) core()->getConfigData('sales.carriers.delivery_zones.active')
+        || (bool) core()->getConfigData('sales.carriers.free.active');
+
     $currentCustomer = auth()->guard('customer')->user();
 
     $customerPayload = $currentCustomer
@@ -130,8 +134,9 @@
                                     </button>
 
                                     <div class="min-w-0 flex-1 rounded-[24px] bg-zinc-50 p-1.5">
-                                        <div class="grid grid-cols-2 gap-1.5">
+                                        <div class="grid gap-1.5" :class="showPickupTab ? 'grid-cols-2' : 'grid-cols-1'">
                                             <button
+                                                v-if="hasDeliveryMethod"
                                                 type="button"
                                                 class="flex min-h-[44px] items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all"
                                                 :class="activeTab === 'delivery' ? 'bg-navyBlue text-white shadow-sm' : 'bg-white text-zinc-600 hover:bg-zinc-200'"
@@ -141,7 +146,9 @@
                                                 @lang('shop::app.components.layouts.header.delivery-method-selector.delivery')
                                             </button>
 
+                                            {{-- Pickup tab: temporarily hidden, do not remove --}}
                                             <button
+                                                v-show="showPickupTab"
                                                 type="button"
                                                 class="flex min-h-[44px] items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all"
                                                 :class="activeTab === 'pickup' ? 'bg-navyBlue text-white shadow-sm' : 'bg-white text-zinc-600 hover:bg-zinc-200'"
@@ -431,6 +438,8 @@
                 return {
                     isOpen: false,
                     activeTab: 'delivery',
+                    hasDeliveryMethod: @json($hasDeliveryMethod),
+                    showPickupTab: false,
                     isCustomer: @json($currentCustomer !== null),
                     customerProfile: @json($customerPayload),
                     isLoading: false,

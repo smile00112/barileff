@@ -59,7 +59,15 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                 return true;
             }
 
-            $admin = auth()->guard('admin')->user();
+            // Читаем напрямую из сессии, чтобы избежать проблем с Octane + guard caching
+            $guardName = auth()->guard('admin')->getName();
+            $adminId   = $request->session()->get($guardName);
+
+            if (! $adminId) {
+                return false;
+            }
+
+            $admin = \Webkul\User\Models\Admin::find($adminId);
 
             if (! $admin) {
                 return false;
@@ -79,8 +87,15 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewTelescope', function ($user = null) {
+            $guardName = auth()->guard('admin')->getName();
+            $adminId   = request()->session()->get($guardName);
+
+            if (! $adminId) {
+                return false;
+            }
+
             /** @var Admin|null $admin */
-            $admin = auth()->guard('admin')->user();
+            $admin = \Webkul\User\Models\Admin::find($adminId);
 
             if (! $admin) {
                 return false;
