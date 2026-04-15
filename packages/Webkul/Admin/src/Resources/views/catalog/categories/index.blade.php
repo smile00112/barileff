@@ -25,7 +25,7 @@
 
     {!! view_render_event('bagisto.admin.catalog.categories.list.before') !!}
 
-    <v-category-tree :items="@json($categories)" />
+    <v-category-tree :items='@json($categories)' />
 
     {!! view_render_event('bagisto.admin.catalog.categories.list.after') !!}
 

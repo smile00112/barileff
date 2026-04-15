@@ -179,7 +179,7 @@
 
                                         <div
                                             v-show="cityDropdownOpen"
-                                            class="absolute left-0 right-0 top-[calc(100%+6px)] z-30 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl"
+                                            class="absolute z-2 left-0 right-0 top-[calc(100%+6px)] z-30 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl"
                                         >
                                             <div class="py-1.5">
                                                 <button
@@ -220,7 +220,7 @@
 
                                         <div
                                             v-if="showSuggestions"
-                                            class="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg"
+                                            class="absolute z-2 left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg"
                                         >
                                             <div class="max-h-[320px] overflow-y-auto py-2">
                                                 <button
@@ -696,7 +696,7 @@
                     }
 
                     this.$nextTick(() => {
-                        setTimeout(() => this.initMap(), this.mapPreloaded ? 50 : 250);
+                        setTimeout(() => this.initMap(), this.mapPreloaded ? 50 : 1500);
                     });
                 },
 
@@ -1432,7 +1432,7 @@
 
                     this.suggestionTimer = setTimeout(() => {
                         this.fetchAddressSuggestions();
-                    }, 250);
+                    }, 1500);
                 },
 
                 handleDeliveryFocus() {
