@@ -42,9 +42,7 @@ class CategoryController extends Controller
             return datagrid(CategoryDataGrid::class)->process();
         }
 
-        $categories = CategoryTreeResource::collection(
-            $this->categoryRepository->getCategoryTree()
-        )->toArray(request());
+        $categories = $this->categoryRepository->getCategoryTree();
 
         return view('admin::catalog.categories.index', compact('categories'));
     }

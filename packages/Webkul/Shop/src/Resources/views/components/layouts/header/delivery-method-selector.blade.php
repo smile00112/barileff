@@ -2011,4 +2011,6 @@
     </script>
 @endPushOnce
 
-@includeOnce('delivery-zones::shop.components.welcome-modal')
+@once
+    @include('delivery-zones::shop.components.welcome-modal')
+@endonce
