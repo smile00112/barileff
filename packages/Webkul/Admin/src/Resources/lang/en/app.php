@@ -1760,6 +1760,8 @@ return [
                 'batches-label' => 'Batches',
                 'completed-title' => 'Import completed successfully!',
                 'csv-column' => 'CSV Column',
+                'csv-preview' => 'Sample values',
+                'csv-preview-empty' => 'empty',
                 'failed-title' => 'Import failed.',
                 'mapping-hint' => 'Map each CSV column to the corresponding Sinica product field. Unmapped columns will be skipped.',
                 'mapping-title' => 'Column Mapping',

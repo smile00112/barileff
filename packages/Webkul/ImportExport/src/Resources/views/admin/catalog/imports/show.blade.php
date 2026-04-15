@@ -117,6 +117,7 @@
                             <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
                                 <tr>
                                     <th class="px-4 py-2 text-left font-medium">@lang('admin::app.catalog.imports.show.csv-column')</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-400 dark:text-gray-500 font-normal text-xs">@lang('admin::app.catalog.imports.show.csv-preview')</th>
                                     <th class="px-4 py-2 text-left font-medium">@lang('admin::app.catalog.imports.show.bagisto-field')</th>
                                 </tr>
                             </thead>
@@ -127,6 +128,17 @@
                                     :key="header"
                                 >
                                     <td class="px-4 py-2 font-mono text-xs">@{{ header }}</td>
+
+                                    <td class="px-4 py-2 max-w-xs">
+                                        <template v-if="previewValues[header] && previewValues[header].length">
+                                            <span
+                                                v-for="(val, i) in previewValues[header].slice(0, 3)"
+                                                :key="i"
+                                                class="inline-block max-w-[200px] truncate align-middle text-xs text-gray-400 dark:text-gray-500"
+                                            >@{{ val }}<span v-if="i < previewValues[header].slice(0, 3).length - 1">, </span></span>
+                                        </template>
+                                        <span v-else class="text-xs text-red-400 dark:text-red-500">@lang('admin::app.catalog.imports.show.csv-preview-empty')</span>
+                                    </td>
 
                                     <td class="px-4 py-2">
                                         <select
@@ -289,6 +301,7 @@
                         bagistoFields: @json($bagistoFields),
                         inventorySources: @json($inventorySources),
                         inventorySourceId: {{ $session->inventory_source_id ?? 'null' }},
+                        previewValues: @json((object)$previewRows),
                         isLoading: false,
                         error: null,
                         stats: {

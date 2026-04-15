@@ -217,13 +217,13 @@
                     row.className = 'grid grid-cols-4 gap-2 max-md:grid-cols-1';
                     row.innerHTML = `
                         <div>
-                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
                         </div>
                         <div>
-                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][price]">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" step="0.01" name="rates[${ratesIndex}][price]">
                         </div>
                         <div class="flex gap-2">
-                            <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
                         </div>
                         <div class="flex items-end">
                             <button type="button" class="secondary-button remove-rate">${polygonJs.remove_rate}</button>

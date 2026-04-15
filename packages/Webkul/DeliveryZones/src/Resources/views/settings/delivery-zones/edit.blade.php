@@ -234,13 +234,13 @@
                     row.className = 'grid grid-cols-4 gap-2 max-md:grid-cols-1';
                     row.innerHTML = `
                         <div>
-                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" step="0.01" name="rates[${ratesIndex}][min_order_total]" value="0">
                         </div>
                         <div>
-                            <input class="control w-full" type="number" step="0.01" name="rates[${ratesIndex}][price]">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" step="0.01" name="rates[${ratesIndex}][price]">
                         </div>
                         <div class="flex gap-2">
-                            <input class="control w-full" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
+                            <input class="w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400" type="number" name="rates[${ratesIndex}][sort_order]" value="${ratesIndex}">
                         </div>
                         <div class="flex items-end">
                             <button type="button" class="secondary-button remove-rate">${polygonJs.remove_rate}</button>
@@ -482,6 +482,40 @@
                     toggleEditorState();
                 };
 
+                const fitMapToPolygon = () => {
+                    if (! map || ! polygonObject || coordinates.length < 3) {
+                        return;
+                    }
+
+                    const bounds = polygonObject.geometry.getBounds();
+
+                    if (Array.isArray(bounds) && bounds.length === 2) {
+                        map.setBounds(bounds, {
+                            checkZoomRange: true,
+                            duration: 250,
+                            zoomMargin: [20, 20, 20, 20],
+                        });
+
+                        return;
+                    }
+
+                    const latitudes = coordinates.map((point) => point[0]);
+                    const longitudes = coordinates.map((point) => point[1]);
+                    const minLat = Math.min(...latitudes);
+                    const maxLat = Math.max(...latitudes);
+                    const minLng = Math.min(...longitudes);
+                    const maxLng = Math.max(...longitudes);
+                    const centerLat = (minLat + maxLat) / 2;
+                    const centerLng = (minLng + maxLng) / 2;
+
+                    if (Number.isFinite(centerLat) && Number.isFinite(centerLng)) {
+                        map.setCenter([centerLat, centerLng], 12, {
+                            checkZoomRange: true,
+                            duration: 250,
+                        });
+                    }
+                };
+
                 clearPolygonButton?.addEventListener('click', () => {
                     coordinates = [];
                     syncPolygonInput(coordinates);
@@ -531,6 +565,7 @@
                     });
 
                     renderPolygon();
+                    fitMapToPolygon();
 
                     map.events.add('click', (event) => {
                         if (! editMode) {

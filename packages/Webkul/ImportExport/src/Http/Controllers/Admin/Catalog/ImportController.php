@@ -110,8 +110,9 @@ class ImportController extends Controller
         $session = CatalogImportSession::findOrFail($id);
         $bagistoFields = $this->getSinicaFields();
         $inventorySources = InventorySource::where('status', 1)->orderBy('name')->get(['id', 'name', 'code']);
+        $previewRows = $this->readPreviewRows($session);
 
-        return view('import_export::admin.catalog.imports.show', compact('session', 'bagistoFields', 'inventorySources'));
+        return view('import_export::admin.catalog.imports.show', compact('session', 'bagistoFields', 'inventorySources', 'previewRows'));
     }
 
     /**
@@ -790,6 +791,51 @@ class ImportController extends Controller
         $value = (string) preg_replace('/[^\p{L}\p{M}\p{N}]+/u', '-', $value);
 
         return trim($value, '-') ?: 'product';
+    }
+
+    /**
+     * Read the first few data rows from the session CSV for preview.
+     *
+     * Returns an array keyed by header name, where each value is an array
+     * of up to PREVIEW_ROW_COUNT non-empty sample values from that column.
+     *
+     * @return array<string, list<string>>
+     */
+    protected function readPreviewRows(CatalogImportSession $session, int $maxRows = 5): array
+    {
+        $headers = $session->headers ?? [];
+
+        if (empty($headers)) {
+            return [];
+        }
+
+        $originalPath = Storage::disk('private')->path($session->file_path);
+        $handle = @fopen($originalPath, 'r');
+
+        if (! $handle) {
+            return [];
+        }
+
+        fgetcsv($handle, 4096, $session->delimiter); // skip header row
+
+        $preview = array_fill_keys($headers, []);
+        $rowsRead = 0;
+
+        while ($rowsRead < $maxRows && ($row = fgetcsv($handle, 4096, $session->delimiter)) !== false) {
+            foreach ($headers as $idx => $header) {
+                $value = trim($row[$idx] ?? '');
+
+                if ($value !== '') {
+                    $preview[$header][] = $value;
+                }
+            }
+
+            $rowsRead++;
+        }
+
+        fclose($handle);
+
+        return $preview;
     }
 
     /**

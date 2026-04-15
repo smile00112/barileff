@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\UploadedFile;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\Shipping\Models\DeliveryCity;
 use Webkul\Shipping\Models\DeliveryZone;
@@ -334,6 +335,10 @@ it('should append yandex maps api key to map script url on create and edit pages
         ->assertDontSee('name="inventory_source_ids[]"', false)
         ->assertDontSee('name="center_lat"', false)
         ->assertDontSee('name="center_lng"', false)
+        ->assertSee('const fitMapToPolygon = () => {', false)
+        ->assertSee('map.setBounds(bounds, {', false)
+        ->assertSee('polygonObject.geometry.getBounds()', false)
+        ->assertSee('w-full rounded-md border px-3 py-2.5 text-sm text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400', false)
         ->assertSee('window.setTimeout(initDeliveryZoneForm, 0);', false);
 });
 
@@ -391,15 +396,15 @@ it('resolves delivery zones admin translation keys in english and russian', func
 });
 
 it('should allow creating a delivery zone without a city', function () {
-    $zone = \Webkul\Shipping\Models\DeliveryZone::query()->create([
-        'city_id'                => null,
-        'code'                   => 'cityless-zone-test',
-        'name'                   => 'Cityless Zone',
-        'polygon_json'           => [],
-        'polygon_color'          => '#0077cc',
-        'polygon_fill_opacity'   => 0.2,
+    $zone = DeliveryZone::query()->create([
+        'city_id' => null,
+        'code' => 'cityless-zone-test',
+        'name' => 'Cityless Zone',
+        'polygon_json' => [],
+        'polygon_color' => '#0077cc',
+        'polygon_fill_opacity' => 0.2,
         'polygon_stroke_opacity' => 1.0,
-        'is_active'              => true,
+        'is_active' => true,
     ]);
 
     expect($zone->city_id)->toBeNull()
@@ -418,53 +423,53 @@ it('should render the import delivery zones page', function () {
 it('should import delivery zones from a GeoJSON file', function () {
     $this->loginAsAdmin();
 
-    $city = \Webkul\Shipping\Models\DeliveryCity::query()->create([
-        'code'      => 'novosibirsksuharnayaz4',
-        'name'      => 'Novosibirsk Test',
-        'country'   => 'RU',
-        'state'     => 'NSK',
+    $city = DeliveryCity::query()->create([
+        'code' => 'novosibirsksuharnayaz4',
+        'name' => 'Novosibirsk Test',
+        'country' => 'RU',
+        'state' => 'NSK',
         'is_active' => true,
     ]);
 
     $inventorySource = InventorySource::factory()->create();
 
     $geojson = [
-        'type'     => 'FeatureCollection',
+        'type' => 'FeatureCollection',
         'metadata' => ['name' => 'Delivery Zones', 'creator' => 'Admin App Zone Editor'],
         'features' => [
             [
                 'type' => 'Feature',
-                'id'   => 0,
+                'id' => 0,
                 'geometry' => [
-                    'type'        => 'Polygon',
+                    'type' => 'Polygon',
                     'coordinates' => [
                         [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23], [82.93, 55.24]],
                     ],
                 ],
                 'properties' => [
-                    'description'    => '#cid=novosibirsksuharnayaz4',
-                    'fill'           => '#b51eff',
-                    'fill-opacity'   => 0.1,
-                    'stroke'         => '#b51eff',
-                    'stroke-width'   => '1',
+                    'description' => '#cid=novosibirsksuharnayaz4',
+                    'fill' => '#b51eff',
+                    'fill-opacity' => 0.1,
+                    'stroke' => '#b51eff',
+                    'stroke-width' => '1',
                     'stroke-opacity' => 0.1,
                 ],
             ],
         ],
     ];
 
-    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent(
+    $file = UploadedFile::fake()->createWithContent(
         'zones.json',
         json_encode($geojson)
     );
 
     post(route('admin.settings.delivery_zones.import.store'), [
-        'file'                => $file,
+        'file' => $file,
         'inventory_source_id' => $inventorySource->id,
-        'default_rate'        => ['min_order_total' => 0, 'price' => 300],
+        'default_rate' => ['min_order_total' => 0, 'price' => 300],
     ])->assertRedirect(route('admin.settings.delivery_zones.index'));
 
-    $zone = \Webkul\Shipping\Models\DeliveryZone::query()
+    $zone = DeliveryZone::query()
         ->where('code', 'novosibirsksuharnayaz4')
         ->firstOrFail();
 
@@ -480,53 +485,53 @@ it('should import delivery zones from a GeoJSON file', function () {
 it('should fall back to default city when zone city code is not found', function () {
     $this->loginAsAdmin();
 
-    $defaultCity = \Webkul\Shipping\Models\DeliveryCity::query()->create([
-        'code'      => 'default-fallback-city',
-        'name'      => 'Fallback City',
-        'country'   => 'RU',
-        'state'     => 'NSK',
+    $defaultCity = DeliveryCity::query()->create([
+        'code' => 'default-fallback-city',
+        'name' => 'Fallback City',
+        'country' => 'RU',
+        'state' => 'NSK',
         'is_active' => true,
     ]);
 
     $inventorySource = InventorySource::factory()->create();
 
     $geojson = [
-        'type'     => 'FeatureCollection',
+        'type' => 'FeatureCollection',
         'features' => [
             [
                 'type' => 'Feature',
-                'id'   => 0,
+                'id' => 0,
                 'geometry' => [
-                    'type'        => 'Polygon',
+                    'type' => 'Polygon',
                     'coordinates' => [
                         [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23], [82.93, 55.24]],
                     ],
                 ],
                 'properties' => [
-                    'description'    => '#cid=unknown-city-xyz',
-                    'fill'           => '#ff0000',
-                    'fill-opacity'   => 0.2,
-                    'stroke'         => '#ff0000',
-                    'stroke-width'   => '1',
+                    'description' => '#cid=unknown-city-xyz',
+                    'fill' => '#ff0000',
+                    'fill-opacity' => 0.2,
+                    'stroke' => '#ff0000',
+                    'stroke-width' => '1',
                     'stroke-opacity' => 0.8,
                 ],
             ],
         ],
     ];
 
-    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent(
+    $file = UploadedFile::fake()->createWithContent(
         'zones.json',
         json_encode($geojson)
     );
 
     post(route('admin.settings.delivery_zones.import.store'), [
-        'file'                => $file,
+        'file' => $file,
         'inventory_source_id' => $inventorySource->id,
-        'default_city_id'     => $defaultCity->id,
-        'default_rate'        => ['min_order_total' => 0, 'price' => 150],
+        'default_city_id' => $defaultCity->id,
+        'default_rate' => ['min_order_total' => 0, 'price' => 150],
     ])->assertRedirect(route('admin.settings.delivery_zones.index'));
 
-    $zone = \Webkul\Shipping\Models\DeliveryZone::query()
+    $zone = DeliveryZone::query()
         ->where('code', 'unknown-city-xyz')
         ->firstOrFail();
 
@@ -536,23 +541,23 @@ it('should fall back to default city when zone city code is not found', function
 it('should export delivery zones as GeoJSON download', function () {
     $this->loginAsAdmin();
 
-    $city = \Webkul\Shipping\Models\DeliveryCity::query()->create([
-        'code'      => 'export-test-city',
-        'name'      => 'Export Test City',
-        'country'   => 'RU',
-        'state'     => 'MSK',
+    $city = DeliveryCity::query()->create([
+        'code' => 'export-test-city',
+        'name' => 'Export Test City',
+        'country' => 'RU',
+        'state' => 'MSK',
         'is_active' => true,
     ]);
 
-    \Webkul\Shipping\Models\DeliveryZone::query()->create([
-        'city_id'                => $city->id,
-        'code'                   => 'export-test-city',
-        'name'                   => 'export-test-city',
-        'polygon_json'           => [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23]],
-        'polygon_color'          => '#b51eff',
-        'polygon_fill_opacity'   => 0.1,
+    DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'export-test-city',
+        'name' => 'export-test-city',
+        'polygon_json' => [[82.93, 55.24], [82.94, 55.22], [82.96, 55.23]],
+        'polygon_color' => '#b51eff',
+        'polygon_fill_opacity' => 0.1,
         'polygon_stroke_opacity' => 0.1,
-        'is_active'              => true,
+        'is_active' => true,
     ]);
 
     $response = get(route('admin.settings.delivery_zones.export'));
