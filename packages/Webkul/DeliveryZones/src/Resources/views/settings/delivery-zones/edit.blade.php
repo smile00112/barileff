@@ -55,7 +55,7 @@
 
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.inventory-sources')</p>
 
                     @php
@@ -78,7 +78,7 @@
                     <x-admin::form.control-group.error control-name="inventory_source_ids" />
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">@lang('admin::app.settings.delivery_zones.edit.zone-rates')</p>
 
                     @php
