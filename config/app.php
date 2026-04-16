@@ -121,7 +121,7 @@ return [
     | (use capital letters!)
     */
 
-    'default_country' => null,
+    'default_country' => env('APP_DEFAULT_COUNTRY', 'RU'),
 
     /*
     |--------------------------------------------------------------------------

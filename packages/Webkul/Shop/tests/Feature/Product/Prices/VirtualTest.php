@@ -1428,7 +1428,7 @@ it('should check tax is applying for the virtual product into the cart for virtu
 
     $taxRate = TaxRate::factory()->create([
         'zip_code' => '',
-        'country' => $countryCode = 'IN',
+        'country' => $countryCode = 'RU',
     ]);
 
     TaxMap::factory()->create([

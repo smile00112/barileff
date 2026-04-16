@@ -19,6 +19,8 @@ class StatesTableSeeder extends Seeder
 
         $states = json_decode(file_get_contents(__DIR__.'/../../../Data/states.json'), true);
 
-        DB::table('country_states')->insert($states);
+        if (! empty($states)) {
+            DB::table('country_states')->insert($states);
+        }
     }
 }

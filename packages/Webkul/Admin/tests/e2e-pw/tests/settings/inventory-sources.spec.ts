@@ -55,8 +55,8 @@ test.describe("inventory source management", () => {
         /**
          * Source Address Section.
          */
-        await adminPage.locator("#country").selectOption("IN");
-        await adminPage.locator("#state").selectOption("DL");
+        await adminPage.locator("#country").selectOption("RU");
+        await adminPage.locator("#state").fill("Moscow");
         await adminPage
             .getByRole("textbox", { name: "City" })
             .fill("New Delhi");

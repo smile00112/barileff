@@ -1537,7 +1537,7 @@ it('should check tax is applying for the configurable product into the cart for 
 
     $taxRate = TaxRate::factory()->create([
         'zip_code' => '',
-        'country' => $countryCode = 'IN',
+        'country' => $countryCode = 'RU',
     ]);
 
     TaxMap::factory()->create([

@@ -41,7 +41,7 @@ class Installer
                     'domain' => config('app.url'),
                     'email' => $admin?->email,
                     'name' => $admin?->name,
-                    'country_code' => config('app.default_country') ?? 'IN',
+                    'country_code' => config('app.default_country') ?? 'RU',
                 ],
             ]);
         } catch (\Exception $e) {

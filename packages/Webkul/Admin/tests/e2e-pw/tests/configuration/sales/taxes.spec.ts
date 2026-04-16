@@ -57,13 +57,13 @@ test.describe('Taxes Configuration', () => {
      * Update the Default Destination Calculation Configuration.
      */
     test('should update default destination calculation configuration', async ({ adminPage }) => {
-        await adminPage.selectOption('select[name="sales[taxes][default_destination_calculation][country]"]', 'IN');
+        await adminPage.selectOption('select[name="sales[taxes][default_destination_calculation][country]"]', 'RU');
         const taxBasedOn = adminPage.locator('select[name="sales[taxes][default_destination_calculation][country]"]');
-        await expect(taxBasedOn).toHaveValue('IN');
+        await expect(taxBasedOn).toHaveValue('RU');
 
-        await adminPage.selectOption('select[name="sales[taxes][default_destination_calculation][state]"]', 'UP');
-        const productPrice = adminPage.locator('select[name="sales[taxes][default_destination_calculation][state]"]');
-        await expect(productPrice).toHaveValue('UP');
+        await adminPage.fill('input[name="sales[taxes][default_destination_calculation][state]"]', 'Moscow');
+        const defaultState = adminPage.locator('input[name="sales[taxes][default_destination_calculation][state]"]');
+        await expect(defaultState).toHaveValue('Moscow');
         
         await adminPage.fill('input[name="sales[taxes][default_destination_calculation][post_code]"]', generateRandomNumericString(6));
 

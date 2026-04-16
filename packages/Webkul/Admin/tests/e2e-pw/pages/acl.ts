@@ -1474,9 +1474,9 @@ export class ACLManagement {
         await this.locators.email.fill(generateEmail());
         await this.locators.contactNumber.fill(generatePhoneNumber());
         await this.locators.fax.fill(generatePhoneNumber());
-        await this.locators.country.selectOption("IN");
-        await this.locators.state.selectOption("DL");
-        await this.locators.city.fill("New Delhi");
+        await this.locators.country.selectOption("RU");
+        await this.locators.state.fill("Moscow");
+        await this.locators.city.fill("Moscow");
         await this.locators.street.fill("Some street address");
         await this.locators.postcode.fill("110001");
         await this.locators.statusToggle.click();
@@ -1632,7 +1632,7 @@ export class ACLManagement {
         await this.locators.createBtn.click();
         await this.page.waitForLoadState("networkidle");
         await this.locators.identifier.fill("test-tax-rate");
-        await this.locators.selectCountry.selectOption("IN");
+        await this.locators.selectCountry.selectOption("RU");
         await this.locators.taxRate.fill("10");
         await this.locators.createBtn.first().click();
         await expect(this.locators.successCreateTaxRate.first()).toBeVisible();

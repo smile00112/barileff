@@ -984,9 +984,9 @@ export async function generateSimpleOrder(adminPage) {
             );
             await adminPage.selectOption(
                 'select[name="shipping.country"]',
-                "IN",
+                "RU",
             );
-            await adminPage.selectOption('select[name="shipping.state"]', "UP");
+            await adminPage.locator('input[name="shipping.state"]').fill('Moscow');
             await adminPage.fill(
                 'input[name="shipping.city"]',
                 generateLastName(),
@@ -1160,9 +1160,9 @@ export async function generateConfigurableOrder(adminPage) {
             );
             await adminPage.selectOption(
                 'select[name="shipping.country"]',
-                "IN",
+                "RU",
             );
-            await adminPage.selectOption('select[name="shipping.state"]', "UP");
+            await adminPage.locator('input[name="shipping.state"]').fill('Moscow');
             await adminPage.fill(
                 'input[name="shipping.city"]',
                 generateLastName(),
@@ -1331,9 +1331,9 @@ export async function generateGroupOrder(adminPage) {
             );
             await adminPage.selectOption(
                 'select[name="shipping.country"]',
-                "IN",
+                "RU",
             );
-            await adminPage.selectOption('select[name="shipping.state"]', "UP");
+            await adminPage.locator('input[name="shipping.state"]').fill('Moscow');
             await adminPage.fill(
                 'input[name="shipping.city"]',
                 generateLastName(),
@@ -1447,8 +1447,8 @@ export async function generateVirtualOrder(adminPage) {
         'input[name="billing.address.[0]"]',
         generateFirstName(),
     );
-    await adminPage.selectOption('select[name="billing.country"]', "IN");
-    await adminPage.selectOption('select[name="billing.state"]', "UP");
+    await adminPage.selectOption('select[name="billing.country"]', "RU");
+    await adminPage.locator('input[name="billing.state"]').fill('Moscow');
     await adminPage.fill('input[name="billing.city"]', generateLastName());
     await adminPage.fill('input[name="billing.postcode"]', "201301");
     await adminPage.fill('input[name="billing.phone"]', generatePhoneNumber());
@@ -1542,8 +1542,8 @@ export async function generateDownloadableOrder(adminPage) {
         'input[name="billing.address.[0]"]',
         generateFirstName(),
     );
-    await adminPage.selectOption('select[name="billing.country"]', "IN");
-    await adminPage.selectOption('select[name="billing.state"]', "UP");
+    await adminPage.selectOption('select[name="billing.country"]', "RU");
+    await adminPage.locator('input[name="billing.state"]').fill('Moscow');
     await adminPage.fill('input[name="billing.city"]', generateLastName());
     await adminPage.fill('input[name="billing.postcode"]', "201301");
     await adminPage.fill('input[name="billing.phone"]', generatePhoneNumber());
@@ -1686,9 +1686,9 @@ export async function generateOrder(adminPage) {
             );
             await adminPage.selectOption(
                 'select[name="shipping.country"]',
-                "IN"
+                "RU"
             );
-            await adminPage.selectOption('select[name="shipping.state"]', "UP");
+            await adminPage.locator('input[name="shipping.state"]').fill('Moscow');
             await adminPage.fill(
                 'input[name="shipping.city"]',
                 generateLastName()

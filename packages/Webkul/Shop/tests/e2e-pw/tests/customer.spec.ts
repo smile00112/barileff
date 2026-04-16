@@ -288,8 +288,8 @@ test("should edit an address", async ({ page }) => {
     await page.getByPlaceholder("Vat ID").click();
     await page.getByPlaceholder("Street Address").click();
     await page.getByPlaceholder("Street Address").fill("123ghds1");
-    await page.getByLabel("Country").selectOption("IN");
-    await page.locator("#state").selectOption("TR");
+    await page.getByLabel("Country").selectOption("RU");
+    await page.locator("#state").fill("Moscow");
     await page.getByPlaceholder("City").click();
     await page.getByPlaceholder("City").fill("noida");
     await page.getByPlaceholder("Post Code").click();

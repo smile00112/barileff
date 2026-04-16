@@ -1667,7 +1667,7 @@ it('should check tax is applying for the bundle product into the cart for bundle
 
     $taxRate = TaxRate::factory()->create([
         'zip_code' => '',
-        'country' => $countryCode = 'IN',
+        'country' => $countryCode = 'RU',
     ]);
 
     TaxMap::factory()->create([

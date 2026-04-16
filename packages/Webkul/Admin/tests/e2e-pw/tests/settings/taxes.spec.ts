@@ -8,8 +8,8 @@ import {
 async function createTaxRate(adminPage) {
     const taxRate = {
         identifier: generateSlug("_"),
-        country: "IN",
-        state: "DL",
+        country: "RU",
+        state: "Moscow",
     };
 
     /**
@@ -38,7 +38,7 @@ async function createTaxRate(adminPage) {
     await adminPage
         .locator('select[name="country"]')
         .selectOption(taxRate.country);
-    await adminPage.locator('select[name="state"]').selectOption(taxRate.state);
+    await adminPage.locator('input[name="state"]').fill(taxRate.state);
     await adminPage.locator('input[name="tax_rate"]').fill("18");
 
     /**

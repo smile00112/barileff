@@ -13,9 +13,9 @@ test.describe('Shipping Settings Configuration', () => {
      * Update the Shipping Origin Configuration.
      */
     test('should add Shipping origin refers to the location where goods or products originate before being transported to their destination', async ({ adminPage }) => {
-        await adminPage.selectOption('select[name="sales[shipping][origin][country]"]', 'IN');
+        await adminPage.selectOption('select[name="sales[shipping][origin][country]"]', 'RU');
         const country = adminPage.locator('select[name="sales[shipping][origin][country]"]');
-        await expect(country).toHaveValue('IN');
+        await expect(country).toHaveValue('RU');
 
         await adminPage.selectOption('select[name="sales[shipping][origin][state]"]', 'UP');
         const state = adminPage.locator('select[name="sales[shipping][origin][state]"]');

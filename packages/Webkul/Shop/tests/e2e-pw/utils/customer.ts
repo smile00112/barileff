@@ -93,9 +93,9 @@ export async function addAddress(page) {
     await page.getByPlaceholder("Vat ID").press("Tab");
     await page.getByPlaceholder("Street Address").fill("Demo");
     await page.getByPlaceholder("Street Address").press("Tab");
-    await page.getByLabel("Country").selectOption("DZ");
+    await page.getByLabel("Country").selectOption("RU");
     await page.getByPlaceholder("State").click();
-    await page.getByPlaceholder("State").fill("any");
+    await page.getByPlaceholder("State").fill("Moscow");
     await page.getByPlaceholder("City").click();
     await page.getByPlaceholder("City").fill("any");
     await page.getByPlaceholder("Post Code").click();

@@ -2645,8 +2645,8 @@ it('should check including tax rate when add a product to the cart based on ship
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();
@@ -2731,8 +2731,8 @@ it('should check including tax rate when add a product to the cart based on bill
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();
@@ -2833,8 +2833,8 @@ it('should check including tax rate when add a product to the cart based on ship
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();
@@ -2954,8 +2954,8 @@ it('should check excluding tax rate when add a product to the cart based on bill
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();
@@ -3056,8 +3056,8 @@ it('should check excluding tax rate when add a product to the cart based on ship
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();
@@ -3142,8 +3142,8 @@ it('should check excluding tax rate when add a product to the cart based on ship
     ]))->getSimpleProductFactory()->create();
 
     $taxRate = TaxRate::factory()->create([
-        'country' => 'IN',
-        'state' => fake()->randomElement(['UP', 'DL', 'HR', 'PB', 'RJ']),
+        'country' => 'RU',
+        'state' => fake()->randomElement(['Moscow', 'Saint Petersburg', 'Novosibirsk']),
     ]);
 
     $taxCategory = TaxCategory::factory()->create();

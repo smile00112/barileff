@@ -63,8 +63,8 @@ export class ProductCheckout {
         await this.locators.lastName.fill("guest");
         await this.locators.shippingEmail.fill("demo@example.com");
         await this.locators.streetAddress.fill("north street");
-        await this.locators.billingCountry.selectOption({ value: "IN" });
-        await this.locators.billingState.selectOption({ value: "UP" });
+        await this.locators.billingCountry.selectOption({ value: "RU" });
+        await this.page.locator('input[name="billing.state"]').fill("Moscow");
         await this.locators.billingCity.fill("test city");
         await this.locators.billingZip.fill("123456");
         await this.locators.billingTelephone.fill("2365432789");
@@ -126,8 +126,8 @@ export class ProductCheckout {
         await this.locators.lastName.fill("guest");
         await this.locators.shippingEmail.fill("demo@example.com");
         await this.locators.streetAddress.fill("north street");
-        await this.locators.billingCountry.selectOption({ value: "IN" });
-        await this.locators.billingState.selectOption({ value: "UP" });
+        await this.locators.billingCountry.selectOption({ value: "RU" });
+        await this.page.locator('input[name="billing.state"]').fill("Moscow");
         await this.locators.billingCity.fill("test city");
         await this.locators.billingZip.fill("123456");
         await this.locators.billingTelephone.fill("2365432789");
@@ -150,8 +150,8 @@ export class ProductCheckout {
         await this.locators.lastName.fill("guest");
         await this.locators.shippingEmail.fill("demo@example.com");
         await this.locators.streetAddress.fill("north street");
-        await this.locators.billingCountry.selectOption({ value: "IN" });
-        await this.locators.billingState.selectOption({ value: "UP" });
+        await this.locators.billingCountry.selectOption({ value: "RU" });
+        await this.page.locator('input[name="billing.state"]').fill("Moscow");
         await this.locators.billingCity.fill("test city");
         await this.locators.billingZip.fill("123456");
         await this.locators.billingTelephone.fill("2365432789");
@@ -194,8 +194,8 @@ export class ProductCheckout {
         await this.locators.lastName.fill("guest");
         await this.locators.shippingEmail.fill("demo@example.com");
         await this.locators.streetAddress.fill("north street");
-        await this.locators.billingCountry.selectOption({ value: "IN" });
-        await this.locators.billingState.selectOption({ value: "UP" });
+        await this.locators.billingCountry.selectOption({ value: "RU" });
+        await this.page.locator('input[name="billing.state"]').fill("Moscow");
         await this.locators.billingCity.fill("test city");
         await this.locators.billingZip.fill("123456");
         await this.locators.billingTelephone.fill("2365432789");
@@ -426,8 +426,8 @@ export class ProductCheckout {
         await this.locators.lastName.fill("guest");
         await this.locators.shippingEmail.fill("demo@example.com");
         await this.locators.streetAddress.fill("north street");
-        await this.locators.billingCountry.selectOption({ value: "IN" });
-        await this.locators.billingState.selectOption({ value: "UP" });
+        await this.locators.billingCountry.selectOption({ value: "RU" });
+        await this.page.locator('input[name="billing.state"]').fill("Moscow");
         await this.locators.billingCity.fill("test city");
         await this.locators.billingZip.fill("123456");
         await this.locators.billingTelephone.fill("2365432789");

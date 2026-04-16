@@ -7,8 +7,8 @@ const address = async (page) => {
   await page.fill('input[name="billing.last_name"]', generateLastName());
   await page.fill('input[name="billing.email"]', generateEmail());
   await page.fill('input[name="billing.address.[0]"]', generateFirstName());
-  await page.selectOption('select[name="billing.country"]', 'IN');
-  await page.selectOption('select[name="billing.state"]', 'UP');
+  await page.selectOption('select[name="billing.country"]', 'RU');
+  await page.locator('input[name="billing.state"]').fill('Moscow');
   await page.fill('input[name="billing.city"]', generateLastName());
   await page.fill('input[name="billing.postcode"]', generateRandomNumericString(6));
   await page.fill('input[name="billing.phone"]', generatePhoneNumber());
@@ -35,8 +35,8 @@ const address = async (page) => {
       await page.fill('input[name="shipping.last_name"]', generateLastName());
       await page.fill('input[name="shipping.email"]', generateEmail());
       await page.fill('input[name="shipping.address.[0]"]', generateFirstName());
-      await page.selectOption('select[name="shipping.country"]', 'IN');
-      await page.selectOption('select[name="shipping.state"]', 'UP');
+      await page.selectOption('select[name="shipping.country"]', 'RU');
+      await page.locator('input[name="shipping.state"]').fill('Moscow');
       await page.fill('input[name="shipping.city"]', generateLastName());
       await page.fill('input[name="shipping.postcode"]', '201301');
       await page.fill('input[name="shipping.phone"]', generatePhoneNumber());

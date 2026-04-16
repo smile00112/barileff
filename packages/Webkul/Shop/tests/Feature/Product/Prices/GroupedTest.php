@@ -1623,7 +1623,7 @@ it('should check tax is applying for the grouped product into the cart for group
 
     $taxRate = TaxRate::factory()->create([
         'zip_code' => '',
-        'country' => $countryCode = 'IN',
+        'country' => $countryCode = 'RU',
     ]);
 
     TaxMap::factory()->create([
