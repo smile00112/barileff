@@ -409,20 +409,28 @@ class ImportController extends Controller
             return null;
         }
 
-        // If the user mapped a plain `qty` column and selected an inventory source,
-        // rewrite that column as `inventories` with the format `{source_code}={qty}`
-        // that the DataTransfer Importer expects.  Skip this when there is already
-        // an explicit `inventories` column in the mapping.
+        // If the user selected an inventory source and mapped either:
+        //   a) a plain `qty` column → rename it to `inventories` and tag with source code, or
+        //   b) an `inventories` column directly (plain number) → tag with source code per-row.
+        // Both cases transform the raw value to the `{source_code}={qty}` format that
+        // the DataTransfer Importer expects.
         $inventorySourceCode = null;
 
-        if (isset($columnMap['qty']) && ! isset($columnMap['inventories']) && $session->inventory_source_id) {
+        if ($session->inventory_source_id) {
             $inventorySource = InventorySource::find($session->inventory_source_id);
 
             if ($inventorySource) {
-                $inventorySourceCode = $inventorySource->code;
-                $qtyColumnIndex = $columnMap['qty'];
-                unset($columnMap['qty']);
-                $columnMap = array_merge(['inventories' => $qtyColumnIndex], $columnMap);
+                if (isset($columnMap['qty']) && ! isset($columnMap['inventories'])) {
+                    // qty column mapped → rename to inventories and apply source code prefix
+                    $inventorySourceCode = $inventorySource->code;
+                    $qtyColumnIndex = $columnMap['qty'];
+                    unset($columnMap['qty']);
+                    $columnMap = array_merge(['inventories' => $qtyColumnIndex], $columnMap);
+                } elseif (isset($columnMap['inventories'])) {
+                    // inventories column mapped directly with a warehouse selected →
+                    // treat raw values as plain quantities and apply source code prefix per-row
+                    $inventorySourceCode = $inventorySource->code;
+                }
             }
         }
 

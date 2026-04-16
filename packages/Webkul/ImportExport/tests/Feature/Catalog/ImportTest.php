@@ -4,6 +4,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Models\Import as DataTransferImport;
+use Webkul\ImportExport\Http\Controllers\Admin\Catalog\ImportController;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
@@ -396,4 +397,50 @@ it('should reject non-existent inventory_source_id when starting import', functi
         'column_mapping' => ['sku' => 'sku', 'name' => 'name'],
         'inventory_source_id' => 999999,
     ])->assertStatus(422);
+});
+
+it('should apply source_code=qty format when inventories column mapped directly with a warehouse', function () {
+    $admin = $this->loginAsAdmin();
+
+    Storage::fake('private');
+
+    $inventorySource = InventorySource::factory()->create(['status' => 1, 'code' => 'main']);
+
+    Storage::disk('private')->put(
+        'catalog-imports/inv_direct_remap.csv',
+        "sku,stock\nSKU001,25\n"
+    );
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_READY,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/inv_direct_remap.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'inventory_source_id' => $inventorySource->id,
+        'column_mapping' => ['sku' => 'sku', 'stock' => 'inventories'],
+        'headers' => ['sku', 'stock'],
+        'allow_insert' => true,
+        'allow_update' => true,
+        'created_by' => $admin->id,
+    ]);
+
+    $controller = app(ImportController::class);
+
+    $method = new ReflectionMethod($controller, 'createRemappedCsv');
+
+    $remappedPath = $method->invoke($controller, $session);
+
+    expect($remappedPath)->not->toBeNull();
+
+    $remappedContent = Storage::disk('private')->get($remappedPath);
+
+    expect($remappedContent)->not->toBeNull();
+
+    $lines = array_filter(explode("\n", trim($remappedContent)));
+    $headers = str_getcsv(array_values($lines)[0]);
+    $row = str_getcsv(array_values($lines)[1]);
+    $data = array_combine($headers, $row);
+
+    expect($data['inventories'])->toBe('main=25');
 });
