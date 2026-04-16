@@ -506,4 +506,11 @@ class ProductDataGrid extends DataGrid
             ],
         ];
     }
+
+    /**
+     * Summary of perPageOptions
+     * @var array
+     */
+    protected $perPageOptions = [10, 20, 30, 40, 50, 80, 100];
+        
 }
