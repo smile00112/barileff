@@ -21,6 +21,28 @@ it('should show category page', function () {
         ->assertSeeText(trans('admin::app.catalog.categories.index.title'));
 });
 
+it('includes category logo url in category tree when logo is set', function () {
+    $this->loginAsAdmin();
+
+    $category = (new CategoryFaker)->factory()->create();
+
+    $category->forceFill([
+        'logo_path' => 'category/'.$category->id.'/logo.jpg',
+    ])->save();
+
+    $logoPath = 'category/'.$category->id.'/logo.jpg';
+
+    expect($category->fresh()->logo_url)->not->toBeEmpty();
+
+    $response = get(route('admin.catalog.categories.index'));
+
+    $response->assertOk();
+
+    $jsonLogoPath = str_replace('/', '\/', $logoPath);
+
+    expect($response->getContent())->toContain('"logo_path":"'.$jsonLogoPath.'"');
+});
+
 it('should return categories index datagrid as json for ajax pagination', function () {
     $this->loginAsAdmin();
 

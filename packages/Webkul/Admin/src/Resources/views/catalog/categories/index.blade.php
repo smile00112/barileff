@@ -64,7 +64,15 @@
                                 @click.stop="toggle(item.node.id)"
                             ></i>
 
+                            <img
+                                v-if="item.node.logo_url"
+                                :src="item.node.logo_url"
+                                :alt="item.node.name"
+                                class="h-8 w-8 shrink-0 rounded object-cover"
+                            />
+
                             <i
+                                v-else
                                 :class="[
                                     item.node.children && item.node.children.length ? 'icon-folder' : 'icon-attribute',
                                     'shrink-0 text-2xl'
