@@ -137,25 +137,6 @@
 
                 {!! view_render_event('bagisto.shop.customers.account.addresses.edit_form_controls.email.after', ['address' => $address]) !!}
 
-                <!-- Vat ID -->
-                <x-shop::form.control-group>
-                    <x-shop::form.control-group.label>
-                        @lang('shop::app.customers.account.addresses.edit.vat-id')
-                    </x-shop::form.control-group.label>
-
-                    <x-shop::form.control-group.control
-                        type="text"
-                        name="vat_id"
-                        :value="old('vat_id') ?? $address->vat_id"
-                        :label="trans('shop::app.customers.account.addresses.edit.vat-id')"
-                        :placeholder="trans('shop::app.customers.account.addresses.edit.vat-id')"
-                    />
-
-                    <x-shop::form.control-group.error control-name="vat_id" />
-                </x-shop::form.control-group>
-
-                {!! view_render_event('bagisto.shop.customers.account.addresses.edit_form_controls.vat_id.after', ['address' => $address]) !!}
-
                 @php
                     $addresses = explode(PHP_EOL, $address->address);
                 @endphp

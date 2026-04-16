@@ -240,7 +240,6 @@ it('should returns the create page of address', function () {
         ->assertSeeText(trans('shop::app.customers.account.addresses.index.add-address'))
         ->assertSeeText(trans('shop::app.customers.account.addresses.create.first-name'))
         ->assertSeeText(trans('shop::app.customers.account.addresses.create.last-name'))
-        ->assertSeeText(trans('shop::app.customers.account.addresses.create.vat-id'))
         ->assertSeeText(trans('shop::app.customers.account.addresses.create.street-address'))
         ->assertSeeText(trans('shop::app.customers.account.addresses.create.company-name'));
 });

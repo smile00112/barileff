@@ -28,25 +28,6 @@
 
             {!! view_render_event('bagisto.admin.sales.order.create.cart.address.form.company_name.after') !!}
 
-            <!-- VatId Name -->
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    @lang('admin::app.sales.orders.create.cart.address.vat-id')
-                </x-admin::form.control-group.label>
-
-                <x-admin::form.control-group.control
-                    type="text"
-                    ::name="controlName + '.vat_id'"
-                    ::value="address.vat_id"
-                    :label="trans('admin::app.sales.orders.create.cart.address.vat-id')"
-                    :placeholder="trans('admin::app.sales.orders.create.cart.address.vat-id')"
-                />
-
-                <x-admin::form.control-group.error ::name="controlName + '.vat_id'" />
-            </x-admin::form.control-group>
-
-            {!! view_render_event('bagisto.admin.sales.order.create.cart.address.form.vat_id.after') !!}
-
             <!-- First Name -->
             <x-admin::form.control-group>
                 <x-admin::form.control-group.label class="required !mt-0">

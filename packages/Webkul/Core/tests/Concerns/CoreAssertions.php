@@ -348,7 +348,6 @@ trait CoreAssertions
             'phone' => $address->phone,
             'postcode' => $address->postcode,
             'state' => $address->state,
-            'vat_id' => $address->vat_id,
             'customer_id' => ! $type ? $address->customer_id : null,
         ];
     }

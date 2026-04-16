@@ -443,7 +443,6 @@ class Cart
                 'company_name',
                 'first_name',
                 'last_name',
-                'vat_id',
                 'email',
                 'address',
                 'country',

@@ -125,25 +125,6 @@
 
                     {!! view_render_event('bagisto.shop.customers.account.addresses.create_form_controls.email.after') !!}
 
-                    <!-- Vat Id -->
-                    <x-shop::form.control-group>
-                        <x-shop::form.control-group.label>
-                            @lang('shop::app.customers.account.addresses.create.vat-id')
-                        </x-shop::form.control-group.label>
-
-                        <x-shop::form.control-group.control
-                            type="text"
-                            name="vat_id"
-                            :value="old('vat_id')"
-                            :label="trans('shop::app.customers.account.addresses.create.vat-id')"
-                            :placeholder="trans('shop::app.customers.account.addresses.create.vat-id')"
-                        />
-
-                        <x-shop::form.control-group.error control-name="vat_id" />
-                    </x-shop::form.control-group>
-
-                    {!! view_render_event('bagisto.shop.customers.account.addresses.create_form_controls.vat_id.after') !!}
-
                     <!-- Street Address -->
                     <x-shop::form.control-group>
                         <x-shop::form.control-group.label class="required">

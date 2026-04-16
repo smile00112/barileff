@@ -281,12 +281,6 @@
 
                                             <td>{{ $params['phone'] ?? 'N/A' }}</td>
                                         </tr>
-
-                                        <tr>
-                                            <td>@lang('shop::app.customers.account.gdpr.pdf.address-info.vat-id')</td>
-
-                                            <td>{{ $params['vat_id'] ?? 'N/A' }}</td>
-                                        </tr>
                                     </tbody>
                                 </table>
 

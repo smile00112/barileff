@@ -113,7 +113,6 @@
                         last_name: b?.last_name ?? '',
                         email: b?.email ?? '',
                         phone: b?.phone ?? '',
-                        vat_id: b?.vat_id ?? '',
                         address: this.deliverySelection?.label ? [this.deliverySelection.label] : (b?.address ?? []),
                         city: this.deliverySelection?.city || b?.city || '',
                         country: this.deliverySelection?.country || b?.country || '',
