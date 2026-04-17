@@ -1803,7 +1803,7 @@ return [
                 'group-prices-and-inventory' => 'Цены и остатки',
                 'group-product-data' => 'Данные товара',
                 'group-select' => 'Выбор действия',
-                'inventory-source-hint' => 'Если в маппинге указана колонка «Количество (склад)» или «Складские остатки», её числовые значения будут привязаны к выбранному источнику в формате "source_code=qty".',
+                'inventory-source-hint' => 'Если в маппинге указана колонка qty, её значения будут привязаны к выбранному источнику в формате "source_code=qty".',
                 'inventory-source-label' => 'Источник инвентаризации',
                 'inventory-source-placeholder' => '— Источник не выбран (использовать формат колонки inventories) —',
                 'saved' => 'Маппинг сохранён.',

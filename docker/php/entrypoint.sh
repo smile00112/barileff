@@ -46,6 +46,12 @@ run_artisan_optional storage:link
 # Оптимизация Laravel для production
 if [ "$APP_ENV" = "production" ]; then
     echo "Optimizing Laravel for production..."
+    # Очищаем старый кеш конфига перед перегенерацией, чтобы избежать
+    # устаревшего кеша из примонтированного volume (bootstrap/cache)
+    php artisan config:clear 2>/dev/null || true
+    php artisan route:clear 2>/dev/null || true
+    php artisan view:clear 2>/dev/null || true
+    php artisan event:clear 2>/dev/null || true
     run_artisan_optional config:cache
     run_artisan_optional route:cache
     run_artisan_optional view:cache
