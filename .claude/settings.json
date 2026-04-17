@@ -38,7 +38,8 @@
       "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php /d/_WORK_/laragon_2025/bin/composer/composer.phar update kalnoy/nestedset --ignore-platform-reqs)",
       "Bash(/d/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php /d/_WORK_/laragon_2025/bin/composer/composer.phar show kalnoy/nestedset --all)",
       "Bash(python3 -c ':*)",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "Bash(vendor/bin/pint packages/Webkul/Sales/src/Models/Order.php packages/Webkul/Sales/src/Repositories/OrderRepository.php packages/Webkul/Sales/src/Repositories/OrderItemRepository.php packages/Webkul/Admin/src/Http/Controllers/Sales/OrderItemController.php packages/Webkul/Admin/src/Http/Requests/Sales/UpdateOrderItemRequest.php packages/Webkul/Admin/src/DataGrids/Sales/OrderShipmentDataGrid.php)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

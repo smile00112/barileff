@@ -58,12 +58,7 @@
                 @include('admin::sales.invoices.create')
             @endif
 
-            @if (
-                $order->canShip()
-                && bouncer()->hasPermission('sales.shipments.create')
-            )
-                @include('admin::sales.shipments.create')
-            @endif
+            {{-- Shipment creation is disabled — inventory is deducted automatically at order creation. --}}
 
             @if (
                 $order->canRefund()
@@ -268,6 +263,52 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if ($order->inventory_source_id && ! $item->qty_invoiced && ! $item->qty_shipped && ! $item->qty_canceled)
+                                <div
+                                    class="flex items-center gap-2 mt-2"
+                                    x-data="{ qty: {{ $item->qty_ordered }}, loading: false }"
+                                >
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        x-model.number="qty"
+                                        class="w-20 rounded border border-gray-200 px-2 py-1 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                                    >
+
+                                    <button
+                                        type="button"
+                                        :disabled="loading || qty === {{ $item->qty_ordered }}"
+                                        class="rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
+                                        @click.prevent="
+                                            loading = true;
+                                            $fetch('{{ route('admin.sales.order-items.update', $item->id) }}', {
+                                                method: 'PUT',
+                                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content },
+                                                body: JSON.stringify({ quantity: qty })
+                                            }).then(r => r.json()).then(d => { loading = false; window.location.reload(); }).catch(() => { loading = false; });
+                                        "
+                                    >
+                                        @lang('admin::app.sales.orders.view.save')
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        :disabled="loading"
+                                        class="rounded bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700 disabled:opacity-50"
+                                        @click.prevent="
+                                            if (!confirm('{{ __('admin::app.sales.orders.view.confirm-delete-item') }}')) return;
+                                            loading = true;
+                                            $fetch('{{ route('admin.sales.order-items.destroy', $item->id) }}', {
+                                                method: 'DELETE',
+                                                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }
+                                            }).then(r => r.json()).then(d => { loading = false; window.location.reload(); }).catch(() => { loading = false; });
+                                        "
+                                    >
+                                        @lang('admin::app.sales.orders.view.delete')
+                                    </button>
+                                </div>
+                            @endif
 
                             {!! view_render_event('bagisto.admin.sales.order.list.after', ['order' => $order]) !!}
 
@@ -842,7 +883,7 @@
                     </x-slot>
 
                     <x-slot:content>
-                        @forelse ($order->shipments as $shipment)
+                        @forelse ($order->shipments->where('is_system', false) as $shipment)
                             <div class="grid gap-y-2.5">
                                 <div>
                                     <!-- Shipment Id -->

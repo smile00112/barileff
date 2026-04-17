@@ -2,6 +2,7 @@
 
 namespace Webkul\Sales\Repositories;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Core\Eloquent\Repository;
@@ -142,9 +143,13 @@ class OrderItemRepository extends Repository
 
         $this->updateProductOrderedInventories($orderItem);
 
-        if ($orderItem->getTypeInstance()->isStockable()) {
-            $shipmentItems = $orderItem?->parent->shipment_items ?? $orderItem->shipment_items;
+        if (! $orderItem->getTypeInstance()->isStockable()) {
+            return;
+        }
 
+        $shipmentItems = $orderItem?->parent->shipment_items ?? $orderItem->shipment_items;
+
+        if ($shipmentItems->isNotEmpty()) {
             foreach ($shipmentItems as $shipmentItem) {
                 if ($orderItem->parent) {
                     $shippedQty = $orderItem->qty_ordered
@@ -162,6 +167,30 @@ class OrderItemRepository extends Repository
 
                 $inventory->update(['qty' => $inventory->qty + $shippedQty]);
             }
+
+            return;
+        }
+
+        // Fallback: no shipment items — return qty using the order's linked inventory source.
+        // This applies to orders where inventory was deducted at creation time via the system shipment.
+        $inventorySourceId = $orderItem->order->inventory_source_id;
+
+        if (! $inventorySourceId) {
+            return;
+        }
+
+        $inventory = $orderItem->product->inventories()
+            ->where('inventory_source_id', $inventorySourceId)
+            ->first();
+
+        if (! $inventory) {
+            return;
+        }
+
+        $qtyToReturn = ($orderItem->qty_ordered ?? $orderItem->parent?->qty_ordered ?? 0) - ($orderItem->qty_invoiced ?? 0);
+
+        if ($qtyToReturn > 0) {
+            $inventory->increment('qty', $qtyToReturn);
         }
     }
 
@@ -189,6 +218,42 @@ class OrderItemRepository extends Repository
         }
 
         $orderedInventory->update(['qty' => $qty]);
+    }
+
+    /**
+     * Adjust physical inventory for an order item when its quantity changes.
+     *
+     * A positive delta means more stock is needed (deduct more).
+     * A negative delta means stock is being returned (restock).
+     */
+    public function adjustInventory(OrderItem $orderItem, int $delta): void
+    {
+        if (! $orderItem->product?->manage_stock) {
+            return;
+        }
+
+        $inventorySourceId = $orderItem->order->inventory_source_id;
+
+        if (! $inventorySourceId) {
+            return;
+        }
+
+        $inventory = $orderItem->product->inventories()
+            ->where('inventory_source_id', $inventorySourceId)
+            ->first();
+
+        if (! $inventory) {
+            return;
+        }
+
+        if ($delta > 0) {
+            $newQty = max(0, $inventory->qty - $delta);
+            $inventory->update(['qty' => $newQty]);
+        } elseif ($delta < 0) {
+            $inventory->increment('qty', abs($delta));
+        }
+
+        Event::dispatch('catalog.product.update.after', $orderItem->product);
     }
 
     /**

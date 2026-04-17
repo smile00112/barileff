@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Webkul\Checkout\Models\CartProxy;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\Sales\Contracts\Order as OrderContract;
 use Webkul\Sales\Database\Factories\OrderFactory;
 
@@ -150,6 +151,14 @@ class Order extends Model implements OrderContract
     public function cart(): BelongsTo
     {
         return $this->belongsTo(CartProxy::modelClass());
+    }
+
+    /**
+     * Get the inventory source from which this order was placed.
+     */
+    public function inventory_source(): BelongsTo
+    {
+        return $this->belongsTo(InventorySource::class, 'inventory_source_id');
     }
 
     /**

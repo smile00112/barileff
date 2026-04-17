@@ -11,6 +11,7 @@ use Webkul\Product\Repositories\ProductCustomizableOptionRepository;
 use Webkul\Sales\Contracts\Order as OrderContract;
 use Webkul\Sales\Generators\OrderSequencer;
 use Webkul\Sales\Models\Order;
+use Webkul\Sales\Models\Shipment;
 
 class OrderRepository extends Repository
 {
@@ -21,6 +22,7 @@ class OrderRepository extends Repository
      */
     public function __construct(
         protected OrderItemRepository $orderItemRepository,
+        protected ShipmentItemRepository $shipmentItemRepository,
         protected ProductCustomizableOptionRepository $productCustomizableOptionRepository,
         protected DownloadableLinkPurchasedRepository $downloadableLinkPurchasedRepository,
         Container $container
@@ -39,7 +41,7 @@ class OrderRepository extends Repository
     /**
      * This method will try attempt to a create order.
      *
-     * @return \Webkul\Sales\Contracts\Order
+     * @return OrderContract
      */
     public function createOrderIfNotThenRetry(array $data)
     {
@@ -81,6 +83,8 @@ class OrderRepository extends Repository
             }
 
             Event::dispatch('checkout.order.save.after', $order);
+
+            $this->attachInventorySource($order);
         } catch (\Exception $e) {
             /* rolling back first */
             DB::rollBack();
@@ -104,7 +108,7 @@ class OrderRepository extends Repository
     /**
      * Create order.
      *
-     * @return \Webkul\Sales\Contracts\Order
+     * @return OrderContract
      */
     public function create(array $data)
     {
@@ -114,7 +118,7 @@ class OrderRepository extends Repository
     /**
      * Cancel order. This method should be independent as admin also can cancel the order.
      *
-     * @param  \Webkul\Sales\Models\Order|int  $orderOrId
+     * @param  Order|int  $orderOrId
      * @return bool
      */
     public function cancel($orderOrId)
@@ -187,7 +191,7 @@ class OrderRepository extends Repository
     /**
      * Is order in completed state.
      *
-     * @param  \Webkul\Sales\Contracts\Order  $order
+     * @param  OrderContract  $order
      * @return bool
      */
     public function isInCompletedState($order)
@@ -252,7 +256,7 @@ class OrderRepository extends Repository
     /**
      * Is order in cancelled state.
      *
-     * @param  \Webkul\Sales\Contracts\Order  $order
+     * @param  OrderContract  $order
      * @return bool
      */
     public function isInCanceledState($order)
@@ -289,7 +293,7 @@ class OrderRepository extends Repository
     /**
      * Update order status.
      *
-     * @param  \Webkul\Sales\Contracts\Order  $order
+     * @param  OrderContract  $order
      * @param  string  $orderState
      * @return void
      */
@@ -323,7 +327,7 @@ class OrderRepository extends Repository
     /**
      * Collect totals.
      *
-     * @param  \Webkul\Sales\Contracts\Order  $order
+     * @param  OrderContract  $order
      * @return mixed
      */
     public function collectTotals($order)
@@ -384,10 +388,91 @@ class OrderRepository extends Repository
     }
 
     /**
+     * Copy inventory_source_id from the cart to the order and deduct stock.
+     */
+    private function attachInventorySource(Order $order): void
+    {
+        $cart = $order->cart;
+
+        if (! $cart || ! $cart->inventory_source_id) {
+            return;
+        }
+
+        $order->inventory_source_id = $cart->inventory_source_id;
+        $order->save();
+
+        $this->createSystemShipment($order);
+    }
+
+    /**
+     * Create a hidden system shipment that deducts inventory at order creation time.
+     * No ShipmentItem records are created — qty_shipped on order items stays 0.
+     * Inventory is deducted directly via ShipmentItemRepository::updateProductInventory().
+     */
+    private function createSystemShipment(Order $order): void
+    {
+        $inventorySource = $order->inventory_source;
+
+        if (! $inventorySource) {
+            return;
+        }
+
+        $address = $order->shipping_address ?? $order->billing_address;
+
+        if (! $address) {
+            return;
+        }
+
+        $shipment = Shipment::create([
+            'order_id' => $order->id,
+            'total_qty' => 0,
+            'total_weight' => 0,
+            'carrier_title' => null,
+            'track_number' => null,
+            'customer_id' => $order->customer_id,
+            'customer_type' => $order->customer_type,
+            'order_address_id' => $address->id,
+            'inventory_source_id' => $inventorySource->id,
+            'inventory_source_name' => $inventorySource->name,
+            'is_system' => true,
+        ]);
+
+        foreach ($order->items as $orderItem) {
+            if ($orderItem->getTypeInstance()->isComposite()) {
+                foreach ($orderItem->children as $child) {
+                    if (! $child->product?->manage_stock) {
+                        continue;
+                    }
+
+                    $qty = $child->qty_ordered ?: $orderItem->qty_ordered;
+
+                    $this->shipmentItemRepository->updateProductInventory([
+                        'shipment' => $shipment,
+                        'product' => $child->product,
+                        'qty' => $qty,
+                        'vendor_id' => 0,
+                    ]);
+                }
+            } else {
+                if (! $orderItem->product?->manage_stock) {
+                    continue;
+                }
+
+                $this->shipmentItemRepository->updateProductInventory([
+                    'shipment' => $shipment,
+                    'product' => $orderItem->product,
+                    'qty' => $orderItem->qty_ordered,
+                    'vendor_id' => 0,
+                ]);
+            }
+        }
+    }
+
+    /**
      * This method will find order if id is given else pass the order as it is.
      *
-     * @param  \Webkul\Sales\Models\Order|int  $orderOrId
-     * @return \Webkul\Sales\Contracts\Order
+     * @param  Order|int  $orderOrId
+     * @return OrderContract
      */
     protected function resolveOrderInstance($orderOrId)
     {

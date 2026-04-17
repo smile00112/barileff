@@ -5,6 +5,7 @@ use Webkul\Admin\Http\Controllers\Sales\BookingController;
 use Webkul\Admin\Http\Controllers\Sales\CartController;
 use Webkul\Admin\Http\Controllers\Sales\InvoiceController;
 use Webkul\Admin\Http\Controllers\Sales\OrderController;
+use Webkul\Admin\Http\Controllers\Sales\OrderItemController;
 use Webkul\Admin\Http\Controllers\Sales\RefundController;
 use Webkul\Admin\Http\Controllers\Sales\ShipmentController;
 use Webkul\Admin\Http\Controllers\Sales\TransactionController;
@@ -52,6 +53,15 @@ Route::prefix('sales')->group(function () {
     });
 
     /**
+     * Order item routes.
+     */
+    Route::controller(OrderItemController::class)->prefix('order-items')->group(function () {
+        Route::put('{id}', 'update')->name('admin.sales.order-items.update');
+
+        Route::delete('{id}', 'destroy')->name('admin.sales.order-items.destroy');
+    });
+
+    /**
      * Refunds routes.
      */
     Route::controller(RefundController::class)->prefix('refunds')->group(function () {
@@ -70,7 +80,8 @@ Route::prefix('sales')->group(function () {
     Route::controller(ShipmentController::class)->prefix('shipments')->group(function () {
         Route::get('', 'index')->name('admin.sales.shipments.index');
 
-        Route::post('create/{order_id}', 'store')->name('admin.sales.shipments.store');
+        // Shipment creation is disabled — inventory is deducted automatically at order creation.
+        // Route::post('create/{order_id}', 'store')->name('admin.sales.shipments.store');
 
         Route::get('view/{id}', 'view')->name('admin.sales.shipments.view');
     });
