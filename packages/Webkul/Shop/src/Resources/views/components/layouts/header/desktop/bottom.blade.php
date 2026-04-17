@@ -339,56 +339,6 @@
                         @lang('shop::app.components.layouts.header.desktop.bottom.all')
                     </span>
                 </div>
-
-                <!-- Show only first 4 categories in main navigation -->
-                <div
-                    class="group relative flex h-[77px] items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
-                    v-for="category in categories.slice(0, 4)"
-                >
-                    <span>
-                        <a
-                            :href="category.url"
-                            class="inline-block px-5 uppercase"
-                        >
-                            @{{ category.name }}
-                        </a>
-                    </span>
-
-                    <!-- Dropdown for each category -->
-                    <div
-                        class="pointer-events-none absolute top-[78px] z-[1] max-h-[580px] w-max max-w-[1260px] translate-y-1 overflow-auto overflow-x-auto border border-b-0 border-l-0 border-r-0 border-t border-[#F3F3F3] bg-white p-9 opacity-0 shadow-[0_6px_6px_1px_rgba(0,0,0,.3)] transition duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:duration-200 group-hover:ease-in ltr:-left-9 rtl:-right-9"
-                        v-if="category.children && category.children.length"
-                    >
-                        <div class="flex justify-between gap-x-[70px]">
-                            <div
-                                class="grid w-full min-w-max max-w-[150px] flex-auto grid-cols-[1fr] content-start gap-5"
-                                v-for="pairCategoryChildren in pairCategoryChildren(category)"
-                            >
-                                <template v-for="secondLevelCategory in pairCategoryChildren">
-                                    <p class="font-medium text-navyBlue">
-                                        <a :href="secondLevelCategory.url">
-                                            @{{ secondLevelCategory.name }}
-                                        </a>
-                                    </p>
-
-                                    <ul
-                                        class="grid grid-cols-[1fr] gap-3"
-                                        v-if="secondLevelCategory.children && secondLevelCategory.children.length"
-                                    >
-                                        <li
-                                            class="text-sm font-medium text-zinc-500"
-                                            v-for="thirdLevelCategory in secondLevelCategory.children"
-                                        >
-                                            <a :href="thirdLevelCategory.url">
-                                                @{{ thirdLevelCategory.name }}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Sinica Drawer Integration -->
@@ -553,17 +503,6 @@
                         .catch(error => {
                             console.log(error);
                         });
-                },
-
-                pairCategoryChildren(category) {
-                    if (! category.children) return [];
-
-                    return category.children.reduce((result, value, index, array) => {
-                        if (index % 2 === 0) {
-                            result.push(array.slice(index, index + 2));
-                        }
-                        return result;
-                    }, []);
                 },
 
                 toggleCategoryDrawer() {
