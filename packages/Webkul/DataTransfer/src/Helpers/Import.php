@@ -523,6 +523,14 @@ class Import
         if (! $this->typeImporter) {
             $importerConfig = config('importers.'.$this->import->type);
 
+            if (! $importerConfig) {
+                throw new \InvalidArgumentException(
+                    "No importer configured for type [{$this->import->type}]. "
+                    .'Available types: '.implode(', ', array_keys(config('importers', [])))
+                    .'. Run "php artisan config:clear" and "php artisan config:cache" on the server.'
+                );
+            }
+
             $this->typeImporter = app()->make($importerConfig['importer'])
                 ->setImport($this->import)
                 ->setErrorHelper($this->errorHelper);
