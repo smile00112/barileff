@@ -22,7 +22,7 @@
             class="container mt-14 max-lg:px-8 max-md:mt-7 max-sm:mt-5"
             v-if="! isLoading && categories?.length"
         >
-            <div class="grid gap-6 max-md:gap-4" :style="gridStyle">
+            <div class="grid gap-6 max-md:gap-4" 111111 :style="gridStyle">
                 <a
                     v-for="category in categories"
                     :href="category.slug"
