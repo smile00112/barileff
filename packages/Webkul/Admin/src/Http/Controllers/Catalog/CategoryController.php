@@ -290,13 +290,13 @@ class CategoryController extends Controller
     public function reorder(Request $request): JsonResponse
     {
         if (! bouncer()->hasPermission('catalog.categories.edit')) {
-            return new JsonResponse(['message' => trans('admin::app.security.not-allowed')], 403);
+            return new JsonResponse(['message' => 'Unauthorized'], 403);
         }
 
         foreach ($request->input('positions', []) as $item) {
             DB::table('categories')
-                ->where('id', $item['id'])
-                ->update(['position' => $item['position']]);
+                ->where('id', (int) $item['id'])
+                ->update(['position' => (int) $item['position']]);
         }
 
         return new JsonResponse(['message' => trans('admin::app.catalog.categories.reorder-success')]);
