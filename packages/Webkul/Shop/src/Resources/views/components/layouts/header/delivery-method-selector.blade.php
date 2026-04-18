@@ -642,7 +642,7 @@
 
                     ymaps.ready(async () => {
                         try {
-                            const center = this.activeCity?.center_lat && this.activeCity?.center_lng
+                            const center = this.activeCity?.center_lat != null && this.activeCity?.center_lng != null
                                 ? [this.activeCity.center_lat, this.activeCity.center_lng]
                                 : [55.7558, 37.6173];
 
@@ -836,9 +836,9 @@
                         try {
                             this.mapLoadError = '';
 
-                            const center = this.activeCity?.center_lat && this.activeCity?.center_lng
+                            const center = this.activeCity?.center_lat != null && this.activeCity?.center_lng != null
                                 ? [this.activeCity.center_lat, this.activeCity.center_lng]
-                                : [40.1872, 44.5152];
+                                : [55.7558, 37.6173];
 
                             console.log('[DS] initMap city=', this.activeCity?.name, 'center=', center, 'zones=', this.allZones.length);
 

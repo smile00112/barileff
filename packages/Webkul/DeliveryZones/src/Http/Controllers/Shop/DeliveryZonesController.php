@@ -77,8 +77,8 @@ class DeliveryZonesController
             return [
                 'id' => $city->id,
                 'name' => $city->name,
-                'center_lat' => (float) ($city->center_lat ?? 0),
-                'center_lng' => (float) ($city->center_lng ?? 0),
+                'center_lat' => $city->center_lat !== null ? (float) $city->center_lat : null,
+                'center_lng' => $city->center_lng !== null ? (float) $city->center_lng : null,
                 'polygon_json' => $city->polygon_json ?? [],
                 'country' => (string) ($city->country ?? ''),
                 'state' => (string) ($city->state ?? ''),
