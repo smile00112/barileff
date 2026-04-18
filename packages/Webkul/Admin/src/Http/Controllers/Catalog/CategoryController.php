@@ -3,8 +3,10 @@
 namespace Webkul\Admin\Http\Controllers\Catalog;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Catalog\CategoryDataGrid;
@@ -280,6 +282,24 @@ class CategoryController extends Controller
         }
 
         return ! $this->channelRepository->pluck('root_category_id')->contains($category->id);
+    }
+
+    /**
+     * Reorder categories by persisting new position values.
+     */
+    public function reorder(Request $request): JsonResponse
+    {
+        if (! bouncer()->hasPermission('catalog.categories.edit')) {
+            return new JsonResponse(['message' => trans('admin::app.security.not-allowed')], 403);
+        }
+
+        foreach ($request->input('positions', []) as $item) {
+            DB::table('categories')
+                ->where('id', $item['id'])
+                ->update(['position' => $item['position']]);
+        }
+
+        return new JsonResponse(['message' => trans('admin::app.catalog.categories.reorder-success')]);
     }
 
     /**

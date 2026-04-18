@@ -5,6 +5,8 @@ use Webkul\Attribute\Models\Attribute;
 use Webkul\Category\Models\Category;
 use Webkul\Category\Models\CategoryTranslation;
 use Webkul\Faker\Helpers\Category as CategoryFaker;
+use Webkul\User\Models\Admin as AdminModel;
+use Webkul\User\Models\Role;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\get;
@@ -392,4 +394,51 @@ it('should show the tree view of categories', function () {
     getJson(route('admin.catalog.categories.tree'))
         ->assertOk()
         ->assertJsonPath('data.0.id', $category->id);
+});
+
+it('should reorder categories and persist new positions', function () {
+    // Arrange.
+    $categories = (new CategoryFaker)->create(3);
+
+    $positions = $categories->map(fn ($category, $index) => [
+        'id' => $category->id,
+        'position' => $index + 1,
+    ])->values()->toArray();
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    postJson(route('admin.catalog.categories.reorder'), ['positions' => $positions])
+        ->assertOk()
+        ->assertJson(['message' => trans('admin::app.catalog.categories.reorder-success')]);
+
+    foreach ($positions as $item) {
+        $this->assertDatabaseHas('categories', [
+            'id' => $item['id'],
+            'position' => $item['position'],
+        ]);
+    }
+});
+
+it('should return 403 when user lacks catalog.categories.edit permission on reorder', function () {
+    // Arrange.
+    $role = Role::factory()->create([
+        'permission_type' => 'custom',
+        'permissions' => ['catalog.categories'],
+    ]);
+
+    $admin = AdminModel::factory()->create(['role_id' => $role->id]);
+
+    $this->loginAsAdmin($admin);
+
+    $categories = (new CategoryFaker)->create(2);
+
+    $positions = $categories->map(fn ($category, $index) => [
+        'id' => $category->id,
+        'position' => $index + 1,
+    ])->values()->toArray();
+
+    // Act and Assert.
+    postJson(route('admin.catalog.categories.reorder'), ['positions' => $positions])
+        ->assertForbidden();
 });
