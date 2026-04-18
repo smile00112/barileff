@@ -420,6 +420,18 @@ it('should reorder categories and persist new positions', function () {
     }
 });
 
+it('should pass product counts to category index view', function () {
+    // Arrange.
+    $category = (new CategoryFaker)->factory()->create();
+
+    // Act and Assert.
+    $this->loginAsAdmin();
+
+    get(route('admin.catalog.categories.index'))
+        ->assertOk()
+        ->assertViewHas('productCounts');
+});
+
 it('should return 403 when user lacks catalog.categories.edit permission on reorder', function () {
     // Arrange.
     $role = Role::factory()->create([

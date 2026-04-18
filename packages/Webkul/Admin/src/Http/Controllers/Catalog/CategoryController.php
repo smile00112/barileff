@@ -46,7 +46,12 @@ class CategoryController extends Controller
 
         $categories = $this->categoryRepository->getCategoryTree();
 
-        return view('admin::catalog.categories.index', compact('categories'));
+        $productCounts = DB::table('product_categories')
+            ->selectRaw('category_id, count(*) as cnt')
+            ->groupBy('category_id')
+            ->pluck('cnt', 'category_id');
+
+        return view('admin::catalog.categories.index', compact('categories', 'productCounts'));
     }
 
     /**
