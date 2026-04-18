@@ -284,7 +284,7 @@
                             .catch(() => {
                                 this.$emitter.emit('add-flash', {
                                     type: 'error',
-                                    message: "@lang('admin::app.catalog.categories.reorder-failed')",
+                                    message: "{{ trans('admin::app.catalog.categories.reorder-failed') }}",
                                 });
                             });
                     },

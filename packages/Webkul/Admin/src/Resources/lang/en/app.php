@@ -1598,6 +1598,8 @@ return [
             'delete-category-root' => 'The Root category can not be deleted.',
             'delete-failed' => 'Error encountered while deleting category',
             'delete-success' => 'The category has been successfully deleted.',
+            'not-allowed' => 'You are not authorized to perform this action.',
+            'reorder-failed' => 'Failed to reorder categories. Please try again.',
             'reorder-success' => 'Categories reordered successfully.',
             'update-success' => 'Category updated successfully.',
         ],
