@@ -6,7 +6,7 @@ if (! function_exists('cart')) {
     /**
      * Cart helper.
      *
-     * @return \Webkul\Checkout\Cart
+     * @return Webkul\Checkout\Cart
      */
     function cart()
     {
@@ -29,6 +29,16 @@ if (! function_exists('getCurrentInventorySourceId')) {
 
         $sessionId = session('selected_inventory_source_id');
 
-        return $sessionId !== null ? (int) $sessionId : null;
+        if ($sessionId !== null) {
+            return (int) $sessionId;
+        }
+
+        $default = core()->getCurrentChannel()
+            ->inventory_sources()
+            ->where('status', 1)
+            ->orderBy('inventory_sources.id')
+            ->first();
+
+        return $default?->id;
     }
 }

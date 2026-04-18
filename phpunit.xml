@@ -46,6 +46,11 @@
             <directory suffix="Test.php">packages/Webkul/ManagerApp/tests/Feature</directory>
         </testsuite>
 
+        <!-- ExternalPayments package testsuites. -->
+        <testsuite name="ExternalPayments Feature Test">
+            <directory suffix="Test.php">packages/Webkul/ExternalPayments/tests/Feature</directory>
+        </testsuite>
+
         <!-- Application Feature tests. -->
         <testsuite name="Application Feature Test">
             <directory suffix="Test.php">tests/Feature</directory>

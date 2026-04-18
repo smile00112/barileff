@@ -1,5 +1,11 @@
 <?php
 
+use Webkul\Admin\Tests\AdminTestCase;
+use Webkul\Core\Tests\CoreTestCase;
+use Webkul\DataGrid\Tests\DataGridTestCase;
+use Webkul\Installer\Tests\InstallerTestCase;
+use Webkul\Shop\Tests\ShopTestCase;
+
 ini_set('memory_limit', '1024M');
 
 /*
@@ -13,13 +19,14 @@ ini_set('memory_limit', '1024M');
 |
 */
 
-uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/Admin/tests');
-uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/ImportExport/tests');
-uses(Webkul\Admin\Tests\AdminTestCase::class)->in('../packages/Webkul/Markup/tests');
-uses(Webkul\Core\Tests\CoreTestCase::class)->in('../packages/Webkul/Core/tests');
-uses(Webkul\DataGrid\Tests\DataGridTestCase::class)->in('../packages/Webkul/DataGrid/tests');
-uses(Webkul\Installer\Tests\InstallerTestCase::class)->in('../packages/Webkul/Installer/tests');
-uses(Webkul\Shop\Tests\ShopTestCase::class)->in('../packages/Webkul/Shop/tests');
+uses(AdminTestCase::class)->in('../packages/Webkul/Admin/tests');
+uses(AdminTestCase::class)->in('../packages/Webkul/ImportExport/tests');
+uses(AdminTestCase::class)->in('../packages/Webkul/Markup/tests');
+uses(AdminTestCase::class)->in('../packages/Webkul/ExternalPayments/tests');
+uses(CoreTestCase::class)->in('../packages/Webkul/Core/tests');
+uses(DataGridTestCase::class)->in('../packages/Webkul/DataGrid/tests');
+uses(InstallerTestCase::class)->in('../packages/Webkul/Installer/tests');
+uses(ShopTestCase::class)->in('../packages/Webkul/Shop/tests');
 
 /*
 |--------------------------------------------------------------------------

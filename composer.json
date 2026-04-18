@@ -111,6 +111,7 @@
             "Webkul\\Theme\\": "packages/Webkul/Theme/src",
             "Webkul\\User\\": "packages/Webkul/User/src",
             "Webkul\\PaymentConfirmation\\": "packages/Webkul/PaymentConfirmation/src/",
+            "Webkul\\ExternalPayments\\": "packages/Webkul/ExternalPayments/src/",
             "Webkul\\ManagerApp\\": "packages/Webkul/ManagerApp/src"
         }
     },
@@ -122,7 +123,8 @@
             "Webkul\\DataGrid\\Tests\\": "packages/Webkul/DataGrid/tests",
             "Webkul\\Installer\\Tests\\": "packages/Webkul/Installer/tests",
             "Webkul\\Shop\\Tests\\": "packages/Webkul/Shop/tests",
-            "Webkul\\ManagerApp\\Tests\\": "packages/Webkul/ManagerApp/tests"
+            "Webkul\\ManagerApp\\Tests\\": "packages/Webkul/ManagerApp/tests",
+            "Webkul\\ExternalPayments\\Tests\\": "packages/Webkul/ExternalPayments/tests"
         }
     },
     "scripts": {
