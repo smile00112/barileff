@@ -1598,6 +1598,7 @@ return [
             'delete-category-root' => 'The Root category can not be deleted.',
             'delete-failed' => 'Error encountered while deleting category',
             'delete-success' => 'The category has been successfully deleted.',
+            'reorder-success' => 'Categories reordered successfully.',
             'update-success' => 'Category updated successfully.',
         ],
 
