@@ -45,12 +45,6 @@
                         <!-- Hidden Input -->
                         <input
                             type="hidden"
-                            :name="'{{ $currentLocale->code }}[options][' + link.column + '][' + key + ']'"
-                            :value="link.column"
-                        />
-
-                        <input
-                            type="hidden"
                             :name="'{{ $currentLocale->code }}[options][' + link.column + '][' + key + '][url]'"
                             :value="link.url"
                         />
