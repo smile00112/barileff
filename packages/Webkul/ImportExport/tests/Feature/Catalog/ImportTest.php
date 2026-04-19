@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Storage;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Models\Import as DataTransferImport;
 use Webkul\ImportExport\Http\Controllers\Admin\Catalog\ImportController;
+use Webkul\ImportExport\Listeners\ProductsBatchSavedListener;
 use Webkul\ImportExport\Models\CatalogImportLogEntry;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
@@ -656,4 +657,50 @@ it('createMissingCategories returns array of created category events', function 
         ->and($events[0])->toHaveKey('id')
         ->and($events[0])->toHaveKey('name')
         ->and($events[0]['name'])->toBe("TestBrand{$suffix}");
+});
+
+it('ProductsBatchSavedListener creates product log entries from event payload', function () {
+    $admin = Admin::factory()->create();
+
+    $session = CatalogImportSession::create([
+        'state'         => CatalogImportSession::STATE_PROCESSING,
+        'file_name'     => 'products.csv',
+        'file_path'     => 'catalog-imports/test.csv',
+        'delimiter'     => ',',
+        'locale'        => 'en',
+        'headers'       => ['sku'],
+        'created_by'    => $admin->id,
+        'import_ref_id' => 77777,
+    ]);
+
+    $listener = app(ProductsBatchSavedListener::class);
+
+    $listener->handle([
+        'import_id'   => 77777,
+        'created_ids' => [101, 102],
+        'updated_ids' => [200],
+    ]);
+
+    $entries = CatalogImportLogEntry::where('session_id', $session->id)
+        ->orderBy('id')
+        ->get();
+
+    expect($entries)->toHaveCount(3)
+        ->and($entries->where('action', 'created')->where('entity_type', 'product')->count())->toBe(2)
+        ->and($entries->where('action', 'updated')->where('entity_type', 'product')->count())->toBe(1)
+        ->and($entries->where('entity_id', 101)->first())->not->toBeNull()
+        ->and($entries->where('entity_id', 200)->first()->action)->toBe('updated');
+});
+
+it('ProductsBatchSavedListener does nothing when no session matches import_id', function () {
+    $before = CatalogImportLogEntry::count();
+
+    $listener = app(ProductsBatchSavedListener::class);
+    $listener->handle([
+        'import_id'   => 999888777,
+        'created_ids' => [1, 2, 3],
+        'updated_ids' => [],
+    ]);
+
+    expect(CatalogImportLogEntry::count())->toBe($before);
 });

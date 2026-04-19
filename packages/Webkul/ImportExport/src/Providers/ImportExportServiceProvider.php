@@ -2,7 +2,9 @@
 
 namespace Webkul\ImportExport\Providers;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Webkul\ImportExport\Listeners\ProductsBatchSavedListener;
 
 class ImportExportServiceProvider extends ServiceProvider
 {
@@ -17,5 +19,7 @@ class ImportExportServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../Config/admin-menu.php', 'menu.admin');
 
         $this->mergeConfigFrom(__DIR__.'/../Config/acl.php', 'acl');
+
+        Event::listen('catalog_import.products_saved', [ProductsBatchSavedListener::class, 'handle']);
     }
 }
