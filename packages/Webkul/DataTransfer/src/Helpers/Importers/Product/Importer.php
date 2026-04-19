@@ -1042,13 +1042,12 @@ class Importer extends AbstractImporter
                 'type' => $rowData['type'],
                 'sku' => $rowData['sku'],
                 'attribute_family_id' => $attributeFamilyId,
+                'supplier_id' => (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '')
+                    ? (int) $rowData['supplier_id']
+                    : null,
                 'created_at' => $rowData['created_at'] ?? now(),
                 'updated_at' => $rowData['updated_at'] ?? now(),
             ];
-
-            if (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '') {
-                $productData['supplier_id'] = (int) $rowData['supplier_id'];
-            }
 
             $products['insert'][$rowData['sku']] = $productData;
         }
@@ -1059,14 +1058,26 @@ class Importer extends AbstractImporter
      */
     public function saveProducts(array $products): void
     {
+        $updatedIds = [];
+
         if (! empty($products['update'])) {
             $this->updatedItemsCount += count($products['update']);
+
+            foreach (array_keys($products['update']) as $sku) {
+                $skuData = $this->skuStorage->get($sku);
+
+                if ($skuData !== null) {
+                    $updatedIds[] = (int) $skuData['id'];
+                }
+            }
 
             $this->productRepository->upsert(
                 $products['update'],
                 $this->masterAttributeCode
             );
         }
+
+        $createdIds = [];
 
         if (! empty($products['insert'])) {
             $this->createdItemsCount += count($products['insert']);
@@ -1088,12 +1099,22 @@ class Importer extends AbstractImporter
             );
 
             foreach ($newProducts as $product) {
+                $createdIds[] = (int) $product->id;
+
                 $this->skuStorage->set($product->sku, [
                     'id' => $product->id,
                     'type' => $product->type,
                     'attribute_family_id' => $product->attribute_family_id,
                 ]);
             }
+        }
+
+        if ($createdIds !== [] || $updatedIds !== []) {
+            Event::dispatch('catalog_import.products_saved', [
+                'import_id' => $this->import->id,
+                'created_ids' => $createdIds,
+                'updated_ids' => $updatedIds,
+            ]);
         }
     }
 
