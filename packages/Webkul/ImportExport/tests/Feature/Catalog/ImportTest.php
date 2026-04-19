@@ -477,3 +477,41 @@ it('should apply source_code=qty format when inventories column mapped directly 
 
     expect($data['inventories'])->toBe('main=25');
 });
+
+it('createMissingCategories returns array of created category events', function () {
+    $this->loginAsAdmin();
+
+    Storage::fake('private');
+
+    $anchorId = (int) core()->getDefaultChannel()->root_category_id;
+    $suffix   = uniqid('logcat_');
+
+    Storage::disk('private')->put(
+        'catalog-imports/cats_test.csv',
+        "sku,categories\nSKU001,TestBrand{$suffix}\n"
+    );
+
+    $session = CatalogImportSession::create([
+        'state'              => CatalogImportSession::STATE_READY,
+        'file_name'          => 'cats_test.csv',
+        'file_path'          => 'catalog-imports/cats_test.csv',
+        'delimiter'          => ',',
+        'locale'             => 'en',
+        'column_mapping'     => ['sku' => 'sku', 'categories' => 'categories'],
+        'headers'            => ['sku', 'categories'],
+        'parent_category_id' => $anchorId,
+        'create_categories'  => true,
+        'created_by'         => 1,
+    ]);
+
+    $controller = app(ImportController::class);
+    $method     = new ReflectionMethod($controller, 'createMissingCategories');
+
+    $events = $method->invoke($controller, $session);
+
+    expect($events)->toBeArray()
+        ->and(count($events))->toBe(1)
+        ->and($events[0])->toHaveKey('id')
+        ->and($events[0])->toHaveKey('name')
+        ->and($events[0]['name'])->toBe("TestBrand{$suffix}");
+});

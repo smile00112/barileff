@@ -671,11 +671,12 @@ class ImportController extends Controller
     /**
      * Create missing categories referenced in the import file.
      *
-     * Reads the original CSV; for each row, the mapped `categories` value is an
-     * ordered path (comma-separated): first segment is a child of the configured
-     * parent category, each next segment is a child of the previous one.
+     * Returns an array of ['id' => int, 'name' => string] for each category that
+     * was newly created (pre-existing ones are not included).
+     *
+     * @return array<int, array{id: int, name: string}>
      */
-    protected function createMissingCategories(CatalogImportSession $session): void
+    protected function createMissingCategories(CatalogImportSession $session): array
     {
         $mapping = $session->column_mapping ?? [];
         $originalPath = Storage::disk('private')->path($session->file_path);
@@ -695,13 +696,13 @@ class ImportController extends Controller
         }
 
         if ($categoriesHeader === null) {
-            return;
+            return [];
         }
 
         $handle = fopen($originalPath, 'r');
 
         if (! $handle) {
-            return;
+            return [];
         }
 
         $originalHeaders = fgetcsv($handle, 4096, $delimiter) ?: [];
@@ -710,9 +711,12 @@ class ImportController extends Controller
         if ($categoriesColIndex === false) {
             fclose($handle);
 
-            return;
+            return [];
         }
 
+        // Snapshot of existing category IDs before we create anything.
+        $preExistingIds = DB::table('categories')->pluck('id', 'id')->all();
+        $allReturnedIds = [];
         $seenChains = [];
 
         while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
@@ -736,10 +740,38 @@ class ImportController extends Controller
 
             $seenChains[$chainKey] = true;
 
-            $this->categoryRepository->ensureCategoryChainUnderParent($anchorId, $segments, $locale);
+            $returnedIds = $this->categoryRepository->ensureCategoryChainUnderParent($anchorId, $segments, $locale);
+
+            foreach ($returnedIds as $catId) {
+                $allReturnedIds[$catId] = true;
+            }
         }
 
         fclose($handle);
+
+        // New categories = returned IDs that were not in the pre-existing snapshot.
+        $newCategoryIds = array_keys(array_diff_key($allReturnedIds, $preExistingIds));
+
+        if (empty($newCategoryIds)) {
+            return [];
+        }
+
+        // Batch-fetch their translated names (preferred locale first, any locale as fallback).
+        $categoryNames = DB::table('category_translations')
+            ->whereIn('category_id', $newCategoryIds)
+            ->orderByRaw('CASE WHEN locale = ? THEN 0 ELSE 1 END', [$locale])
+            ->get(['category_id', 'name'])
+            ->unique('category_id')
+            ->pluck('name', 'category_id')
+            ->all();
+
+        return array_map(
+            fn (int $id): array => [
+                'id' => $id,
+                'name' => $categoryNames[$id] ?? "Category #{$id}",
+            ],
+            $newCategoryIds
+        );
     }
 
     /**
@@ -901,9 +933,7 @@ class ImportController extends Controller
             }
 
             if ($session->state === CatalogImportSession::STATE_PROCESSING) {
-                return new JsonResponse([
-                    'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
-                ], 422);
+                continue;
             }
 
             try {
