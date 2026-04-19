@@ -286,6 +286,59 @@
                     </div>
                 </div>
 
+                <!-- Activity Log Panel -->
+                <div
+                    v-if="logEntries.length > 0 || ['processing', 'completed', 'failed'].includes(state)"
+                    class="box-shadow rounded-sm bg-white p-4 dark:bg-gray-900"
+                >
+                    <h3 class="mb-3 text-base font-semibold text-gray-800 dark:text-white">
+                        @lang('admin::app.catalog.imports.log.title')
+                    </h3>
+
+                    <div
+                        ref="logContainer"
+                        class="max-h-80 overflow-y-auto rounded-sm border border-gray-100 bg-gray-50 p-3 font-mono text-xs dark:border-gray-800 dark:bg-gray-800"
+                    >
+                        <p
+                            v-if="logEntries.length === 0"
+                            class="text-gray-400 dark:text-gray-500"
+                        >
+                            @lang('admin::app.catalog.imports.log.empty')
+                        </p>
+
+                        <div
+                            v-for="entry in logEntries"
+                            :key="entry.id"
+                            class="py-0.5"
+                            :class="{
+                                'text-green-700 dark:text-green-400': entry.action === 'created',
+                                'text-blue-700 dark:text-blue-400': entry.action === 'updated',
+                                'text-gray-500 dark:text-gray-400': entry.action === 'found',
+                                'text-red-600 dark:text-red-400': entry.level === 'error',
+                            }"
+                        >
+                            @{{ formatLogEntry(entry) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Errors Panel -->
+                <div
+                    v-if="errors.length > 0"
+                    class="box-shadow rounded-sm border border-red-200 bg-red-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+                >
+                    <h3 class="mb-2 text-sm font-semibold text-red-800 dark:text-red-400">
+                        @lang('admin::app.catalog.imports.log.errors-title')
+                    </h3>
+
+                    <ul class="max-h-40 overflow-y-auto space-y-1 font-mono text-xs text-red-700 dark:text-red-400">
+                        <li
+                            v-for="(err, i) in errors"
+                            :key="i"
+                        >@{{ err }}</li>
+                    </ul>
+                </div>
+
             </div>
         </script>
 
@@ -309,6 +362,10 @@
                             batches: { total: 0, completed: 0, remaining: 0 },
                             summary: { created: 0, updated: 0, deleted: 0 },
                         },
+                        logEntries: @json($initialLogEntries),
+                        lastLogId: {{ collect($initialLogEntries)->last()['id'] ?? 0 }},
+                        errors: @json($dtImportErrors),
+                        statusUrl: '{{ route('admin.catalog.imports.status', $session->id) }}',
                     };
                 },
 
@@ -572,12 +629,20 @@
                     },
 
                     pollStatus() {
-                        this.$axios.get('{{ route('admin.catalog.imports.status', $session->id) }}')
+                        this.$axios.get(this.statusUrl + '?after_log_id=' + this.lastLogId)
                             .then(response => {
                                 this.state = response.data.state;
 
                                 if (response.data.stats) {
                                     this.stats = response.data.stats;
+                                }
+
+                                if (response.data.log_entries && response.data.log_entries.length > 0) {
+                                    this.appendLogEntries(response.data.log_entries);
+                                }
+
+                                if (response.data.errors && response.data.errors.length > 0) {
+                                    this.errors = response.data.errors;
                                 }
 
                                 if (this.state === 'processing') {
@@ -587,6 +652,40 @@
                             .catch(() => {
                                 setTimeout(() => this.pollStatus(), 5000);
                             });
+                    },
+
+                    appendLogEntries(entries) {
+                        const container = this.$refs.logContainer;
+                        const isAtBottom = container
+                            ? (container.scrollHeight - container.scrollTop - container.clientHeight < 48)
+                            : true;
+
+                        this.logEntries.push(...entries);
+                        this.lastLogId = entries[entries.length - 1].id;
+
+                        if (isAtBottom) {
+                            this.$nextTick(() => {
+                                if (container) {
+                                    container.scrollTop = container.scrollHeight;
+                                }
+                            });
+                        }
+                    },
+
+                    formatLogEntry(entry) {
+                        if (entry.entity_type === 'product') {
+                            return `Product #${entry.entity_id} ${entry.action}`;
+                        }
+
+                        if (entry.entity_type === 'category') {
+                            return `Category "${entry.message}" (id=${entry.entity_id}) ${entry.action}`;
+                        }
+
+                        if (entry.entity_type === 'supplier') {
+                            return `Supplier "${entry.message}" (id=${entry.entity_id}) ${entry.action}`;
+                        }
+
+                        return entry.message || `${entry.entity_type} #${entry.entity_id} ${entry.action}`;
                     },
                 },
             });

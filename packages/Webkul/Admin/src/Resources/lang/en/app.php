@@ -1829,6 +1829,12 @@ return [
                 'not-ready' => 'The import session is not ready to start.',
                 'validation-failed' => 'The import file failed validation.',
             ],
+
+            'log' => [
+                'title'        => 'Activity Log',
+                'empty'        => 'No activity yet.',
+                'errors-title' => 'Import Errors',
+            ],
         ],
     ],
 
