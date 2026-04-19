@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Storage;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Models\Import as DataTransferImport;
 use Webkul\ImportExport\Http\Controllers\Admin\Catalog\ImportController;
+use Webkul\ImportExport\Models\CatalogImportLogEntry;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\User\Models\Admin;
@@ -397,6 +398,38 @@ it('should reject non-existent inventory_source_id when starting import', functi
         'column_mapping' => ['sku' => 'sku', 'name' => 'name'],
         'inventory_source_id' => 999999,
     ])->assertStatus(422);
+});
+
+it('can create and read a catalog import log entry', function () {
+    $admin = Admin::factory()->create();
+
+    $session = CatalogImportSession::create([
+        'state' => CatalogImportSession::STATE_PROCESSING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    $entry = CatalogImportLogEntry::create([
+        'session_id' => $session->id,
+        'level' => 'info',
+        'entity_type' => 'category',
+        'action' => 'created',
+        'entity_id' => 42,
+        'message' => 'Electronics',
+    ]);
+
+    expect($entry->id)->toBeInt()
+        ->and($entry->session_id)->toBe($session->id)
+        ->and($entry->action)->toBe('created')
+        ->and($entry->created_at)->not->toBeNull();
+
+    // FK cascade: deleting session removes log entries
+    $session->delete();
+    expect(CatalogImportLogEntry::find($entry->id))->toBeNull();
 });
 
 it('should apply source_code=qty format when inventories column mapped directly with a warehouse', function () {
