@@ -113,7 +113,29 @@ class ImportController extends Controller
         $inventorySources = InventorySource::where('status', 1)->orderBy('name')->get(['id', 'name', 'code']);
         $previewRows = $this->readPreviewRows($session);
 
-        return view('import_export::admin.catalog.imports.show', compact('session', 'bagistoFields', 'inventorySources', 'previewRows'));
+        $initialLogEntries = CatalogImportLogEntry::where('session_id', $session->id)
+            ->orderBy('id')
+            ->get(['id', 'level', 'entity_type', 'action', 'entity_id', 'message', 'created_at'])
+            ->toArray();
+
+        $dtImportErrors = [];
+
+        if ($session->import_ref_id) {
+            $dtImport = $this->importRepository->find($session->import_ref_id);
+
+            if ($dtImport && $dtImport->errors) {
+                $dtImportErrors = array_values($dtImport->errors);
+            }
+        }
+
+        return view('import_export::admin.catalog.imports.show', compact(
+            'session',
+            'bagistoFields',
+            'inventorySources',
+            'previewRows',
+            'initialLogEntries',
+            'dtImportErrors'
+        ));
     }
 
     /**
@@ -245,6 +267,14 @@ class ImportController extends Controller
     public function status(int $id): JsonResponse
     {
         $session = CatalogImportSession::findOrFail($id);
+        $afterLogId = (int) request()->query('after_log_id', 0);
+
+        $logEntries = CatalogImportLogEntry::where('session_id', $session->id)
+            ->where('id', '>', $afterLogId)
+            ->orderBy('id')
+            ->limit(500)
+            ->get(['id', 'level', 'entity_type', 'action', 'entity_id', 'message', 'created_at'])
+            ->toArray();
 
         if ($session->state !== CatalogImportSession::STATE_PROCESSING || ! $session->import_ref_id) {
             return new JsonResponse([
@@ -254,13 +284,20 @@ class ImportController extends Controller
                     'batches' => ['total' => 0, 'completed' => 0, 'remaining' => 0],
                     'summary' => ['created' => 0, 'updated' => 0, 'deleted' => 0],
                 ],
+                'log_entries' => $logEntries,
+                'errors' => [],
             ]);
         }
 
         $dtImport = $this->importRepository->find($session->import_ref_id);
 
         if (! $dtImport) {
-            return new JsonResponse(['state' => $session->state, 'stats' => ['progress' => 0]]);
+            return new JsonResponse([
+                'state' => $session->state,
+                'stats' => ['progress' => 0],
+                'log_entries' => $logEntries,
+                'errors' => [],
+            ]);
         }
 
         $this->importHelper->setImport($dtImport);
@@ -275,14 +312,14 @@ class ImportController extends Controller
         };
 
         $stats = $this->importHelper->stats($statsState);
+        $errors = array_values($dtImport->errors ?? []);
 
         if ($dtImport->state === ImportHelper::STATE_COMPLETED) {
             $stats['progress'] = 100;
-            $stats['summary'] = array_merge([
-                'created' => 0,
-                'updated' => 0,
-                'deleted' => 0,
-            ], $dtImport->summary ?? $stats['summary'] ?? []);
+            $stats['summary'] = array_merge(
+                ['created' => 0, 'updated' => 0, 'deleted' => 0],
+                $dtImport->summary ?? $stats['summary'] ?? []
+            );
 
             $session->update([
                 'state' => CatalogImportSession::STATE_COMPLETED,
@@ -304,6 +341,8 @@ class ImportController extends Controller
             'state' => $session->fresh()->state,
             'stats' => $stats,
             'import_state' => $dtImport->state,
+            'log_entries' => $logEntries,
+            'errors' => $errors,
         ]);
     }
 

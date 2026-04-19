@@ -574,6 +574,52 @@ it('start writes category and supplier log entries', function () {
         ->and(in_array('created', $actions, true))->toBeTrue();
 });
 
+it('status returns log_entries for the session', function () {
+    $admin = $this->loginAsAdmin();
+
+    $session = CatalogImportSession::create([
+        'state'      => CatalogImportSession::STATE_COMPLETED,
+        'file_name'  => 'products.csv',
+        'file_path'  => 'catalog-imports/test.csv',
+        'delimiter'  => ',',
+        'locale'     => 'en',
+        'headers'    => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    CatalogImportLogEntry::insert([
+        ['session_id' => $session->id, 'level' => 'info', 'entity_type' => 'category', 'action' => 'created', 'entity_id' => 5,  'message' => 'Electronics'],
+        ['session_id' => $session->id, 'level' => 'info', 'entity_type' => 'supplier', 'action' => 'found',   'entity_id' => 10, 'message' => 'ACME'],
+    ]);
+
+    get(route('admin.catalog.imports.status', $session->id))
+        ->assertOk()
+        ->assertJsonCount(2, 'log_entries')
+        ->assertJsonPath('log_entries.0.entity_type', 'category');
+});
+
+it('status filters log_entries by after_log_id', function () {
+    $admin = $this->loginAsAdmin();
+
+    $session = CatalogImportSession::create([
+        'state'      => CatalogImportSession::STATE_COMPLETED,
+        'file_name'  => 'products.csv',
+        'file_path'  => 'catalog-imports/test.csv',
+        'delimiter'  => ',',
+        'locale'     => 'en',
+        'headers'    => ['sku'],
+        'created_by' => $admin->id,
+    ]);
+
+    $entry1 = CatalogImportLogEntry::create(['session_id' => $session->id, 'level' => 'info', 'entity_type' => 'category', 'action' => 'created', 'entity_id' => 5,  'message' => 'Electronics']);
+    $entry2 = CatalogImportLogEntry::create(['session_id' => $session->id, 'level' => 'info', 'entity_type' => 'supplier', 'action' => 'found',   'entity_id' => 10, 'message' => 'ACME']);
+
+    get(route('admin.catalog.imports.status', $session->id).'?after_log_id='.$entry1->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'log_entries')
+        ->assertJsonPath('log_entries.0.entity_type', 'supplier');
+});
+
 it('createMissingCategories returns array of created category events', function () {
     $this->loginAsAdmin();
 
