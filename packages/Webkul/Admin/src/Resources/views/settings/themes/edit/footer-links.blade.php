@@ -65,7 +65,7 @@
                             <div class="flex gap-2.5">
                                 <div class="grid place-content-start gap-1.5">
                                     <p class="text-gray-600 dark:text-gray-300">
-                                        @lang('admin::app.settings.themes.edit.column'): 
+                                        @lang('admin::app.settings.themes.edit.column'):
 
                                         <span class="text-gray-600 transition-all dark:text-gray-300">
                                             @{{ link.column }}
@@ -107,17 +107,17 @@
                             <!-- Actions -->
                             <div class="grid place-content-start gap-1 text-right">
                                 <div class="flex items-center gap-x-5">
-                                    <p 
+                                    <p
                                         class="cursor-pointer text-blue-600 transition-all hover:underline"
                                         @click="edit(link, key)"
-                                    > 
+                                    >
                                         @lang('admin::app.settings.themes.edit.edit')
                                     </p>
 
-                                    <p 
+                                    <p
                                         class="cursor-pointer text-red-600 transition-all hover:underline"
                                         @click="remove(link, key)"
-                                    > 
+                                    >
                                         @lang('admin::app.settings.themes.edit.delete')
                                     </p>
                                 </div>
@@ -135,7 +135,7 @@
                         src="{{ bagisto_asset('images/empty-placeholders/default.svg') }}"
                         alt="@lang('admin::app.settings.themes.edit.footer-link')"
                     >
-    
+
                     <div class="flex flex-col items-center gap-1.5">
                         <p class="text-base font-semibold text-gray-400">
                             @lang('admin::app.settings.themes.edit.footer-link')
@@ -323,7 +323,7 @@
                     this.isUpdating = true;
 
                     this.$refs.footerLinkUpdateOrCreateModal.setValues({
-                        ...footerLink, 
+                        ...footerLink,
                         key,
                     });
 
@@ -332,4 +332,4 @@
             },
         });
     </script>
-@endPushOnce    
+@endPushOnce
