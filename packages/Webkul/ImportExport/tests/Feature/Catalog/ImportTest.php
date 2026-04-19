@@ -520,6 +520,60 @@ it('resolveImportSuppliers creates new suppliers and marks existing ones as foun
     expect($newSupplier)->not->toBeNull();
 });
 
+it('start writes category and supplier log entries', function () {
+    $admin    = $this->loginAsAdmin();
+    $anchorId = (int) core()->getDefaultChannel()->root_category_id;
+    $suffix   = uniqid('startlog_');
+
+    Storage::fake('private');
+
+    $existing = Supplier::create(['name' => 'ExistingBrand', 'status' => true]);
+
+    Storage::disk('private')->put(
+        "catalog-imports/start_log_{$suffix}.csv",
+        "sku,categories,vendor\nSKU001,Cat{$suffix},ExistingBrand\nSKU002,Cat{$suffix},NewBrand{$suffix}\n"
+    );
+
+    $session = CatalogImportSession::create([
+        'state'              => CatalogImportSession::STATE_PENDING,
+        'file_name'          => "start_log_{$suffix}.csv",
+        'file_path'          => "catalog-imports/start_log_{$suffix}.csv",
+        'delimiter'          => ',',
+        'locale'             => 'en',
+        'headers'            => ['sku', 'categories', 'vendor'],
+        'parent_category_id' => $anchorId,
+        'create_categories'  => true,
+        'created_by'         => $admin->id,
+    ]);
+
+    postJson(route('admin.catalog.imports.start', $session->id), [
+        'column_mapping' => [
+            'sku'        => 'sku',
+            'categories' => 'categories',
+            'vendor'     => 'supplier',
+        ],
+    ]);
+
+    // Check category log entry
+    $catEntries = CatalogImportLogEntry::where('session_id', $session->id)
+        ->where('entity_type', 'category')
+        ->where('action', 'created')
+        ->get();
+
+    expect($catEntries->count())->toBeGreaterThanOrEqual(1);
+
+    // Check supplier log entries
+    $supEntries = CatalogImportLogEntry::where('session_id', $session->id)
+        ->where('entity_type', 'supplier')
+        ->get();
+
+    expect($supEntries->count())->toBe(2);
+
+    $actions = $supEntries->pluck('action')->all();
+    expect(in_array('found', $actions, true))->toBeTrue()
+        ->and(in_array('created', $actions, true))->toBeTrue();
+});
+
 it('createMissingCategories returns array of created category events', function () {
     $this->loginAsAdmin();
 

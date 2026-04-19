@@ -16,6 +16,7 @@ use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Repositories\ImportRepository;
 use Webkul\ImportExport\Events\CatalogImportCompleted;
 use Webkul\ImportExport\Http\Requests\Catalog\ImportUploadRequest;
+use Webkul\ImportExport\Models\CatalogImportLogEntry;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\Supplier\Models\Supplier;
@@ -145,11 +146,43 @@ class ImportController extends Controller
             ], 422);
         }
 
-        if ($session->create_categories) {
-            $this->createMissingCategories($session);
+        $categoryEvents = $session->create_categories
+            ? $this->createMissingCategories($session)
+            : [];
+
+        ['map' => $supplierNameToId, 'events' => $supplierEvents] = $this->resolveImportSuppliers($session);
+
+        // Write category and supplier log entries now (before validation so they persist
+        // even if the import fails later at the validation stage).
+        $logRows = [];
+
+        foreach ($categoryEvents as $event) {
+            $logRows[] = [
+                'session_id' => $session->id,
+                'level' => 'info',
+                'entity_type' => 'category',
+                'action' => 'created',
+                'entity_id' => $event['id'],
+                'message' => $event['name'],
+            ];
         }
 
-        $remappedPath = $this->createRemappedCsv($session);
+        foreach ($supplierEvents as $event) {
+            $logRows[] = [
+                'session_id' => $session->id,
+                'level' => 'info',
+                'entity_type' => 'supplier',
+                'action' => $event['action'],
+                'entity_id' => $event['id'],
+                'message' => $event['name'],
+            ];
+        }
+
+        if ($logRows !== []) {
+            CatalogImportLogEntry::insert($logRows);
+        }
+
+        $remappedPath = $this->createRemappedCsv($session, $supplierNameToId);
 
         if (! $remappedPath) {
             return new JsonResponse([
