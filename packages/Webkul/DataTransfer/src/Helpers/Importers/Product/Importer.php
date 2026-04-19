@@ -1030,11 +1030,10 @@ class Importer extends AbstractImporter
                 'type' => $rowData['type'],
                 'sku' => $rowData['sku'],
                 'attribute_family_id' => $attributeFamilyId,
+                'supplier_id' => (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '')
+                    ? (int) $rowData['supplier_id']
+                    : null,
             ];
-
-            if (isset($rowData['supplier_id']) && $rowData['supplier_id'] !== '') {
-                $productData['supplier_id'] = (int) $rowData['supplier_id'];
-            }
 
             $products['update'][$rowData['sku']] = $productData;
         } else {
@@ -1110,11 +1109,11 @@ class Importer extends AbstractImporter
         }
 
         if ($createdIds !== [] || $updatedIds !== []) {
-            Event::dispatch('catalog_import.products_saved', [
+            Event::dispatch('catalog_import.products_saved', [[
                 'import_id' => $this->import->id,
                 'created_ids' => $createdIds,
                 'updated_ids' => $updatedIds,
-            ]);
+            ]]);
         }
     }
 
