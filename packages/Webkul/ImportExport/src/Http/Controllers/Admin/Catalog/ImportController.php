@@ -375,9 +375,86 @@ class ImportController extends Controller
     }
 
     /**
+     * Scan the import CSV for supplier names, create missing ones, and return the
+     * resolved name→id map plus per-supplier log events.
+     *
+     * @return array{map: array<string, int>, events: array<int, array{action: string, id: int, name: string}>}
+     */
+    protected function resolveImportSuppliers(CatalogImportSession $session): array
+    {
+        $mapping = $session->column_mapping ?? [];
+
+        if (! in_array('supplier', $mapping, true)) {
+            return ['map' => [], 'events' => []];
+        }
+
+        $originalPath = Storage::disk('private')->path($session->file_path);
+        $delimiter = $session->delimiter;
+
+        $handle = fopen($originalPath, 'r');
+
+        if (! $handle) {
+            return ['map' => [], 'events' => []];
+        }
+
+        $originalHeaders = fgetcsv($handle, 4096, $delimiter) ?: [];
+        $supplierColIndex = null;
+
+        foreach ($originalHeaders as $idx => $header) {
+            if (($mapping[$header] ?? null) === 'supplier') {
+                $supplierColIndex = $idx;
+                break;
+            }
+        }
+
+        if ($supplierColIndex === null) {
+            fclose($handle);
+
+            return ['map' => [], 'events' => []];
+        }
+
+        $uniqueNames = [];
+
+        while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
+            $name = trim($row[$supplierColIndex] ?? '');
+
+            if ($name !== '') {
+                $uniqueNames[$name] = true;
+            }
+        }
+
+        fclose($handle);
+
+        if (empty($uniqueNames)) {
+            return ['map' => [], 'events' => []];
+        }
+
+        $existingMap = Supplier::all(['id', 'name'])
+            ->mapWithKeys(fn (Supplier $s) => [mb_strtolower($s->name) => $s->id])
+            ->all();
+
+        $supplierNameToId = $existingMap;
+        $events = [];
+
+        foreach (array_keys($uniqueNames) as $name) {
+            $lower = mb_strtolower($name);
+
+            if (isset($existingMap[$lower])) {
+                $events[] = ['action' => 'found', 'id' => $existingMap[$lower], 'name' => $name];
+            } else {
+                $new = Supplier::create(['name' => $name, 'status' => true]);
+                $supplierNameToId[$lower] = $new->id;
+                $events[] = ['action' => 'created', 'id' => $new->id, 'name' => $name];
+            }
+        }
+
+        return ['map' => $supplierNameToId, 'events' => $events];
+    }
+
+    /**
      * Reformat the uploaded CSV using the column mapping and save as a new file.
      */
-    protected function createRemappedCsv(CatalogImportSession $session): ?string
+    protected function createRemappedCsv(CatalogImportSession $session, array $supplierNameToId = []): ?string
     {
         $mapping = $session->column_mapping ?? [];
         $originalPath = Storage::disk('private')->path($session->file_path);
@@ -532,46 +609,6 @@ class ImportController extends Controller
         }
 
         fputcsv($writeHandle, $newHeaders);
-
-        // Pre-scan the CSV to resolve supplier names → IDs (create missing suppliers).
-        // Uses a second pass over the original file so we can bulk-create in one go.
-        $supplierNameToId = [];
-
-        if ($supplierColumnIndex !== null) {
-            rewind($handle);
-            fgetcsv($handle, 4096, $delimiter); // skip header row
-
-            $uniqueSupplierNames = [];
-
-            while (($scanRow = fgetcsv($handle, 4096, $delimiter)) !== false) {
-                $name = trim($scanRow[$supplierColumnIndex] ?? '');
-
-                if ($name !== '') {
-                    $uniqueSupplierNames[$name] = true;
-                }
-            }
-
-            if (! empty($uniqueSupplierNames)) {
-                // Build a lowercase-name → id map from all existing suppliers.
-                $supplierNameToId = Supplier::all(['id', 'name'])
-                    ->mapWithKeys(fn (Supplier $s) => [mb_strtolower($s->name) => $s->id])
-                    ->all();
-
-                // Create any suppliers that are not yet in the database.
-                foreach (array_keys($uniqueSupplierNames) as $name) {
-                    $lower = mb_strtolower($name);
-
-                    if (! isset($supplierNameToId[$lower])) {
-                        $newSupplier = Supplier::create(['name' => $name, 'status' => true]);
-                        $supplierNameToId[$lower] = $newSupplier->id;
-                    }
-                }
-            }
-
-            // Rewind to data rows for the main processing loop below.
-            rewind($handle);
-            fgetcsv($handle, 4096, $delimiter); // skip header row
-        }
 
         // Pre-load existing SKUs for insert/update filtering and per-row flag handling.
         $existingSkus = null;

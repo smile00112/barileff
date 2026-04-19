@@ -8,6 +8,7 @@ use Webkul\ImportExport\Http\Controllers\Admin\Catalog\ImportController;
 use Webkul\ImportExport\Models\CatalogImportLogEntry;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
+use Webkul\Supplier\Models\Supplier;
 use Webkul\User\Models\Admin;
 
 use function Pest\Laravel\deleteJson;
@@ -476,6 +477,47 @@ it('should apply source_code=qty format when inventories column mapped directly 
     $data = array_combine($headers, $row);
 
     expect($data['inventories'])->toBe('main=25');
+});
+
+it('resolveImportSuppliers creates new suppliers and marks existing ones as found', function () {
+    $this->loginAsAdmin();
+
+    Storage::fake('private');
+
+    $existing = Supplier::create(['name' => 'ExistingCo', 'status' => true]);
+
+    Storage::disk('private')->put(
+        'catalog-imports/sup_test.csv',
+        "sku,vendor\nSKU001,ExistingCo\nSKU002,NewVendorXYZ\n"
+    );
+
+    $session = CatalogImportSession::create([
+        'state'          => CatalogImportSession::STATE_READY,
+        'file_name'      => 'sup_test.csv',
+        'file_path'      => 'catalog-imports/sup_test.csv',
+        'delimiter'      => ',',
+        'locale'         => 'en',
+        'column_mapping' => ['sku' => 'sku', 'vendor' => 'supplier'],
+        'headers'        => ['sku', 'vendor'],
+        'created_by'     => 1,
+    ]);
+
+    $controller = app(ImportController::class);
+    $method     = new ReflectionMethod($controller, 'resolveImportSuppliers');
+
+    $result = $method->invoke($controller, $session);
+
+    expect($result)->toHaveKey('map')
+        ->and($result)->toHaveKey('events')
+        ->and($result['events'])->toHaveCount(2);
+
+    $actions = array_column($result['events'], 'action');
+
+    expect(in_array('found', $actions, true))->toBeTrue()
+        ->and(in_array('created', $actions, true))->toBeTrue();
+
+    $newSupplier = Supplier::where('name', 'NewVendorXYZ')->first();
+    expect($newSupplier)->not->toBeNull();
 });
 
 it('createMissingCategories returns array of created category events', function () {
