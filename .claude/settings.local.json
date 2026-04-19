@@ -41,7 +41,13 @@
       "Bash(cmd //c \"dir D:\\\\__Work__\\\\laragon_2025\\\\www\\\\my_bagisto\\\\public /s /b\")",
       "Bash(node -e ':*)",
       "Bash(git -C \"D:/__Work__/laragon_2025/www/my_bagisto\" status --short)",
-      "Bash(find \"D:/__Work__/laragon_2025/www/my_bagisto/packages/Webkul/ManagerApp/src\" -name \"*.php\" -exec /d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -l {} \\\\;)"
+      "Bash(find \"D:/__Work__/laragon_2025/www/my_bagisto/packages/Webkul/ManagerApp/src\" -name \"*.php\" -exec /d/__Work__/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -l {} \\\\;)",
+      "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Models/CatalogImportLogEntry.php packages/Webkul/ImportExport/src/Database/Migrations/2026_04_19_000000_create_catalog_import_log_entries_table.php packages/Webkul/ImportExport/tests/Feature/Catalog/ImportTest.php)",
+      "Bash(php -r ' *)",
+      "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Http/Controllers/Admin/Catalog/ImportController.php)",
+      "Bash(vendor/bin/pint packages/Webkul/DataTransfer/src/Helpers/Importers/Product/Importer.php)",
+      "Bash(vendor/bin/pint \"packages/Webkul/ImportExport/src/Listeners/ProductsBatchSavedListener.php\" \"packages/Webkul/ImportExport/src/Providers/ImportExportServiceProvider.php\")",
+      "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Http/Controllers/Admin/Catalog/ImportController.php packages/Webkul/ImportExport/src/Models/CatalogImportLogEntry.php packages/Webkul/ImportExport/src/Listeners/ProductsBatchSavedListener.php packages/Webkul/ImportExport/src/Providers/ImportExportServiceProvider.php packages/Webkul/DataTransfer/src/Helpers/Importers/Product/Importer.php)"
     ]
   }
 }
