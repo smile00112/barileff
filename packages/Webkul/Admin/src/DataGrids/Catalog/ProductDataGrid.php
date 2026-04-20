@@ -2,6 +2,7 @@
 
 namespace Webkul\Admin\DataGrids\Catalog;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -36,17 +37,18 @@ class ProductDataGrid extends DataGrid
     /**
      * Prepare query builder.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return Builder
      */
     public function prepareQueryBuilder()
     {
         $tablePrefix = DB::getTablePrefix();
 
+        $categoryNameExpr = DbHelper::groupConcat("{$tablePrefix}ct.name", ', ');
+
         /**
          * Query Builder to fetch records from `product_flat` table
          */
         $queryBuilder = DB::table('product_flat')
-            ->distinct()
             ->leftJoin('attribute_families as af', 'product_flat.attribute_family_id', '=', 'af.id')
             ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
             ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
@@ -60,9 +62,6 @@ class ProductDataGrid extends DataGrid
             ->select(
                 'product_flat.locale',
                 'product_flat.channel',
-                'product_images.path as base_image',
-                'pc.category_id',
-                'ct.name as category_name',
                 'product_flat.product_id',
                 'product_flat.sku',
                 'product_flat.name',
@@ -74,15 +73,14 @@ class ProductDataGrid extends DataGrid
                 'af.name as attribute_family',
                 'suppliers.name as supplier_name',
             )
+            ->addSelect(DB::raw("MIN({$tablePrefix}product_images.path) as base_image"))
+            ->addSelect(DB::raw("{$categoryNameExpr} as category_name"))
             ->addSelect(DB::raw('SUM(DISTINCT '.$tablePrefix.'product_inventories.qty) as quantity'))
             ->addSelect(DB::raw('COUNT(DISTINCT '.$tablePrefix.'product_images.id) as images_count'))
             ->where('product_flat.locale', app()->getLocale())
             ->groupBy([
                 'product_flat.locale',
                 'product_flat.channel',
-                'product_images.path',
-                'pc.category_id',
-                'ct.name',
                 'product_flat.product_id',
                 'product_flat.sku',
                 'product_flat.name',
@@ -372,7 +370,7 @@ class ProductDataGrid extends DataGrid
             return Product::formatElasticSearchIndexName($channelCode, app()->getLocale());
         })->toArray();
 
-        $results = Elasticsearch::search([
+        $results = ElasticSearch::search([
             'index' => $indexNames,
             'body' => [
                 'from' => ($pagination['page'] * $pagination['per_page']) - $pagination['per_page'],
@@ -509,8 +507,8 @@ class ProductDataGrid extends DataGrid
 
     /**
      * Summary of perPageOptions
+     *
      * @var array
      */
     protected $perPageOptions = [10, 20, 30, 40, 50, 80, 100];
-        
 }

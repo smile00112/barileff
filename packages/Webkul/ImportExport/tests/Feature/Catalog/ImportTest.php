@@ -4,6 +4,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Models\Import as DataTransferImport;
+use Webkul\DataTransfer\Repositories\ImportRepository;
 use Webkul\ImportExport\Http\Controllers\Admin\Catalog\ImportController;
 use Webkul\ImportExport\Listeners\ProductsBatchSavedListener;
 use Webkul\ImportExport\Models\CatalogImportLogEntry;
@@ -150,6 +151,66 @@ it('should show grouped mapping fields including categories and image urls', fun
                 && in_array('categories', $codes, true)
                 && in_array('image_url', $codes, true);
         });
+});
+
+it('passes DataTransfer validate with skip-errors when every data row fails row validation', function () {
+    Storage::fake('private');
+
+    $path = 'catalog-imports/skip_all_invalid.csv';
+    $csv = implode("\n", [
+        'sku,type,attribute_family_code,locale,name,url_key,price,description,short_description',
+        'BAD-1,not_a_valid_type,default,en,N1,url-bad-1,10,D1,S1',
+        'BAD-2,not_a_valid_type,default,en,N2,url-bad-2,10,D2,S2',
+    ]);
+
+    Storage::disk('private')->put($path, $csv);
+
+    $importRepository = app(ImportRepository::class);
+
+    $dtImport = $importRepository->create([
+        'type' => 'products',
+        'action' => 'append',
+        'process_in_queue' => true,
+        'validation_strategy' => ImportHelper::VALIDATION_STRATEGY_SKIP_ERRORS,
+        'allowed_errors' => 100,
+        'field_separator' => ',',
+        'file_path' => $path,
+    ]);
+
+    $helper = app(ImportHelper::class);
+    $isValid = $helper->setImport($dtImport)->validate();
+
+    expect($isValid)->toBeTrue();
+
+    $fresh = $importRepository->find($dtImport->id);
+
+    expect((int) $fresh->processed_rows_count)->toBe(2)
+        ->and((int) $fresh->invalid_rows_count)->toBe(2)
+        ->and((int) $fresh->errors_count)->toBeGreaterThan(0);
+});
+
+it('rejects DataTransfer validate with skip-errors when csv structure is invalid', function () {
+    Storage::fake('private');
+
+    $path = 'catalog-imports/skip_structural_bad.csv';
+    Storage::disk('private')->put($path, "BadCol!!!,sku\nx,SKU1\n");
+
+    $importRepository = app(ImportRepository::class);
+
+    $dtImport = $importRepository->create([
+        'type' => 'products',
+        'action' => 'append',
+        'process_in_queue' => true,
+        'validation_strategy' => ImportHelper::VALIDATION_STRATEGY_SKIP_ERRORS,
+        'allowed_errors' => 100,
+        'field_separator' => ',',
+        'file_path' => $path,
+    ]);
+
+    $helper = app(ImportHelper::class);
+    $isValid = $helper->setImport($dtImport)->validate();
+
+    expect($isValid)->toBeFalse();
 });
 
 it('should return 422 when starting import without mapping', function () {
@@ -493,18 +554,18 @@ it('resolveImportSuppliers creates new suppliers and marks existing ones as foun
     );
 
     $session = CatalogImportSession::create([
-        'state'          => CatalogImportSession::STATE_READY,
-        'file_name'      => 'sup_test.csv',
-        'file_path'      => 'catalog-imports/sup_test.csv',
-        'delimiter'      => ',',
-        'locale'         => 'en',
+        'state' => CatalogImportSession::STATE_READY,
+        'file_name' => 'sup_test.csv',
+        'file_path' => 'catalog-imports/sup_test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
         'column_mapping' => ['sku' => 'sku', 'vendor' => 'supplier'],
-        'headers'        => ['sku', 'vendor'],
-        'created_by'     => 1,
+        'headers' => ['sku', 'vendor'],
+        'created_by' => 1,
     ]);
 
     $controller = app(ImportController::class);
-    $method     = new ReflectionMethod($controller, 'resolveImportSuppliers');
+    $method = new ReflectionMethod($controller, 'resolveImportSuppliers');
 
     $result = $method->invoke($controller, $session);
 
@@ -522,9 +583,9 @@ it('resolveImportSuppliers creates new suppliers and marks existing ones as foun
 });
 
 it('start writes category and supplier log entries', function () {
-    $admin    = $this->loginAsAdmin();
+    $admin = $this->loginAsAdmin();
     $anchorId = (int) core()->getDefaultChannel()->root_category_id;
-    $suffix   = uniqid('startlog_');
+    $suffix = uniqid('startlog_');
 
     Storage::fake('private');
 
@@ -536,22 +597,22 @@ it('start writes category and supplier log entries', function () {
     );
 
     $session = CatalogImportSession::create([
-        'state'              => CatalogImportSession::STATE_PENDING,
-        'file_name'          => "start_log_{$suffix}.csv",
-        'file_path'          => "catalog-imports/start_log_{$suffix}.csv",
-        'delimiter'          => ',',
-        'locale'             => 'en',
-        'headers'            => ['sku', 'categories', 'vendor'],
+        'state' => CatalogImportSession::STATE_PENDING,
+        'file_name' => "start_log_{$suffix}.csv",
+        'file_path' => "catalog-imports/start_log_{$suffix}.csv",
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku', 'categories', 'vendor'],
         'parent_category_id' => $anchorId,
-        'create_categories'  => true,
-        'created_by'         => $admin->id,
+        'create_categories' => true,
+        'created_by' => $admin->id,
     ]);
 
     postJson(route('admin.catalog.imports.start', $session->id), [
         'column_mapping' => [
-            'sku'        => 'sku',
+            'sku' => 'sku',
             'categories' => 'categories',
-            'vendor'     => 'supplier',
+            'vendor' => 'supplier',
         ],
     ]);
 
@@ -579,12 +640,12 @@ it('status returns log_entries for the session', function () {
     $admin = $this->loginAsAdmin();
 
     $session = CatalogImportSession::create([
-        'state'      => CatalogImportSession::STATE_COMPLETED,
-        'file_name'  => 'products.csv',
-        'file_path'  => 'catalog-imports/test.csv',
-        'delimiter'  => ',',
-        'locale'     => 'en',
-        'headers'    => ['sku'],
+        'state' => CatalogImportSession::STATE_COMPLETED,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
         'created_by' => $admin->id,
     ]);
 
@@ -603,12 +664,12 @@ it('status filters log_entries by after_log_id', function () {
     $admin = $this->loginAsAdmin();
 
     $session = CatalogImportSession::create([
-        'state'      => CatalogImportSession::STATE_COMPLETED,
-        'file_name'  => 'products.csv',
-        'file_path'  => 'catalog-imports/test.csv',
-        'delimiter'  => ',',
-        'locale'     => 'en',
-        'headers'    => ['sku'],
+        'state' => CatalogImportSession::STATE_COMPLETED,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
         'created_by' => $admin->id,
     ]);
 
@@ -627,7 +688,7 @@ it('createMissingCategories returns array of created category events', function 
     Storage::fake('private');
 
     $anchorId = (int) core()->getDefaultChannel()->root_category_id;
-    $suffix   = uniqid('logcat_');
+    $suffix = uniqid('logcat_');
 
     Storage::disk('private')->put(
         'catalog-imports/cats_test.csv',
@@ -635,20 +696,20 @@ it('createMissingCategories returns array of created category events', function 
     );
 
     $session = CatalogImportSession::create([
-        'state'              => CatalogImportSession::STATE_READY,
-        'file_name'          => 'cats_test.csv',
-        'file_path'          => 'catalog-imports/cats_test.csv',
-        'delimiter'          => ',',
-        'locale'             => 'en',
-        'column_mapping'     => ['sku' => 'sku', 'categories' => 'categories'],
-        'headers'            => ['sku', 'categories'],
+        'state' => CatalogImportSession::STATE_READY,
+        'file_name' => 'cats_test.csv',
+        'file_path' => 'catalog-imports/cats_test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'column_mapping' => ['sku' => 'sku', 'categories' => 'categories'],
+        'headers' => ['sku', 'categories'],
         'parent_category_id' => $anchorId,
-        'create_categories'  => true,
-        'created_by'         => 1,
+        'create_categories' => true,
+        'created_by' => 1,
     ]);
 
     $controller = app(ImportController::class);
-    $method     = new ReflectionMethod($controller, 'createMissingCategories');
+    $method = new ReflectionMethod($controller, 'createMissingCategories');
 
     $events = $method->invoke($controller, $session);
 
@@ -663,20 +724,20 @@ it('ProductsBatchSavedListener creates product log entries from event payload', 
     $admin = Admin::factory()->create();
 
     $session = CatalogImportSession::create([
-        'state'         => CatalogImportSession::STATE_PROCESSING,
-        'file_name'     => 'products.csv',
-        'file_path'     => 'catalog-imports/test.csv',
-        'delimiter'     => ',',
-        'locale'        => 'en',
-        'headers'       => ['sku'],
-        'created_by'    => $admin->id,
+        'state' => CatalogImportSession::STATE_PROCESSING,
+        'file_name' => 'products.csv',
+        'file_path' => 'catalog-imports/test.csv',
+        'delimiter' => ',',
+        'locale' => 'en',
+        'headers' => ['sku'],
+        'created_by' => $admin->id,
         'import_ref_id' => 77777,
     ]);
 
     $listener = app(ProductsBatchSavedListener::class);
 
     $listener->handle([
-        'import_id'   => 77777,
+        'import_id' => 77777,
         'created_ids' => [101, 102],
         'updated_ids' => [200],
     ]);
@@ -697,7 +758,7 @@ it('ProductsBatchSavedListener does nothing when no session matches import_id', 
 
     $listener = app(ProductsBatchSavedListener::class);
     $listener->handle([
-        'import_id'   => 999888777,
+        'import_id' => 999888777,
         'created_ids' => [1, 2, 3],
         'updated_ids' => [],
     ]);

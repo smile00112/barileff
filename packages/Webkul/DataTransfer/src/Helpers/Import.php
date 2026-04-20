@@ -240,6 +240,20 @@ class Import
             return false;
         }
 
+        /**
+         * With "skip-errors", row-level validation failures must not abort the import
+         * as long as the file structure is OK (rows were scanned). Fatal issues are
+         * represented by errors while zero data rows were processed (e.g. missing
+         * required CSV columns before row validation runs).
+         */
+        if ($this->import->validation_strategy === self::VALIDATION_STRATEGY_SKIP_ERRORS) {
+            if ($this->import->processed_rows_count === 0 && $this->import->errors_count > 0) {
+                return false;
+            }
+
+            return true;
+        }
+
         if ($this->import->processed_rows_count <= $this->import->invalid_rows_count) {
             return false;
         }
