@@ -1,5 +1,6 @@
 <?php
 
+use Tests\TestCase;
 use Webkul\Admin\Tests\AdminTestCase;
 use Webkul\Core\Tests\CoreTestCase;
 use Webkul\DataGrid\Tests\DataGridTestCase;
@@ -23,6 +24,7 @@ uses(AdminTestCase::class)->in('../packages/Webkul/Admin/tests');
 uses(AdminTestCase::class)->in('../packages/Webkul/ImportExport/tests');
 uses(AdminTestCase::class)->in('../packages/Webkul/Markup/tests');
 uses(AdminTestCase::class)->in('../packages/Webkul/ExternalPayments/tests');
+uses(TestCase::class)->in('Feature');
 uses(CoreTestCase::class)->in('../packages/Webkul/Core/tests');
 uses(DataGridTestCase::class)->in('../packages/Webkul/DataGrid/tests');
 uses(InstallerTestCase::class)->in('../packages/Webkul/Installer/tests');
