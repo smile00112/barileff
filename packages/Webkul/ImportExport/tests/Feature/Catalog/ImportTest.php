@@ -334,7 +334,7 @@ it('should return 404 when deleting another admins catalog import session', func
     expect(CatalogImportSession::find($session->id))->not->toBeNull();
 });
 
-it('should return 422 when deleting a processing catalog import session', function () {
+it('should delete a processing catalog import session', function () {
     $admin = $this->loginAsAdmin();
 
     Storage::fake('private');
@@ -351,10 +351,10 @@ it('should return 422 when deleting a processing catalog import session', functi
     ]);
 
     deleteJson(route('admin.catalog.imports.delete', $session->id))
-        ->assertStatus(422)
-        ->assertJsonPath('message', trans('admin::app.catalog.imports.index.delete-processing-not-allowed'));
+        ->assertOk()
+        ->assertJsonPath('message', trans('admin::app.catalog.imports.index.delete-success'));
 
-    expect(CatalogImportSession::find($session->id))->not->toBeNull();
+    expect(CatalogImportSession::find($session->id))->toBeNull();
 });
 
 it('should mass delete own catalog import sessions', function () {

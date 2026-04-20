@@ -1001,12 +1001,6 @@ class ImportController extends Controller
             ->whereKey($id)
             ->firstOrFail();
 
-        if ($session->state === CatalogImportSession::STATE_PROCESSING) {
-            return new JsonResponse([
-                'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
-            ], 422);
-        }
-
         try {
             $this->deleteCatalogImportSession($session);
         } catch (\Exception $e) {
@@ -1038,10 +1032,6 @@ class ImportController extends Controller
                 ->first();
 
             if (! $session) {
-                continue;
-            }
-
-            if ($session->state === CatalogImportSession::STATE_PROCESSING) {
                 continue;
             }
 
