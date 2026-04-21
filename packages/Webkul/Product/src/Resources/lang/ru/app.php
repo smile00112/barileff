@@ -29,8 +29,8 @@ return [
         'options' => [
             'cheapest-first' => 'Сначала дешевые',
             'expensive-first' => 'Сначала дорогие',
-            'from-a-z' => 'От А до Z',
-            'from-z-a' => 'От Z до A',
+            'from-a-z' => 'От А до Я',
+            'from-z-a' => 'От Я до A',
             'latest-first' => 'Сначала новые',
             'oldest-first' => 'Сначала старые',
         ],

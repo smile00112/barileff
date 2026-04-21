@@ -244,6 +244,7 @@ abstract class DataGrid
             title: $action['title'],
             method: $action['method'],
             url: $action['url'],
+            target: $action['target'] ?? '_self',
         );
 
         $this->dispatchEvent('actions.add.after', [$this, $this->actions[count($this->actions) - 1]]);

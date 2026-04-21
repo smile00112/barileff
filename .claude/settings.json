@@ -47,7 +47,10 @@
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" diff cab833377460ea830feb0800588d2227e6e42790..93bf4d654229665b81d63454dc6f54c59ba02408 -- packages/Webkul/Admin/src/Http/Controllers/Catalog/CategoryController.php)",
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" log cab833377460ea830feb0800588d2227e6e42790..93bf4d654229665b81d63454dc6f54c59ba02408 --oneline)",
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" show 49f8f7dd82 --stat --format=\"%s%n%b\")",
-      "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" show 49f8f7dd82)"
+      "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" show 49f8f7dd82)",
+      "mcp__plugin_laravel-boost_laravel-boost__last-error",
+      "mcp__plugin_laravel-boost_laravel-boost__read-log-entries",
+      "mcp__plugin_laravel-boost_laravel-boost__browser-logs"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

@@ -786,6 +786,7 @@ return [
                     'status' => 'Status',
                     'type' => 'Type',
                     'update-status' => 'Update Status',
+                    'view-on-site' => 'View on Site',
                 ],
             ],
 
@@ -1526,6 +1527,7 @@ return [
                     'position' => 'Position',
                     'status' => 'Visible In Menu',
                     'update-status' => 'Update Status',
+                    'view-on-site' => 'View on Site',
                 ],
             ],
 

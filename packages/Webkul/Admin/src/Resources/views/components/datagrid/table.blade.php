@@ -219,7 +219,11 @@
 
                     switch (method) {
                         case 'get':
-                            window.location.href = action.url;
+                            if (action.target === '_blank') {
+                                window.open(action.url, '_blank');
+                            } else {
+                                window.location.href = action.url;
+                            }
 
                             break;
 

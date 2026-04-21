@@ -275,6 +275,20 @@ class ProductDataGrid extends DataGrid
      */
     public function prepareActions()
     {
+        $this->addAction([
+            'icon' => 'icon-view',
+            'title' => trans('admin::app.catalog.products.index.datagrid.view-on-site'),
+            'method' => 'GET',
+            'target' => '_blank',
+            'url' => function ($row) {
+                if (! $row->url_key) {
+                    return null;
+                }
+
+                return url($row->url_key);
+            },
+        ]);
+
         if (bouncer()->hasPermission('catalog.products.copy')) {
             $this->addAction([
                 'icon' => 'icon-copy',

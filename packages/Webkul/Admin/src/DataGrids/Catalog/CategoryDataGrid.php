@@ -26,6 +26,7 @@ class CategoryDataGrid extends DataGrid
             ->select(
                 'categories.id as category_id',
                 'category_translations.name',
+                'category_translations.slug',
                 'categories.position',
                 'categories.status',
                 'category_translations.locale',
@@ -38,6 +39,7 @@ class CategoryDataGrid extends DataGrid
             ->groupBy([
                 'categories.id',
                 'category_translations.name',
+                'category_translations.slug',
                 'categories.position',
                 'categories.status',
                 'category_translations.locale',
@@ -134,6 +136,16 @@ class CategoryDataGrid extends DataGrid
      */
     public function prepareActions()
     {
+        $this->addAction([
+            'icon' => 'icon-view',
+            'title' => trans('admin::app.catalog.categories.index.datagrid.view-on-site'),
+            'method' => 'GET',
+            'target' => '_blank',
+            'url' => function ($row) {
+                return url($row->slug);
+            },
+        ]);
+
         if (bouncer()->hasPermission('catalog.categories.edit')) {
             $this->addAction([
                 'icon' => 'icon-edit',
