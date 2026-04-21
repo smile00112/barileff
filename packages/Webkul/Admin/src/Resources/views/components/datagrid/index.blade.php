@@ -179,6 +179,41 @@
                                 searchAppliedColumn.value = [urlParams.get('search')];
                             }
 
+                            /**
+                             * Override filters from URL parameters (e.g. ?filters[category_name][0]=1391).
+                             * This ensures that navigating via a link with filter params always reflects
+                             * the correct filter state in the UI, overriding any stale localStorage state.
+                             */
+                            const urlFilters = {};
+
+                            urlParams.forEach((value, key) => {
+                                const match = key.match(/^filters\[([^\]]+)\]\[(\d+)\]$/);
+
+                                if (match) {
+                                    const index = match[1];
+
+                                    if (! urlFilters[index]) {
+                                        urlFilters[index] = [];
+                                    }
+
+                                    urlFilters[index].push(value);
+                                }
+                            });
+
+                            if (Object.keys(urlFilters).length) {
+                                this.applied.savedFilterId = null;
+
+                                Object.entries(urlFilters).forEach(([index, values]) => {
+                                    const col = this.applied.filters.columns.find(c => c.index === index);
+
+                                    if (col) {
+                                        col.value = values;
+                                    } else {
+                                        this.applied.filters.columns.push({ index, value: values });
+                                    }
+                                });
+                            }
+
                             this.get();
 
                             return;
