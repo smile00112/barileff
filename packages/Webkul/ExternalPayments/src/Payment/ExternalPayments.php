@@ -2,6 +2,7 @@
 
 namespace Webkul\ExternalPayments\Payment;
 
+use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\Payment\Payment\Payment;
 
 class ExternalPayments extends Payment
@@ -22,18 +23,26 @@ class ExternalPayments extends Payment
     }
 
     /**
-     * Check if payment method is available.
+     * Check if payment method is available for the current inventory source.
      */
     public function isAvailable(): bool
     {
-        if (! $this->getConfigData('active')) {
+        $sourceId = getCurrentInventorySourceId();
+
+        if (! $sourceId) {
             return false;
         }
 
-        if (! $this->getConfigData('api_server_url') || ! $this->getConfigData('api_token')) {
-            return false;
-        }
+        /** @var InventorySourceConfigRepository $configRepo */
+        $configRepo = app(InventorySourceConfigRepository::class);
 
-        return true;
+        $config = $configRepo->findOneWhere([
+            'inventory_source_id' => $sourceId,
+            'active' => true,
+        ]);
+
+        return $config !== null
+            && ! empty($config->api_server_url)
+            && ! empty($config->api_token);
     }
 }

@@ -4,6 +4,7 @@ namespace Webkul\ExternalPayments\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 
 class ExternalPaymentsServiceProvider extends ServiceProvider
 {
@@ -13,6 +14,8 @@ class ExternalPaymentsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerConfig();
+
+        $this->app->singleton(InventorySourceConfigRepository::class);
     }
 
     /**
@@ -22,6 +25,7 @@ class ExternalPaymentsServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'external-payments');
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'external-payments');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->registerRoutes();
     }
 
@@ -48,5 +52,8 @@ class ExternalPaymentsServiceProvider extends ServiceProvider
     {
         Route::middleware(['web'])
             ->group(__DIR__.'/../Http/routes.php');
+
+        Route::middleware(['web'])
+            ->group(__DIR__.'/../Http/admin-routes.php');
     }
 }

@@ -105,6 +105,16 @@ return [
         'name' => 'admin::app.acl.view',
         'route' => 'admin.sales.transactions.view',
         'sort' => 1,
+    ], [
+        'key' => 'sales.external-payments',
+        'name' => 'external-payments::app.admin.menu.title',
+        'route' => 'admin.external-payments.inventory-source-configs.index',
+        'sort' => 7,
+    ], [
+        'key' => 'sales.external-payments.edit',
+        'name' => 'admin::app.acl.edit',
+        'route' => 'admin.external-payments.inventory-source-configs.edit',
+        'sort' => 1,
     ],
 
     /*

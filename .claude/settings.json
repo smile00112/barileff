@@ -50,7 +50,21 @@
       "Bash(git -C \"d:/_WORK_/laragon_2025/www/my_bagisto\" show 49f8f7dd82)",
       "mcp__plugin_laravel-boost_laravel-boost__last-error",
       "mcp__plugin_laravel-boost_laravel-boost__read-log-entries",
-      "mcp__plugin_laravel-boost_laravel-boost__browser-logs"
+      "mcp__plugin_laravel-boost_laravel-boost__browser-logs",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); keys=[k for k in data if 'cash' in k.lower\\(\\) or 'image' in k.lower\\(\\)]; print\\('\\\\n'.join\\(keys[:20]\\)\\)\")",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); entry=data.get\\('src/Resources/assets/images/cash-on-delivery.png', {}\\); print\\(json.dumps\\(entry, indent=2\\)\\)\")",
+      "Bash(vendor/bin/pint .worktrees/payment-confirmation/packages/Webkul/DeliveryZones/src/DataGrids/DeliveryCitiesDataGrid.php)",
+      "Bash(git -C .worktrees/payment-confirmation add packages/Webkul/DeliveryZones/src/DataGrids/DeliveryCitiesDataGrid.php)",
+      "Bash(git -C .worktrees/payment-confirmation commit -m \"feat\\(delivery-zones\\): add status badge to cities datagrid\")",
+      "Bash(git -C .worktrees/payment-confirmation log --oneline -3)",
+      "Bash(git -C .worktrees/payment-confirmation show --name-status HEAD)",
+      "Bash(git -C .worktrees/payment-confirmation show HEAD)",
+      "Bash(vendor/bin/pint .worktrees/payment-confirmation/packages/Webkul/DeliveryZones/src/DataGrids/DeliveryZonesDataGrid.php)",
+      "Bash(php -l d:/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation/packages/Webkul/DeliveryZones/src/DataGrids/DeliveryZonesDataGrid.php)",
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation add packages/Webkul/DeliveryZones/src/DataGrids/DeliveryZonesDataGrid.php)",
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation status)",
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation commit -m \"feat\\(delivery-zones\\): add status badge to zones datagrid\")",
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation log --oneline -5)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

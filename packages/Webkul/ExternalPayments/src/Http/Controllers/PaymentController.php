@@ -4,7 +4,8 @@ namespace Webkul\ExternalPayments\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Webkul\Checkout\Facades\Cart;
-use Webkul\ExternalPayments\Payment\ExternalPayments;
+use Webkul\ExternalPayments\Models\InventorySourceConfig;
+use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\ExternalPayments\Services\ApiClient;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
@@ -16,7 +17,7 @@ class PaymentController extends Controller
      */
     public function __construct(
         protected OrderRepository $orderRepository,
-        protected ExternalPayments $paymentMethod
+        protected InventorySourceConfigRepository $configRepository,
     ) {}
 
     /**
@@ -32,6 +33,17 @@ class PaymentController extends Controller
             return redirect()->route('shop.checkout.cart.index');
         }
 
+        $sourceId = getCurrentInventorySourceId();
+        $sourceConfig = $sourceId
+            ? $this->configRepository->findOneWhere(['inventory_source_id' => $sourceId, 'active' => true])
+            : null;
+
+        if (! $sourceConfig || empty($sourceConfig->api_server_url) || empty($sourceConfig->api_token)) {
+            session()->flash('error', trans('external-payments::app.payment.misconfigured'));
+
+            return redirect()->route('shop.checkout.cart.index');
+        }
+
         $data = (new OrderResource($cart))->jsonSerialize();
 
         $order = $this->orderRepository->create($data);
@@ -39,7 +51,7 @@ class PaymentController extends Controller
         Cart::deActivateCart();
 
         try {
-            $apiClient = $this->makeApiClient();
+            $apiClient = $this->makeApiClient($sourceConfig);
 
             $billingAddress = $order->billing_address;
 
@@ -77,11 +89,15 @@ class PaymentController extends Controller
             return redirect()->route('shop.checkout.cart.index');
         }
 
+        $additionalData = ['inventory_source_id' => $sourceId];
+
         if (isset($result['payment_id'])) {
-            $order->payment->update([
-                'additional' => ['payment_id' => $result['payment_id']],
-            ]);
+            $additionalData['payment_id'] = $result['payment_id'];
         }
+
+        $order->payment->update([
+            'additional' => $additionalData,
+        ]);
 
         session()->put('external_payment_order_id', $order->id);
 
@@ -113,19 +129,10 @@ class PaymentController extends Controller
     }
 
     /**
-     * Build ApiClient from current channel configuration.
-     *
-     * @throws \RuntimeException
+     * Build ApiClient from the inventory source config.
      */
-    private function makeApiClient(): ApiClient
+    private function makeApiClient(InventorySourceConfig $sourceConfig): ApiClient
     {
-        $serverUrl = $this->paymentMethod->getConfigData('api_server_url');
-        $token = $this->paymentMethod->getConfigData('api_token');
-
-        if (! $serverUrl || ! $token) {
-            throw new \RuntimeException(trans('external-payments::app.payment.misconfigured'));
-        }
-
-        return new ApiClient($serverUrl, $token);
+        return new ApiClient($sourceConfig->api_server_url, $sourceConfig->api_token);
     }
 }

@@ -57,6 +57,12 @@ return [
         'route' => 'admin.sales.bookings.index',
         'sort' => 6,
         'icon' => '',
+    ], [
+        'key' => 'sales.external-payments',
+        'name' => 'external-payments::app.admin.menu.title',
+        'route' => 'admin.external-payments.inventory-source-configs.index',
+        'sort' => 7,
+        'icon' => '',
     ],
 
     /**

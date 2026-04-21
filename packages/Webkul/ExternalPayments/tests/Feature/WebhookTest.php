@@ -1,30 +1,27 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
+use Webkul\ExternalPayments\Models\InventorySourceConfig;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderPayment;
 
 use function Pest\Laravel\postJson;
 
-beforeEach(function () {
-    Config::set('payment_methods.external_payments.api_token', 'test-secret-token');
-});
-
 it('returns 400 when payload is missing order_id', function () {
-    postJson(route('external-payments.webhook'), ['payment_status' => 'paid'], [
-        'Authorization' => 'Bearer test-secret-token',
-    ])->assertStatus(400);
+    postJson(route('external-payments.webhook'), ['payment_status' => 'paid'])->assertStatus(400);
 });
 
 it('returns 400 when payload is missing payment_status', function () {
-    postJson(route('external-payments.webhook'), ['order_id' => 1], [
-        'Authorization' => 'Bearer test-secret-token',
-    ])->assertStatus(400);
+    postJson(route('external-payments.webhook'), ['order_id' => 1])->assertStatus(400);
 });
 
 it('returns 401 when bearer token is wrong', function () {
+    $config = InventorySourceConfig::factory()->create(['api_token' => 'test-secret-token']);
     $order = Order::factory()->pending()->create();
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -38,14 +35,17 @@ it('returns 404 when order does not exist', function () {
     postJson(route('external-payments.webhook'), [
         'order_id' => 999999,
         'payment_status' => 'paid',
-    ], [
-        'Authorization' => 'Bearer test-secret-token',
     ])->assertStatus(404);
 });
 
 it('returns 404 when order uses a different payment method', function () {
+    $config = InventorySourceConfig::factory()->create();
     $order = Order::factory()->pending()->create();
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'cashondelivery']);
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'cashondelivery',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -56,10 +56,16 @@ it('returns 404 when order uses a different payment method', function () {
 });
 
 it('transitions order to processing on paid status', function () {
+    $config = InventorySourceConfig::factory()->create([
+        'api_token' => 'test-secret-token',
+        'paid_order_status' => 'processing',
+    ]);
     $order = Order::factory()->pending()->create(['grand_total' => 100]);
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
-
-    Config::set('core.sales.payment_methods.external_payments.paid_order_status', 'processing');
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -73,8 +79,13 @@ it('transitions order to processing on paid status', function () {
 });
 
 it('transitions order to canceled on failed status', function () {
+    $config = InventorySourceConfig::factory()->create(['api_token' => 'test-secret-token']);
     $order = Order::factory()->pending()->create();
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -88,8 +99,13 @@ it('transitions order to canceled on failed status', function () {
 });
 
 it('transitions order to canceled on declined status', function () {
+    $config = InventorySourceConfig::factory()->create(['api_token' => 'test-secret-token']);
     $order = Order::factory()->pending()->create();
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -102,10 +118,16 @@ it('transitions order to canceled on declined status', function () {
 });
 
 it('accepts all known successful payment statuses', function (string $status) {
+    $config = InventorySourceConfig::factory()->create([
+        'api_token' => 'test-secret-token',
+        'paid_order_status' => 'processing',
+    ]);
     $order = Order::factory()->pending()->create(['grand_total' => 50]);
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
-
-    Config::set('core.sales.payment_methods.external_payments.paid_order_status', 'processing');
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
@@ -118,10 +140,13 @@ it('accepts all known successful payment statuses', function (string $status) {
 })->with(['paid', 'completed', 'approved', 'processing']);
 
 it('allows webhook without bearer token when no api_token configured', function () {
-    Config::set('payment_methods.external_payments.api_token', null);
-
+    $config = InventorySourceConfig::factory()->create(['api_token' => null]);
     $order = Order::factory()->pending()->create();
-    OrderPayment::factory()->create(['order_id' => $order->id, 'method' => 'external_payments']);
+    OrderPayment::factory()->create([
+        'order_id' => $order->id,
+        'method' => 'external_payments',
+        'additional' => ['inventory_source_id' => $config->inventory_source_id],
+    ]);
 
     postJson(route('external-payments.webhook'), [
         'order_id' => $order->id,
