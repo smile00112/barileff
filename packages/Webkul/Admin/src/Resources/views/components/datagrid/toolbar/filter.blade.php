@@ -213,7 +213,7 @@
                                                                 v-for="appliedColumnValue in getAppliedColumnValues(column.index)"
                                                             >
                                                                 <!-- Retrieving the label from the options based on the applied column value. -->
-                                                                <span v-text="column.filterable_options.find((option => option.value == appliedColumnValue)).label"></span>
+                                                                <span v-text="column.filterable_options.find((option => option.value == appliedColumnValue))?.label ?? appliedColumnValue"></span>
 
                                                                 <span
                                                                     class="icon-cross cursor-pointer text-lg text-white ltr:ml-1.5 rtl:mr-1.5"
@@ -585,7 +585,7 @@
                                                                 v-for="appliedColumnValue in getAppliedColumnValues(column.index)"
                                                             >
                                                                 <!-- Retrieving the label from the options based on the applied column value. -->
-                                                                <span v-text="column.filterable_options.find((option => option.value == appliedColumnValue)).label"></span>
+                                                                <span v-text="column.filterable_options.find((option => option.value == appliedColumnValue))?.label ?? appliedColumnValue"></span>
 
                                                                 <span
                                                                     class="icon-cross cursor-pointer text-lg text-white ltr:ml-1.5 rtl:mr-1.5"
