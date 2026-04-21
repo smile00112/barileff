@@ -37,6 +37,9 @@ return [
                 'status' => 'Статус',
                 'actions' => 'Действия',
             ],
+            'actions' => [
+                'edit' => 'Редактировать',
+            ],
             'status' => [
                 'active' => 'Активен',
                 'inactive' => 'Неактивен',

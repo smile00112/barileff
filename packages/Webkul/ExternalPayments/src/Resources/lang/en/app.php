@@ -37,6 +37,9 @@ return [
                 'status' => 'Status',
                 'actions' => 'Actions',
             ],
+            'actions' => [
+                'edit' => 'Edit',
+            ],
             'status' => [
                 'active' => 'Active',
                 'inactive' => 'Inactive',

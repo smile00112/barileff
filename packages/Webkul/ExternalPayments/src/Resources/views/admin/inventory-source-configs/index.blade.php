@@ -54,7 +54,7 @@
                                 href="{{ route('admin.external-payments.inventory-source-configs.edit', $source->id) }}"
                                 class="secondary-button inline-flex px-4 py-2 text-xs"
                             >
-                                @lang('admin::app.components.datagrid.table.edit')
+                                @lang('external-payments::app.admin.inventory-source-configs.actions.edit')
                             </a>
                         </td>
                     </tr>
