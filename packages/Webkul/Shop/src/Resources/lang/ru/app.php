@@ -517,6 +517,7 @@ return [
                     'delivery-time-unknown' => 'Срок уточняется',
                     'price-unavailable' => 'Стоимость уточняется',
                     'free-from' => 'Бесплатно от',
+                    'add-more' => 'Добавьте в корзину ещё на',
                 ],
 
                 'desktop' => [
@@ -987,6 +988,7 @@ return [
             'inventory-warning' => 'Запрошенное количество товара недоступно. Попробуйте позже.',
             'item-add-to-cart' => 'Товар успешно добавлен',
             'minimum-order-message' => 'Минимальная сумма заказа составляет',
+            'zone-minimum-order-message' => 'Минимальная сумма заказа для зоны доставки «:zone» — :amount.',
             'missing-fields' => 'Отсутствуют некоторые обязательные поля для этого товара.',
             'missing-options' => 'Отсутствуют варианты для этого товара.',
             'paypal-payment-cancelled' => 'Платеж через PayPal был отменен.',

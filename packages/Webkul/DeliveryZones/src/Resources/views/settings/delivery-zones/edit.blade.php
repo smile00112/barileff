@@ -131,6 +131,7 @@
                         </label>
 
                         <button type="button" id="clear-polygon" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.clear-polygon')</button>
+                        <button type="button" id="invert-polygon-coords" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.invert-coordinates')</button>
                         <button type="button" id="apply-polygon-json" class="secondary-button">@lang('admin::app.settings.delivery_zones.edit.apply-polygon-json')</button>
                     </div>
 
@@ -221,6 +222,7 @@
                 const polygonFillOpacityInput = document.getElementById('polygon_fill_opacity');
                 const polygonStrokeOpacityInput = document.getElementById('polygon_stroke_opacity');
                 const clearPolygonButton = document.getElementById('clear-polygon');
+                const invertPolygonCoordsButton = document.getElementById('invert-polygon-coords');
                 const applyPolygonJsonButton = document.getElementById('apply-polygon-json');
                 const editModeInput = document.getElementById('polygon-edit-mode');
                 const polygonError = document.getElementById('polygon-error');
@@ -518,6 +520,17 @@
 
                 clearPolygonButton?.addEventListener('click', () => {
                     coordinates = [];
+                    syncPolygonInput(coordinates);
+                    showPolygonError('');
+                    renderPolygon();
+                });
+
+                invertPolygonCoordsButton?.addEventListener('click', () => {
+                    if (! coordinates.length) {
+                        return;
+                    }
+
+                    coordinates = coordinates.map(([lat, lng]) => [lng, lat]);
                     syncPolygonInput(coordinates);
                     showPolygonError('');
                     renderPolygon();

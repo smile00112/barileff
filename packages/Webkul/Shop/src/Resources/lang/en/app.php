@@ -517,6 +517,7 @@ return [
                     'delivery-time-unknown' => 'Delivery time will be confirmed',
                     'price-unavailable' => 'Price will be confirmed',
                     'free-from' => 'Free from',
+                    'add-more' => 'Add to cart more for',
                 ],
 
                 'desktop' => [
@@ -987,6 +988,7 @@ return [
             'inventory-warning' => 'The requested quantity is not available, please try again later.',
             'item-add-to-cart' => 'Item Added Successfully',
             'minimum-order-message' => 'Minimum order amount is',
+            'zone-minimum-order-message' => 'Minimum order amount for delivery zone ":zone" is :amount.',
             'missing-fields' => 'Some required fields missing for this product.',
             'missing-options' => 'Options are missing for this product.',
             'paypal-payment-cancelled' => 'Paypal payment has been cancelled.',

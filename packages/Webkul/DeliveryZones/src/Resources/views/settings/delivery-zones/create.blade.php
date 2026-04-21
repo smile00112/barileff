@@ -135,13 +135,13 @@
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
                         <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.polygon-fill-opacity')</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="number" id="polygon_fill_opacity" name="polygon_fill_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_fill_opacity', 0.20)" />
+                        <x-admin::form.control-group.control type="number" id="polygon_fill_opacity" name="polygon_fill_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_fill_opacity', 0.50)" />
                         <x-admin::form.control-group.error control-name="polygon_fill_opacity" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="mt-3 !mb-0">
                         <x-admin::form.control-group.label class="required">@lang('admin::app.settings.delivery_zones.edit.border-opacity')</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="number" id="polygon_stroke_opacity" name="polygon_stroke_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_stroke_opacity', 1)" />
+                        <x-admin::form.control-group.control type="number" id="polygon_stroke_opacity" name="polygon_stroke_opacity" min="0" max="1" step="0.01" rules="required" :value="old('polygon_stroke_opacity', 0.50)" />
                         <x-admin::form.control-group.error control-name="polygon_stroke_opacity" />
                     </x-admin::form.control-group>
                 </div>
@@ -308,24 +308,24 @@
 
                 const getFillOpacityHex = () => {
                     if (! (polygonFillOpacityInput instanceof HTMLInputElement)) {
-                        return getHexAlpha(0.2, 0.2);
+                        return getHexAlpha(0.5, 0.5);
                     }
 
-                    const opacity = normalizeOpacity(polygonFillOpacityInput.value, 0.2);
+                    const opacity = normalizeOpacity(polygonFillOpacityInput.value, 0.5);
                     polygonFillOpacityInput.value = opacity.toFixed(2);
 
-                    return getHexAlpha(opacity, 0.2);
+                    return getHexAlpha(opacity, 0.5);
                 };
 
                 const getStrokeOpacityHex = () => {
                     if (! (polygonStrokeOpacityInput instanceof HTMLInputElement)) {
-                        return getHexAlpha(1, 1);
+                        return getHexAlpha(0.5, 0.5);
                     }
 
-                    const opacity = normalizeOpacity(polygonStrokeOpacityInput.value, 1);
+                    const opacity = normalizeOpacity(polygonStrokeOpacityInput.value, 0.5);
                     polygonStrokeOpacityInput.value = opacity.toFixed(2);
 
-                    return getHexAlpha(opacity, 1);
+                    return getHexAlpha(opacity, 0.5);
                 };
 
                 const normalizePoint = (value) => {

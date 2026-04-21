@@ -3289,6 +3289,7 @@ return [
                 'zone-polygon' => 'Полигон зоны (Яндекс.Карты)',
                 'edit-mode' => 'Режим редактирования',
                 'clear-polygon' => 'Очистить полигон',
+                'invert-coordinates' => 'Инвертировать координаты',
                 'apply-polygon-json' => 'Применить JSON',
                 'polygon-json' => 'JSON полигона',
                 'polygon-color' => 'Цвет полигона',

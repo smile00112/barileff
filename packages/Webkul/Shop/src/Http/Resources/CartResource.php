@@ -2,7 +2,9 @@
 
 namespace Webkul\Shop\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webkul\DeliveryZones\Services\DeliveryZoneRateResolver;
 use Webkul\Tax\Facades\Tax;
 
 class CartResource extends JsonResource
@@ -10,7 +12,7 @@ class CartResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     public function toArray($request)
@@ -43,6 +45,9 @@ class CartResource extends JsonResource
             'delivery_zone' => $this->delivery_zone ? (function () {
                 $this->delivery_zone->loadMissing('city', 'inventory_sources');
 
+                $zoneMin = app(DeliveryZoneRateResolver::class)->getZoneMinimumOrderTotal($this->delivery_zone);
+                $subTotal = (float) ($this->sub_total ?? 0);
+
                 return [
                     'id' => $this->delivery_zone->id,
                     'name' => $this->delivery_zone->name,
@@ -53,6 +58,10 @@ class CartResource extends JsonResource
                     'city_state' => $this->delivery_zone->city?->state ?? '',
                     'inventory_source_state' => $this->delivery_zone->inventory_sources->first()?->state ?? '',
                     'inventory_source_country' => $this->delivery_zone->inventory_sources->first()?->country ?? '',
+                    'min_order_total' => $zoneMin,
+                    'formatted_min_order_total' => $zoneMin !== null ? core()->formatPrice($zoneMin) : null,
+                    'is_below_minimum' => $zoneMin !== null && $subTotal < $zoneMin,
+                    'amount_missing_to_minimum' => $zoneMin !== null && $subTotal < $zoneMin ? $zoneMin - $subTotal : 0,
                 ];
             })() : null,
             'grand_total' => $this->grand_total,

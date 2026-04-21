@@ -46,9 +46,22 @@ class DeliveryZones extends AbstractShipping
             return false;
         }
 
-        $rate = app(DeliveryZoneRateResolver::class)->resolveRateForZone($cart, $zone);
+        $resolver = app(DeliveryZoneRateResolver::class);
+
+        $rate = $resolver->resolveRateForZone($cart, $zone);
 
         if (! $rate) {
+            $minOrderTotal = $resolver->getZoneMinimumOrderTotal($zone);
+
+            if ($minOrderTotal !== null && (float) ($cart->sub_total ?? 0) < $minOrderTotal) {
+                Log::info('Delivery zone rate skipped: cart sub_total below zone minimum', [
+                    'cart_id' => $cart->id,
+                    'zone_id' => $zone->id,
+                    'sub_total' => (float) ($cart->sub_total ?? 0),
+                    'zone_min_order_total' => $minOrderTotal,
+                ]);
+            }
+
             return false;
         }
 

@@ -24,6 +24,10 @@ Keep zone-based delivery behavior predictable across Shipping, Checkout, Shop AP
   - **Manual mode**: `delivery_zone_mode === 'manual'` and `delivery_zone_id` -> load zone by id, check `is_active` and inventory source compatibility.
   - **Auto mode**: `delivery_point_lat`/`delivery_point_lng` + `shipping_address->city` -> match zones by city (case-insensitive), filter by inventory sources, point-in-polygon on `polygon_json`.
 - Rate selection: `min_order_total <= cart->sub_total`, ordered by `min_order_total DESC`, then `sort_order DESC` (highest applicable rate).
+- Zone minimum cart subtotal = smallest `min_order_total` across the zone's rates. Obtain via `DeliveryZoneRateResolver::getZoneMinimumOrderTotal(DeliveryZone $zone)`. Enforcement:
+  - `Webkul\Shipping\Carriers\DeliveryZones::calculate()` returns `false` (method hidden) and logs `info` when cart sub_total is below the minimum.
+  - `Webkul\Shop\Http\Controllers\API\OnepageController::validateOrder()` throws `trans('shop::app.checkout.cart.zone-minimum-order-message', ['amount' => ..., 'zone' => ...])`.
+  - `Webkul\Shop\Http\Resources\CartResource` exposes `delivery_zone.min_order_total`, `formatted_min_order_total`, `is_below_minimum`, `amount_missing_to_minimum` for the UI.
 - Do not bypass delivery mode logic when updating cart address, delivery zone, or coordinates. Use `CartDeliveryZoneManager::applySelection` in Shop API.
 - Keep delivery zone pricing in shipping domain: carrier uses `DeliveryZoneRateResolver`; avoid controller-level pricing logic.
 - Admin CRUD lives in `packages/Webkul/DeliveryZones`; validation via Form Requests; views in `Resources/views/settings/delivery-cities/` and `delivery-zones/`.
@@ -34,7 +38,7 @@ Keep zone-based delivery behavior predictable across Shipping, Checkout, Shop AP
 
 - `Webkul\DeliveryZones\Services\ZoneSelector` — base; `Webkul\Shipping\Services\ZoneSelector` extends it.
 - `Webkul\DeliveryZones\Services\CartDeliveryZoneManager` — mode resolution, `applySelection`.
-- `Webkul\DeliveryZones\Services\DeliveryZoneRateResolver` — `resolveRate`, `resolveRateForZone`.
+- `Webkul\DeliveryZones\Services\DeliveryZoneRateResolver` — `resolveRate`, `resolveRateForZone`, `getZoneMinimumOrderTotal`.
 - Models: `DeliveryCity`, `DeliveryZone`, `DeliveryZoneRate`; pivot `delivery_zone_inventory_sources`.
 
 # Good Examples

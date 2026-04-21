@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
+use Webkul\DeliveryZones\Services\DeliveryZoneRateResolver;
 use Webkul\Payment\Facades\Payment;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
@@ -284,6 +285,17 @@ class OnepageController extends APIController
             && ! $cart->selected_shipping_rate
         ) {
             throw new \Exception(trans('shop::app.checkout.cart.specify-shipping-method'));
+        }
+
+        if ($cart->delivery_zone_id && $zone = $cart->delivery_zone) {
+            $zoneMin = app(DeliveryZoneRateResolver::class)->getZoneMinimumOrderTotal($zone);
+
+            if ($zoneMin !== null && (float) $cart->sub_total < $zoneMin) {
+                throw new \Exception(trans('shop::app.checkout.cart.zone-minimum-order-message', [
+                    'amount' => core()->currency($zoneMin),
+                    'zone' => $zone->name,
+                ]));
+            }
         }
 
         if (! $cart->payment) {

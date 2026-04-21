@@ -313,3 +313,209 @@ it('should set inventory_source_id when zone is resolved via estimate shipping',
     expect($cart->inventory_source_id)->toBe($inventorySource->id)
         ->and((int) session('selected_inventory_source_id'))->toBe($inventorySource->id);
 });
+
+it('carrier selects the correct rate by cart subtotal', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create();
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-rate-pick',
+        'name' => 'Moscow',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'zone-rate-pick',
+        'name' => 'Rate Pick Zone',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.7000],
+            [55.7000, 37.7000],
+            [55.7000, 37.6000],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 0, 'price' => 300, 'sort_order' => 0]);
+    $zone->rates()->create(['min_order_total' => 2000, 'price' => 150, 'sort_order' => 0]);
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'sub_total' => 2500,
+        'base_sub_total' => 2500,
+    ]);
+
+    cart()->setCart($cart);
+
+    $response = postJson(route('shop.api.checkout.cart.estimate_shipping'), [
+        'country' => 'RU',
+        'state' => 'MOW',
+        'city' => 'Moscow',
+        'postcode' => '101000',
+        'delivery_zone_id' => $zone->id,
+    ])->assertOk()->json();
+
+    $rates = $response['data']['shipping_methods'][0]['rates'] ?? [];
+
+    expect($rates)->not->toBeEmpty()
+        ->and((float) $rates[0]['base_price'])->toBe(150.0)
+        ->and($rates[0]['method'])->toBe('delivery_zones_delivery_zones');
+});
+
+it('carrier returns no shipping rate when cart subtotal below zone minimum', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create();
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-below-min',
+        'name' => 'Moscow',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'zone-below-min',
+        'name' => 'Below Min Zone',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.7000],
+            [55.7000, 37.7000],
+            [55.7000, 37.6000],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 500, 'price' => 300, 'sort_order' => 0]);
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'sub_total' => 400,
+        'base_sub_total' => 400,
+    ]);
+
+    cart()->setCart($cart);
+
+    $response = postJson(route('shop.api.checkout.cart.estimate_shipping'), [
+        'country' => 'RU',
+        'state' => 'MOW',
+        'city' => 'Moscow',
+        'postcode' => '101000',
+        'delivery_zone_id' => $zone->id,
+    ])->assertOk()->json();
+
+    $methods = $response['data']['shipping_methods'] ?? [];
+
+    foreach ($methods as $method) {
+        foreach ($method['rates'] ?? [] as $rate) {
+            expect($rate['method'])->not->toBe('delivery_zones_delivery_zones');
+        }
+    }
+});
+
+it('CartResource exposes zone minimum fields and below-minimum flag', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create();
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-resource',
+        'name' => 'Moscow',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'zone-resource',
+        'name' => 'Resource Zone',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.7000],
+            [55.7000, 37.7000],
+            [55.7000, 37.6000],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 1000, 'price' => 300, 'sort_order' => 0]);
+    $zone->rates()->create(['min_order_total' => 2000, 'price' => 0, 'sort_order' => 0]);
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'sub_total' => 800,
+        'base_sub_total' => 800,
+        'delivery_zone_id' => $zone->id,
+        'delivery_zone_mode' => 'manual',
+    ]);
+
+    cart()->setCart($cart);
+
+    getJson(route('shop.checkout.onepage.summary'))
+        ->assertOk()
+        ->assertJsonPath('data.delivery_zone.id', $zone->id)
+        ->assertJsonPath('data.delivery_zone.min_order_total', 1000.0)
+        ->assertJsonPath('data.delivery_zone.is_below_minimum', true)
+        ->assertJsonPath('data.delivery_zone.amount_missing_to_minimum', 200.0);
+});
+
+it('validateOrder blocks storeOrder when cart subtotal is below zone minimum', function () {
+    enableDeliveryZonesCarrier();
+
+    $inventorySource = InventorySource::factory()->create();
+    core()->getCurrentChannel()->inventory_sources()->sync([$inventorySource->id]);
+
+    $city = DeliveryCity::query()->create([
+        'code' => 'moscow-validate',
+        'name' => 'Moscow',
+        'country' => 'RU',
+        'state' => 'MOW',
+        'is_active' => true,
+    ]);
+
+    $zone = DeliveryZone::query()->create([
+        'city_id' => $city->id,
+        'code' => 'zone-validate',
+        'name' => 'Validate Zone',
+        'polygon_json' => [
+            [55.7600, 37.6000],
+            [55.7600, 37.7000],
+            [55.7000, 37.7000],
+            [55.7000, 37.6000],
+        ],
+        'delivery_time_minutes' => 60,
+        'is_active' => true,
+    ]);
+    $zone->inventory_sources()->sync([$inventorySource->id]);
+    $zone->rates()->create(['min_order_total' => 1000, 'price' => 300, 'sort_order' => 0]);
+
+    $cart = createCartWithOneItem([
+        'channel_id' => core()->getCurrentChannel()->id,
+        'sub_total' => 500,
+        'base_sub_total' => 500,
+        'delivery_zone_id' => $zone->id,
+        'delivery_zone_mode' => 'manual',
+    ]);
+
+    cart()->setCart($cart);
+
+    $response = postJson(route('shop.checkout.onepage.orders.store'));
+
+    $response->assertStatus(500);
+
+    expect($response->json('message'))->toContain('1000')
+        ->and($response->json('message'))->toContain('Validate Zone');
+});

@@ -1833,8 +1833,8 @@ return [
             ],
 
             'log' => [
-                'title'        => 'Activity Log',
-                'empty'        => 'No activity yet.',
+                'title' => 'Activity Log',
+                'empty' => 'No activity yet.',
                 'errors-title' => 'Import Errors',
             ],
         ],
@@ -3298,6 +3298,7 @@ return [
                 'zone-polygon' => 'Zone Polygon (Yandex Map)',
                 'edit-mode' => 'Edit Mode',
                 'clear-polygon' => 'Clear Polygon',
+                'invert-coordinates' => 'Invert Coordinates',
                 'apply-polygon-json' => 'Apply JSON',
                 'polygon-json' => 'Polygon JSON',
                 'polygon-color' => 'Polygon Color',

@@ -318,6 +318,10 @@
                                                     <span>@{{ deliverySummary.freeFromLabel }}</span>
                                                 </template>
                                             </div>
+
+                                            <div v-if="deliverySummary.belowMinimum" class="mt-2 text-sm font-medium text-red-600">
+                                                @{{ deliverySummary.belowMinimumLabel }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -539,6 +543,8 @@
                                 timeLabel: '',
                                 priceLabel: '',
                                 freeFromLabel: '',
+                                belowMinimum: false,
+                                belowMinimumLabel: '',
                             };
                         }
 
@@ -550,22 +556,34 @@
 
                     rates.sort((left, right) => Number(right.min_order_total) - Number(left.min_order_total));
 
-                    const matchedRate = rates.find((rate) => subtotal >= Number(rate.min_order_total)) || rates[rates.length - 1] || null;
+                    const matchedRate = rates.find((rate) => subtotal >= Number(rate.min_order_total)) || null;
                     const freeRate = rates
                         .filter((rate) => Number(rate.price) === 0)
                         .sort((left, right) => Number(left.min_order_total) - Number(right.min_order_total))[0] || null;
+
+                    const minOrderTotal = rates.length
+                        ? Math.min(...rates.map((rate) => Number(rate.min_order_total)))
+                        : null;
+                    const belowMinimum = minOrderTotal !== null && subtotal < minOrderTotal;
+                    const amountMissing = belowMinimum ? minOrderTotal - subtotal : 0;
 
                     return {
                         timeLabel: this.selectedZone.delivery_time_minutes
                             ? `${this.selectedZone.delivery_time_minutes} ${@json(__('shop::app.components.layouts.header.delivery-method-selector.minutes'))}`
                             : @json(__('shop::app.components.layouts.header.delivery-method-selector.delivery-time-unknown')),
-                        priceLabel: matchedRate
-                            ? (Number(matchedRate.price) === 0
-                                ? @json(__('shop::app.components.layouts.header.delivery-method-selector.free'))
-                                : this.formatPrice(Number(matchedRate.price)))
-                            : @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable')),
-                        freeFromLabel: freeRate
+                        priceLabel: belowMinimum
+                            ? @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable'))
+                            : (matchedRate
+                                ? (Number(matchedRate.price) === 0
+                                    ? @json(__('shop::app.components.layouts.header.delivery-method-selector.free'))
+                                    : this.formatPrice(Number(matchedRate.price)))
+                                : @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable'))),
+                        freeFromLabel: freeRate && !belowMinimum
                             ? `${@json(__('shop::app.components.layouts.header.delivery-method-selector.free-from'))} ${this.formatPrice(Number(freeRate.min_order_total))}`
+                            : '',
+                        belowMinimum,
+                        belowMinimumLabel: belowMinimum
+                            ? `${@json(__('shop::app.components.layouts.header.delivery-method-selector.add-more'))} ${this.formatPrice(amountMissing)}`
                             : '',
                     };
                 },
@@ -576,6 +594,10 @@
                     }
 
                     if (!this.deliveryQuery.trim() || !this.selectedZone || this.addressOutsideZone) {
+                        return false;
+                    }
+
+                    if (this.deliverySummary?.belowMinimum) {
                         return false;
                     }
 

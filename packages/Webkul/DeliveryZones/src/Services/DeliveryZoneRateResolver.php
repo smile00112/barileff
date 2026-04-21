@@ -29,4 +29,17 @@ class DeliveryZoneRateResolver
             ->orderByDesc('sort_order')
             ->first();
     }
+
+    /**
+     * Return the smallest `min_order_total` across the zone's rates.
+     *
+     * Used as the implicit minimum cart subtotal required for the zone to be
+     * eligible. Returns null if the zone has no rates at all.
+     */
+    public function getZoneMinimumOrderTotal(DeliveryZone $zone): ?float
+    {
+        $min = $zone->rates()->min('min_order_total');
+
+        return $min !== null ? (float) $min : null;
+    }
 }
