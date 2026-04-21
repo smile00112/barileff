@@ -63,7 +63,13 @@ class DeliveryCitiesDataGrid extends DataGrid
             'type' => 'boolean',
             'sortable' => true,
             'filterable' => true,
-            'closure' => fn ($row) => $row->is_active ? 'Active' : 'Inactive',
+            'closure' => function ($row) {
+                if ($row->is_active) {
+                    return '<span class="badge badge-md badge-success">Active</span>';
+                }
+
+                return '<span class="badge badge-md badge-danger">Inactive</span>';
+            },
         ]);
     }
 

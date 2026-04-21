@@ -82,9 +82,13 @@ class DeliveryZonesDataGrid extends DataGrid
             'type' => 'boolean',
             'sortable' => true,
             'filterable' => true,
-            'closure' => fn ($row) => $row->is_active
-                ? trans('admin::app.settings.delivery_zones.datagrid.zones.active')
-                : trans('admin::app.settings.delivery_zones.datagrid.zones.inactive'),
+            'closure' => function ($row) {
+                if ($row->is_active) {
+                    return '<span class="badge badge-md badge-success">'.trans('admin::app.settings.delivery_zones.datagrid.zones.active').'</span>';
+                }
+
+                return '<span class="badge badge-md badge-danger">'.trans('admin::app.settings.delivery_zones.datagrid.zones.inactive').'</span>';
+            },
         ]);
     }
 
