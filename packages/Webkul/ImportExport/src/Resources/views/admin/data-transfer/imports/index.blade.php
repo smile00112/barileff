@@ -8,14 +8,7 @@
             @lang('admin::app.settings.data-transfer.imports.index.title')
         </p>
 
-        <div class="flex items-center gap-x-2.5">
-            <!-- Create New Tax Rate Button -->
-            @if (bouncer()->hasPermission('settings.data_transfer.imports.create'))
-                <a href="{{ route('admin.settings.data_transfer.imports.create') }}" class="primary-button">
-                    @lang('admin::app.settings.data-transfer.imports.index.button-title')
-                </a>
-            @endif
-        </div>
+        <div class="flex items-center gap-x-2.5"></div>
     </div>
 
     <x-admin::datagrid :src="route('admin.settings.data_transfer.imports.index')"/>

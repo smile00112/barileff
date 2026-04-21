@@ -37,7 +37,7 @@ class PaymentDetailController extends Controller
             ['is_active' => $request->boolean('is_active', false)]
         ));
 
-        session()->flash('success', 'Payment detail created successfully.');
+        session()->flash('success', trans('paymentconfirmation::app.admin.payment-details.messages.created'));
 
         return redirect()->route('admin.payment-confirmation.payment-details.index');
     }
@@ -57,7 +57,7 @@ class PaymentDetailController extends Controller
             $id
         );
 
-        session()->flash('success', 'Payment detail updated successfully.');
+        session()->flash('success', trans('paymentconfirmation::app.admin.payment-details.messages.updated'));
 
         return redirect()->route('admin.payment-confirmation.payment-details.index');
     }
@@ -66,7 +66,7 @@ class PaymentDetailController extends Controller
     {
         $this->paymentDetailRepository->delete($id);
 
-        session()->flash('success', 'Payment detail deleted.');
+        session()->flash('success', trans('paymentconfirmation::app.admin.payment-details.messages.deleted'));
 
         return redirect()->route('admin.payment-confirmation.payment-details.index');
     }

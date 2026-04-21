@@ -1,16 +1,16 @@
 <x-admin::layouts>
     <x-slot:title>
-        Payment Confirmation Details
+        @lang('paymentconfirmation::app.admin.payment-details.index-title')
     </x-slot:title>
 
     <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
         <p class="text-xl font-bold text-gray-800 dark:text-white">
-            Payment Confirmation Details
+            @lang('paymentconfirmation::app.admin.payment-details.index-title')
         </p>
 
         <a href="{{ route('admin.payment-confirmation.payment-details.create') }}"
            class="primary-button">
-            Add Payment Detail
+            @lang('paymentconfirmation::app.admin.payment-details.add-btn')
         </a>
     </div>
 
@@ -22,16 +22,26 @@
                 </div>
             @endif
 
-            @if ($details->isEmpty())
-                <p class="text-gray-500 dark:text-gray-400 py-8 text-center">No payment details found. Add one above.</p>
+            @if (blank($details))
+                <p class="text-gray-500 dark:text-gray-400 py-8 text-center">
+                    @lang('paymentconfirmation::app.admin.payment-details.empty')
+                </p>
             @else
                 <table class="w-full text-sm text-left">
                     <thead class="border-b dark:border-gray-700">
                         <tr>
-                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Title</th>
-                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Inventory Source</th>
-                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Status</th>
-                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Actions</th>
+                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">
+                                @lang('paymentconfirmation::app.admin.payment-details.columns.title')
+                            </th>
+                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">
+                                @lang('paymentconfirmation::app.admin.payment-details.columns.inventory-source')
+                            </th>
+                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">
+                                @lang('paymentconfirmation::app.admin.payment-details.columns.status')
+                            </th>
+                            <th class="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">
+                                @lang('paymentconfirmation::app.admin.payment-details.columns.actions')
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,27 +53,33 @@
                                 </td>
                                 <td class="px-4 py-3">
                                     @if ($detail->is_active)
-                                        <span class="rounded bg-green-100 px-2 py-1 text-xs text-green-800">Active</span>
+                                        <span class="label-active">
+                                            @lang('paymentconfirmation::app.admin.payment-details.status.active')
+                                        </span>
                                     @else
-                                        <span class="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600">Inactive</span>
+                                        <span class="label-info">
+                                            @lang('paymentconfirmation::app.admin.payment-details.status.inactive')
+                                        </span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 flex gap-3 items-center">
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
                                     <a href="{{ route('admin.payment-confirmation.payment-details.edit', $detail->id) }}"
-                                       class="text-blue-600 dark:text-blue-400 text-sm hover:underline">
-                                        Edit
+                                       class="secondary-button inline-flex px-4 py-2 text-xs">
+                                        @lang('paymentconfirmation::app.admin.payment-details.actions.edit')
                                     </a>
 
                                     <form method="POST"
                                           action="{{ route('admin.payment-confirmation.payment-details.destroy', $detail->id) }}"
-                                          onsubmit="return confirm('Delete this payment detail?')">
+                                          onsubmit="return confirm('@lang('paymentconfirmation::app.admin.payment-details.delete-confirm')')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="text-red-600 dark:text-red-400 text-sm hover:underline">
-                                            Delete
+                                                class="danger-button inline-flex px-4 py-2 text-xs">
+                                            @lang('paymentconfirmation::app.admin.payment-details.actions.delete')
                                         </button>
                                     </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

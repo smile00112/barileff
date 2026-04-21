@@ -52,7 +52,7 @@
                         <td class="px-4 py-3">
                             <a
                                 href="{{ route('admin.external-payments.inventory-source-configs.edit', $source->id) }}"
-                                class="cursor-pointer text-blue-600 transition-all hover:underline dark:text-blue-400"
+                                class="secondary-button inline-flex px-4 py-2 text-xs"
                             >
                                 @lang('admin::app.components.datagrid.table.edit')
                             </a>

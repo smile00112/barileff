@@ -7,7 +7,7 @@ use Webkul\ExternalPayments\Http\Controllers\Admin\InventorySourceConfigControll
 Route::group(
     [
         'middleware' => ['admin', NoCacheMiddleware::class],
-        'prefix' => config('app.admin_url').'/external-payments',
+        'prefix' => config('app.admin_url').'/settings/external-payments',
     ],
     function () {
         Route::controller(InventorySourceConfigController::class)

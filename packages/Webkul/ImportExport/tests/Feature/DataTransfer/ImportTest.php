@@ -19,7 +19,8 @@ it('should return the data transfer imports index page', function () {
 
     get(route('admin.settings.data_transfer.imports.index'))
         ->assertOk()
-        ->assertSeeText(trans('admin::app.settings.data-transfer.imports.index.title'));
+        ->assertSeeText(trans('admin::app.settings.data-transfer.imports.index.title'))
+        ->assertDontSee(route('admin.settings.data_transfer.imports.create'));
 });
 
 it('should return the create page of data transfer import', function () {

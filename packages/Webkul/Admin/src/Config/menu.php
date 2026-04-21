@@ -57,12 +57,6 @@ return [
         'route' => 'admin.sales.bookings.index',
         'sort' => 6,
         'icon' => '',
-    ], [
-        'key' => 'sales.external-payments',
-        'name' => 'external-payments::app.admin.menu.title',
-        'route' => 'admin.external-payments.inventory-source-configs.index',
-        'sort' => 7,
-        'icon' => '',
     ],
 
     /**
@@ -341,6 +335,12 @@ return [
         'name' => 'admin::app.components.layouts.sidebar.taxes',
         'route' => 'admin.settings.taxes.categories.index',
         'sort' => 11,
+        'icon' => '',
+    ], [
+        'key' => 'settings.external-payments',
+        'name' => 'external-payments::app.admin.menu.title',
+        'route' => 'admin.external-payments.inventory-source-configs.index',
+        'sort' => 12,
         'icon' => '',
     ], [
         'key' => 'settings.taxes.tax_categories',

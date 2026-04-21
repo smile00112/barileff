@@ -5,6 +5,7 @@ namespace Webkul\PaymentConfirmation\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Webkul\PaymentConfirmation\Listeners\CreatePaymentConfirmationRecord;
 
 class PaymentConfirmationServiceProvider extends ServiceProvider
 {
@@ -17,11 +18,12 @@ class PaymentConfirmationServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'paymentconfirmation');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'paymentconfirmation');
         $this->registerRoutes();
 
         Event::listen(
             'checkout.order.save.after',
-            [\Webkul\PaymentConfirmation\Listeners\CreatePaymentConfirmationRecord::class, 'handle']
+            [CreatePaymentConfirmationRecord::class, 'handle']
         );
     }
 
