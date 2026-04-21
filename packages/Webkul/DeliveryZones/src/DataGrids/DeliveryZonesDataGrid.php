@@ -11,13 +11,16 @@ class DeliveryZonesDataGrid extends DataGrid
     {
         return DB::table('delivery_zones')
             ->leftJoin('delivery_cities', 'delivery_cities.id', '=', 'delivery_zones.city_id')
+            ->leftJoin('delivery_zone_inventory_sources', 'delivery_zone_inventory_sources.delivery_zone_id', '=', 'delivery_zones.id')
+            ->leftJoin('inventory_sources', 'inventory_sources.id', '=', 'delivery_zone_inventory_sources.inventory_source_id')
             ->select(
                 'delivery_zones.id',
                 'delivery_zones.code',
                 'delivery_zones.name',
                 'delivery_zones.delivery_time_minutes',
                 'delivery_zones.is_active',
-                'delivery_cities.name as city_name'
+                'delivery_cities.name as city_name',
+                'inventory_sources.name as inventory_source_name'
             );
     }
 
@@ -52,6 +55,14 @@ class DeliveryZonesDataGrid extends DataGrid
         $this->addColumn([
             'index' => 'city_name',
             'label' => trans('admin::app.settings.delivery_zones.datagrid.zones.city'),
+            'type' => 'string',
+            'sortable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index' => 'inventory_source_name',
+            'label' => trans('admin::app.settings.delivery_zones.datagrid.zones.inventory-source'),
             'type' => 'string',
             'sortable' => true,
             'filterable' => true,

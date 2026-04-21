@@ -3409,6 +3409,7 @@ return [
                     'code' => 'Code',
                     'zone' => 'Zone',
                     'city' => 'City',
+                    'inventory-source' => 'Inventory Source',
                     'delivery-time-min' => 'Delivery Time (min)',
                     'status' => 'Status',
                     'active' => 'Active',

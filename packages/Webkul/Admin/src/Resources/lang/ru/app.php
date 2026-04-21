@@ -3400,6 +3400,7 @@ return [
                     'code' => 'Код',
                     'zone' => 'Зона',
                     'city' => 'Город',
+                    'inventory-source' => 'Источник инвентаризации',
                     'delivery-time-min' => 'Время доставки (мин)',
                     'status' => 'Статус',
                     'active' => 'Активна',
