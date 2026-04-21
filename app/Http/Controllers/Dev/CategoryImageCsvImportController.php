@@ -80,7 +80,9 @@ class CategoryImageCsvImportController extends Controller
 
             $url = html_entity_decode($rawUrl, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-            if (! filter_var($url, FILTER_VALIDATE_URL)) {
+            $normalizedUrl = $this->normalizeHttpUrl($url);
+
+            if ($normalizedUrl === null) {
                 $stats['errors'][] = [
                     'line' => $lineNumber,
                     'name' => $name,
@@ -100,7 +102,7 @@ class CategoryImageCsvImportController extends Controller
             }
 
             try {
-                $this->assignRemoteImageToCategory($category, $url, $column);
+                $this->assignRemoteImageToCategory($category, $normalizedUrl, $column);
                 $stats['updated']++;
             } catch (\Throwable $e) {
                 Log::warning('Dev category CSV image import: row failed.', [
@@ -108,6 +110,7 @@ class CategoryImageCsvImportController extends Controller
                     'category_id' => $category->id,
                     'name' => $name,
                     'url' => $url,
+                    'normalized_url' => $normalizedUrl,
                     'message' => $e->getMessage(),
                 ]);
                 $stats['errors'][] = [
@@ -139,11 +142,100 @@ class CategoryImageCsvImportController extends Controller
             return false;
         }
 
-        if (filter_var($c2, FILTER_VALIDATE_URL)) {
+        $c2Lower = mb_strtolower($c2);
+
+        if (preg_match('/\.(jpe?g|png|gif|webp|svg|bmp|ico)(\?|#|$)/ui', $c2)) {
             return false;
         }
 
-        return str_contains($c1, 'названи');
+        if (str_contains($c1, 'http://') || str_contains($c1, 'https://')) {
+            return false;
+        }
+
+        return str_contains($c1, 'названи')
+            && (str_contains($c2Lower, 'url') || str_contains($c2Lower, 'изображен'));
+    }
+
+    /**
+     * Build an ASCII-only HTTP(S) URI (RFC 3986) so filter_var / Guzzle accept IRIs with Unicode in path.
+     */
+    private function normalizeHttpUrl(string $url): ?string
+    {
+        $url = trim($url);
+
+        if ($url === '') {
+            return null;
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+            return null;
+        }
+
+        $scheme = strtolower((string) $parts['scheme']);
+
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return null;
+        }
+
+        $host = (string) $parts['host'];
+
+        if (function_exists('idn_to_ascii')) {
+            $asciiHost = @idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+
+            if ($asciiHost !== false) {
+                $host = $asciiHost;
+            }
+        }
+
+        $userInfo = '';
+
+        if (isset($parts['user'])) {
+            $userInfo = rawurlencode((string) $parts['user']);
+
+            if (isset($parts['pass'])) {
+                $userInfo .= ':'.rawurlencode((string) $parts['pass']);
+            }
+
+            $userInfo .= '@';
+        }
+
+        $hostWithPort = $host;
+
+        if (! empty($parts['port'])) {
+            $hostWithPort .= ':'.$parts['port'];
+        }
+
+        $path = $parts['path'] ?? '';
+
+        if ($path !== '') {
+            $segments = explode('/', (string) $path);
+            $segments = array_map(function (string $segment): string {
+                if ($segment === '') {
+                    return '';
+                }
+
+                return rawurlencode(urldecode($segment));
+            }, $segments);
+            $path = implode('/', $segments);
+        }
+
+        $built = $scheme.'://'.$userInfo.$hostWithPort.$path;
+
+        if (isset($parts['query'])) {
+            $built .= '?'.$parts['query'];
+        }
+
+        if (isset($parts['fragment'])) {
+            $built .= '#'.rawurlencode(urldecode((string) $parts['fragment']));
+        }
+
+        if (! filter_var($built, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        return $built;
     }
 
     private function findCategoryByExactName(string $name): ?Category

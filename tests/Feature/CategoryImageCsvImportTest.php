@@ -117,6 +117,44 @@ it('imports into banner when target is banner', function () {
     Storage::disk('public')->assertExists((string) $category->banner_path);
 });
 
+it('imports image url with cyrillic characters in the path', function () {
+    Storage::fake('public');
+
+    $category = (new CategoryFaker)->factory()->create();
+
+    $uniqueName = 'Cyrillic Path Category '.$category->id;
+
+    foreach ($category->translations as $translation) {
+        $translation->name = $uniqueName;
+        $translation->save();
+    }
+
+    $png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
+
+    Http::fake(function (Request $request) use ($png) {
+        expect($request->url())->toContain('.jpg');
+        expect($request->url())->toMatch('/%[0-9A-F]{2}/');
+
+        return Http::response($png, 200, ['Content-Type' => 'image/png']);
+    });
+
+    $cyrillicFile = 'Пивной_напиток_Эсса_вкус_апельсина_и_вишни.jpg';
+
+    $csv = '"Название категории","URL изображения"'."\n";
+    $csv .= '"'.$uniqueName.'","https://images.test/wp-content/uploads/2024/03/'.$cyrillicFile.'"'."\n";
+
+    $file = UploadedFile::fake()->createWithContent('categories.csv', $csv);
+
+    $this->postJson(route('dev.category-images-from-csv'), ['csv' => $file])
+        ->assertOk()
+        ->assertJsonPath('summary.updated', 1)
+        ->assertJsonPath('summary.download_or_image_errors', 0);
+
+    $category->refresh();
+
+    expect($category->logo_path)->not->toBeNull();
+});
+
 it('treats html entity ampersands in urls correctly', function () {
     Storage::fake('public');
 

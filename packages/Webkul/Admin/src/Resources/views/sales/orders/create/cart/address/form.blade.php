@@ -12,22 +12,6 @@
                 />
             </x-admin::form.control-group>
 
-            <!-- Company Name -->
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    @lang('admin::app.sales.orders.create.cart.address.company-name')
-                </x-admin::form.control-group.label>
-
-                <x-admin::form.control-group.control
-                    type="text"
-                    ::name="controlName + '.company_name'"
-                    ::value="address.company_name"
-                    :placeholder="trans('admin::app.sales.orders.create.cart.address.company-name')"
-                />
-            </x-admin::form.control-group>
-
-            {!! view_render_event('bagisto.admin.sales.order.create.cart.address.form.company_name.after') !!}
-
             <!-- First Name -->
             <x-admin::form.control-group>
                 <x-admin::form.control-group.label class="required !mt-0">

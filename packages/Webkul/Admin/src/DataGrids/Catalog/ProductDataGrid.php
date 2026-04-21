@@ -97,6 +97,7 @@ class ProductDataGrid extends DataGrid
         $this->addFilter('channel', 'product_flat.channel');
         $this->addFilter('locale', 'product_flat.locale');
         $this->addFilter('name', 'product_flat.name');
+        $this->addFilter('sku', 'product_flat.sku');
         $this->addFilter('type', 'product_flat.type');
         $this->addFilter('status', 'product_flat.status');
         $this->addFilter('attribute_family', 'af.id');
@@ -154,6 +155,7 @@ class ProductDataGrid extends DataGrid
             'index' => 'sku',
             'label' => trans('admin::app.catalog.products.index.datagrid.sku'),
             'type' => 'string',
+            'searchable' => true,
             'filterable' => true,
             'sortable' => true,
         ]);

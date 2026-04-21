@@ -27,6 +27,7 @@ uses(AdminTestCase::class)->in('../packages/Webkul/ExternalPayments/tests');
 uses(TestCase::class)->in('Feature');
 uses(CoreTestCase::class)->in('../packages/Webkul/Core/tests');
 uses(DataGridTestCase::class)->in('../packages/Webkul/DataGrid/tests');
+uses(PHPUnit\Framework\TestCase::class)->in('../packages/Webkul/DataTransfer/tests/Unit');
 uses(InstallerTestCase::class)->in('../packages/Webkul/Installer/tests');
 uses(ShopTestCase::class)->in('../packages/Webkul/Shop/tests');
 

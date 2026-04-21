@@ -26,6 +26,7 @@ use Webkul\Customer\Repositories\CustomerGroupRepository;
 use Webkul\DataTransfer\Contracts\ImportBatch as ImportBatchContract;
 use Webkul\DataTransfer\Helpers\Import;
 use Webkul\DataTransfer\Helpers\Importers\AbstractImporter;
+use Webkul\DataTransfer\Helpers\RemoteProductImageUrl;
 use Webkul\DataTransfer\Repositories\ImportBatchRepository;
 use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Product\Jobs\ElasticSearch\DeleteIndex as DeleteIndexJob;
@@ -1503,7 +1504,9 @@ class Importer extends AbstractImporter
         }
 
         foreach ($urls as $url) {
-            if (! filter_var($url, FILTER_VALIDATE_URL)) {
+            $normalizedUrl = RemoteProductImageUrl::normalizeHttpUrlForRequest($url);
+
+            if ($normalizedUrl === null) {
                 Log::warning('Catalog import: invalid image_url skipped.', [
                     'import_id' => $this->import->id,
                     'sku' => $rowData['sku'],
@@ -1515,7 +1518,7 @@ class Importer extends AbstractImporter
 
             $imagesData[$rowData['sku']][] = [
                 'source' => 'remote',
-                'url' => $url,
+                'url' => $normalizedUrl,
             ];
         }
     }
