@@ -11,7 +11,7 @@ class DeliveryZonesDataGrid extends DataGrid
     {
         return DB::table('delivery_zones')
             ->leftJoin('delivery_cities', 'delivery_cities.id', '=', 'delivery_zones.city_id')
-            ->leftJoin('delivery_zone_inventory_sources', 'delivery_zone_inventory_sources.delivery_zone_id', '=', 'delivery_zones.id')
+            ->leftJoin('delivery_zone_inventory_sources', 'delivery_zone_inventory_sources.zone_id', '=', 'delivery_zones.id')
             ->leftJoin('inventory_sources', 'inventory_sources.id', '=', 'delivery_zone_inventory_sources.inventory_source_id')
             ->select(
                 'delivery_zones.id',
