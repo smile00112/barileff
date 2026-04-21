@@ -592,6 +592,8 @@
                     if (this.cities.length) {
                         this.selectedCityId = this.cities[0].id;
                     }
+
+                    this.restorePersistedAddress();
                 });
 
                 if (this.isCustomer) {

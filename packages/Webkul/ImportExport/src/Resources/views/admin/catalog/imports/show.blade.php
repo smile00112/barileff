@@ -402,8 +402,18 @@
                 },
 
                 methods: {
-                    logMappingOnFieldSelect() {
-                        // debug stub removed
+                    logMappingOnFieldSelect(changedHeader) {
+                        const selectedField = this.mapping[changedHeader];
+
+                        if (! selectedField || selectedField === '__skip__') {
+                            return;
+                        }
+
+                        this.headers.forEach((header) => {
+                            if (header !== changedHeader && this.mapping[header] === selectedField) {
+                                this.mapping[header] = '__skip__';
+                            }
+                        });
                     },
 
                     initializeMapping() {

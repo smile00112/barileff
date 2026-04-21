@@ -413,6 +413,12 @@ class CategoryRepository extends Repository
                 ]);
 
                 $id = (int) $category->id;
+
+                $priceAttributeId = $this->getPriceAttributeId();
+
+                if ($priceAttributeId !== null) {
+                    $category->filterableAttributes()->attach($priceAttributeId);
+                }
             }
 
             $ids[] = $id;
@@ -420,6 +426,21 @@ class CategoryRepository extends Repository
         }
 
         return $ids;
+    }
+
+    /**
+     * Get the ID of the price attribute, cached per request.
+     */
+    protected function getPriceAttributeId(): ?int
+    {
+        static $priceAttributeId = false;
+
+        if ($priceAttributeId === false) {
+            $priceAttributeId = DB::table('attributes')->where('code', 'price')->value('id');
+            $priceAttributeId = $priceAttributeId !== null ? (int) $priceAttributeId : null;
+        }
+
+        return $priceAttributeId;
     }
 
     /**
