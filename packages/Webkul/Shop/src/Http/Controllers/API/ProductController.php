@@ -4,6 +4,8 @@ namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Jobs\UpdateCreateSearchTerm as UpdateCreateSearchTermJob;
 use Webkul\Product\Repositories\ProductRepository;
@@ -38,6 +40,10 @@ class ProductController extends APIController
      */
     public function index(): JsonResource
     {
+        // TEMP DEBUG — remove after diagnosing browser vs Postman slowness
+        $t0 = microtime(true);
+        DB::enableQueryLog();
+
         $searchEngine = 'database';
 
         if (core()->getConfigData('catalog.products.search.engine') == 'elastic') {
@@ -52,6 +58,10 @@ class ProductController extends APIController
             ? $this->resolveCategoryIds((int) request()->query('category_id'))
             : null;
 
+        $inventorySourceId = getCurrentInventorySourceId();
+
+        $t1 = microtime(true);
+
         $products = $this->productRepository
             ->setSearchEngine($searchEngine)
             ->getAll(array_merge(request()->query(), [
@@ -60,8 +70,31 @@ class ProductController extends APIController
                 'channel_id' => core()->getCurrentChannel()->id,
                 'status' => 1,
                 'visible_individually' => 1,
-                'inventory_source_id' => getCurrentInventorySourceId(),
+                'inventory_source_id' => $inventorySourceId,
             ]));
+
+        $t2 = microtime(true);
+
+        $queries = DB::getQueryLog();
+        $totalQueryTime = array_sum(array_column($queries, 'time'));
+        $slowQueries = array_filter($queries, fn ($q) => $q['time'] > 500);
+
+        Log::warning('PERF products/index', [
+            'pre_query_ms' => round(($t1 - $t0) * 1000),
+            'query_ms' => round(($t2 - $t1) * 1000),
+            'total_ms' => round(($t2 - $t0) * 1000),
+            'query_count' => count($queries),
+            'total_query_time_ms' => round($totalQueryTime),
+            'inventory_source_id' => $inventorySourceId,
+            'category_id' => request()->query('category_id'),
+            'user_id' => auth()->guard()->id(),
+            'has_session_cart' => session()->has('cart'),
+            'selected_inv_src_session' => session('selected_inventory_source_id'),
+            'slow_queries' => array_values(array_map(fn ($q) => [
+                'ms' => round($q['time']),
+                'sql' => substr($q['query'], 0, 300),
+            ], $slowQueries)),
+        ]);
 
         if (! empty($query)) {
             /**
