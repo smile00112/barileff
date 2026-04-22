@@ -103,7 +103,7 @@
             </div>
         </script>
 
-        <script>
+        <script type="module">
             app.component('v-delivery-welcome-modal', {
                 template: '#v-delivery-welcome-modal-template',
 
