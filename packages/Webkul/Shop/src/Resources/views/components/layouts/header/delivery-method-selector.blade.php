@@ -554,6 +554,9 @@
                     rates.sort((left, right) => Number(right.min_order_total) - Number(left.min_order_total));
 
                     const matchedRate = rates.find((rate) => subtotal >= Number(rate.min_order_total)) || null;
+                    const fallbackRate = rates
+                        .sort((left, right) => Number(left.min_order_total) - Number(right.min_order_total))[0] || null;
+                    const displayRate = matchedRate || fallbackRate;
                     const freeRate = rates
                         .filter((rate) => Number(rate.price) === 0)
                         .sort((left, right) => Number(left.min_order_total) - Number(right.min_order_total))[0] || null;
@@ -568,13 +571,11 @@
                         timeLabel: this.selectedZone.delivery_time_minutes
                             ? `${this.selectedZone.delivery_time_minutes} ${@json(__('shop::app.components.layouts.header.delivery-method-selector.minutes'))}`
                             : @json(__('shop::app.components.layouts.header.delivery-method-selector.delivery-time-unknown')),
-                        priceLabel: belowMinimum
-                            ? @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable'))
-                            : (matchedRate
-                                ? (Number(matchedRate.price) === 0
+                        priceLabel: displayRate
+                            ? (Number(displayRate.price) === 0
                                     ? @json(__('shop::app.components.layouts.header.delivery-method-selector.free'))
-                                    : this.formatPrice(Number(matchedRate.price)))
-                                : @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable'))),
+                                    : this.formatPrice(Number(displayRate.price)))
+                            : @json(__('shop::app.components.layouts.header.delivery-method-selector.price-unavailable')),
                         freeFromLabel: freeRate && !belowMinimum
                             ? `${@json(__('shop::app.components.layouts.header.delivery-method-selector.free-from'))} ${this.formatPrice(Number(freeRate.min_order_total))}`
                             : '',
@@ -591,10 +592,6 @@
                     }
 
                     if (!this.deliveryQuery.trim() || !this.selectedZone || this.addressOutsideZone) {
-                        return false;
-                    }
-
-                    if (!this.isPrivateHouse && (!this.apartment.trim() || !this.entrance.trim() || !this.floor.trim())) {
                         return false;
                     }
 
