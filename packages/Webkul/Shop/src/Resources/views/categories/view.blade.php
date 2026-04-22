@@ -52,6 +52,21 @@
 
     {!! view_render_event('bagisto.shop.categories.view.description.after') !!}
 
+    @if ($category->children->isNotEmpty())
+        <div class="container mt-8 px-[60px] max-lg:px-8 max-md:mt-4 max-md:px-4">
+            <div class="flex flex-wrap gap-3">
+                @foreach ($category->children as $childCategory)
+                    <a
+                        href="{{ $childCategory->url }}"
+                        class="rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium text-gray-800 transition hover:border-zinc-400 hover:bg-zinc-50"
+                    >
+                        {{ $childCategory->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     @if (in_array($category->display_mode, [null, 'products_only', 'products_and_description']))
         <!-- Category Vue Component -->
         <v-category>

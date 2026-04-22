@@ -368,7 +368,7 @@ it('carrier selects the correct rate by cart subtotal', function () {
         ->and($rates[0]['method'])->toBe('delivery_zones_delivery_zones');
 });
 
-it('carrier returns no shipping rate when cart subtotal below zone minimum', function () {
+it('carrier keeps delivery rate available when cart subtotal below zone minimum', function () {
     enableDeliveryZonesCarrier();
 
     $inventorySource = InventorySource::factory()->create();
@@ -414,13 +414,11 @@ it('carrier returns no shipping rate when cart subtotal below zone minimum', fun
         'delivery_zone_id' => $zone->id,
     ])->assertOk()->json();
 
-    $methods = $response['data']['shipping_methods'] ?? [];
+    $rates = $response['data']['shipping_methods'][0]['rates'] ?? [];
 
-    foreach ($methods as $method) {
-        foreach ($method['rates'] ?? [] as $rate) {
-            expect($rate['method'])->not->toBe('delivery_zones_delivery_zones');
-        }
-    }
+    expect($rates)->not->toBeEmpty()
+        ->and($rates[0]['method'])->toBe('delivery_zones_delivery_zones')
+        ->and((float) $rates[0]['base_price'])->toBe(300.0);
 });
 
 it('CartResource exposes zone minimum fields and below-minimum flag', function () {

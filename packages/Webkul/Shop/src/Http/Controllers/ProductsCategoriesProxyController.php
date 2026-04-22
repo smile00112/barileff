@@ -3,6 +3,7 @@
 namespace Webkul\Shop\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Repositories\URLRewriteRepository;
 use Webkul\Product\Repositories\ProductRepository;
@@ -32,7 +33,7 @@ class ProductsCategoriesProxyController extends Controller
     /**
      * Show product or category view. If neither category nor product matches, abort with code 404.
      *
-     * @return \Illuminate\View\View|\Exception
+     * @return View|\Exception
      */
     public function index(Request $request)
     {
@@ -55,6 +56,14 @@ class ProductsCategoriesProxyController extends Controller
         $category = $this->categoryRepository->findBySlug($slugOrURLKey);
 
         if ($category) {
+            /** @var \Webkul\Category\Models\Category $category */
+            $category->load([
+                'children' => function ($query) {
+                    $query->where('status', self::STATUS)
+                        ->orderBy('position');
+                },
+            ]);
+
             visitor()->visit($category);
 
             return view('shop::categories.view', [
@@ -76,6 +85,7 @@ class ProductsCategoriesProxyController extends Controller
             ->findBySlug($slugOrURLKey);
 
         if ($product) {
+            /** @var \Webkul\Product\Models\Product $product */
             if (
                 ! $product->url_key
                 || ! $product->visible_individually

@@ -23,9 +23,18 @@ class DeliveryZoneRateResolver
     {
         $subTotal = $cart->sub_total ?? 0;
 
-        return $zone->rates()
+        $matchedRate = $zone->rates()
             ->where('min_order_total', '<=', $subTotal)
             ->orderByDesc('min_order_total')
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($matchedRate) {
+            return $matchedRate;
+        }
+
+        return $zone->rates()
+            ->orderBy('min_order_total')
             ->orderByDesc('sort_order')
             ->first();
     }
