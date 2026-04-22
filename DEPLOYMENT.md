@@ -1001,6 +1001,33 @@ docker compose -f docker-compose.prod.yml run --rm --entrypoint "" certbot \
 docker compose -f docker-compose.prod.yml restart nginx
 ```
 
+### Медленные запросы `/api/products` (категории, «Загрузить ещё»)
+
+Типичный симптом: первая страница категории быстрая (FPC-кеш), но нажатие «Загрузить ещё» (`?page=2`) занимает 5–11 секунд.
+
+**Причина**: отсутствует индекс на `product_inventories(inventory_source_id, product_id)`. Фильтр по складу (`inventory_source_id`) делает full scan таблицы при hash-join плане MySQL.
+
+**Проверка** — убедиться что индекс существует:
+```bash
+docker compose -f docker-compose.prod.yml exec app php artisan migrate:status | grep add_inventory_source
+```
+
+Если строка показывает `Pending` — накатить миграцию:
+```bash
+docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+```
+
+**Диагностика** — временный query-log в `ProductController::index()` (раскомментировать):
+```php
+DB::enableQueryLog();
+// ... после getAll() ...
+Log::warning('PERF', ['queries' => DB::getQueryLog()]);
+```
+
+Результаты: `storage/logs/laravel.log` → поля `slow_queries` и `inventory_source_id`.
+
+**FPC-кеш**: ключ кеша содержит `inventory_source_id` из сессии (`selected_inventory_source_id`). Пользователи, выбравшие зону доставки, получают свой ключ кеша — warm-up джобы должны прогревать все активные склады.
+
 ### Очистка кеша приложения
 
 ```bash

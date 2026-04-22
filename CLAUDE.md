@@ -126,6 +126,7 @@ Documentation for custom packages lives in `.cursor/docs/dev/<package>-package.m
 | `ProductTag` | Custom: AI tag generation via GigaChat, product_tag pivot |
 | `PushNotification` | Custom: FCM push notifications |
 | `MagicAI` | AI integration (OpenAI/GigaChat) |
+| `FPC` | Full Page Cache — Spatie ResponseCache wrapper. `DefaultHasher` builds cache keys by channel/locale/currency/inventory_source. `WarmApiCacheJob` pre-warms `/api/products` and `/api/categories/tree` for every inventory source. |
 | `Theme` | `ThemeViewFinder` overrides Laravel's view finder for theme cascading. `@bagistoVite` Blade directive. `ViewRenderEventManager` for layout injection points. |
 | `Installer` | Web-based installer and onboarding |
 
@@ -197,6 +198,25 @@ Production notes:
 - `RUN_MIGRATIONS=false` by default; set `true` only for intentional migration runs
 - After deploying code changes, restart the `app` container — `opcache.validate_timestamps=0` means PHP won't auto-detect file changes
 - Elasticsearch requires `vm.max_map_count=262144` on the Docker host
+
+### FPC (Full Page Cache) — ключевые моменты
+
+Кеш страниц управляется пакетом `FPC` поверх Spatie ResponseCache. Ключ кеша строится в `DefaultHasher`:
+
+```
+{channel}-{locale}-{currency}-{inventory_source_id}
+```
+
+`inventory_source_id` берётся из (по приоритету):
+1. Query param `?inventory_source_id=N` (для warm-up джобов)
+2. `session('selected_inventory_source_id')` — выбранная зона доставки пользователя
+3. Дефолтный склад канала (кешируется в app-кеше 1 час)
+
+**Важно**: `Cart::getCart()` намеренно НЕ используется в хешере — он требует DB-запрос на каждый запрос, даже при попадании в кеш. Сессионное значение всегда синхронизируется с корзиной при выборе зоны доставки.
+
+Страницы, не попавшие в warm-up (например, `?page=2`, `?page=3`), генерируются «на лету». При медленных запросах к `/api/products` проверить:
+1. Индекс `pi_source_product_in_stock_idx` на `product_inventories` — обязателен для фильтра по складу
+2. `RESPONSE_CACHE_ENABLED=true` в `.env`
 
 ---
 

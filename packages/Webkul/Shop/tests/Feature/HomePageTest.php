@@ -65,6 +65,10 @@ it('renders delivery selector modal labels on the home page', function () {
         ->and(Str::contains($response->content(), trans('shop::app.components.layouts.header.delivery-method-selector.private-house')))
         ->toBeTruthy()
         ->and(Str::contains($response->content(), 'delivery-selector-map'))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), "guestCityStorageKey: 'delivery-selector-city-id'"))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'city_id: this.selectedCityId ?? this.selectedZone?.city_id ?? null,'))
         ->toBeTruthy();
 });
 

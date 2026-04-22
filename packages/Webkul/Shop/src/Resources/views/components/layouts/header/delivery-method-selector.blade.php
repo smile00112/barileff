@@ -488,6 +488,7 @@
                     customerAddressDeleteUrl: @json(route('shop.api.customers.account.addresses.delete', ['id' => 0])),
                     csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || @json(csrf_token()),
                     guestAddressStorageKey: 'delivery-selector-active-address',
+                    guestCityStorageKey: 'delivery-selector-city-id',
                     guestAddressTtlMs: 7 * 24 * 60 * 60 * 1000,
                     translations: {
                         apartment: @json(__('shop::app.components.layouts.header.delivery-method-selector.apartment')),
@@ -602,7 +603,13 @@
             mounted() {
                 this._citiesPromise = this.loadCities().then(() => {
                     if (this.cities.length) {
-                        this.selectedCityId = this.cities[0].id;
+                        const persistedCityId = this.readPersistedCityId();
+
+                        if (persistedCityId) {
+                            this.selectedCityId = persistedCityId;
+                        } else {
+                            this.selectedCityId = this.cities[0].id;
+                        }
                     }
 
                     this.restorePersistedAddress();
@@ -615,6 +622,7 @@
                 window.addEventListener('delivery-zone:open', (e) => {
                     if (e.detail?.cityId) {
                         this.selectedCityId = e.detail.cityId;
+                        this.persistCitySelection(this.selectedCityId);
                     }
 
                     this.openModal();
@@ -1381,6 +1389,8 @@
                     this.selectedCityId = Number(cityId);
                     const city = this.cities.find((c) => c.id === this.selectedCityId);
 
+                    this.persistCitySelection(this.selectedCityId);
+
                     this._flyToCity(city);
 
                     this.selectedZone = null;
@@ -1877,6 +1887,10 @@
                 restorePersistedAddress() {
                     const payload = this.readGuestAddress();
 
+                    if (this.selectedCityId) {
+                        this.persistCitySelection(this.selectedCityId);
+                    }
+
                     if (!payload) {
                         return;
                     }
@@ -1885,8 +1899,70 @@
                         return;
                     }
 
+                    const resolvedCityId = this.resolveCityIdFromPayload(payload);
+
+                    if (resolvedCityId) {
+                        this.selectedCityId = resolvedCityId;
+                        this.persistCitySelection(this.selectedCityId);
+                    }
+
                     this.applyStoredAddress(payload);
                     this.confirmedAddress = payload.label || this.confirmedAddress;
+                },
+
+                resolveCityIdFromPayload(payload) {
+                    const payloadCityId = Number(payload?.city_id || 0);
+
+                    if (payloadCityId && this.cities.some((city) => city.id === payloadCityId)) {
+                        return payloadCityId;
+                    }
+
+                    const payloadZoneId = Number(payload?.zone_id || 0);
+
+                    if (!payloadZoneId) {
+                        return null;
+                    }
+
+                    const zone = this.allZones.find((candidate) => candidate.id === payloadZoneId);
+
+                    if (!zone || !zone.city_id) {
+                        return null;
+                    }
+
+                    return this.cities.some((city) => city.id === zone.city_id)
+                        ? zone.city_id
+                        : null;
+                },
+
+                readPersistedCityId() {
+                    try {
+                        const rawCityId = localStorage.getItem(this.guestCityStorageKey);
+                        const cityId = Number(rawCityId || 0);
+
+                        if (!cityId) {
+                            return null;
+                        }
+
+                        return this.cities.some((city) => city.id === cityId)
+                            ? cityId
+                            : null;
+                    } catch (error) {
+                        return null;
+                    }
+                },
+
+                persistCitySelection(cityId) {
+                    const normalizedCityId = Number(cityId || 0);
+
+                    if (!normalizedCityId) {
+                        return;
+                    }
+
+                    try {
+                        localStorage.setItem(this.guestCityStorageKey, String(normalizedCityId));
+                    } catch (error) {
+                        console.error('[DeliverySelector] persistCitySelection error:', error);
+                    }
                 },
 
                 readGuestAddress() {
@@ -1919,6 +1995,7 @@
                             longitude: this.currentAddressCoords?.[1] ?? null,
                             zone_id: this.selectedZone?.id ?? null,
                             zone_name: this.selectedZone?.name ?? '',
+                            city_id: this.selectedCityId ?? this.selectedZone?.city_id ?? null,
                             city: this.selectedZone?.city_name || this.activeCity?.name || '',
                             country: this.selectedZone?.country || this.activeCity?.country || '',
                             state: this.selectedZone?.state || this.activeCity?.state || '',
