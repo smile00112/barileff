@@ -319,9 +319,6 @@
                                                 </template>
                                             </div>
 
-                                            <div v-if="deliverySummary.belowMinimum" class="mt-2 text-sm font-medium text-red-600">
-                                                @{{ deliverySummary.belowMinimumLabel }}
-                                            </div>
                                         </div>
                                     </div>
 
@@ -594,10 +591,6 @@
                     }
 
                     if (!this.deliveryQuery.trim() || !this.selectedZone || this.addressOutsideZone) {
-                        return false;
-                    }
-
-                    if (this.deliverySummary?.belowMinimum) {
                         return false;
                     }
 

@@ -60,8 +60,6 @@ class CartResource extends JsonResource
                     'inventory_source_country' => $this->delivery_zone->inventory_sources->first()?->country ?? '',
                     'min_order_total' => $zoneMin,
                     'formatted_min_order_total' => $zoneMin !== null ? core()->formatPrice($zoneMin) : null,
-                    'is_below_minimum' => $zoneMin !== null && $subTotal < $zoneMin,
-                    'amount_missing_to_minimum' => $zoneMin !== null && $subTotal < $zoneMin ? $zoneMin - $subTotal : 0,
                 ];
             })() : null,
             'grand_total' => $this->grand_total,
