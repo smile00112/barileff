@@ -47,6 +47,9 @@ class WarmApiCacheJob implements ShouldQueue
                 $this->collectCategoryUrls($categories, $urls);
             } else {
                 foreach ($inventorySourceIds as $sourceId) {
+                    // Per-source category tree for the filtered menu.
+                    $urls[] = '/api/categories/tree?inventory_source_id='.$sourceId;
+
                     $this->collectCategoryUrls($categories, $urls, $sourceId);
                 }
             }

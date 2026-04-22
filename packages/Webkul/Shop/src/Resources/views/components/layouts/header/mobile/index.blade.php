@@ -6,6 +6,8 @@
     $showCompare = (bool) core()->getConfigData('catalog.products.settings.compare_option');
 
     $showWishlist = (bool) core()->getConfigData('customer.settings.wishlist.wishlist_option');
+
+    $selectedInventorySourceId = getCurrentInventorySourceId();
 @endphp
 
 <div class="flex flex-wrap gap-4 px-4 pt-6 pb-4 shadow-sm lg:hidden">
@@ -498,7 +500,8 @@
                     categories: [],
                     currentViewLevel: 'main',
                     currentSecondLevelCategory: null,
-                    currentParentCategory: null
+                    currentParentCategory: null,
+                    sourceId: Number("{{ $selectedInventorySourceId ?? 0 }}"),
                 }
             },
 
@@ -514,8 +517,10 @@
 
             methods: {
                 initCategories() {
+                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+
                     try {
-                        const stored = localStorage.getItem('categories');
+                        const stored = localStorage.getItem(storageKey);
 
                         if (stored) {
                             this.categories = JSON.parse(stored);
@@ -528,10 +533,14 @@
                     this.getCategories();
                 },
                 getCategories() {
-                    this.$axios.get("{{ route('shop.api.categories.tree') }}")
+                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+                    const url = "{{ route('shop.api.categories.tree') }}"
+                        + (this.sourceId ? '?inventory_source_id=' + this.sourceId : '');
+
+                    this.$axios.get(url)
                         .then(response => {
                             this.categories = response.data.data;
-                            localStorage.setItem('categories', JSON.stringify(this.categories));
+                            localStorage.setItem(storageKey, JSON.stringify(this.categories));
                         })
                         .catch(error => {
                             console.log(error);

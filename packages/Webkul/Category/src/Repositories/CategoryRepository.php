@@ -186,6 +186,50 @@ class CategoryRepository extends Repository
     }
 
     /**
+     * Get category IDs that have at least one product with stock > 0 for the given inventory source.
+     *
+     * Always includes categories that contain virtual or downloadable products
+     * (these are not warehouse-specific). Uses a single efficient SQL query.
+     *
+     * @return int[]
+     */
+    public function getCategoryIdsWithStockForSource(int $inventorySourceId): array
+    {
+        $prefix = DB::getTablePrefix();
+
+        $rows = DB::select("
+            SELECT DISTINCT pc.category_id
+            FROM {$prefix}product_categories pc
+            JOIN {$prefix}products p ON p.id = pc.product_id
+            WHERE p.parent_id IS NULL
+              AND (
+                  -- always include virtual / downloadable (not warehouse-specific)
+                  p.type IN ('virtual', 'downloadable')
+
+                  -- simple / configurable: direct inventory on this source > 0
+                  OR EXISTS (
+                      SELECT 1 FROM {$prefix}product_inventories pi1
+                      WHERE pi1.product_id = p.id
+                        AND pi1.inventory_source_id = ?
+                        AND pi1.qty > 0
+                  )
+
+                  -- configurable: any variant has inventory on this source > 0
+                  OR EXISTS (
+                      SELECT 1 FROM {$prefix}products var
+                      JOIN {$prefix}product_inventories pi2
+                          ON pi2.product_id = var.id
+                         AND pi2.inventory_source_id = ?
+                         AND pi2.qty > 0
+                      WHERE var.parent_id = p.id
+                  )
+              )
+        ", [$inventorySourceId, $inventorySourceId]);
+
+        return array_column($rows, 'category_id');
+    }
+
+    /**
      * Checks slug is unique or not based on locale.
      *
      * @param  int  $id

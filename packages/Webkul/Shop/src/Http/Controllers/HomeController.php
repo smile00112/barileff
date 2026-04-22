@@ -4,6 +4,7 @@ namespace Webkul\Shop\Http\Controllers;
 
 use Illuminate\Support\Facades\Mail;
 use Webkul\Category\Repositories\CategoryRepository;
+use Webkul\Category\Services\CategoryMenuCacheService;
 use Webkul\Shop\Http\Requests\ContactRequest;
 use Webkul\Shop\Http\Resources\CategoryTreeResource;
 use Webkul\Shop\Mail\ContactUs;
@@ -21,7 +22,11 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct(protected ThemeCustomizationRepository $themeCustomizationRepository, protected CategoryRepository $categoryRepository) {}
+    public function __construct(
+        protected ThemeCustomizationRepository $themeCustomizationRepository,
+        protected CategoryRepository $categoryRepository,
+        protected CategoryMenuCacheService $categoryMenuCacheService,
+    ) {}
 
     /**
      * Loads the home page for the storefront.
@@ -38,7 +43,15 @@ class HomeController extends Controller
             'theme_code' => core()->getCurrentChannel()->theme,
         ]);
 
-        $categories = $this->categoryRepository->getVisibleCategoryTree(core()->getCurrentChannel()->root_category_id);
+        $channel = core()->getCurrentChannel();
+        $inventorySourceId = getCurrentInventorySourceId();
+
+        $categories = $this->categoryMenuCacheService->get(
+            rootCategoryId: $channel->root_category_id,
+            inventorySourceId: $inventorySourceId,
+            channelCode: $channel->code,
+            locale: app()->getLocale(),
+        );
 
         $categories = CategoryTreeResource::collection($categories);
 

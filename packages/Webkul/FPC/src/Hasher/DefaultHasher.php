@@ -60,6 +60,12 @@ class DefaultHasher extends BaseDefaultHasher
             $cacheNameSuffix .= '-'.(getCurrentInventorySourceId() ?? 0);
         }
 
+        // Differentiate category tree cache by inventory source so that
+        // each warehouse sees its own filtered menu.
+        if ($request->getPathInfo() === '/api/categories/tree') {
+            $cacheNameSuffix .= '-'.(getCurrentInventorySourceId() ?? 0);
+        }
+
         $cacheNameSuffix .= '-'.$this->cacheProfile->useCacheNameSuffix($request);
 
         return $cacheNameSuffix;

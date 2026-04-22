@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Webkul\Attribute\Enums\AttributeTypeEnum;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Category\Repositories\CategoryRepository;
+use Webkul\Category\Services\CategoryMenuCacheService;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Http\Resources\AttributeOptionResource;
 use Webkul\Shop\Http\Resources\AttributeResource;
@@ -28,6 +29,7 @@ class CategoryController extends APIController
     public function __construct(
         protected AttributeRepository $attributeRepository,
         protected CategoryRepository $categoryRepository,
+        protected CategoryMenuCacheService $categoryMenuCacheService,
         protected ProductRepository $productRepository
     ) {}
 
@@ -51,11 +53,19 @@ class CategoryController extends APIController
     }
 
     /**
-     * Получить дерево категорий.
+     * Получить дерево категорий (фильтруется по наличию товаров в источнике инвентаризации).
      */
     public function tree(): JsonResource
     {
-        $categories = $this->categoryRepository->getVisibleCategoryTree(core()->getCurrentChannel()->root_category_id);
+        $channel = core()->getCurrentChannel();
+        $inventorySourceId = getCurrentInventorySourceId();
+
+        $categories = $this->categoryMenuCacheService->get(
+            rootCategoryId: $channel->root_category_id,
+            inventorySourceId: $inventorySourceId,
+            channelCode: $channel->code,
+            locale: app()->getLocale(),
+        );
 
         return CategoryTreeResource::collection($categories);
     }

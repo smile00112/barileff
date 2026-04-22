@@ -83,5 +83,9 @@ class EventServiceProvider extends ServiceProvider
         'marketing.search_seo.url_rewrites.delete.before' => [
             'Webkul\FPC\Listeners\URLRewrite@beforeDelete',
         ],
+
+        'catalog.product.inventory.update.after' => [
+            'Webkul\FPC\Listeners\InventoryChange@onUpdate',
+        ],
     ];
 }
