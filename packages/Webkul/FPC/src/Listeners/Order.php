@@ -24,6 +24,7 @@ class Order extends Product
             ResponseCache::forget($urls);
         }
 
-        $this->clearApiCacheAndWarm();
+        // Inventory levels are filtered live via inventory_source_id, so product
+        // listing cache does not need to be invalidated on order creation/cancel.
     }
 }

@@ -3,6 +3,7 @@
 namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Cache;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Jobs\UpdateCreateSearchTerm as UpdateCreateSearchTermJob;
 use Webkul\Product\Repositories\ProductRepository;
@@ -85,16 +86,18 @@ class ProductController extends APIController
      */
     protected function resolveCategoryIds(int $categoryId): string
     {
-        $category = $this->categoryRepository->find($categoryId);
+        return Cache::remember("cat_desc_{$categoryId}", 3600, function () use ($categoryId) {
+            $category = $this->categoryRepository->find($categoryId);
 
-        if (! $category) {
-            return (string) $categoryId;
-        }
+            if (! $category) {
+                return (string) $categoryId;
+            }
 
-        return $category->descendants()
-            ->pluck('id')
-            ->prepend($category->id)
-            ->implode(',');
+            return $category->descendants()
+                ->pluck('id')
+                ->prepend($category->id)
+                ->implode(',');
+        });
     }
 
     /**

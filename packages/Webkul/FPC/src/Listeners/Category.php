@@ -2,6 +2,7 @@
 
 namespace Webkul\FPC\Listeners;
 
+use Illuminate\Support\Facades\Cache;
 use Spatie\ResponseCache\Facades\ResponseCache;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\FPC\Concerns\ClearsApiCache;
@@ -33,6 +34,8 @@ class Category
             ResponseCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
         }
 
+        Cache::forget("cat_desc_{$category->id}");
+
         $this->clearApiCacheAndWarm();
     }
 
@@ -53,6 +56,8 @@ class Category
 
             ResponseCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
         }
+
+        Cache::forget("cat_desc_{$categoryId}");
 
         $this->clearApiCacheAndWarm();
     }
