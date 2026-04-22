@@ -29,7 +29,7 @@ class WarmApiCacheJob implements ShouldQueue
         }
 
         try {
-            $baseUrl = config('app.url');
+            $baseUrl = config('fpc.internal_url', config('app.url'));
 
             $urls = $this->getStaticUrls();
 
@@ -56,7 +56,7 @@ class WarmApiCacheJob implements ShouldQueue
 
             foreach ($urls as $url) {
                 try {
-                    Http::timeout(15)->get($baseUrl.$url);
+                    Http::timeout(60)->get($baseUrl.$url);
                 } catch (\Throwable $e) {
                     Log::warning("[FPC] Warm-up failed for {$url}: {$e->getMessage()}");
                 }

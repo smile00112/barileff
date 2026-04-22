@@ -12,6 +12,14 @@ class FPCServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/fpc.php',
+            'fpc'
+        );
+    }
+
     public function boot(): void
     {
         $this->app->register(EventServiceProvider::class);
