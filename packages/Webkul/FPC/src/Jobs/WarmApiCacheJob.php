@@ -33,10 +33,23 @@ class WarmApiCacheJob implements ShouldQueue
 
             $urls = $this->getStaticUrls();
 
-            $rootCategoryId = core()->getCurrentChannel()->root_category_id;
+            $channel = core()->getCurrentChannel();
+            $rootCategoryId = $channel->root_category_id;
             $categories = $categoryRepository->getVisibleCategoryTree($rootCategoryId);
 
-            $this->collectCategoryUrls($categories, $urls);
+            $inventorySourceIds = $channel->inventory_sources()
+                ->where('status', 1)
+                ->orderBy('inventory_sources.id')
+                ->pluck('inventory_sources.id')
+                ->all();
+
+            if (empty($inventorySourceIds)) {
+                $this->collectCategoryUrls($categories, $urls);
+            } else {
+                foreach ($inventorySourceIds as $sourceId) {
+                    $this->collectCategoryUrls($categories, $urls, $sourceId);
+                }
+            }
 
             foreach ($urls as $url) {
                 try {
@@ -74,14 +87,18 @@ class WarmApiCacheJob implements ShouldQueue
      * @param  \Illuminate\Support\Collection  $categories
      * @param  string[]  $urls
      */
-    protected function collectCategoryUrls($categories, array &$urls): void
+    protected function collectCategoryUrls($categories, array &$urls, ?int $inventorySourceId = null): void
     {
         foreach ($categories as $category) {
-            $urls[] = '/api/products?category_id='.$category->id;
+            $productUrl = '/api/products?category_id='.$category->id;
+            if ($inventorySourceId !== null) {
+                $productUrl .= '&inventory_source_id='.$inventorySourceId;
+            }
+            $urls[] = $productUrl;
             $urls[] = '/api/categories/max-price/'.$category->id;
 
             if ($category->children->isNotEmpty()) {
-                $this->collectCategoryUrls($category->children, $urls);
+                $this->collectCategoryUrls($category->children, $urls, $inventorySourceId);
             }
         }
     }

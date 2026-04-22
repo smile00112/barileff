@@ -14,6 +14,14 @@ class DefaultHasher extends BaseDefaultHasher
     {
         if (str_starts_with($request->getPathInfo(), '/api/')) {
             $params = $request->query();
+
+            // inventory_source_id is factored into the cache suffix for product
+            // endpoints so that warm-up requests and session-based real requests
+            // share the same URL hash component.
+            if (str_starts_with($request->getPathInfo(), '/api/products')) {
+                unset($params['inventory_source_id']);
+            }
+
             ksort($params);
 
             $queryString = $params ? '?'.http_build_query($params) : '';
@@ -44,8 +52,15 @@ class DefaultHasher extends BaseDefaultHasher
 
         $cacheNameSuffix = core()->getCurrentChannel()->code
             .'-'.core()->getCurrentLocale()->code
-            .'-'.core()->getCurrentCurrency()->code
-            .'-'.$this->cacheProfile->useCacheNameSuffix($request);
+            .'-'.core()->getCurrentCurrency()->code;
+
+        // Differentiate product listing cache by inventory source so that
+        // switching the active warehouse returns the correct product set.
+        if (str_starts_with($request->getPathInfo(), '/api/products')) {
+            $cacheNameSuffix .= '-'.(getCurrentInventorySourceId() ?? 0);
+        }
+
+        $cacheNameSuffix .= '-'.$this->cacheProfile->useCacheNameSuffix($request);
 
         return $cacheNameSuffix;
     }

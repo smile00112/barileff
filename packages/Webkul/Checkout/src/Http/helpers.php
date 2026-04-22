@@ -33,6 +33,13 @@ if (! function_exists('getCurrentInventorySourceId')) {
             return (int) $sessionId;
         }
 
+        // Allow cache warm-up requests to declare inventory source via query param.
+        $queryId = request()->query('inventory_source_id');
+
+        if ($queryId !== null) {
+            return (int) $queryId;
+        }
+
         $default = core()->getCurrentChannel()
             ->inventory_sources()
             ->where('status', 1)

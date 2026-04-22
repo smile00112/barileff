@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use Database\Seeders\Concerns\SyncsPostgreSqlIdentitySequence;
 class CustomProductAttributesSeeder extends Seeder
 {
     use SyncsPostgreSqlIdentitySequence;
