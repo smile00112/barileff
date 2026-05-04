@@ -203,6 +203,7 @@
                             product_carousel: "@lang('admin::app.settings.themes.create.type.product-carousel')",
                             category_carousel: "@lang('admin::app.settings.themes.create.type.category-carousel')",
                             category_grid: "@lang('admin::app.settings.themes.create.type.category-grid')",
+                            category_nested_grid: "@lang('admin::app.settings.themes.create.type.category-nested-grid')",
                             static_content: "@lang('admin::app.settings.themes.create.type.static-content')",
                             image_carousel: "@lang('admin::app.settings.themes.create.type.image-carousel')",
                             footer_links: "@lang('admin::app.settings.themes.create.type.footer-links')",

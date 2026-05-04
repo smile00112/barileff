@@ -98,6 +98,9 @@
                 <!-- Category Grid Template -->
                 @includeWhen($theme->type === 'category_grid', 'admin::settings.themes.edit.category-grid')
 
+                <!-- Category Nested Grid Template -->
+                @includeWhen($theme->type === 'category_nested_grid', 'admin::settings.themes.edit.category-nested-grid')
+
                 <!-- Static-Content Template -->
                 @includeWhen($theme->type === 'static_content', 'admin::settings.themes.edit.static-content')
 

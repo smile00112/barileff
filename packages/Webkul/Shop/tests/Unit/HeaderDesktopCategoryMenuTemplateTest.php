@@ -8,5 +8,7 @@ it('does not include horizontal sidebar category strip helpers in desktop header
     $contents = file_get_contents($path);
 
     expect($contents)->not->toContain('categories.slice(0, 4)')
-        ->and($contents)->not->toContain('pairCategoryChildren');
+        ->and($contents)->not->toContain('pairCategoryChildren')
+        ->and($contents)->toContain('isDecorationCategory')
+        ->and($contents)->toContain('decoration');
 });

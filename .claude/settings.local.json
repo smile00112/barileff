@@ -47,7 +47,11 @@
       "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Http/Controllers/Admin/Catalog/ImportController.php)",
       "Bash(vendor/bin/pint packages/Webkul/DataTransfer/src/Helpers/Importers/Product/Importer.php)",
       "Bash(vendor/bin/pint \"packages/Webkul/ImportExport/src/Listeners/ProductsBatchSavedListener.php\" \"packages/Webkul/ImportExport/src/Providers/ImportExportServiceProvider.php\")",
-      "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Http/Controllers/Admin/Catalog/ImportController.php packages/Webkul/ImportExport/src/Models/CatalogImportLogEntry.php packages/Webkul/ImportExport/src/Listeners/ProductsBatchSavedListener.php packages/Webkul/ImportExport/src/Providers/ImportExportServiceProvider.php packages/Webkul/DataTransfer/src/Helpers/Importers/Product/Importer.php)"
+      "Bash(vendor/bin/pint packages/Webkul/ImportExport/src/Http/Controllers/Admin/Catalog/ImportController.php packages/Webkul/ImportExport/src/Models/CatalogImportLogEntry.php packages/Webkul/ImportExport/src/Listeners/ProductsBatchSavedListener.php packages/Webkul/ImportExport/src/Providers/ImportExportServiceProvider.php packages/Webkul/DataTransfer/src/Helpers/Importers/Product/Importer.php)",
+      "Bash(mysql *)",
+      "Bash(\"D:/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe\" --version)",
+      "Bash(D:/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe artisan *)",
+      "Bash(D:/_WORK_/laragon_2025/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -r 'require '\\\\''D:/_WORK_/laragon_2025/www/my_bagisto/vendor/autoload.php'\\\\''; $v = \\\\Intervention\\\\Image\\\\ImageManager::VERSION ?? \\(new ReflectionClass\\(\\\\Intervention\\\\Image\\\\ImageManager::class\\)\\)->getMethod\\('\\\\''__construct'\\\\''\\)->getNumberOfParameters\\(\\); echo '\\\\''ok: '\\\\''.$v;')"
     ]
   }
 }

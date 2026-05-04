@@ -87,6 +87,16 @@
                 />
 
                 @break
+            @case ($customization::CATEGORY_NESTED_GRID)
+                <!-- Categories nested grid: level-1 as h2, level-2 as grids -->
+                <x-shop::categories.nested-grid
+                    :filters="$data['filters'] ?? []"
+                    :desktop-columns="$data['desktop_columns'] ?? 4"
+                    :mobile-columns="$data['mobile_columns'] ?? 2"
+                    :show-name="$data['show_name'] ?? true"
+                />
+
+                @break
             @case ($customization::PRODUCT_CAROUSEL)
                 <!-- Product Carousel -->
                 <x-shop::products.carousel

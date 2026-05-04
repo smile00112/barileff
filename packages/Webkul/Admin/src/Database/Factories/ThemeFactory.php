@@ -21,7 +21,7 @@ class ThemeFactory extends Factory
     {
         $lastTheme = ThemeCustomizationModel::query()->orderBy('id', 'desc')->limit(1)->first();
 
-        $types = ['product_carousel', 'category_carousel', 'category_grid', 'image_carousel', 'footer_links', 'services_content'];
+        $types = ['product_carousel', 'category_carousel', 'category_grid', 'category_nested_grid', 'image_carousel', 'footer_links', 'services_content'];
 
         return [
             'type' => $this->faker->randomElement($types),

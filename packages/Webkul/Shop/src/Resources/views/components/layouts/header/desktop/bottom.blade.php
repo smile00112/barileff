@@ -312,7 +312,15 @@
                             v-for="category in categories"
                             :key="category.id"
                         >
+                            <span
+                                v-if="isDecorationCategory(category)"
+                                class="block whitespace-nowrap px-5 py-2.5 text-sm font-medium text-zinc-600"
+                            >
+                                @{{ category.name }}
+                            </span>
+
                             <a
+                                v-else
                                 :href="category.url"
                                 class="block whitespace-nowrap px-5 py-2.5 text-sm font-medium hover:bg-gray-50 hover:text-navyBlue"
                             >
@@ -379,7 +387,15 @@
                                         :class="{'mb-2': category.children && category.children.length}"
                                     >
                                         <div class="flex items-center justify-between px-6 py-2 transition-colors duration-200 cursor-pointer hover:bg-gray-100">
+                                            <span
+                                                v-if="isDecorationCategory(category)"
+                                                class="text-base font-medium text-zinc-600"
+                                            >
+                                                @{{ category.name }}
+                                            </span>
+
                                             <a
+                                                v-else
                                                 :href="category.url"
                                                 class="text-base font-medium text-black"
                                             >
@@ -397,7 +413,15 @@
                                                     class="flex items-center justify-between px-6 py-2 transition-colors duration-200 cursor-pointer hover:bg-gray-100"
                                                     @click="showThirdLevel(secondLevelCategory, category, $event)"
                                                 >
+                                                    <span
+                                                        v-if="isDecorationCategory(secondLevelCategory)"
+                                                        class="text-sm font-normal text-zinc-600"
+                                                    >
+                                                        @{{ secondLevelCategory.name }}
+                                                    </span>
+
                                                     <a
+                                                        v-else
                                                         :href="secondLevelCategory.url"
                                                         class="text-sm font-normal"
                                                     >
@@ -441,7 +465,15 @@
                                         :key="thirdLevelCategory.id"
                                         class="mb-2"
                                     >
+                                        <span
+                                            v-if="isDecorationCategory(thirdLevelCategory)"
+                                            class="block px-6 py-2 text-sm text-zinc-600"
+                                        >
+                                            @{{ thirdLevelCategory.name }}
+                                        </span>
+
                                         <a
+                                            v-else
                                             :href="thirdLevelCategory.url"
                                             class="block px-6 py-2 text-sm transition-colors duration-200 hover:bg-gray-100"
                                         >
@@ -479,7 +511,7 @@
 
             methods: {
                 initCategories() {
-                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+                    const storageKey = this.categoryStorageKey();
 
                     try {
                         const stored = localStorage.getItem(storageKey);
@@ -496,8 +528,20 @@
                     this.getCategories();
                 },
 
+                categoryStorageKey() {
+                    return 'categories-v2-' + (this.sourceId ?? 0);
+                },
+
+                isDecorationCategory(category) {
+                    if (! category?.additional?.type) {
+                        return false;
+                    }
+
+                    return category.additional.type === 'decoration';
+                },
+
                 getCategories() {
-                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+                    const storageKey = this.categoryStorageKey();
                     const url = "{{ route('shop.api.categories.tree') }}"
                         + (this.sourceId ? '?inventory_source_id=' + this.sourceId : '');
 

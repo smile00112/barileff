@@ -3793,6 +3793,7 @@ return [
                 'type' => [
                     'category-carousel' => 'Category Carousel',
                     'category-grid' => 'Category Grid',
+                    'category-nested-grid' => 'Category Nested Grid',
                     'footer-links' => 'Footer Links',
                     'image-carousel' => 'Image Carousel',
                     'product-carousel' => 'Product Carousel',
@@ -3814,6 +3815,8 @@ return [
                 'category-carousel-description' => 'Display dynamic categories attractively using a responsive category carousel.',
                 'category-grid' => 'Category Grid',
                 'category-grid-description' => 'Display categories in a responsive grid with configurable columns and optional names.',
+                'category-nested-grid' => 'Category Nested Grid',
+                'category-nested-grid-description' => 'First-level categories appear as headings; their subcategories are shown in grids below.',
                 'category-id' => 'Category ID',
                 'channels' => 'Channels',
                 'column' => 'Column',

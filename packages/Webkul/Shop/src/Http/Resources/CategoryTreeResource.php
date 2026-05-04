@@ -2,6 +2,8 @@
 
 namespace Webkul\Shop\Http\Resources;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryTreeResource extends JsonResource
@@ -9,7 +11,7 @@ class CategoryTreeResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     public function toArray($request)
@@ -21,7 +23,28 @@ class CategoryTreeResource extends JsonResource
             'slug' => $this->slug,
             'url' => $this->url,
             'status' => $this->status,
+            'additional' => $this->normalizedAdditional(),
             'children' => self::collection($this->children),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function normalizedAdditional(): array
+    {
+        $value = $this->resource instanceof Model
+            ? $this->resource->getRawOriginal('additional')
+            : $this->additional;
+
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && $value !== '') {
+            return json_decode($value, true) ?: [];
+        }
+
+        return [];
     }
 }

@@ -423,7 +423,18 @@
                             :class="{'mb-2': category.children && category.children.length}"
                         >
                             <div class="flex items-center justify-between py-2 transition-colors duration-200 cursor-pointer">
-                                <a :href="category.url" class="text-base font-medium text-black">
+                                <span
+                                    v-if="isDecorationCategory(category)"
+                                    class="text-base font-medium text-zinc-600"
+                                >
+                                    @{{ category.name }}
+                                </span>
+
+                                <a
+                                    v-else
+                                    :href="category.url"
+                                    class="text-base font-medium text-black"
+                                >
                                     @{{ category.name }}
                                 </a>
                             </div>
@@ -438,7 +449,18 @@
                                         class="flex items-center justify-between py-2 transition-colors duration-200 cursor-pointer"
                                         @click="showThirdLevel(secondLevelCategory, category, $event)"
                                     >
-                                        <a :href="secondLevelCategory.url" class="text-sm font-normal">
+                                        <span
+                                            v-if="isDecorationCategory(secondLevelCategory)"
+                                            class="text-sm font-normal text-zinc-600"
+                                        >
+                                            @{{ secondLevelCategory.name }}
+                                        </span>
+
+                                        <a
+                                            v-else
+                                            :href="secondLevelCategory.url"
+                                            class="text-sm font-normal"
+                                        >
                                             @{{ secondLevelCategory.name }}
                                         </a>
 
@@ -478,7 +500,15 @@
                             :key="thirdLevelCategory.id"
                             class="mb-2"
                         >
+                            <span
+                                v-if="isDecorationCategory(thirdLevelCategory)"
+                                class="block py-2 text-sm text-zinc-600"
+                            >
+                                @{{ thirdLevelCategory.name }}
+                            </span>
+
                             <a
+                                v-else
                                 :href="thirdLevelCategory.url"
                                 class="block py-2 text-sm transition-colors duration-200"
                             >
@@ -517,7 +547,7 @@
 
             methods: {
                 initCategories() {
-                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+                    const storageKey = this.categoryStorageKey();
 
                     try {
                         const stored = localStorage.getItem(storageKey);
@@ -532,8 +562,21 @@
 
                     this.getCategories();
                 },
+
+                categoryStorageKey() {
+                    return 'categories-v2-' + (this.sourceId ?? 0);
+                },
+
+                isDecorationCategory(category) {
+                    if (! category?.additional?.type) {
+                        return false;
+                    }
+
+                    return category.additional.type === 'decoration';
+                },
+
                 getCategories() {
-                    const storageKey = 'categories-' + (this.sourceId ?? 0);
+                    const storageKey = this.categoryStorageKey();
                     const url = "{{ route('shop.api.categories.tree') }}"
                         + (this.sourceId ? '?inventory_source_id=' + this.sourceId : '');
 

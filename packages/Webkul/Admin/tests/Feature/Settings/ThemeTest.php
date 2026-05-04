@@ -57,6 +57,7 @@ it('should store the newly created theme', function () {
             'product_carousel',
             'category_carousel',
             'category_grid',
+            'category_nested_grid',
             'image_carousel',
             'footer_links',
             'services_content',
@@ -133,6 +134,23 @@ it('should update the theme customizations', function () {
             break;
 
         case ThemeCustomization::CATEGORY_GRID:
+            $data[app()->getLocale()] = [
+                'options' => [
+                    'title' => fake()->title(),
+                    'desktop_columns' => 4,
+                    'mobile_columns' => 2,
+                    'show_name' => true,
+                    'filters' => [
+                        'sort' => 'desc',
+                        'limit' => '10',
+                        'parent_id' => '1',
+                    ],
+                ],
+            ];
+
+            break;
+
+        case ThemeCustomization::CATEGORY_NESTED_GRID:
             $data[app()->getLocale()] = [
                 'options' => [
                     'title' => fake()->title(),

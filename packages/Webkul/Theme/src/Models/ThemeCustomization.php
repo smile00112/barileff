@@ -57,6 +57,13 @@ class ThemeCustomization extends TranslatableModel implements ThemeCustomization
     public const CATEGORY_GRID = 'category_grid';
 
     /**
+     * Category grid grouped by top-level headings (h2) with child grids.
+     *
+     * @var string
+     */
+    public const CATEGORY_NESTED_GRID = 'category_nested_grid';
+
+    /**
      * Footer links precision.
      *
      * @var string
