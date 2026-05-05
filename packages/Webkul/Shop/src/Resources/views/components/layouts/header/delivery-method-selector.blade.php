@@ -43,6 +43,14 @@
 @pushOnce('scripts')
     <style>
         .delivery-left-panel { padding: 30px; }
+        .delivery-modal-shell { max-width: 1080px; height: 830px; max-height: 96vh; }
+
+        @media (max-width: 768px) {
+            .delivery-modal-shell {
+                height: 100vh;
+                max-height: none;
+            }
+        }
     </style>
 
     <script type="text/x-template" id="v-delivery-method-selector-template">
@@ -111,15 +119,14 @@
             >
                 <div
                     v-show="isOpen"
-                    class="fixed inset-0 z-[1000] flex items-center justify-center p-4 max-md:p-0"
+                    class="fixed inset-0 z-[1000] flex items-center justify-center p-4 max-md:items-stretch max-md:p-0"
                 >
                     <div
-                        class="relative flex w-full overflow-hidden rounded-2xl bg-white shadow-2xl max-md:h-full max-md:rounded-none"
-                        style="max-width: 1080px; height: 830px; max-height: 96vh;"
+                        class="delivery-modal-shell relative flex w-full overflow-hidden rounded-2xl bg-white shadow-2xl max-md:h-screen max-md:flex-col-reverse max-md:rounded-none"
                         @click.stop
                     >
                         <!-- Left panel: close + tabs + content -->
-                        <div class="delivery-left-panel flex w-[345px] flex-shrink-0 flex-col overflow-hidden border-r border-zinc-100">
+                        <div class="delivery-left-panel flex w-[345px] flex-shrink-0 flex-col overflow-hidden border-r border-zinc-100 max-md:w-full max-md:border-r-0 max-md:border-t">
 
                             <!-- Header: close button + tab switcher -->
                             <div class="flex-shrink-0 pb-5">
@@ -400,7 +407,7 @@
                         </div>
 
                         <!-- Right panel: map (always visible) -->
-                        <div class="delivery-selector-map relative flex flex-1 flex-col p-1.5">
+                        <div class="delivery-selector-map relative flex flex-1 flex-col p-1.5 max-md:h-[320px] max-md:flex-none">
                             <div class="relative flex-1 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
                                 <div ref="mapContainer" class="absolute inset-0"></div>
 

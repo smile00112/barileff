@@ -574,7 +574,7 @@ return [
                 'currency' => 'Валюта',
                 'customer-service' => 'Служба поддержки',
                 'email' => 'Электронная почта',
-                'footer-content' => 'Содержимое футера',
+                'footer-content' => 'Уголок потребителя',
                 'footer-text' => '© Авторское право 2022 - :current_year, Sinica Software. Все права защищены.',
                 'locale' => 'Язык',
                 'newsletter-text' => 'Подготовьтесь к нашей интересной рассылке!',

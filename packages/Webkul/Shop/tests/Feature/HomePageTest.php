@@ -69,6 +69,14 @@ it('renders delivery selector modal labels on the home page', function () {
         ->and(Str::contains($response->content(), "guestCityStorageKey: 'delivery-selector-city-id'"))
         ->toBeTruthy()
         ->and(Str::contains($response->content(), 'city_id: this.selectedCityId ?? this.selectedZone?.city_id ?? null,'))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'max-md:flex-col-reverse'))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'max-md:items-stretch max-md:p-0'))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'max-md:h-screen max-md:flex-col-reverse max-md:rounded-none'))
+        ->toBeTruthy()
+        ->and(Str::contains($response->content(), 'max-md:h-[320px] max-md:flex-none'))
         ->toBeTruthy();
 });
 

@@ -1,4 +1,3 @@
-<laravel-boost-guidelines>
 === foundation rules ===
 
 # Laravel Boost Guidelines
@@ -103,7 +102,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 ## Constructors
 
 - Use PHP 8 constructor property promotion in `__construct()`.
-    - `public function __construct(public GitHub $github) { }`
+  - `public function __construct(public GitHub $github) { }`
 - Do not allow empty `__construct()` methods with zero parameters unless the constructor is private.
 
 ## Type Declarations
@@ -111,7 +110,6 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Always use explicit return type declarations for methods and functions.
 - Use appropriate PHP type hints for method parameters.
 
-<!-- Explicit Return Types and Method Params -->
 ```php
 protected function isAccessible(User $user, ?string $path = null): bool
 {
@@ -221,9 +219,9 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## New Artisan Commands
 
 - List Artisan commands using Boost's MCP tool, if available. New commands available in Laravel 11:
-    - `php artisan make:enum`
-    - `php artisan make:class`
-    - `php artisan make:interface`
+  - `php artisan make:enum`
+  - `php artisan make:class`
+  - `php artisan make:interface`
 
 === boost/core rules ===
 
@@ -282,4 +280,3 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - CRITICAL: ALWAYS use `search-docs` tool for version-specific Pest documentation and updated code examples.
 - IMPORTANT: Activate `pest-testing` every time you're working with a Pest or testing-related task.
 
-</laravel-boost-guidelines>

@@ -1,6 +1,7 @@
 # Инструкция по развертыванию Bagisto на Ubuntu сервере
 
 ## Оглавление
+
 1. [Требования](#требования)
 2. [Начальная настройка сервера](#начальная-настройка-сервера)
 3. [Установка Docker и Docker Compose](#установка-docker-и-docker-compose)
@@ -21,6 +22,7 @@
 ## Требования
 
 ### Минимальные системные требования:
+
 - Ubuntu 22.04 LTS или новее
 - 4 GB RAM (рекомендуется 8 GB)
 - 40 GB свободного места на диске
@@ -28,6 +30,7 @@
 - Статический IP адрес или настроенный домен
 
 ### Необходимое ПО:
+
 - Docker Engine 24.0+
 - Docker Compose v2.20+
 - Git
@@ -432,6 +435,7 @@ services:
 ### Проверка требований Dockerfile
 
 Убедитесь, что существуют файлы:
+
 ```bash
 ls -l docker/php/php.ini
 ls -l docker/php/php-cli.ini
@@ -533,10 +537,10 @@ docker compose -f docker-compose.prod.yml logs -f app
 1. **DNS настроен правильно**: домен указывает на IP вашего сервера
 2. **Порты 80 и 443 открыты** в брандмауэре
 3. **В .env указаны корректные значения**:
-   ```env
+  ```env
    DOMAIN=yourdomain.com
    SSL_EMAIL=admin@yourdomain.com
-   ```
+  ```
 
 ### Ручное получение сертификата (если автоматика не сработала)
 
@@ -1008,16 +1012,19 @@ docker compose -f docker-compose.prod.yml restart nginx
 **Причина**: отсутствует индекс на `product_inventories(inventory_source_id, product_id)`. Фильтр по складу (`inventory_source_id`) делает full scan таблицы при hash-join плане MySQL.
 
 **Проверка** — убедиться что индекс существует:
+
 ```bash
 docker compose -f docker-compose.prod.yml exec app php artisan migrate:status | grep add_inventory_source
 ```
 
 Если строка показывает `Pending` — накатить миграцию:
+
 ```bash
 docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
 ```
 
 **Диагностика** — временный query-log в `ProductController::index()` (раскомментировать):
+
 ```php
 DB::enableQueryLog();
 // ... после getAll() ...
@@ -1161,20 +1168,20 @@ sudo systemctl status bagisto
 
 ### Контрольный чек-лист:
 
-- [ ] Ubuntu сервер обновлен
-- [ ] Docker и Docker Compose установлены
-- [ ] Брандмауэр настроен (порты 80, 443, 22 открыты)
-- [ ] fail2ban установлен и настроен
-- [ ] vm.max_map_count установлен в 262144
-- [ ] Проект склонирован из Git
-- [ ] .env файл настроен со всеми необходимыми переменными
-- [ ] Dockerfile находится в корне проекта
-- [ ] deploy.sh выполнен успешно
-- [ ] SSL сертификаты получены
-- [ ] Все контейнеры запущены и в статусе healthy
-- [ ] Веб-интерфейс доступен через HTTPS
-- [ ] Настроено автоматическое резервное копирование
-- [ ] Настроен systemd service для автозапуска
+- Ubuntu сервер обновлен
+- Docker и Docker Compose установлены
+- Брандмауэр настроен (порты 80, 443, 22 открыты)
+- fail2ban установлен и настроен
+- vm.max_map_count установлен в 262144
+- Проект склонирован из Git
+- .env файл настроен со всеми необходимыми переменными
+- Dockerfile находится в корне проекта
+- deploy.sh выполнен успешно
+- SSL сертификаты получены
+- Все контейнеры запущены и в статусе healthy
+- Веб-интерфейс доступен через HTTPS
+- Настроено автоматическое резервное копирование
+- Настроен systemd service для автозапуска
 
 ### Полезные команды для быстрого доступа:
 
@@ -1192,8 +1199,10 @@ alias artisan='docker compose -f docker-compose.prod.yml exec app php artisan'
 ### Поддержка
 
 Если возникли проблемы с развертыванием, проверьте:
+
 1. Логи контейнеров: `docker compose -f docker-compose.prod.yml logs`
 2. Логи системы: `journalctl -xe`
 3. Логи Docker: `sudo journalctl -u docker.service`
 4. Github Issues проекта
-5. Официальную документацию Bagisto: https://devdocs.bagisto.com/
+5. Официальную документацию Bagisto: [https://devdocs.bagisto.com/](https://devdocs.bagisto.com/)
+
