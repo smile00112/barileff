@@ -407,7 +407,7 @@
                         </div>
 
                         <!-- Right panel: map (always visible) -->
-                        <div class="delivery-selector-map relative flex flex-1 flex-col p-1.5 max-md:h-[320px] max-md:flex-none">
+                        <div class="delivery-selector-map relative flex flex-1 flex-col p-1.5 max-md:h-[320px]">
                             <div class="relative flex-1 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
                                 <div ref="mapContainer" class="absolute inset-0"></div>
 
