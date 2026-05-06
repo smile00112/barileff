@@ -161,6 +161,7 @@
 
                 async loadSections() {
                     this.isLoading = true;
+                    this.sections = [];
 
                     try {
                         const level1Res = await this.$axios.get(
@@ -170,21 +171,22 @@
 
                         const parents = level1Res.data?.data ?? [];
 
-                        const sectionResults = await Promise.all(
-                            parents.map(async (parent) => {
-                                const res = await this.$axios.get(
-                                    '{{ route('shop.api.categories.index') }}',
-                                    { params: this.childQueryParams(parent.id) },
-                                );
+                        for (const parent of parents) {
+                            const res = await this.$axios.get(
+                                '{{ route('shop.api.categories.index') }}',
+                                { params: this.childQueryParams(parent.id) },
+                            );
 
-                                return {
-                                    parent,
-                                    children: res.data?.data ?? [],
-                                };
-                            }),
-                        );
+                            const children = res.data?.data ?? [];
 
-                        this.sections = sectionResults.filter((s) => s.children.length > 0);
+                            if (children.length > 0) {
+                                this.sections.push({ parent, children });
+
+                                if (this.isLoading) {
+                                    this.isLoading = false;
+                                }
+                            }
+                        }
                     } catch (error) {
                         console.error(error);
                     } finally {
