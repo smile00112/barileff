@@ -31,6 +31,7 @@ services:
       - YANDEX_MAPS_SUGGEST_API_KEY=${YANDEX_MAPS_SUGGEST_API_KEY:-}
       - TELESCOPE_ENABLED=${TELESCOPE_ENABLED:-false}
       - OCTANE_SERVER=roadrunner
+      - RESPONSE_CACHE_DRIVER=redis
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=${DB_DATABASE}
@@ -271,6 +272,7 @@ services:
       - APP_CURRENCY=${APP_CURRENCY:-RUB}
       - TELESCOPE_ENABLED=${TELESCOPE_ENABLED:-false}
       - OCTANE_SERVER=roadrunner
+      - RESPONSE_CACHE_DRIVER=redis
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=${DB_DATABASE}
