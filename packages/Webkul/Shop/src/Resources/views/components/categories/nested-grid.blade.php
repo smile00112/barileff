@@ -55,7 +55,6 @@
                             <x-shop::media.images.lazy
                                 ::src="category.logo?.large_image_url || fallback"
                                 ::srcset="`
-                                    ${(category.logo?.medium_image_url || fallback)} 600w,
                                     ${(category.logo?.large_image_url || fallback)} 900w
                                 `"
                                 sizes="(max-width: 768px) 50vw, 25vw"
