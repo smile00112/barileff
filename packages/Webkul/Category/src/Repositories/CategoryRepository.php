@@ -68,11 +68,7 @@ class CategoryRepository extends Repository
                         $inventorySourceId > 0
                         && core()->getConfigData('catalog.products.settings.filter_categories_by_stock')
                     ) {
-                        $stockedIds = Cache::remember(
-                            "category-stocked-ids:{$inventorySourceId}",
-                            3600,
-                            fn () => $this->getCategoryIdsWithStockForSource($inventorySourceId)
-                        );
+                        $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
 
                         if (! empty($stockedIds)) {
                             $queryBuilder->whereIn('categories.id', $stockedIds);
@@ -218,6 +214,22 @@ class CategoryRepository extends Repository
      */
     public function getCategoryIdsWithStockForSource(int $inventorySourceId): array
     {
+        return Cache::remember(
+            "category-stocked-ids:{$inventorySourceId}",
+            3600,
+            function () use ($inventorySourceId) {
+                return $this->fetchCategoryIdsWithStockForSource($inventorySourceId);
+            }
+        );
+    }
+
+    /**
+     * Execute the raw SQL query for getCategoryIdsWithStockForSource (uncached).
+     *
+     * @return int[]
+     */
+    protected function fetchCategoryIdsWithStockForSource(int $inventorySourceId): array
+    {
         $prefix = DB::getTablePrefix();
 
         $rows = DB::select("
@@ -250,6 +262,14 @@ class CategoryRepository extends Repository
         ", [$inventorySourceId, $inventorySourceId]);
 
         return array_column($rows, 'category_id');
+    }
+
+    /**
+     * Forget the cached stocked category IDs for a given inventory source.
+     */
+    public function forgetStockedIdsCache(int $inventorySourceId): void
+    {
+        Cache::forget("category-stocked-ids:{$inventorySourceId}");
     }
 
     /**

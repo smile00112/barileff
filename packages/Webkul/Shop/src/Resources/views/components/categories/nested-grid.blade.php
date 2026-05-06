@@ -170,18 +170,22 @@
 
                         const parents = level1Res.data?.data ?? [];
 
-                        const childRequests = parents.map(parent =>
-                            this.$axios.get(
+                        for (const parent of parents) {
+                            const res = await this.$axios.get(
                                 '{{ route('shop.api.categories.index') }}',
                                 { params: this.childQueryParams(parent.id) },
-                            ).then(res => ({ parent, children: res.data?.data ?? [] }))
-                        );
+                            );
 
-                        const results = await Promise.all(childRequests);
+                            const children = res.data?.data ?? [];
 
-                        this.sections = results.filter(s => s.children.length > 0);
+                            if (children.length > 0) {
+                                this.sections.push({ parent, children });
 
-                        this.isLoading = false;
+                                if (this.isLoading) {
+                                    this.isLoading = false;
+                                }
+                            }
+                        }
                     } catch (error) {
                         console.error(error);
                     } finally {

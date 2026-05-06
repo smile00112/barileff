@@ -93,6 +93,7 @@ class CategoryMenuCacheService
 
                 foreach ($sources as $source) {
                     $this->forgetKey($channelCode, $locale->code, $source->id);
+                    $this->categoryRepository->forgetStockedIdsCache($source->id);
                 }
             }
         }
