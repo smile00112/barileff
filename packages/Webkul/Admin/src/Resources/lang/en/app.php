@@ -4400,6 +4400,12 @@ return [
                         'width' => 'Width',
                     ],
 
+                    'category-image' => [
+                        'auto-height' => 'Auto Height (preserve aspect ratio)',
+                        'title' => 'Category Image',
+                        'title-info' => 'When enabled, category images are scaled to width only with height calculated automatically to preserve the original aspect ratio.',
+                    ],
+
                     'review' => [
                         'allow-customer-review' => 'Allow Customer Review',
                         'allow-guest-review' => 'Allow Guest Review',

@@ -29,7 +29,13 @@ class Small implements FilterInterface
 
             return $image->fit($width, $height);
         } elseif (Str::contains(url()->current(), '/category')) {
-            return $image->fit(80, 80);
+            $width = 80;
+
+            if (core()->getConfigData('catalog.products.category_image.auto_height')) {
+                return $image->widen($width);
+            }
+
+            return $image->fit($width, $width);
         } elseif (Str::contains(url()->current(), '/attribute_option')) {
             return $image->fit(60, 60);
         }

@@ -23,6 +23,16 @@
         {{ trim($category->meta_title) != "" ? $category->meta_title : $category->name }}
     </x-slot>
 
+    <!-- Breadcrumbs -->
+    @if (core()->getConfigData('general.general.breadcrumbs.shop'))
+        <div class="flex justify-center px-7">
+            <x-shop::breadcrumbs
+                name="category"
+                :entity="$category"
+            />
+        </div>
+    @endif
+
     {!! view_render_event('bagisto.shop.categories.view.banner_path.before') !!}
 
     <!-- Hero Image -->
