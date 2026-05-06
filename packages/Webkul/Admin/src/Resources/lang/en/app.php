@@ -4316,6 +4316,8 @@ return [
 
                     'settings' => [
                         'compare-options' => 'Compare options',
+                        'filter-categories-by-stock' => 'Filter categories by product availability',
+                        'filter-categories-by-stock-info' => 'When enabled, only categories containing products in stock for the selected warehouse will be shown.',
                         'image-search-option' => 'Image Search Option',
                         'title' => 'Settings',
                         'title-info' => 'Settings refer to configurable choices that control how a system, application, or device behaves, tailored to user preferences and requirements.',

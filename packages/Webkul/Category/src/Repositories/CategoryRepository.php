@@ -63,7 +63,10 @@ class CategoryRepository extends Repository
                 case 'inventory_source_id':
                     $inventorySourceId = (int) $value;
 
-                    if ($inventorySourceId > 0) {
+                    if (
+                        $inventorySourceId > 0
+                        && core()->getConfigData('catalog.products.settings.filter_categories_by_stock')
+                    ) {
                         $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
 
                         if (! empty($stockedIds)) {

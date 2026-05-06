@@ -751,6 +751,12 @@ return [
                 'title' => 'admin::app.configuration.index.catalog.products.settings.image-search-option',
                 'type' => 'boolean',
                 'default' => 1,
+            ], [
+                'name' => 'filter_categories_by_stock',
+                'title' => 'admin::app.configuration.index.catalog.products.settings.filter-categories-by-stock',
+                'info' => 'admin::app.configuration.index.catalog.products.settings.filter-categories-by-stock-info',
+                'type' => 'boolean',
+                'default' => 1,
             ],
         ],
     ], [

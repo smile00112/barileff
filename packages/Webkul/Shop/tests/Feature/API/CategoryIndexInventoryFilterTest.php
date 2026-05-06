@@ -1,5 +1,6 @@
 <?php
 
+use Webkul\Core\Models\CoreConfig;
 use Webkul\Faker\Helpers\Category as CategoryFaker;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Inventory\Models\InventorySource;
@@ -73,4 +74,41 @@ it('returns empty result when inventory_source_id has no stock in any category',
     $returnedIds = collect($response->json('data'))->pluck('id');
 
     expect($returnedIds)->not->toContain($category->id);
+});
+
+it('ignores inventory_source_id and returns all categories when filter_categories_by_stock config is disabled', function () {
+    CoreConfig::factory()->create([
+        'code' => 'catalog.products.settings.filter_categories_by_stock',
+        'value' => '0',
+    ]);
+
+    $source = InventorySource::factory()->create();
+
+    $categoryWithStock = (new CategoryFaker)->factory()->create();
+    $categoryEmpty = (new CategoryFaker)->factory()->create();
+
+    $product = (new ProductFaker)
+        ->getSimpleProductFactory()
+        ->hasAttached($categoryWithStock)
+        ->create();
+
+    ProductInventory::factory()->create([
+        'product_id' => $product->id,
+        'inventory_source_id' => $source->id,
+        'qty' => 10,
+    ]);
+
+    $response = getJson(route('shop.api.categories.index', [
+        'status' => 1,
+        'locale' => 'en',
+        'parent_id' => (string) $categoryWithStock->parent_id,
+        'inventory_source_id' => $source->id,
+        'limit' => 100,
+    ]))->assertOk();
+
+    $returnedIds = collect($response->json('data'))->pluck('id');
+
+    // Both categories must appear because filtering is disabled.
+    expect($returnedIds)->toContain($categoryWithStock->id)
+        ->and($returnedIds)->toContain($categoryEmpty->id);
 });

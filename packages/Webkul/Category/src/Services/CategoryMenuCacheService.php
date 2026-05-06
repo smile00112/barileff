@@ -23,10 +23,15 @@ class CategoryMenuCacheService
      * Get the filtered category tree for the given parameters.
      *
      * The result is served from cache when available.  If $inventorySourceId
-     * is null the full visible tree is returned (unfiltered).
+     * is null, or filtering is disabled via admin config, the full visible
+     * tree is returned (unfiltered).
      */
     public function get(int $rootCategoryId, ?int $inventorySourceId, string $channelCode, string $locale): Collection
     {
+        if (! core()->getConfigData('catalog.products.settings.filter_categories_by_stock')) {
+            $inventorySourceId = null;
+        }
+
         $key = $this->cacheKey($channelCode, $locale, $inventorySourceId);
 
         return Cache::remember($key, self::TTL, function () use ($rootCategoryId, $inventorySourceId) {
