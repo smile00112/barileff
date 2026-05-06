@@ -86,6 +86,10 @@ sleep 10
 # Vite ассеты собираются на этапе docker build в Dockerfile
 info "Пропуск runtime-сборки фронтенда (Vite собирается в Dockerfile)..."
 
+# Очистка FPC (ResponseCache) — чтобы HTML перегенерировался с новыми хешами ассетов
+info "Очистка кеша страниц (ResponseCache)..."
+docker compose -f docker-compose.prod.yml exec app php artisan responsecache:clear
+
 # Миграции в работающем новом контейнере
 info "Запуск миграций базы данных..."
 docker compose -f docker-compose.prod.yml exec app php artisan migrate --force

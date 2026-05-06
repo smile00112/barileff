@@ -59,6 +59,21 @@ class CategoryRepository extends Repository
                     $queryBuilder->where('category_translations.locale', $value);
 
                     break;
+
+                case 'inventory_source_id':
+                    $inventorySourceId = (int) $value;
+
+                    if ($inventorySourceId > 0) {
+                        $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
+
+                        if (! empty($stockedIds)) {
+                            $queryBuilder->whereIn('categories.id', $stockedIds);
+                        } else {
+                            $queryBuilder->whereRaw('1 = 0');
+                        }
+                    }
+
+                    break;
             }
         }
 

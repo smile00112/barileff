@@ -5,6 +5,10 @@
     'showName' => true,
 ])
 
+@php
+    $inventorySourceId = getCurrentInventorySourceId() ?? 0;
+@endphp
+
 <v-categories-nested-grid>
     <x-shop::shimmer.categories.grid
         :count="8"
@@ -95,6 +99,8 @@
 
                     filterParams: @json($filters ?? []),
 
+                    inventorySourceId: {{ (int) $inventorySourceId }},
+
                     desktopColumns: {{ (int) ($desktopColumns ?? 4) }},
 
                     mobileColumns: {{ (int) ($mobileColumns ?? 2) }},
@@ -145,6 +151,10 @@
                         ...this.filterParams,
                         parent_id: parentId,
                     };
+
+                    if (this.inventorySourceId) {
+                        params.inventory_source_id = this.inventorySourceId;
+                    }
 
                     return params;
                 },

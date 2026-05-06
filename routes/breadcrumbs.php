@@ -91,8 +91,30 @@ Breadcrumbs::for('compare', function (BreadcrumbTrail $trail) {
     $trail->push(trans('shop::app.compare.product-compare'), route('shop.compare.index'));
 });
 
-// Home > Product
+// Home > [Parent Categories...] > Category
+Breadcrumbs::for('category', function (BreadcrumbTrail $trail, $entity) {
+    $trail->parent('home');
+
+    foreach ($entity->ancestors()->whereNotNull('parent_id')->defaultOrder()->get() as $ancestor) {
+        $trail->push($ancestor->name ?? '', $ancestor->url);
+    }
+
+    $trail->push($entity->name ?? '', $entity->url);
+});
+
+// Home > [Category Chain...] > Product
 Breadcrumbs::for('product', function (BreadcrumbTrail $trail, $entity) {
     $trail->parent('home');
+
+    $category = $entity->categories()->first();
+
+    if ($category) {
+        foreach ($category->ancestors()->whereNotNull('parent_id')->defaultOrder()->get() as $ancestor) {
+            $trail->push($ancestor->name ?? '', $ancestor->url);
+        }
+
+        $trail->push($category->name ?? '', $category->url);
+    }
+
     $trail->push($entity->name ?? '', route('shop.product_or_category.index', $entity->url_key));
 });
