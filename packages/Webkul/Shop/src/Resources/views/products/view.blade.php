@@ -27,7 +27,7 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="twitter:title" content="{{ $product->name }}" />
+    <meta name="twitter:title" content="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}" />
 
     <meta name="twitter:description" content="{!! htmlspecialchars(trim(strip_tags($product->description))) !!}" />
 
@@ -37,7 +37,7 @@
 
     <meta property="og:type" content="og:product" />
 
-    <meta property="og:title" content="{{ $product->name }}" />
+    <meta property="og:title" content="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}" />
 
     <meta property="og:image" content="{{ $productBaseImage['medium_image_url'] }}" />
 
@@ -50,7 +50,7 @@
 <x-shop::layouts>
     <!-- Page Title -->
     <x-slot:title>
-        {{ trim($product->meta_title) != "" ? $product->meta_title : $product->name }}
+        {{ trim($product->meta_title) != '' ? $product->meta_title : html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}
     </x-slot>
 
     {!! view_render_event('bagisto.shop.products.view.before', ['product' => $product]) !!}
@@ -299,7 +299,7 @@
 
                                 <div class="flex justify-between gap-4">
                                     <h1 class="text-3xl font-medium break-words max-sm:text-xl" v-pre>
-                                        {{ $product->name }}
+                                        {{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}
                                     </h1>
 
                                     @if (core()->getConfigData('customer.settings.wishlist.wishlist_option'))

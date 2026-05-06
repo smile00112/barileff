@@ -33,7 +33,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'sku' => $this->sku,
-            'name' => $this->name,
+            'name' => html_entity_decode($this->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'description' => $this->description,
             'url_key' => $this->url_key,
             'base_image' => product_image()->getProductBaseImage($this),

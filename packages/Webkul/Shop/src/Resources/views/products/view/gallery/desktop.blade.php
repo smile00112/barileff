@@ -23,7 +23,7 @@
                     v-if="media.type == 'videos'"
                     :class="`transparent max-h-[100px] min-w-[100px] cursor-pointer rounded-xl border ${isActiveMedia(index) ? 'pointer-events-none border-navyBlue' : 'border-white'}`"
                     @click="change(media, index)"
-                    alt="{{ $product->name }}"
+                    alt="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}"
                     tabindex="0"
                 >
                     <source
@@ -36,7 +36,7 @@
                     v-else
                     :class="`transparent max-h-[100px] min-w-[100px] cursor-pointer rounded-xl border ${isActiveMedia(index) ? 'pointer-events-none border border-navyBlue' : 'border-white'}`"
                     :src="media.small_image_url"
-                    alt="{{ $product->name }}"
+                    alt="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}"
                     width="100"
                     height="100"
                     tabindex="0"
@@ -73,7 +73,7 @@
             class="min-w-[450px] cursor-pointer rounded-xl"
             :src="baseFile.path"
             v-if="baseFile.type == 'image'"
-            alt="{{ $product->name }}"
+            alt="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}"
             width="560"
             height="610"
             tabindex="0"
@@ -90,7 +90,7 @@
             <video
                 controls
                 width="475"
-                alt="{{ $product->name }}"
+                alt="{{ html_entity_decode($product->name, ENT_QUOTES | ENT_HTML5, 'UTF-8') }}"
                 @click="isImageZooming = !isImageZooming"
                 @loadeddata="onMediaLoad()"
                 :key="baseFile.path"
