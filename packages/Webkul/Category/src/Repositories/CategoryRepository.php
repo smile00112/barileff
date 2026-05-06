@@ -3,6 +3,7 @@
 namespace Webkul\Category\Repositories;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -67,7 +68,11 @@ class CategoryRepository extends Repository
                         $inventorySourceId > 0
                         && core()->getConfigData('catalog.products.settings.filter_categories_by_stock')
                     ) {
-                        $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
+                        $stockedIds = Cache::remember(
+                            "category-stocked-ids:{$inventorySourceId}",
+                            3600,
+                            fn () => $this->getCategoryIdsWithStockForSource($inventorySourceId)
+                        );
 
                         if (! empty($stockedIds)) {
                             $queryBuilder->whereIn('categories.id', $stockedIds);
