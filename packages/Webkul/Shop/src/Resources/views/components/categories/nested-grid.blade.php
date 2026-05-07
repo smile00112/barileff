@@ -51,7 +51,7 @@
                         class="group overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                         :aria-label="category.name"
                     >
-                        <<div class="aspect-[4/3] overflow-hidden bg-zinc-100">
+                        <div class="aspect-[4/3] overflow-hidden bg-zinc-100">
                             <x-shop::media.images.lazy
                                 ::src="category.logo?.large_image_url || fallback"
                                 ::srcset="`
