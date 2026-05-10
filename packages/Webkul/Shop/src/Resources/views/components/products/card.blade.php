@@ -86,7 +86,7 @@
 
                         @if (core()->getConfigData('customer.settings.wishlist.wishlist_option'))
                             <span
-                                class="absolute top-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-200 bg-white text-lg md:hidden ltr:right-1.5 rtl:left-1.5"
+                                class="absolute top-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-200 bg-white text-lg sm:hidden ltr:right-1.5 rtl:left-1.5"
                                 role="button"
                                 aria-label="@lang('shop::app.components.products.card.add-to-wishlist')"
                                 tabindex="0"
@@ -140,7 +140,7 @@
                 {!! view_render_event('bagisto.shop.components.products.card.price.after') !!}
 
                 <!-- Product Actions Section -->
-                <div class="action-items flex items-center justify-between opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 max-md:hidden">
+                <div class="action-items flex items-center justify-between opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 max-md:opacity-100">
                     @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page'))
                         {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
