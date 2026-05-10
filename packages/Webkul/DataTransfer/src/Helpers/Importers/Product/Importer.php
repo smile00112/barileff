@@ -165,6 +165,13 @@ class Importer extends AbstractImporter
     protected Collection $channels;
 
     /**
+     * Product IDs that already have at least one gallery image (batch scope).
+     *
+     * @var array<int, bool>
+     */
+    protected array $existingProductIdsWithImages = [];
+
+    /**
      * Cached categories
      */
     protected mixed $customerGroups = [];
@@ -880,6 +887,53 @@ class Importer extends AbstractImporter
     }
 
     /**
+     * Which products in this batch already have gallery images — used to skip overwriting / re-importing visuals.
+     *
+     * @param  array<int, string>  $batchSkus
+     */
+    protected function preloadExistingProductIdsWithImages(array $batchSkus): void
+    {
+        $this->existingProductIdsWithImages = [];
+
+        $productIds = [];
+
+        foreach (array_unique($batchSkus) as $sku) {
+            if (! $this->skuStorage->has($sku)) {
+                continue;
+            }
+
+            $productIds[] = (int) $this->skuStorage->get($sku)['id'];
+        }
+
+        if ($productIds === []) {
+            return;
+        }
+
+        $withImages = DB::table('product_images')
+            ->whereIn('product_id', $productIds)
+            ->distinct()
+            ->pluck('product_id');
+
+        foreach ($withImages as $productId) {
+            $this->existingProductIdsWithImages[(int) $productId] = true;
+        }
+    }
+
+    /**
+     * Skip local/remote CSV image columns when this SKU belongs to an existing product that already has images.
+     */
+    protected function shouldSkipImportedImagesForSku(string $sku): bool
+    {
+        if (! $this->skuStorage->has($sku)) {
+            return false;
+        }
+
+        $productId = (int) $this->skuStorage->get($sku)['id'];
+
+        return $this->existingProductIdsWithImages[$productId] ?? false;
+    }
+
+    /**
      * Delete products from current batch
      */
     protected function deleteProducts(ImportBatchContract $batch): bool
@@ -933,7 +987,11 @@ class Importer extends AbstractImporter
         /**
          * Load SKU storage with batch skus
          */
-        $this->skuStorage->load(Arr::pluck($batch->data, 'sku'));
+        $batchSkus = Arr::pluck($batch->data, 'sku');
+
+        $this->skuStorage->load($batchSkus);
+
+        $this->preloadExistingProductIdsWithImages($batchSkus);
 
         $products = [];
 
@@ -1449,10 +1507,7 @@ class Importer extends AbstractImporter
             return;
         }
 
-        /**
-         * Skip the image upload if product is already created
-         */
-        if ($this->skuStorage->has($rowData['sku'])) {
+        if ($this->shouldSkipImportedImagesForSku($rowData['sku'])) {
             return;
         }
 
@@ -1490,10 +1545,7 @@ class Importer extends AbstractImporter
             return;
         }
 
-        /**
-         * Skip the image upload if product is already created
-         */
-        if ($this->skuStorage->has($rowData['sku'])) {
+        if ($this->shouldSkipImportedImagesForSku($rowData['sku'])) {
             return;
         }
 
