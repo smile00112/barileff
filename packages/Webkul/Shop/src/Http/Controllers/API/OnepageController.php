@@ -71,6 +71,15 @@ class OnepageController extends APIController
             ]);
         }
 
+        foreach (['billing', 'shipping'] as $addressType) {
+            if (! empty($params[$addressType]['full_name'])) {
+                $parts = explode(' ', trim($params[$addressType]['full_name']), 2);
+                $params[$addressType]['first_name'] = $parts[0];
+                $params[$addressType]['last_name'] = $parts[1] ?? $parts[0];
+                unset($params[$addressType]['full_name']);
+            }
+        }
+
         Cart::saveAddresses($params);
 
         $cart = Cart::getCart();

@@ -3,9 +3,11 @@
 namespace Webkul\Shop\Http\Controllers\Customer;
 
 use Cookie;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Webkul\Core\Repositories\SubscribersListRepository;
 use Webkul\Customer\Repositories\CustomerGroupRepository;
 use Webkul\Customer\Repositories\CustomerRepository;
@@ -30,7 +32,7 @@ class RegistrationController extends Controller
     /**
      * Opens up the user's sign up form.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -40,7 +42,7 @@ class RegistrationController extends Controller
     /**
      * Method to store user's sign up form data to DB.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(RegistrationRequest $registrationRequest)
     {
@@ -48,13 +50,15 @@ class RegistrationController extends Controller
 
         $subscription = $this->subscriptionRepository->findOneWhere(['email' => request()->input('email')]);
 
+        $nameParts = explode(' ', trim($registrationRequest->input('full_name')), 2);
+
         $data = array_merge($registrationRequest->only([
-            'first_name',
-            'last_name',
             'email',
             'password_confirmation',
             'is_subscribed',
         ]), [
+            'first_name' => $nameParts[0],
+            'last_name' => $nameParts[1] ?? $nameParts[0],
             'password' => bcrypt(request()->input('password')),
             'api_token' => Str::random(80),
             'is_verified' => ! core()->getConfigData('customer.settings.email.verification'),
@@ -108,7 +112,7 @@ class RegistrationController extends Controller
      * Method to verify account.
      *
      * @param  string  $token
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function verifyAccount($token)
     {
@@ -138,7 +142,7 @@ class RegistrationController extends Controller
      * Resend verification email.
      *
      * @param  string  $email
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function resendVerificationEmail($email)
     {
@@ -155,11 +159,11 @@ class RegistrationController extends Controller
             Mail::queue(new EmailVerificationNotification($verificationData));
 
             if (Cookie::has('enable-resend')) {
-                \Cookie::queue(\Cookie::forget('enable-resend'));
+                Cookie::queue(Cookie::forget('enable-resend'));
             }
 
             if (Cookie::has('email-for-resend')) {
-                \Cookie::queue(\Cookie::forget('email-for-resend'));
+                Cookie::queue(Cookie::forget('email-for-resend'));
             }
         } catch (\Exception $e) {
             report($e);

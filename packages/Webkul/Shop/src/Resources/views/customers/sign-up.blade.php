@@ -56,51 +56,28 @@
                 <x-shop::form :action="route('shop.customers.register.store')">
                     {!! view_render_event('bagisto.shop.customers.signup_form_controls.before') !!}
 
-                    <!-- First Name -->
+                    <!-- Full Name (ФИО) -->
                     <x-shop::form.control-group>
                         <x-shop::form.control-group.label class="required">
-                            @lang('shop::app.customers.signup-form.first-name')
+                            @lang('shop::app.customers.signup-form.full-name')
                         </x-shop::form.control-group.label>
 
                         <x-shop::form.control-group.control
                             type="text"
                             class="px-6 py-4 max-md:py-3 max-sm:py-2"
-                            name="first_name"
+                            name="full_name"
                             rules="required"
-                            :value="old('first_name')"
-                            :label="trans('shop::app.customers.signup-form.first-name')"
-                            :placeholder="trans('shop::app.customers.signup-form.first-name')"
-                            :aria-label="trans('shop::app.customers.signup-form.first-name')"
+                            :value="old('full_name')"
+                            :label="trans('shop::app.customers.signup-form.full-name')"
+                            :placeholder="trans('shop::app.customers.signup-form.full-name')"
+                            :aria-label="trans('shop::app.customers.signup-form.full-name')"
                             aria-required="true"
                         />
 
-                        <x-shop::form.control-group.error control-name="first_name" />
+                        <x-shop::form.control-group.error control-name="full_name" />
                     </x-shop::form.control-group>
 
-                    {!! view_render_event('bagisto.shop.customers.signup_form.first_name.after') !!}
-
-                    <!-- Last Name -->
-                    <x-shop::form.control-group>
-                        <x-shop::form.control-group.label class="required">
-                            @lang('shop::app.customers.signup-form.last-name')
-                        </x-shop::form.control-group.label>
-
-                        <x-shop::form.control-group.control
-                            type="text"
-                            class="px-6 py-4 max-md:py-3 max-sm:py-2"
-                            name="last_name"
-                            rules="required"
-                            :value="old('last_name')"
-                            :label="trans('shop::app.customers.signup-form.last-name')"
-                            :placeholder="trans('shop::app.customers.signup-form.last-name')"
-                            :aria-label="trans('shop::app.customers.signup-form.last-name')"
-                            aria-required="true"
-                        />
-
-                        <x-shop::form.control-group.error control-name="last_name" />
-                    </x-shop::form.control-group>
-
-                    {!! view_render_event('bagisto.shop.customers.signup_form.last_name.after') !!}
+                    {!! view_render_event('bagisto.shop.customers.signup_form.full_name.after') !!}
 
                     <!-- Email -->
                     <x-shop::form.control-group>

@@ -53,47 +53,25 @@
                 />
             </x-shop::form.control-group>
 
-            <!-- First Name -->
-            <div class="grid grid-cols-2 gap-x-5 max-md:grid-cols-1">
-                <x-shop::form.control-group>
-                    <x-shop::form.control-group.label class="required !mt-0">
-                        @lang('shop::app.checkout.onepage.address.first-name')
-                    </x-shop::form.control-group.label>
+            <!-- Full Name (ФИО) -->
+            <x-shop::form.control-group>
+                <x-shop::form.control-group.label class="required !mt-0">
+                    @lang('shop::app.checkout.onepage.address.full-name')
+                </x-shop::form.control-group.label>
 
-                    <x-shop::form.control-group.control
-                        type="text"
-                        ::name="controlName + '.first_name'"
-                        ::value="address.first_name"
-                        rules="required"
-                        :label="trans('shop::app.checkout.onepage.address.first-name')"
-                        :placeholder="trans('shop::app.checkout.onepage.address.first-name')"
-                    />
+                <x-shop::form.control-group.control
+                    type="text"
+                    ::name="controlName + '.full_name'"
+                    ::value="address.full_name"
+                    rules="required"
+                    :label="trans('shop::app.checkout.onepage.address.full-name')"
+                    :placeholder="trans('shop::app.checkout.onepage.address.full-name')"
+                />
 
-                    <x-shop::form.control-group.error ::name="controlName + '.first_name'" />
-                </x-shop::form.control-group>
+                <x-shop::form.control-group.error ::name="controlName + '.full_name'" />
+            </x-shop::form.control-group>
 
-                {!! view_render_event('bagisto.shop.checkout.onepage.address.form.first_name.after') !!}
-
-                <!-- Last Name -->
-                <x-shop::form.control-group>
-                    <x-shop::form.control-group.label class="required !mt-0">
-                        @lang('shop::app.checkout.onepage.address.last-name')
-                    </x-shop::form.control-group.label>
-
-                    <x-shop::form.control-group.control
-                        type="text"
-                        ::name="controlName + '.last_name'"
-                        ::value="address.last_name"
-                        rules="required"
-                        :label="trans('shop::app.checkout.onepage.address.last-name')"
-                        :placeholder="trans('shop::app.checkout.onepage.address.last-name')"
-                    />
-
-                    <x-shop::form.control-group.error ::name="controlName + '.last_name'" />
-                </x-shop::form.control-group>
-
-                {!! view_render_event('bagisto.shop.checkout.onepage.address.form.last_name.after') !!}
-            </div>
+            {!! view_render_event('bagisto.shop.checkout.onepage.address.form.full_name.after') !!}
 
             <!-- Email -->
             <x-shop::form.control-group>
@@ -155,8 +133,7 @@
                     default: () => ({
                         id: 0,
                         company_name: '',
-                        first_name: '',
-                        last_name: '',
+                        full_name: '',
                         email: '',
                         address: [],
                         city: '',

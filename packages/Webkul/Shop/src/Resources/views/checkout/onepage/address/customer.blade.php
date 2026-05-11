@@ -109,8 +109,7 @@
                     return {
                         id: b?.id ?? 0,
                         company_name: b?.company_name ?? '',
-                        first_name: b?.first_name ?? '',
-                        last_name: b?.last_name ?? '',
+                        full_name: [b?.first_name, b?.last_name].filter(Boolean).join(' '),
                         email: b?.email ?? '',
                         phone: b?.phone ?? '',
                         address: this.deliverySelection?.label ? [this.deliverySelection.label] : (b?.address ?? []),
