@@ -69,6 +69,10 @@ git pull origin "$CURRENT_BRANCH"
 info "Пересборка Docker образов app, queue, reverb..."
 docker compose -f docker-compose.prod.yml build app queue reverb
 
+# Удаление dangling-образов (осиротевшие слои от предыдущих сборок)
+info "Очистка dangling Docker образов..."
+docker image prune -f
+
 # Очистка старого кеша конфига (bootstrap/cache смонтирован с хоста)
 info "Очистка старого кеша конфига..."
 rm -f bootstrap/cache/config.php
