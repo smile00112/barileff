@@ -70,6 +70,9 @@ RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --pr
 
 COPY . .
 
+# Создаём директории, исключённые из .dockerignore (нужны для artisan-команд при сборке)
+RUN mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions storage/logs bootstrap/cache
+
 RUN composer dump-autoload --optimize --no-dev
 
 COPY docker/php/php.ini /usr/local/etc/php/php.ini
