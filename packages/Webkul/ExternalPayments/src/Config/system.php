@@ -8,6 +8,13 @@ return [
         'sort' => 6,
         'fields' => [
             [
+                'name' => 'active',
+                'title' => 'admin::app.configuration.index.sales.payment-methods.status',
+                'type' => 'boolean',
+                'channel_based' => true,
+                'locale_based' => false,
+            ],
+            [
                 'name' => 'sort',
                 'title' => 'admin::app.configuration.index.sales.payment-methods.sort-order',
                 'type' => 'select',

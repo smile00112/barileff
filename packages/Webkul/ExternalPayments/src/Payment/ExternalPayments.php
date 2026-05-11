@@ -15,6 +15,34 @@ class ExternalPayments extends Payment
     protected $code = 'external_payments';
 
     /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        $title = $this->getConfigData('title');
+
+        if ($title !== null && $title !== '') {
+            return $title;
+        }
+
+        return trans('external-payments::app.configuration.index.sales.payment-methods.external-payments');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        $description = $this->getConfigData('description');
+
+        if ($description !== null && $description !== '') {
+            return $description;
+        }
+
+        return trans('external-payments::app.configuration.index.sales.payment-methods.external-payments-info');
+    }
+
+    /**
      * Return redirect URL to the payment page.
      */
     public function getRedirectUrl(): string
@@ -27,6 +55,16 @@ class ExternalPayments extends Payment
      */
     public function isAvailable(): bool
     {
+        $activeGlobal = $this->getConfigData('active');
+
+        if (
+            $activeGlobal !== null
+            && $activeGlobal !== ''
+            && ! filter_var($activeGlobal, FILTER_VALIDATE_BOOLEAN)
+        ) {
+            return false;
+        }
+
         $sourceId = getCurrentInventorySourceId();
 
         if (! $sourceId) {
