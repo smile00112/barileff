@@ -751,6 +751,12 @@ return [
                 'title' => 'admin::app.configuration.index.catalog.products.settings.image-search-option',
                 'type' => 'boolean',
                 'default' => 1,
+            ], [
+                'name' => 'filter_categories_by_stock',
+                'title' => 'admin::app.configuration.index.catalog.products.settings.filter-categories-by-stock',
+                'info' => 'admin::app.configuration.index.catalog.products.settings.filter-categories-by-stock-info',
+                'type' => 'boolean',
+                'default' => 1,
             ],
         ],
     ], [
@@ -978,10 +984,23 @@ return [
             ],
         ],
     ], [
+        'key' => 'catalog.products.category_image',
+        'name' => 'admin::app.configuration.index.catalog.products.category-image.title',
+        'info' => 'admin::app.configuration.index.catalog.products.category-image.title-info',
+        'sort' => 8,
+        'fields' => [
+            [
+                'name' => 'auto_height',
+                'title' => 'admin::app.configuration.index.catalog.products.category-image.auto-height',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+        ],
+    ], [
         'key' => 'catalog.products.review',
         'name' => 'admin::app.configuration.index.catalog.products.review.title',
         'info' => 'admin::app.configuration.index.catalog.products.review.title-info',
-        'sort' => 8,
+        'sort' => 9,
         'fields' => [
             [
                 'name' => 'guest_review',
@@ -1017,7 +1036,7 @@ return [
         'key' => 'catalog.products.attribute',
         'name' => 'admin::app.configuration.index.catalog.products.attribute.title',
         'info' => 'admin::app.configuration.index.catalog.products.attribute.title-info',
-        'sort' => 9,
+        'sort' => 10,
         'fields' => [
             [
                 'name' => 'image_attribute_upload_size',
@@ -1035,7 +1054,7 @@ return [
         'key' => 'catalog.products.social_share',
         'name' => 'admin::app.configuration.index.catalog.products.social-share.title',
         'info' => 'admin::app.configuration.index.catalog.products.social-share.title-info',
-        'sort' => 10,
+        'sort' => 11,
         'fields' => [
             [
                 'name' => 'enabled',

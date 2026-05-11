@@ -31,16 +31,15 @@
                 >
                     <div class="aspect-square overflow-hidden bg-zinc-100">
                         <x-shop::media.images.lazy
-                            ::src="category.logo?.medium_image_url || fallback"
+                            ::src="category.logo?.large_image_url || fallback"
                             ::srcset="`
-                                ${(category.logo?.small_image_url || fallback)} 300w,
                                 ${(category.logo?.medium_image_url || fallback)} 600w,
                                 ${(category.logo?.large_image_url || fallback)} 900w
                             `"
                             sizes="(max-width: 768px) 50vw, 25vw"
                             width="600"
                             height="600"
-                            class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                            class="w-full object-cover transition duration-300 group-hover:scale-105"
                             ::alt="category.name"
                         />
                     </div>

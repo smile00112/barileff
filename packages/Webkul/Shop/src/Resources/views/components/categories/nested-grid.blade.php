@@ -5,6 +5,10 @@
     'showName' => true,
 ])
 
+@php
+    $inventorySourceId = getCurrentInventorySourceId() ?? 0;
+@endphp
+
 <v-categories-nested-grid>
     <x-shop::shimmer.categories.grid
         :count="8"
@@ -47,18 +51,16 @@
                         class="group overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                         :aria-label="category.name"
                     >
-                        <div class="aspect-square overflow-hidden bg-zinc-100">
+                        <div class="aspect-[4/3] overflow-hidden bg-zinc-100">
                             <x-shop::media.images.lazy
-                                ::src="category.logo?.medium_image_url || fallback"
+                                ::src="category.logo?.large_image_url || fallback"
                                 ::srcset="`
-                                    ${(category.logo?.small_image_url || fallback)} 300w,
-                                    ${(category.logo?.medium_image_url || fallback)} 600w,
                                     ${(category.logo?.large_image_url || fallback)} 900w
                                 `"
                                 sizes="(max-width: 768px) 50vw, 25vw"
                                 width="600"
                                 height="600"
-                                class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                class="w-full object-cover transition duration-300 group-hover:scale-105"
                                 ::alt="category.name"
                             />
                         </div>
@@ -94,6 +96,8 @@
                     fallback: "{{ bagisto_asset('images/small-product-placeholder.webp') }}",
 
                     filterParams: @json($filters ?? []),
+
+                    inventorySourceId: {{ (int) $inventorySourceId }},
 
                     desktopColumns: {{ (int) ($desktopColumns ?? 4) }},
 
@@ -146,11 +150,16 @@
                         parent_id: parentId,
                     };
 
+                    if (this.inventorySourceId) {
+                        params.inventory_source_id = this.inventorySourceId;
+                    }
+
                     return params;
                 },
 
                 async loadSections() {
                     this.isLoading = true;
+                    this.sections = [];
 
                     try {
                         const level1Res = await this.$axios.get(
@@ -160,21 +169,22 @@
 
                         const parents = level1Res.data?.data ?? [];
 
-                        const sectionResults = await Promise.all(
-                            parents.map(async (parent) => {
-                                const res = await this.$axios.get(
-                                    '{{ route('shop.api.categories.index') }}',
-                                    { params: this.childQueryParams(parent.id) },
-                                );
+                        for (const parent of parents) {
+                            const res = await this.$axios.get(
+                                '{{ route('shop.api.categories.index') }}',
+                                { params: this.childQueryParams(parent.id) },
+                            );
 
-                                return {
-                                    parent,
-                                    children: res.data?.data ?? [],
-                                };
-                            }),
-                        );
+                            const children = res.data?.data ?? [];
 
-                        this.sections = sectionResults.filter((s) => s.children.length > 0);
+                            if (children.length > 0) {
+                                this.sections.push({ parent, children });
+
+                                if (this.isLoading) {
+                                    this.isLoading = false;
+                                }
+                            }
+                        }
                     } catch (error) {
                         console.error(error);
                     } finally {

@@ -3,6 +3,7 @@
 namespace Webkul\Category\Repositories;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -57,6 +58,24 @@ class CategoryRepository extends Repository
                     break;
                 case 'locale':
                     $queryBuilder->where('category_translations.locale', $value);
+
+                    break;
+
+                case 'inventory_source_id':
+                    $inventorySourceId = (int) $value;
+
+                    if (
+                        $inventorySourceId > 0
+                        && core()->getConfigData('catalog.products.settings.filter_categories_by_stock')
+                    ) {
+                        $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
+
+                        if (! empty($stockedIds)) {
+                            $queryBuilder->whereIn('categories.id', $stockedIds);
+                        } else {
+                            $queryBuilder->whereRaw('1 = 0');
+                        }
+                    }
 
                     break;
             }
@@ -195,6 +214,22 @@ class CategoryRepository extends Repository
      */
     public function getCategoryIdsWithStockForSource(int $inventorySourceId): array
     {
+        return Cache::remember(
+            "category-stocked-ids:{$inventorySourceId}",
+            3600,
+            function () use ($inventorySourceId) {
+                return $this->fetchCategoryIdsWithStockForSource($inventorySourceId);
+            }
+        );
+    }
+
+    /**
+     * Execute the raw SQL query for getCategoryIdsWithStockForSource (uncached).
+     *
+     * @return int[]
+     */
+    protected function fetchCategoryIdsWithStockForSource(int $inventorySourceId): array
+    {
         $prefix = DB::getTablePrefix();
 
         $rows = DB::select("
@@ -227,6 +262,14 @@ class CategoryRepository extends Repository
         ", [$inventorySourceId, $inventorySourceId]);
 
         return array_column($rows, 'category_id');
+    }
+
+    /**
+     * Forget the cached stocked category IDs for a given inventory source.
+     */
+    public function forgetStockedIdsCache(int $inventorySourceId): void
+    {
+        Cache::forget("category-stocked-ids:{$inventorySourceId}");
     }
 
     /**

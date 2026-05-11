@@ -1,0 +1,29 @@
+/var/www/bagisto/storage/logs/*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0664 www-data www-data
+    sharedscripts
+    postrotate
+        # Signal Octane to reopen log files
+        systemctl reload bagisto-octane 2>/dev/null || true
+        supervisorctl signal USR1 bagisto-worker 2>/dev/null || true
+    endscript
+}
+
+/var/log/bagisto/*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0644 www-data www-data
+    sharedscripts
+    postrotate
+        supervisorctl signal USR1 all 2>/dev/null || true
+    endscript
+}

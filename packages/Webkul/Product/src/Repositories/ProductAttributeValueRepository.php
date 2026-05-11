@@ -67,23 +67,9 @@ class ProductAttributeValueRepository extends Repository
 
             $locale = $attribute->value_per_locale ? ($data['locale'] ?? core()->getDefaultLocaleCodeFromDefaultChannel()) : null;
 
-            if ($attribute->value_per_channel) {
-                if ($attribute->value_per_locale) {
-                    $filteredAttributeValues = $attributeValues
-                        ->where('channel', $channel)
-                        ->where('locale', $locale);
-                } else {
-                    $filteredAttributeValues = $attributeValues
-                        ->where('channel', $channel);
-                }
-            } else {
-                if ($attribute->value_per_locale) {
-                    $filteredAttributeValues = $attributeValues
-                        ->where('locale', $locale);
-                } else {
-                    $filteredAttributeValues = $attributeValues;
-                }
-            }
+            $filteredAttributeValues = $attributeValues
+                ->where('channel', $channel)
+                ->where('locale', $locale);
 
             $attributeValue = $filteredAttributeValues->first();
 

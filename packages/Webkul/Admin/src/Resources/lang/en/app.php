@@ -4316,6 +4316,8 @@ return [
 
                     'settings' => [
                         'compare-options' => 'Compare options',
+                        'filter-categories-by-stock' => 'Filter categories by product availability',
+                        'filter-categories-by-stock-info' => 'When enabled, only categories containing products in stock for the selected warehouse will be shown.',
                         'image-search-option' => 'Image Search Option',
                         'title' => 'Settings',
                         'title-info' => 'Settings refer to configurable choices that control how a system, application, or device behaves, tailored to user preferences and requirements.',
@@ -4398,6 +4400,12 @@ return [
                         'title' => 'Large image',
                         'title-info' => 'Large image represents a high-resolution picture providing enhanced detail and visual impact, often used for showcasing products or graphics.',
                         'width' => 'Width',
+                    ],
+
+                    'category-image' => [
+                        'auto-height' => 'Auto Height (preserve aspect ratio)',
+                        'title' => 'Category Image',
+                        'title-info' => 'When enabled, category images are scaled to width only with height calculated automatically to preserve the original aspect ratio.',
                     ],
 
                     'review' => [

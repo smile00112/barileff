@@ -11,7 +11,7 @@ class Medium implements FilterInterface
     /**
      * Apply filter.
      *
-     * @return \Intervention\Image\Image
+     * @return Image
      */
     public function applyFilter(Image $image)
     {
@@ -29,7 +29,13 @@ class Medium implements FilterInterface
 
             return $image->fit($width, $height);
         } elseif (Str::contains(url()->current(), '/category')) {
-            return $image->fit(110, 110);
+            $width = 110;
+
+            if (core()->getConfigData('catalog.products.category_image.auto_height')) {
+                return $image->widen($width);
+            }
+
+            return $image->fit($width, $width);
         } elseif (Str::contains(url()->current(), '/attribute_option')) {
             return $image->fit(210, 210);
         }

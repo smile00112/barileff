@@ -1,7 +1,9 @@
 <?php
 
 use Webkul\Faker\Helpers\Product as ProductFaker;
+use Webkul\Attribute\Models\Attribute;
 use Webkul\Product\Models\Product;
+use Webkul\Product\Models\ProductAttributeValue;
 use Webkul\Product\Models\ProductFlat;
 
 use function Pest\Laravel\deleteJson;
@@ -181,6 +183,65 @@ it('should update the simple product', function () {
             ],
         ],
     ]);
+});
+
+it('updates the matching attribute value by exact channel and locale key', function () {
+    $product = (new ProductFaker)->getSimpleProductFactory()->create();
+
+    $priceAttribute = Attribute::query()
+        ->where('code', 'price')
+        ->firstOrFail();
+
+    $staleLocalizedRow = ProductAttributeValue::query()
+        ->where('product_id', $product->id)
+        ->where('attribute_id', $priceAttribute->id)
+        ->whereNull('channel')
+        ->whereNull('locale')
+        ->firstOrFail();
+
+    $staleLocalizedRow->update([
+        'locale' => 'ru',
+        'unique_id' => implode('|', array_filter([
+            'ru',
+            $product->id,
+            $priceAttribute->id,
+        ])),
+    ]);
+
+    $globalValue = ProductAttributeValue::query()->create([
+        'product_id' => $product->id,
+        'attribute_id' => $priceAttribute->id,
+        'channel' => null,
+        'locale' => null,
+        'float_value' => $staleLocalizedRow->float_value,
+        'unique_id' => implode('|', array_filter([
+            $product->id,
+            $priceAttribute->id,
+        ])),
+    ]);
+
+    $this->loginAsAdmin();
+
+    $newPrice = fake()->randomFloat(2, 100, 2000);
+
+    putJson(route('admin.catalog.products.update', $product->id), [
+        'sku' => $product->sku,
+        'url_key' => $product->url_key,
+        'short_description' => fake()->sentence(),
+        'description' => fake()->paragraph(),
+        'name' => fake()->words(3, true),
+        'price' => $newPrice,
+        'weight' => fake()->numberBetween(1, 100),
+        'channel' => core()->getCurrentChannelCode(),
+        'locale' => app()->getLocale(),
+    ])->assertRedirect(route('admin.catalog.products.index'));
+
+    expect($globalValue->fresh()->float_value)->toEqual((float) $newPrice)
+        ->and($staleLocalizedRow->fresh()->unique_id)->toBe(implode('|', array_filter([
+            'ru',
+            $product->id,
+            $priceAttribute->id,
+        ])));
 });
 
 it('should delete a simple product', function () {

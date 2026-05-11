@@ -1,0 +1,37 @@
+[Unit]
+Description=Bagisto Laravel Octane (RoadRunner)
+After=network.target mysql.service redis-server.service elasticsearch.service
+Wants=mysql.service redis-server.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=__APP_DIR__
+
+ExecStart=/usr/bin/php8.3 artisan octane:start \
+    --server=roadrunner \
+    --host=127.0.0.1 \
+    --port=__APP_PORT__ \
+    --workers=__OCTANE_WORKERS__ \
+    --max-requests=500
+
+ExecReload=/bin/kill -USR1 $MAINPID
+
+Restart=always
+RestartSec=3
+StandardOutput=append:/var/log/bagisto/octane.log
+StandardError=append:/var/log/bagisto/octane-error.log
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=__APP_DIR__/storage __APP_DIR__/bootstrap/cache /tmp
+
+# Environment
+Environment=APP_ENV=production
+EnvironmentFile=__APP_DIR__/.env
+
+[Install]
+WantedBy=multi-user.target
