@@ -40,6 +40,7 @@
                     name-field="categories"
                     id-field="id"
                     value-field="id"
+                    :collapse="true"
                     ::items="categories"
                     :value="json_encode($product->categories->pluck('id'))"
                     :fallback-locale="config('app.fallback_locale')"

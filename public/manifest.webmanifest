@@ -1,6 +1,6 @@
 {
-    "name": "Sinica",
-    "short_name": "Sinica",
+    "name": "my_bagisto",
+    "short_name": "my_bagisto",
     "description": "Storefront",
     "start_url": "/",
     "scope": "/",

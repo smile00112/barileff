@@ -196,17 +196,20 @@
                     }
                 },
 
-                generateTreeItemComponents(items, level = 1) {
+                generateTreeItemComponents(items, level = 1, expandedIds = null) {
                     let treeItems = [];
 
                     for (let key in items) {
                         let hasChildren = Object.entries(items[key][this.childrenField]).length > 0;
 
+                        let isActive = ! this.collapse
+                            || (expandedIds !== null && expandedIds.has(items[key][this.valueField]));
+
                         treeItems.push(
                             this.$h(
                                 'div', {
                                     class: [
-                                        this.collapse ? '' : 'active',
+                                        isActive ? 'active' : '',
                                         'v-tree-item inline-block w-full [&>.v-tree-item]:ltr:pl-6 [&>.v-tree-item]:rtl:pr-6 [&>.v-tree-item]:hidden [&.active>.v-tree-item]:block',
                                         level === 1 && ! hasChildren
                                             ? 'ltr:!pl-5 rtl:!pr-5'
@@ -217,7 +220,7 @@
                                 }, [
                                     this.generateToggleIconComponent({
                                         class: [
-                                            hasChildren ? 'icon-sort-down' : '',
+                                            hasChildren ? (isActive ? 'icon-sort-down' : 'icon-sort-right') : '',
                                             'text-xl rounded-md cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-gray-950'
                                         ],
                                     }),
@@ -236,7 +239,7 @@
                                         value: items[key][this.valueField],
                                     }),
 
-                                    this.generateTreeItemComponents(items[key][this.childrenField], level + 1),
+                                    this.generateTreeItemComponents(items[key][this.childrenField], level + 1, expandedIds),
                                 ]
                             )
                         );
@@ -246,15 +249,51 @@
                 },
 
                 generateTree() {
+                    const expandedIds = (this.collapse && this.formattedValues && this.formattedValues.length > 0)
+                        ? this.getExpandedAncestors(this.formattedItems, this.formattedValues, new Set())
+                        : null;
+
                     return this.$h(
                         'div', {
                             class: [
                                 'v-tree-item-wrapper',
                             ],
                         }, [
-                            this.generateTreeItemComponents(this.formattedItems),
+                            this.generateTreeItemComponents(this.formattedItems, 1, expandedIds),
                         ]
                     );
+                },
+
+                getExpandedAncestors(items, selectedValues, ancestors) {
+                    for (let key in items) {
+                        const item = items[key];
+
+                        if (this.hasSelectedDescendant(item, selectedValues)) {
+                            ancestors.add(item[this.valueField]);
+                        }
+
+                        this.getExpandedAncestors(item[this.childrenField], selectedValues, ancestors);
+                    }
+
+                    return ancestors;
+                },
+
+                hasSelectedDescendant(item, selectedValues) {
+                    const children = item[this.childrenField];
+
+                    for (let key in children) {
+                        const child = children[key];
+
+                        if (selectedValues.some(v => v == child[this.valueField])) {
+                            return true;
+                        }
+
+                        if (this.hasSelectedDescendant(child, selectedValues)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 },
 
                 searchInTree(items, value, ancestors = []) {
