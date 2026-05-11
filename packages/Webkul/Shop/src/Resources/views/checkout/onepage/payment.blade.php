@@ -127,12 +127,11 @@
 
             methods: {
                 store(selectedMethod) {
-                    this.$emit('processing', 'review');
-
                     this.$axios.post("{{ route('shop.checkout.onepage.payment_methods.store') }}", {
                             payment: selectedMethod
                         })
                         .then(response => {
+                            this.$emit('processing', 'review');
                             this.$emit('processed', response.data.cart);
 
                             // Used in mobile view. 

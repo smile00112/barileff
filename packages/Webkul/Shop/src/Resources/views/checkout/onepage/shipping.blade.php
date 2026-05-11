@@ -102,8 +102,6 @@
 
             methods: {
                 store(selectedMethod) {
-                    this.$emit('processing', 'payment');
-
                     this.$axios.post("{{ route('shop.checkout.onepage.shipping_methods.store') }}", {    
                             shipping_method: selectedMethod,
                         })
@@ -111,6 +109,7 @@
                             if (response.data.redirect_url) {
                                 window.location.href = response.data.redirect_url;
                             } else {
+                                this.$emit('processing', 'payment');
                                 this.$emit('processed', response.data.payment_methods);
                             }
                         })
