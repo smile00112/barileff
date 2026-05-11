@@ -191,8 +191,6 @@
                     params['delivery_point_lat'] = sel.latitude ?? undefined;
                     params['delivery_point_lng'] = sel.longitude ?? undefined;
 
-                    this.moveToNextStep();
-
                     this.$axios.post('{{ route('shop.checkout.onepage.addresses.store') }}', params)
                         .then((response) => {
                             this.isStoring = false;
@@ -200,6 +198,8 @@
                             if (response.data.data.redirect_url) {
                                 window.location.href = response.data.data.redirect_url;
                             } else {
+                                this.moveToNextStep();
+
                                 if (this.cart.have_stockable_items) {
                                     this.$emit('processed', response.data.data.shippingMethods);
                                 } else {

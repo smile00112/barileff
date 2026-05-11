@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -88,7 +89,20 @@ class ConfigurationController extends Controller
             }
         }
 
-        $this->coreConfigRepository->create($request->except(['_token', 'admin_locale']));
+        try {
+            $this->coreConfigRepository->create($request->except(['_token', 'admin_locale']));
+        } catch (\Throwable $e) {
+            Log::error('Configuration save failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'Ошибка сохранения: '.$e->getMessage());
+
+            return redirect()->back();
+        }
 
         session()->flash('success', trans('admin::app.configuration.index.save-message'));
 
