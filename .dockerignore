@@ -2,3 +2,23 @@ node_modules
 packages/Webkul/Shop/node_modules
 packages/Webkul/Admin/node_modules
 packages/Webkul/Installer/node_modules
+
+# Не нужны в образе — bind-монтируются с хоста при запуске
+storage/app
+storage/logs
+storage/debugbar
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Git-история не нужна в образе
+.git
+.gitignore
+.gitattributes
+
+# Логи сборки и инструменты разработки
+docker/nginx/logs
+*.log
+
+# Скомпилированные ассеты (собираются отдельно или уже в публичной папке)
+public/build
