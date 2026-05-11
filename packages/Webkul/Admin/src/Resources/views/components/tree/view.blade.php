@@ -137,9 +137,25 @@
                 },
 
                 getLabel(item) {
-                    return item[this.labelField]
-                        ? item[this.labelField]
-                        : item.translations.filter((translation) => translation.locale === this.fallbackLocale)[0][this.labelField];
+                    if (item[this.labelField]) {
+                        return item[this.labelField];
+                    }
+
+                    if (Array.isArray(item.translations)) {
+                        const byFallback = item.translations.find(t => t.locale === this.fallbackLocale);
+
+                        if (byFallback?.[this.labelField]) {
+                            return byFallback[this.labelField];
+                        }
+
+                        const any = item.translations.find(t => t[this.labelField]);
+
+                        if (any) {
+                            return any[this.labelField];
+                        }
+                    }
+
+                    return '';
                 },
 
                 generateToggleIconComponent(props) {

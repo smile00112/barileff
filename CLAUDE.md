@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a **customized fork of Bagisto** — an open-source Laravel e-commerce platform. The fork (branch `add_product_import_add_fcm`) adds custom modules on top of upstream Bagisto 2.3: delivery zones, supplier management, push notifications (FCM), markup scheduling, product tags, and various store-specific features.
 
 - PHP 8.2+, Laravel 11, Vue.js (frontend components embedded in Blade)
-- Supports both **PostgreSQL** (primary via Docker) and MySQL
+- MySQL database
 - Pest 3 for testing, Laravel Pint for formatting
 
 ---
@@ -27,7 +27,7 @@ npm run dev
 # Build frontend assets
 npm run build
 
-# Run via Docker (PostgreSQL + Redis + Elasticsearch)
+# Run via Docker (MySQL + Redis + Elasticsearch)
 docker compose up -d
 ```
 
@@ -177,17 +177,16 @@ The `add_product_import_add_fcm` branch adds:
 4. **Supplier module** (`Supplier` package)
 5. **Markup module** (`Markup` package) — scheduled bulk price adjustments
 6. **ProductTag module** (`ProductTag` package) — AI-assisted tagging via GigaChat
-7. **PostgreSQL compatibility** — migrations and seeds adjusted for both MySQL and PostgreSQL
 
 ### Docker Setup
 
 Two Docker Compose configs:
 - `docker-compose.yml` — local dev via Laravel Sail (MySQL + Redis + Elasticsearch + Mailpit)
-- `docker-compose.prod.yml` — production (RoadRunner/Octane, Nginx, MySQL, PostgreSQL 16, Redis, Elasticsearch, Reverb, queue worker, Certbot)
+- `docker-compose.prod.yml` — production (RoadRunner/Octane, Nginx, MySQL, Redis, Elasticsearch, Reverb, queue worker, Certbot)
 
 Development (Sail) services:
 - App: port 80, Vite: 5173
-- PostgreSQL 16: port 5432 (db: `bagisto_pg`, user: `sail`, pass: `secret`)
+- MySQL: port 3306
 - Redis: port 6379
 - Elasticsearch 7.17: ports 9200/9300
 - Adminer: port 2280

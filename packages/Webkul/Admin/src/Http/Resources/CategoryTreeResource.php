@@ -18,7 +18,7 @@ class CategoryTreeResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
-            'name' => $this->name,
+            'name' => $this->name ?? $this->translations->sortByDesc(fn ($t) => $t->locale === config('app.fallback_locale'))->first()?->name ?? '',
             'slug' => $this->slug,
             'url' => $this->url,
             'status' => $this->status,
