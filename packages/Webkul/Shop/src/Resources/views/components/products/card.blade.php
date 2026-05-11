@@ -122,7 +122,7 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
-                <p class="break-all text-base font-medium max-md:mb-1.5 max-md:max-w-56 max-md:whitespace-break-spaces max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-4">
+                <p class="break-all text-base font-medium max-md:mb-1.5 max-md:min-h-[35px] max-md:max-w-56 max-md:whitespace-break-spaces max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-4">
                     @{{ product.name }}
                 </p>
 
@@ -145,7 +145,7 @@
                         {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
                         <button
-                            class="secondary-button w-full max-w-full p-2.5 text-sm font-medium max-sm:rounded-xl max-sm:p-2"
+                            class="secondary-button w-full max-w-full p-2.5 text-sm font-medium max-md:mt-2.5 max-sm:rounded-xl max-sm:p-2"
                             :disabled="! product.is_saleable || isAddingToCart"
                             @click="addToCart()"
                         >
@@ -267,7 +267,7 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
-                <p class="text-base">
+                <p class="text-base max-md:min-h-[35px]">
                     @{{ product.name }}
                 </p>
 
@@ -325,7 +325,7 @@
                     {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
                     <x-shop::button
-                        class="primary-button whitespace-nowrap px-8 py-2.5"
+                        class="primary-button whitespace-nowrap px-8 py-2.5 max-md:mt-2.5"
                         :title="trans('shop::app.components.products.card.add-to-cart')"
                         ::loading="isAddingToCart"
                         ::disabled="! product.is_saleable || isAddingToCart"

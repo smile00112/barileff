@@ -3,6 +3,7 @@
 namespace Webkul\FPC\Hasher;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Spatie\ResponseCache\Hasher\DefaultHasher as BaseDefaultHasher;
 
 class DefaultHasher extends BaseDefaultHasher
@@ -15,10 +16,14 @@ class DefaultHasher extends BaseDefaultHasher
         if (str_starts_with($request->getPathInfo(), '/api/')) {
             $params = $request->query();
 
-            // inventory_source_id is factored into the cache suffix for product
-            // endpoints so that warm-up requests and session-based real requests
-            // share the same URL hash component.
-            if (str_starts_with($request->getPathInfo(), '/api/products')) {
+            // inventory_source_id is factored into the cache suffix (not the URL component)
+            // for endpoints whose response varies by warehouse. This ensures warm-up requests
+            // (which pass ?inventory_source_id=N explicitly) and session-based real requests
+            // (which rely on the suffix) resolve to the same cache key.
+            if (
+                str_starts_with($request->getPathInfo(), '/api/products')
+                || str_starts_with($request->getPathInfo(), '/api/categories')
+            ) {
                 unset($params['inventory_source_id']);
             }
 
@@ -60,7 +65,7 @@ class DefaultHasher extends BaseDefaultHasher
         }
 
         // Fall back to the channel's default source — cached to avoid repeated DB hits.
-        return (int) \Illuminate\Support\Facades\Cache::remember(
+        return (int) Cache::remember(
             'fpc_default_inv_src_'.core()->getCurrentChannel()->id,
             3600,
             fn () => core()->getCurrentChannel()
@@ -85,17 +90,14 @@ class DefaultHasher extends BaseDefaultHasher
             .'-'.core()->getCurrentLocale()->code
             .'-'.core()->getCurrentCurrency()->code;
 
-        // Differentiate product listing cache by inventory source so that
-        // switching the active warehouse returns the correct product set.
+        // Differentiate product and category listing caches by inventory source so that
+        // switching the active warehouse returns the correct filtered set.
         // We deliberately avoid Cart::getCart() here (expensive DB load) and rely on
         // the session value that gets written whenever the user selects a delivery zone.
-        if (str_starts_with($request->getPathInfo(), '/api/products')) {
-            $cacheNameSuffix .= '-'.$this->resolveInventorySourceIdForCache($request);
-        }
-
-        // Differentiate category tree cache by inventory source so that
-        // each warehouse sees its own filtered menu.
-        if ($request->getPathInfo() === '/api/categories/tree') {
+        if (
+            str_starts_with($request->getPathInfo(), '/api/products')
+            || str_starts_with($request->getPathInfo(), '/api/categories')
+        ) {
             $cacheNameSuffix .= '-'.$this->resolveInventorySourceIdForCache($request);
         }
 

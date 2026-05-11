@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +48,8 @@ class WarmApiCacheJob implements ShouldQueue
                 $this->collectCategoryUrls($categories, $urls);
             } else {
                 foreach ($inventorySourceIds as $sourceId) {
-                    // Per-source category tree for the filtered menu.
+                    // Per-source category index and tree for the filtered menu.
+                    $urls[] = '/api/categories?inventory_source_id='.$sourceId;
                     $urls[] = '/api/categories/tree?inventory_source_id='.$sourceId;
 
                     $this->collectCategoryUrls($categories, $urls, $sourceId);
@@ -87,7 +89,7 @@ class WarmApiCacheJob implements ShouldQueue
     /**
      * Recursively collect category-based warm-up URLs.
      *
-     * @param  \Illuminate\Support\Collection  $categories
+     * @param  Collection  $categories
      * @param  string[]  $urls
      */
     protected function collectCategoryUrls($categories, array &$urls, ?int $inventorySourceId = null): void

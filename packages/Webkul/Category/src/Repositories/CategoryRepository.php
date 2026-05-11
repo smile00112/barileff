@@ -29,9 +29,14 @@ class CategoryRepository extends Repository
      */
     public function getAll(array $params = [])
     {
+        static $filterByStock = null;
+
         $queryBuilder = $this->query()
             ->select('categories.*')
+            ->with('translations')
             ->leftJoin('category_translations', 'category_translations.category_id', '=', 'categories.id');
+
+        $sortDirection = 'asc';
 
         foreach ($params as $key => $value) {
             switch ($key) {
@@ -61,13 +66,19 @@ class CategoryRepository extends Repository
 
                     break;
 
+                case 'sort':
+                    $sortDirection = strtolower($value) === 'desc' ? 'desc' : 'asc';
+
+                    break;
+
                 case 'inventory_source_id':
                     $inventorySourceId = (int) $value;
 
-                    if (
-                        $inventorySourceId > 0
-                        && core()->getConfigData('catalog.products.settings.filter_categories_by_stock')
-                    ) {
+                    if ($filterByStock === null) {
+                        $filterByStock = (bool) core()->getConfigData('catalog.products.settings.filter_categories_by_stock');
+                    }
+
+                    if ($inventorySourceId > 0 && $filterByStock) {
                         $stockedIds = $this->getCategoryIdsWithStockForSource($inventorySourceId);
 
                         if (! empty($stockedIds)) {
@@ -81,7 +92,9 @@ class CategoryRepository extends Repository
             }
         }
 
-        return $queryBuilder->paginate($params['limit'] ?? 10);
+        $queryBuilder->orderBy('categories.position', $sortDirection);
+
+        return $queryBuilder->simplePaginate($params['limit'] ?? 10);
     }
 
     /**
