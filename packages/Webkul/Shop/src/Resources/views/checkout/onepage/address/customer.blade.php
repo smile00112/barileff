@@ -198,14 +198,11 @@
 
                             if (response.data.data.redirect_url) {
                                 window.location.href = response.data.data.redirect_url;
+                            } else if (this.cart.have_stockable_items) {
+                                this.autoSelectShipping(response.data.data.shippingMethods);
                             } else {
-                                this.moveToNextStep();
-
-                                if (this.cart.have_stockable_items) {
-                                    this.$emit('processed', response.data.data.shippingMethods);
-                                } else {
-                                    this.$emit('processed', response.data.data.payment_methods);
-                                }
+                                this.$emit('processing', 'payment');
+                                this.$emit('processed', response.data.data.payment_methods);
                             }
                         })
                         .catch(error => {
@@ -219,12 +216,41 @@
                         });
                 },
 
-                moveToNextStep() {
-                    if (this.cart.have_stockable_items) {
-                        this.$emit('processing', 'shipping');
+                autoSelectShipping(shippingMethods) {
+                    let selectedMethod = null;
+
+                    if (shippingMethods?.delivery_zones?.rates?.length) {
+                        selectedMethod = shippingMethods.delivery_zones.rates[0].method;
                     } else {
-                        this.$emit('processing', 'payment');
+                        for (const carrier in shippingMethods) {
+                            if (shippingMethods[carrier]?.rates?.length) {
+                                selectedMethod = shippingMethods[carrier].rates[0].method;
+                                break;
+                            }
+                        }
                     }
+
+                    if (! selectedMethod) {
+                        this.$emit('processing', 'shipping');
+                        this.$emit('processed', shippingMethods);
+                        return;
+                    }
+
+                    this.isStoring = true;
+
+                    this.$axios.post('{{ route('shop.checkout.onepage.shipping_methods.store') }}', {
+                            shipping_method: selectedMethod,
+                        })
+                        .then((response) => {
+                            this.isStoring = false;
+                            this.$emit('processing', 'payment');
+                            this.$emit('processed', response.data.payment_methods);
+                        })
+                        .catch(() => {
+                            this.isStoring = false;
+                            this.$emit('processing', 'shipping');
+                            this.$emit('processed', shippingMethods);
+                        });
                 },
             },
         });

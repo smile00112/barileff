@@ -197,17 +197,10 @@
 
                 computed: {
                     steps() {
-                        const allSteps = [
+                        return [
                             { key: 'address', label: "@lang('shop::app.checkout.onepage.address.title')" },
-                            { key: 'shipping', label: "@lang('shop::app.checkout.onepage.shipping.shipping-method')" },
                             { key: 'payment', label: "@lang('shop::app.checkout.onepage.payment.payment-method')" },
                         ];
-
-                        if (this.cart && ! this.cart.have_stockable_items) {
-                            return allSteps.filter(s => s.key !== 'shipping');
-                        }
-
-                        return allSteps;
                     },
 
                     currentStepIndex() {
