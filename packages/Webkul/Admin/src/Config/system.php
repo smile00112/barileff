@@ -2129,6 +2129,14 @@ return [
                 'channel_based' => true,
                 'locale_based' => true,
             ], [
+                'name' => 'image',
+                'title' => 'admin::app.configuration.index.sales.payment-methods.logo',
+                'type' => 'image',
+                'info' => 'admin::app.configuration.index.sales.payment-methods.logo-information',
+                'channel_based' => true,
+                'locale_based' => false,
+                'validation' => 'mimes:bmp,jpeg,jpg,png,webp',
+            ], [
                 'name' => 'active',
                 'title' => 'admin::app.configuration.index.sales.payment-methods.status',
                 'type' => 'boolean',
@@ -2275,7 +2283,7 @@ return [
                 'locale_based' => true,
             ], [
                 'name' => 'invoice_number_length',
-                'title' => 'admin::app.configuration.index.sales.invoice-settings.invoice-number.length',
+                'title' => 'admin::app.co nfiguration.index.sales.invoice-settings.invoice-number.length',
                 'type' => 'text',
                 'validation' => 'numeric|min:0|max:10',
                 'channel_based' => true,

@@ -68,11 +68,12 @@
 
                                     <img
                                         class="max-h-11 max-w-14"
-                                        :src="payment.image"
+                                        :src="payment.image || paymentMethodPlaceholder"
                                         width="55"
                                         height="55"
                                         :alt="payment.method_title"
                                         :title="payment.method_title"
+                                        @error="onImageError"
                                     />
 
                                     {!! view_render_event('bagisto.shop.checkout.onepage.payment-method.image.after') !!}
@@ -125,7 +126,19 @@
 
             emits: ['processing', 'processed'],
 
+            data() {
+                return {
+                    paymentMethodPlaceholder: "{{ bagisto_asset('images/payment-method-placeholder.svg', 'shop') }}",
+                };
+            },
+
             methods: {
+                onImageError(event) {
+                    if (event.target.src !== this.paymentMethodPlaceholder) {
+                        event.target.src = this.paymentMethodPlaceholder;
+                    }
+                },
+
                 store(selectedMethod) {
                     this.$axios.post("{{ route('shop.checkout.onepage.payment_methods.store') }}", {
                             payment: selectedMethod

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="55" height="45" viewBox="0 0 180 148" fill="none" role="img" aria-label="Payment method">
+    <rect x="6" y="20" width="168" height="118" rx="14" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="6"/>
+    <path d="M6 56C6 46.6917 6 42.0376 7.2737 38.2855C9.672 31.2201 15.2201 25.672 22.2855 23.2737C26.0376 22 30.6917 22 40 22H140C149.308 22 153.962 22 157.715 23.2737C164.78 25.672 170.328 31.2201 172.726 38.2855C174 42.0376 174 46.6917 174 56H6Z" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="6"/>
+    <rect x="120" y="84" width="36" height="22" rx="11" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="6"/>
+    <path d="M28 90H78" stroke="#9CA3AF" stroke-width="6" stroke-linecap="round"/>
+    <path d="M28 108H96" stroke="#9CA3AF" stroke-width="6" stroke-linecap="round"/>
+</svg>

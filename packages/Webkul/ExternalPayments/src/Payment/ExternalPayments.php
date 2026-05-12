@@ -2,6 +2,7 @@
 
 namespace Webkul\ExternalPayments\Payment;
 
+use Illuminate\Support\Facades\Storage;
 use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\Payment\Payment\Payment;
 
@@ -48,6 +49,18 @@ class ExternalPayments extends Payment
     public function getRedirectUrl(): string
     {
         return route('external-payments.redirect');
+    }
+
+    /**
+     * Payment method logo. Falls back to a shared SVG placeholder when no image is uploaded.
+     */
+    public function getImage(): string
+    {
+        $url = $this->getConfigData('image');
+
+        return $url
+            ? Storage::url($url)
+            : bagisto_asset('images/payment-method-placeholder.svg', 'shop');
     }
 
     /**
