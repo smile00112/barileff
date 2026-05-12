@@ -24,6 +24,6 @@ class PaymentConfirmation extends Payment
      */
     public function isAvailable(): bool
     {
-        return (bool) $this->getConfigData('active');
+        return filter_var($this->getConfigData('active'), FILTER_VALIDATE_BOOLEAN);
     }
 }

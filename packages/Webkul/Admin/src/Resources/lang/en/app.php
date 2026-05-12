@@ -4796,6 +4796,8 @@ return [
                     'mailing-address' => 'Send Check to',
                     'money-transfer' => 'Money Transfer',
                     'money-transfer-info' => 'Transfer of funds from one person or account to another, often electronically, for various purposes such as transactions or remittances.',
+                    'payment-with-confirmation' => 'Payment with Confirmation',
+                    'payment-with-confirmation-info' => 'Customers pay by bank transfer or other offline means and upload a receipt; the order is completed after staff approval.',
                     'page-title' => 'Payment Methods',
                     'paid' => 'Paid',
                     'paypal-smart-button' => 'PayPal',

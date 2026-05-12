@@ -64,7 +64,9 @@
       "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation add packages/Webkul/DeliveryZones/src/DataGrids/DeliveryZonesDataGrid.php)",
       "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation status)",
       "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation commit -m \"feat\\(delivery-zones\\): add status badge to zones datagrid\")",
-      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation log --oneline -5)"
+      "Bash(git -C /d/_WORK_/laragon_2025/www/my_bagisto/.worktrees/payment-confirmation log --oneline -5)",
+      "Bash(Get-ChildItem -Path \"d:\\\\_WORK_\\\\laragon_2025\\\\www\\\\my_bagisto\" -Directory)",
+      "Bash(Select-Object Name)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

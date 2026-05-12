@@ -2,6 +2,7 @@
 
 namespace Webkul\Core\Exceptions;
 
+use App\Logging\TelegramNotifier;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as BaseHandler;
 use Illuminate\Http\Request;
@@ -11,6 +12,20 @@ use Throwable;
 
 class Handler extends BaseHandler
 {
+    /**
+     * Report the exception and send a Telegram notification for server-level errors.
+     */
+    public function report(Throwable $e): void
+    {
+        parent::report($e);
+
+        $isClientError = $e instanceof HttpException && $e->getStatusCode() < 500;
+
+        if (! $isClientError && ! $e instanceof ValidationException) {
+            TelegramNotifier::reportException($e);
+        }
+    }
+
     /**
      * Register the exception handling callbacks for the application.
      */

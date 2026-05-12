@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
+
     'exchange_api' => [
         'default' => 'exchange_rates',
 
@@ -69,7 +74,7 @@ return [
     ],
 
     'yandex_maps' => [
-        'api_key'         => env('YANDEX_MAPS_API_KEY'),
+        'api_key' => env('YANDEX_MAPS_API_KEY'),
         'suggest_api_key' => env('YANDEX_MAPS_SUGGEST_API_KEY'),
     ],
 
