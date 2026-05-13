@@ -67,6 +67,10 @@
     "file": "assets/no-address-BHTy4apn.png",
     "src": "src/Resources/assets/images/no-address.png"
   },
+  "src/Resources/assets/images/payment-method-placeholder.svg": {
+    "file": "assets/payment-method-placeholder-Cbad9N0M.svg",
+    "src": "src/Resources/assets/images/payment-method-placeholder.svg"
+  },
   "src/Resources/assets/images/paypal.png": {
     "file": "assets/paypal-CIu1GKlz.png",
     "src": "src/Resources/assets/images/paypal.png"
