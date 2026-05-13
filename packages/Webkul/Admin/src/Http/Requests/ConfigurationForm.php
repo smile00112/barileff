@@ -29,6 +29,10 @@ class ConfigurationForm extends FormRequest
         return collect(request()->input('keys', []))->mapWithKeys(function ($item) {
             $data = json_decode($item, true);
 
+            if (! is_array($data) || empty($data['fields'])) {
+                return [];
+            }
+
             return collect($data['fields'])->mapWithKeys(function ($field) use ($data) {
                 $key = "{$data['key']}.{$field['name']}";
 
