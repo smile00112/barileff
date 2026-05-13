@@ -73,7 +73,7 @@
                                         height="55"
                                         :alt="payment.method_title"
                                         :title="payment.method_title"
-                                        @error="onImageError"
+                                        v-on:error="onImageError"
                                     />
 
                                     {!! view_render_event('bagisto.shop.checkout.onepage.payment-method.image.after') !!}
