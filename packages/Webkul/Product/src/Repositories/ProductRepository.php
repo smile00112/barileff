@@ -259,10 +259,24 @@ class ProductRepository extends Repository
         ])->scopeQuery(function ($query) use ($params) {
             $prefix = DB::getTablePrefix();
 
+            $filterableAttributes = $this->attributeRepository->getProductDefaultAttributes(array_keys($params));
+
+            $variantFilterAttributes = $filterableAttributes->whereNotIn('code', [
+                'price',
+                'name',
+                'status',
+                'visible_individually',
+                'url_key',
+            ]);
+
             $qb = $query->distinct()
-                ->select('products.*')
-                ->leftJoin('products as variants', DB::raw('COALESCE('.$prefix.'variants.parent_id, '.$prefix.'variants.id)'), '=', 'products.id')
-                ->leftJoin('product_price_indices', function ($join) {
+                ->select('products.*');
+
+            if ($variantFilterAttributes->isNotEmpty()) {
+                $qb->leftJoin('products as variants', DB::raw('COALESCE('.$prefix.'variants.parent_id, '.$prefix.'variants.id)'), '=', 'products.id');
+            }
+
+            $qb->leftJoin('product_price_indices', function ($join) {
                     $customerGroup = $this->customerRepository->getCurrentGroup();
 
                     $join->on('products.id', '=', 'product_price_indices.product_id')
@@ -326,11 +340,6 @@ class ProductRepository extends Repository
             }
 
             /**
-             * Retrieve all the filterable attributes.
-             */
-            $filterableAttributes = $this->attributeRepository->getProductDefaultAttributes(array_keys($params));
-
-            /**
              * Filter the required attributes.
              */
             $attributes = $filterableAttributes->whereIn('code', [
@@ -375,13 +384,7 @@ class ProductRepository extends Repository
             /**
              * Filter the filterable attributes.
              */
-            $attributes = $filterableAttributes->whereNotIn('code', [
-                'price',
-                'name',
-                'status',
-                'visible_individually',
-                'url_key',
-            ]);
+            $attributes = $variantFilterAttributes;
 
             /**
              * Filter query by attributes.
