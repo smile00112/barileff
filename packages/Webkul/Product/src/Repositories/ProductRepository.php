@@ -304,23 +304,29 @@ class ProductRepository extends Repository
 
             if (! empty($params['inventory_source_id'])) {
                 $sourceId = (int) $params['inventory_source_id'];
-                $qb->where(function ($q) use ($sourceId) {
+
+                // Replacing two correlated EXISTS (O(N) per-row) with LEFT JOINs so MySQL
+                // can use a hash join and run the inventory check once for all products.
+                $qb->leftJoin('product_inventories as pi_instock', function ($join) use ($sourceId) {
+                    $join->on('pi_instock.product_id', '=', 'products.id')
+                        ->where('pi_instock.inventory_source_id', $sourceId)
+                        ->where('pi_instock.qty', '>', 0);
+                });
+
+                $variantStockSub = DB::table('product_inventories as pi_var')
+                    ->select('p_par.parent_id')
+                    ->join('products as p_par', 'pi_var.product_id', '=', 'p_par.id')
+                    ->where('pi_var.inventory_source_id', $sourceId)
+                    ->where('pi_var.qty', '>', 0)
+                    ->whereNotNull('p_par.parent_id')
+                    ->groupBy('p_par.parent_id');
+
+                $qb->leftJoinSub($variantStockSub, 'variant_instock', 'variant_instock.parent_id', '=', 'products.id');
+
+                $qb->where(function ($q) {
                     $q->whereIn('products.type', ['virtual', 'downloadable'])
-                        ->orWhereExists(function ($sub) use ($sourceId) {
-                            $sub->select(DB::raw(1))
-                                ->from('product_inventories as pi_filter')
-                                ->whereColumn('pi_filter.product_id', 'products.id')
-                                ->where('pi_filter.inventory_source_id', $sourceId)
-                                ->where('pi_filter.qty', '>', 0);
-                        })
-                        ->orWhereExists(function ($sub) use ($sourceId) {
-                            $sub->select(DB::raw(1))
-                                ->from('product_inventories as pi_var')
-                                ->join('products as p_var', 'pi_var.product_id', '=', 'p_var.id')
-                                ->whereColumn('p_var.parent_id', 'products.id')
-                                ->where('pi_var.inventory_source_id', $sourceId)
-                                ->where('pi_var.qty', '>', 0);
-                        });
+                        ->orWhereNotNull('pi_instock.product_id')
+                        ->orWhereNotNull('variant_instock.parent_id');
                 });
             }
 
