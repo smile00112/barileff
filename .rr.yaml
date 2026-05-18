@@ -28,7 +28,7 @@ http:
       max_age: 600
 
 logs:
-  level: error
+  level: debug
   output: stdout
   err_output: stderr
   encoding: json
