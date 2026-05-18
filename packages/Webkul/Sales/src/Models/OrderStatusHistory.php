@@ -8,6 +8,8 @@ use Webkul\Sales\Contracts\OrderStatusHistory as OrderStatusHistoryContract;
 
 class OrderStatusHistory extends Model implements OrderStatusHistoryContract
 {
+    protected $table = 'order_status_history';
+
     public const UPDATED_AT = null;
 
     protected $fillable = [
