@@ -6,13 +6,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Cache;
 use Webkul\Checkout\Facades\Cart;
-use Webkul\Checkout\Models\CartAddress;
 use Webkul\DeliveryZones\Models\DeliveryCity;
-use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\DeliveryZones\Services\ZoneSelector;
 use Webkul\Inventory\Models\InventorySource;
-use Webkul\Shipping\Facades\Shipping;
-use Webkul\Shop\Http\Resources\CartResource;
 
 /**
  * Public API for delivery zones map on storefront.
@@ -175,52 +171,7 @@ class DeliveryZonesController
         $inventorySourceId = (int) $zone->inventory_sources->first()?->id;
         session(['selected_inventory_source_id' => $inventorySourceId]);
 
-        $cart = Cart::getCart();
-        if ($cart) {
-            if ($city) {
-                $address = (new CartAddress)->fill([
-                    'city' => $city,
-                    'cart_id' => $cart->id,
-                ]);
-                $address->address_type = CartAddress::ADDRESS_TYPE_SHIPPING;
-                $cart->setRelation('shipping_address', $address);
-                Cart::setCart($cart);
-            }
-            app(CartDeliveryZoneManager::class)->applySelection(
-                $cart,
-                $lat,
-                $lng,
-                $zoneId ?? $zone->id
-            );
-
-            Cart::collectTotals();
-
-            $shippingMethod = $validated['shipping_method'] ?? null;
-            if ($shippingMethod === 'delivery_zones_delivery_zones') {
-                Cart::saveShippingMethod($shippingMethod);
-            }
-
-            $shippingMethods = [];
-            if ($cart->haveStockableItems() && $cart->shipping_address) {
-                $rates = Shipping::collectRates();
-                $shippingMethods = array_values($rates['shippingMethods'] ?? []);
-            }
-            Cart::collectTotals();
-
-            $cart->refresh();
-
-            return new JsonResource([
-                'data' => [
-                    'inventory_source_id' => $inventorySourceId,
-                    'zone' => [
-                        'id' => $zone->id,
-                        'name' => $zone->name,
-                    ],
-                    'cart' => new CartResource($cart),
-                    'shipping_methods' => $shippingMethods,
-                ],
-            ]);
-        }
+        Cart::deActivateCart();
 
         return new JsonResource([
             'data' => [

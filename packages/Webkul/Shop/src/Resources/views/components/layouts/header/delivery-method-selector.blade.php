@@ -1754,23 +1754,13 @@
                             throw payload;
                         }
 
-                        const inner = payload.data?.data || payload.data || payload;
-
-                        if (inner.cart) {
-                            this.cartSummary = inner.cart;
-                        }
-
-                        this.confirmedAddress = this.getDisplayAddress();
                         this.persistGuestAddress();
 
                         if (this.isCustomer) {
                             await this.persistCustomerAddress();
                         }
 
-                        this.message = '';
-                        this.messageIsError = false;
-
-                        setTimeout(() => this.closeModal(), 200);
+                        setTimeout(() => window.location.reload(), 200);
                     } catch (error) {
                         this.message = error?.data?.message || error?.message || @json(__('shop::app.components.layouts.header.delivery-method-selector.error'));
                         this.messageIsError = true;
