@@ -4,6 +4,7 @@ namespace Webkul\PaymentConfirmation\Payment;
 
 use Illuminate\Support\Facades\Storage;
 use Webkul\Payment\Payment\Payment;
+use Webkul\PaymentConfirmation\Models\PaymentDetail;
 
 class PaymentConfirmation extends Payment
 {
@@ -21,11 +22,19 @@ class PaymentConfirmation extends Payment
     }
 
     /**
-     * Available when active in config.
+     * Available only when an active payment detail exists for the current inventory source.
      */
     public function isAvailable(): bool
     {
-        return filter_var($this->getConfigData('active'), FILTER_VALIDATE_BOOLEAN);
+        $sourceId = getCurrentInventorySourceId();
+
+        if (! $sourceId) {
+            return false;
+        }
+
+        return PaymentDetail::where('inventory_source_id', $sourceId)
+            ->where('is_active', true)
+            ->exists();
     }
 
     /**
