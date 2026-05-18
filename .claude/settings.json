@@ -73,7 +73,10 @@
       "Bash(Select-String -Pattern \"catalog|products|configuration|500|ERROR\" -Context 2,5)",
       "Bash(Select-Object -First 80)",
       "Bash(php -l packages/Webkul/Admin/src/Config/system.php)",
-      "Bash(php -r ' *)"
+      "Bash(php -r ' *)",
+      "Skill(superpowers:systematic-debugging)",
+      "Skill(superpowers:systematic-debugging:*)",
+      "Bash(docker exec *)"
     ],
     "additionalDirectories": [
       "d:\\_WORK_\\laragon_2025\\www\\my_bagisto\\docs\\superpowers\\specs"

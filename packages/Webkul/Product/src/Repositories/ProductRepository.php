@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Webkul\Attribute\Enums\AttributeTypeEnum;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Core\Eloquent\Repository;
@@ -238,6 +239,14 @@ class ProductRepository extends Repository
      */
     public function searchFromDatabase(array $params = [])
     {
+        $mem = fn () => round(memory_get_usage(true) / 1024 / 1024, 2).' MB';
+
+        Log::debug('[ProductRepo] searchFromDatabase start', [
+            'category_id' => $params['category_id'] ?? null,
+            'inventory_source_id' => $params['inventory_source_id'] ?? null,
+            'mem' => $mem(),
+        ]);
+
         $params['url_key'] ??= null;
 
         if (! empty($params['query'])) {
@@ -277,11 +286,11 @@ class ProductRepository extends Repository
             }
 
             $qb->leftJoin('product_price_indices', function ($join) {
-                    $customerGroup = $this->customerRepository->getCurrentGroup();
+                $customerGroup = $this->customerRepository->getCurrentGroup();
 
-                    $join->on('products.id', '=', 'product_price_indices.product_id')
-                        ->where('product_price_indices.customer_group_id', $customerGroup->id);
-                });
+                $join->on('products.id', '=', 'product_price_indices.product_id')
+                    ->where('product_price_indices.customer_group_id', $customerGroup->id);
+            });
 
             if (! empty($params['category_id'])) {
                 $qb->leftJoin('product_categories', 'product_categories.product_id', '=', 'products.id')
@@ -475,7 +484,13 @@ class ProductRepository extends Repository
 
         $limit = $this->getPerPageLimit($params);
 
-        return $query->paginate($limit);
+        Log::debug('[ProductRepo] executing paginate query', ['limit' => $limit, 'mem' => $mem()]);
+
+        $result = $query->paginate($limit);
+
+        Log::debug('[ProductRepo] paginate done', ['total' => $result->total(), 'count' => $result->count(), 'mem' => $mem()]);
+
+        return $result;
     }
 
     /**

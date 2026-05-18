@@ -4,6 +4,7 @@ namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Jobs\UpdateCreateSearchTerm as UpdateCreateSearchTermJob;
 use Webkul\Product\Repositories\ProductRepository;
@@ -38,19 +39,34 @@ class ProductController extends APIController
      */
     public function index(): JsonResource
     {
+        $mem = fn () => round(memory_get_usage(true) / 1024 / 1024, 2).' MB';
+        $ctx = ['category_id' => request()->query('category_id'), 'url' => request()->fullUrl()];
+
+        Log::debug('[ProductAPI] start index', array_merge($ctx, ['mem' => $mem()]));
+
         $searchEngine = 'database';
 
         if (core()->getConfigData('catalog.products.search.engine') == 'elastic') {
             $searchEngine = core()->getConfigData('catalog.products.search.storefront_mode');
         }
 
+        Log::debug('[ProductAPI] search engine resolved', ['engine' => $searchEngine, 'mem' => $mem()]);
+
         $searchData = $this->resolveSearchQueryData($searchEngine);
 
         $query = $searchData['effective_query'] ?? $searchData['original_query'];
 
+        Log::debug('[ProductAPI] query resolved', ['query' => $query, 'mem' => $mem()]);
+
         $categoryIds = request()->filled('category_id')
             ? $this->resolveCategoryIds((int) request()->query('category_id'))
             : null;
+
+        Log::debug('[ProductAPI] category ids resolved', ['category_ids' => $categoryIds, 'mem' => $mem()]);
+
+        $inventorySourceId = getCurrentInventorySourceId();
+
+        Log::debug('[ProductAPI] calling getAll', ['inventory_source_id' => $inventorySourceId, 'mem' => $mem()]);
 
         $products = $this->productRepository
             ->setSearchEngine($searchEngine)
@@ -60,8 +76,10 @@ class ProductController extends APIController
                 'channel_id' => core()->getCurrentChannel()->id,
                 'status' => 1,
                 'visible_individually' => 1,
-                'inventory_source_id' => getCurrentInventorySourceId(),
+                'inventory_source_id' => $inventorySourceId,
             ]));
+
+        Log::debug('[ProductAPI] getAll done', ['total' => $products->total(), 'count' => $products->count(), 'mem' => $mem()]);
 
         if (! empty($query)) {
             /**
@@ -78,7 +96,13 @@ class ProductController extends APIController
             }
         }
 
-        return ProductResource::collection($products);
+        Log::debug('[ProductAPI] building resource collection', ['mem' => $mem()]);
+
+        $result = ProductResource::collection($products);
+
+        Log::debug('[ProductAPI] resource collection built', ['mem' => $mem()]);
+
+        return $result;
     }
 
     /**
@@ -86,18 +110,34 @@ class ProductController extends APIController
      */
     protected function resolveCategoryIds(int $categoryId): string
     {
-        return Cache::remember("cat_desc_{$categoryId}", 3600, function () use ($categoryId) {
+        $mem = fn () => round(memory_get_usage(true) / 1024 / 1024, 2).' MB';
+
+        Log::debug('[ProductAPI] resolveCategoryIds start', ['category_id' => $categoryId, 'mem' => $mem()]);
+
+        $result = Cache::remember("cat_desc_{$categoryId}", 3600, function () use ($categoryId, $mem) {
+            Log::debug('[ProductAPI] resolveCategoryIds cache miss, querying DB', ['category_id' => $categoryId, 'mem' => $mem()]);
+
             $category = $this->categoryRepository->find($categoryId);
 
             if (! $category) {
+                Log::debug('[ProductAPI] resolveCategoryIds category not found', ['category_id' => $categoryId]);
+
                 return (string) $categoryId;
             }
 
-            return $category->descendants()
+            $ids = $category->descendants()
                 ->pluck('id')
                 ->prepend($category->id)
                 ->implode(',');
+
+            Log::debug('[ProductAPI] resolveCategoryIds descendants resolved', ['ids_count' => substr_count($ids, ',') + 1, 'ids_preview' => mb_substr($ids, 0, 200), 'mem' => $mem()]);
+
+            return $ids;
         });
+
+        Log::debug('[ProductAPI] resolveCategoryIds done', ['result_preview' => mb_substr($result, 0, 200), 'mem' => $mem()]);
+
+        return $result;
     }
 
     /**
