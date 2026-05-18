@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('order_status_history', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
+            $table->unsignedInteger('order_id');
             $table->string('old_status', 50)->nullable();
             $table->string('new_status', 50);
             $table->string('user_type', 50)->nullable();

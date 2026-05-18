@@ -8,6 +8,22 @@ return [
         'sort' => 6,
         'fields' => [
             [
+                'name' => 'title',
+                'title' => 'admin::app.configuration.index.sales.payment-methods.title',
+                'type' => 'text',
+                'depends' => 'active:1',
+                'validation' => 'required_if:active,1',
+                'channel_based' => true,
+                'locale_based' => true,
+            ],
+            [
+                'name' => 'description',
+                'title' => 'admin::app.configuration.index.sales.payment-methods.description',
+                'type' => 'textarea',
+                'channel_based' => true,
+                'locale_based' => true,
+            ],
+            [
                 'name' => 'image',
                 'title' => 'admin::app.configuration.index.sales.payment-methods.logo',
                 'type' => 'image',
