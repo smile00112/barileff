@@ -12,6 +12,9 @@ use Webkul\Installer\Database\Seeders\Inventory\DatabaseSeeder as InventorySeede
 use Webkul\Installer\Database\Seeders\Shop\ThemeCustomizationTableSeeder as ShopSeeder;
 use Webkul\Installer\Database\Seeders\SocialLogin\DatabaseSeeder as SocialLoginSeeder;
 use Webkul\Installer\Database\Seeders\User\DatabaseSeeder as UserSeeder;
+use Webkul\Sales\Database\Seeders\OrderStatusSeeder;
+use Webkul\Sales\Database\Seeders\OrderStatusTransitionSeeder;
+use Webkul\Sales\Database\Seeders\OrderWorkflowSettingSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,5 +38,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SocialLoginSeeder::class, false, ['parameters' => $parameters]);
         $this->call(ShopSeeder::class, false, ['parameters' => $parameters]);
         $this->call(UserSeeder::class, false, ['parameters' => $parameters]);
+        $this->call(OrderStatusSeeder::class);
+        $this->call(OrderStatusTransitionSeeder::class);
+        $this->call(OrderWorkflowSettingSeeder::class);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Cache;
 use Webkul\Checkout\Models\CartProxy;
 use Webkul\Inventory\Models\InventorySource;
 use Webkul\Sales\Contracts\Order as OrderContract;
@@ -115,10 +116,29 @@ class Order extends Model implements OrderContract
 
     /**
      * Returns the status label from status code.
+     * Reads from the order_statuses table (cached); falls back to the hardcoded map
+     * for statuses that are not yet in the DB.
      */
-    public function getStatusLabelAttribute()
+    public function getStatusLabelAttribute(): string
     {
-        return $this->statusLabel[$this->status];
+        try {
+            $statuses = Cache::remember(
+                'order_statuses_all',
+                3600,
+                fn () => OrderStatusProxy::orderBy('sort_order')->get()
+            );
+
+            $record = $statuses->firstWhere('code', $this->status);
+
+            if ($record) {
+                return $record->name;
+            }
+        } catch (\Throwable) {
+            // Table not yet migrated; fall through to the static map.
+        }
+
+        return $this->statusLabel[$this->status]
+            ?? ucfirst(str_replace('_', ' ', (string) $this->status));
     }
 
     /**
@@ -168,6 +188,15 @@ class Order extends Model implements OrderContract
     {
         return $this->hasMany(OrderItemProxy::modelClass())
             ->whereNull('parent_id');
+    }
+
+    /**
+     * Get the status history entries for the order.
+     */
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistoryProxy::modelClass())
+            ->latest('created_at');
     }
 
     /**
