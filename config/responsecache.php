@@ -91,5 +91,5 @@ return [
     /*
      * This class is responsible for serializing responses.
      */
-    'serializer' => \Spatie\ResponseCache\Serializers\DefaultSerializer::class,
+    'serializer' => \Webkul\FPC\Serializers\OctaneCompatibleSerializer::class,
 ];
