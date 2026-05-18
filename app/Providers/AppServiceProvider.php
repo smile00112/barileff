@@ -5,8 +5,10 @@ namespace App\Providers;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Octane\Events\RequestReceived;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,5 +40,12 @@ class AppServiceProvider extends ServiceProvider
         ParallelTesting::setUpTestDatabase(function (string $database, int $token) {
             Artisan::call('db:seed');
         });
+
+        // Disconnect Redis before each Octane request so workers never reuse stale connections.
+        if (class_exists(RequestReceived::class)) {
+            $this->app['events']->listen(RequestReceived::class, function () {
+                Redis::disconnect();
+            });
+        }
     }
 }
