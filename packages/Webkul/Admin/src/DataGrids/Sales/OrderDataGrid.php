@@ -2,6 +2,7 @@
 
 namespace Webkul\Admin\DataGrids\Sales;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\Core\Support\DbHelper;
 use Webkul\DataGrid\DataGrid;
@@ -14,7 +15,7 @@ class OrderDataGrid extends DataGrid
     /**
      * Prepare query builder.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return Builder
      */
     public function prepareQueryBuilder()
     {
@@ -43,6 +44,7 @@ class OrderDataGrid extends DataGrid
                 'orders.channel_name',
                 'orders.channel_id',
                 'orders.status',
+                DB::raw($prefix.'orders.status as status_code'),
                 'orders.customer_email',
                 'orders.cart_id as items',
                 DB::raw($fullNameSql.' as full_name'),

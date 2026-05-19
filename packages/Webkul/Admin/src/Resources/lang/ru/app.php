@@ -134,6 +134,8 @@ return [
             'index' => [
                 'create-btn' => 'Создать заказ',
                 'title' => 'Заказы',
+                'status-change-success' => 'Статус заказа успешно обновлён.',
+                'status-change-error' => 'Не удалось обновить статус заказа.',
 
                 'search-customer' => [
                     'create-btn' => 'Создать клиента',
@@ -352,6 +354,8 @@ return [
                 'cancel-msg' => 'Вы уверены, что хотите отменить этот заказ',
                 'cancel-success' => 'Заказ успешно отменен',
                 'status-update-success' => 'Статус заказа успешно обновлён.',
+                'status-update-fail' => 'Не удалось обновить статус заказа.',
+                'step-progress' => 'Шаговый прогресс',
                 'status-history' => 'История статусов',
                 'canceled' => 'Отменен',
                 'channel' => 'Канал',
@@ -3793,6 +3797,25 @@ return [
                 'is-terminal' => 'Терминальный (конечный)',
                 'is-cancel-state' => 'Состояние отмены',
                 'is-payment-required' => 'Требует оплаты',
+            ],
+
+            'icons' => [
+                'bag' => 'Корзина',
+                'clock' => 'Часы',
+                'card' => 'Карта',
+                'cycle' => 'Цикл',
+                'fire' => 'Огонь',
+                'check' => 'Галочка',
+                'shield-check' => 'Щит',
+                'x-circle' => 'Отмена',
+                'lock' => 'Замок',
+                'alert' => 'Предупреждение',
+                'truck' => 'Доставка',
+                'ban' => 'Запрет',
+                'eye' => 'Глаз',
+                'info' => 'Инфо',
+                'star' => 'Звезда',
+                'gift' => 'Подарок',
             ],
 
             'transitions' => [

@@ -3,6 +3,8 @@
         @lang('admin::app.settings.order-statuses.edit.title')
     </x-slot>
 
+    @include('admin::settings.order-statuses._icons')
+
     <div class="flex items-center gap-4 max-sm:flex-wrap">
         <a
             href="{{ route('admin.settings.order_statuses.index') }}"
@@ -18,6 +20,7 @@
     <form
         method="POST"
         action="{{ route('admin.settings.order_statuses.update', $orderStatus->id) }}"
+        x-data="orderStatusFormData('{{ old('color', $orderStatus->color ?? '#6b7280') }}', '{{ old('icon', $orderStatus->icon ?? '') }}')"
     >
         @csrf
         @method('PUT')
@@ -51,17 +54,27 @@
                     <x-admin::form.control-group.error control-name="name" />
                 </x-admin::form.control-group>
 
+                {{-- Color Picker --}}
                 <x-admin::form.control-group>
                     <x-admin::form.control-group.label>
                         @lang('admin::app.settings.order-statuses.form.color')
                     </x-admin::form.control-group.label>
 
-                    <x-admin::form.control-group.control
-                        type="text"
-                        name="color"
-                        :value="old('color', $orderStatus->color)"
-                        placeholder="#RRGGBB"
-                    />
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="color"
+                            x-model="color"
+                            class="h-10 w-10 cursor-pointer rounded border border-gray-300 p-0.5 dark:border-gray-700"
+                        />
+
+                        <input
+                            type="text"
+                            name="color"
+                            x-model="color"
+                            placeholder="#RRGGBB"
+                            class="block w-full rounded-lg border bg-white px-3 py-2 text-sm leading-6 text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300"
+                        />
+                    </div>
 
                     <x-admin::form.control-group.error control-name="color" />
                 </x-admin::form.control-group>
@@ -80,6 +93,44 @@
 
                     <x-admin::form.control-group.error control-name="sort_order" />
                 </x-admin::form.control-group>
+            </div>
+
+            {{-- Icon Picker --}}
+            <div class="mb-6">
+                <p class="mb-3 text-sm font-medium text-gray-800 dark:text-white">
+                    @lang('admin::app.settings.order-statuses.form.icon')
+                </p>
+
+                <input type="hidden" name="icon" x-model="selectedIcon" />
+
+                <div class="grid grid-cols-8 gap-2 sm:grid-cols-10 md:grid-cols-16" v-pre>
+                    <template x-for="icon in icons" :key="icon.key">
+                        <button
+                            type="button"
+                            @click="selectedIcon = icon.key"
+                            :class="selectedIcon === icon.key
+                                ? 'ring-2 ring-offset-1 bg-gray-50 dark:bg-gray-800'
+                                : 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800'"
+                            class="group flex flex-col items-center gap-1 rounded-lg border border-gray-200 p-2 transition-all duration-150 dark:border-gray-700"
+                            :title="icon.label"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                :stroke="selectedIcon === icon.key ? color : '#9ca3af'"
+                                class="h-6 w-6 transition-colors duration-150"
+                                x-html="icon.svg"
+                            ></svg>
+
+                            <span
+                                class="max-w-full truncate text-center text-xs text-gray-500 dark:text-gray-400"
+                                x-text="icon.label"
+                            ></span>
+                        </button>
+                    </template>
+                </div>
             </div>
 
             <div class="flex flex-wrap gap-6">
@@ -138,6 +189,16 @@
             </button>
         </div>
     </form>
+
+    <script>
+        function orderStatusFormData(initialColor, initialIcon) {
+            return {
+                color: initialColor || '#6b7280',
+                selectedIcon: initialIcon || '',
+                icons: getOrderStatusIcons(),
+            };
+        }
+    </script>
 
     {{-- Transitions --}}
     <div class="mt-6 box-shadow rounded bg-white p-4 dark:bg-gray-900">

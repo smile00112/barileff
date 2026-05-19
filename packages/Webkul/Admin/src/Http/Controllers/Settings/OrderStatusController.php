@@ -3,6 +3,7 @@
 namespace Webkul\Admin\Http\Controllers\Settings;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Settings\OrderStatusDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
@@ -82,9 +83,9 @@ class OrderStatusController extends Controller
     /**
      * Update the specified order status.
      */
-    public function update(UpdateOrderStatusRequest $request, int $id): JsonResponse
+    public function update(UpdateOrderStatusRequest $request, int $id): RedirectResponse|JsonResponse
     {
-        $orderStatus = $this->orderStatusRepository->findOrFail($id);
+        $this->orderStatusRepository->findOrFail($id);
 
         $this->orderStatusRepository->update(
             $request->only([
@@ -94,9 +95,14 @@ class OrderStatusController extends Controller
             $id
         );
 
-        return new JsonResponse([
-            'message' => trans('admin::app.settings.order-statuses.index.update-success'),
-        ]);
+        if ($request->wantsJson()) {
+            return new JsonResponse([
+                'message' => trans('admin::app.settings.order-statuses.index.update-success'),
+            ]);
+        }
+
+        return redirect()->route('admin.settings.order_statuses.edit', $id)
+            ->with('success', trans('admin::app.settings.order-statuses.index.update-success'));
     }
 
     /**

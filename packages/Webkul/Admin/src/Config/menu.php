@@ -270,7 +270,8 @@ return [
         'sort' => 8,
         'icon' => 'icon-settings',
         'icon-class' => 'settings-icon',
-    ], [
+    ],
+    [
         'key' => 'settings.locales',
         'name' => 'admin::app.components.layouts.sidebar.locales',
         'route' => 'admin.settings.locales.index',
@@ -282,13 +283,17 @@ return [
         'route' => 'admin.settings.currencies.index',
         'sort' => 2,
         'icon' => '',
-    ], [
+    ],
+
+    [
         'key' => 'settings.exchange_rates',
         'name' => 'admin::app.components.layouts.sidebar.exchange-rates',
         'route' => 'admin.settings.exchange_rates.index',
         'sort' => 3,
         'icon' => '',
-    ], [
+    ],
+
+    [
         'key' => 'settings.inventory_sources',
         'name' => 'admin::app.components.layouts.sidebar.inventory-sources',
         'route' => 'admin.settings.inventory_sources.index',

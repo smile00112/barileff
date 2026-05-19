@@ -1,4 +1,6 @@
 <x-admin::layouts>
+    @include('admin::settings.order-statuses._icons')
+
     <!-- Page Title -->
     <x-slot:title>
         @lang('admin::app.sales.orders.index.title')
@@ -28,6 +30,8 @@
     </div>
 
     <v-customer-search ref="selectCustomerComponent"></v-customer-search>
+
+    <v-order-status-panel></v-order-status-panel>
 
     <x-admin::datagrid :src="route('admin.sales.orders.index')" :isMultiRow="true">
         <template #header="{
@@ -107,7 +111,10 @@
                             @{{ record.created_at }}
                         </p>
                         
-                        <p v-html="record.status"></p>
+                        <v-order-status-select
+                            :record="record"
+                            update-url="{{ route('admin.sales.orders.update_status', ':id') }}"
+                        ></v-order-status-select>
                     </div>
 
                     <!-- Total Amount, Pay Via, Channel -->
@@ -160,6 +167,224 @@
     @include('admin::customers.customers.index.create')
 
     @pushOnce('scripts')
+        @php
+            $orderStatusesJs = $orderStatuses->map(fn ($s) => [
+                'code'  => $s->code,
+                'name'  => $s->name,
+                'color' => $s->color ?? '#6b7280',
+                'icon'  => $s->icon,
+            ]);
+        @endphp
+        <script>
+            const orderStatuses = @json($orderStatusesJs);
+        </script>
+
+        <script
+            type="text/x-template"
+            id="v-order-status-panel-template"
+        >
+            <div
+                v-if="statuses.length"
+                class="mb-4 flex gap-3 overflow-x-auto pb-2"
+            >
+                <div
+                    v-for="status in statuses"
+                    :key="status.code"
+                    class="flex w-[140px] flex-shrink-0 cursor-pointer flex-col items-center gap-1.5 rounded-lg border-2 bg-white px-4 py-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:bg-gray-900"
+                    :style="{ borderColor: status.color }"
+                    @click="filter(status.code)"
+                >
+                    <div
+                        class="flex h-9 w-9 items-center justify-center rounded-full"
+                        :style="{ backgroundColor: status.color + '22' }"
+                    >
+                        <svg
+                            v-if="status.icon && getIcon(status.icon)"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            :stroke="status.color"
+                            stroke-width="1.5"
+                            v-html="getIcon(status.icon)"
+                        ></svg>
+                        <span
+                            v-else
+                            class="h-3 w-3 rounded-full"
+                            :style="{ backgroundColor: status.color }"
+                        ></span>
+                    </div>
+
+                    <span class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300">
+                        @{{ status.name }}
+                    </span>
+
+                    <span
+                        class="text-lg font-bold"
+                        :style="{ color: status.color }"
+                    >
+                        @{{ status.count }}
+                    </span>
+                </div>
+            </div>
+        </script>
+
+        <script
+            type="text/x-template"
+            id="v-order-status-select-template"
+        >
+            <div class="relative" v-if="currentStatus">
+                <button
+                    type="button"
+                    class="flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-opacity hover:opacity-80"
+                    :style="{ backgroundColor: currentStatus.color + '22', color: currentStatus.color }"
+                    @click.stop="open = !open"
+                >
+                    <svg
+                        v-if="currentStatus.icon && getIcon(currentStatus.icon)"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3.5 w-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        :stroke="currentStatus.color"
+                        stroke-width="1.5"
+                        v-html="getIcon(currentStatus.icon)"
+                    ></svg>
+                    @{{ currentStatus.name }}
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div
+                    v-if="open"
+                    class="absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
+                    v-click-outside="() => open = false"
+                >
+                    <button
+                        v-for="status in statuses"
+                        :key="status.code"
+                        type="button"
+                        class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-opacity hover:opacity-80"
+                        :class="{ 'font-semibold': status.code === currentStatus.code }"
+                        :style="{ backgroundColor: status.color + '22', color: status.color }"
+                        @click="change(status)"
+                    >
+                        <span
+                            class="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                            :style="{ backgroundColor: status.color }"
+                        ></span>
+                        @{{ status.name }}
+                    </button>
+                </div>
+            </div>
+
+            <span v-else v-html="record.status"></span>
+        </script>
+
+        <script type="module">
+            app.component('v-order-status-panel', {
+                template: '#v-order-status-panel-template',
+
+                data() {
+                    return {
+                        statuses: [],
+                    };
+                },
+
+                mounted() {
+                    this.load();
+                },
+
+                methods: {
+                    load() {
+                        this.$axios.get("{{ route('admin.sales.orders.status_counts') }}")
+                            .then(response => { this.statuses = response.data; })
+                            .catch(() => {});
+                    },
+
+                    getIcon(key) {
+                        const icons = getOrderStatusIcons();
+                        const found = icons.find(i => i.key === key);
+
+                        return found ? found.svg : null;
+                    },
+
+                    filter(code) {
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.delete('filters[status][0]');
+                        url.searchParams.set('filters[status][0]', code);
+
+                        window.location.href = url.toString();
+                    },
+                },
+            });
+
+            app.component('v-order-status-select', {
+                template: '#v-order-status-select-template',
+
+                props: {
+                    record: { type: Object, required: true },
+                    updateUrl: { type: String, required: true },
+                },
+
+                data() {
+                    return {
+                        open: false,
+                        statuses: orderStatuses,
+                        currentCode: this.record.status_code ?? null,
+                        saving: false,
+                    };
+                },
+
+                computed: {
+                    currentStatus() {
+                        return this.statuses.find(s => s.code === this.currentCode) ?? null;
+                    },
+                },
+
+                methods: {
+                    getIcon(key) {
+                        const icons = getOrderStatusIcons();
+                        const found = icons.find(i => i.key === key);
+
+                        return found ? found.svg : null;
+                    },
+
+                    change(status) {
+                        if (status.code === this.currentCode || this.saving) {
+                            this.open = false;
+
+                            return;
+                        }
+
+                        this.saving = true;
+                        this.open = false;
+
+                        const url = this.updateUrl.replace(':id', this.record.id);
+
+                        this.$axios.post(url, { status: status.code })
+                            .then(() => {
+                                this.currentCode = status.code;
+
+                                this.$emitter.emit('add-flash', {
+                                    type: 'success',
+                                    message: "@lang('admin::app.sales.orders.index.status-change-success')",
+                                });
+                            })
+                            .catch(error => {
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: error?.response?.data?.message ?? "@lang('admin::app.sales.orders.index.status-change-error')",
+                                });
+                            })
+                            .finally(() => { this.saving = false; });
+                    },
+                },
+            });
+        </script>
+
         <script
             type="text/x-template"
             id="v-customer-search-template"

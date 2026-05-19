@@ -104,6 +104,100 @@
             {!! view_render_event('bagisto.admin.sales.order.page_action.after', ['order' => $order]) !!}
         </div>
 
+        <!-- Step Progress -->
+        @if ($orderStatuses->isNotEmpty())
+            <div
+                class="mt-3.5 bg-white rounded box-shadow dark:bg-gray-900"
+                x-data="{
+                    loading: false,
+                    updateStatus(code) {
+                        if (this.loading) return;
+                        this.loading = true;
+                        fetch('{{ route('admin.sales.orders.update_status', $order->id) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                            },
+                            body: JSON.stringify({ status: code }),
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            this.loading = false;
+                            if (data.success) {
+                                window.location.reload();
+                            } else {
+                                alert(data.message || '@lang('admin::app.sales.orders.view.status-update-fail')');
+                            }
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                            alert('@lang('admin::app.sales.orders.view.status-update-fail')');
+                        });
+                    }
+                }"
+            >
+                <div class="flex items-center gap-2 p-4 border-b border-slate-100 dark:border-gray-800">
+                    <span class="icon-checkout-order text-xl text-gray-600 dark:text-gray-300"></span>
+                    <p class="text-base font-semibold text-gray-800 dark:text-white">
+                        @lang('admin::app.sales.orders.view.step-progress')
+                    </p>
+                </div>
+
+                <div class="flex items-start justify-between gap-2 overflow-x-auto px-6 py-5">
+                    @foreach ($orderStatuses as $index => $status)
+                        @php
+                            $isCurrent = $order->status === $status->code;
+                            $sortedCodes = $orderStatuses->pluck('code')->toArray();
+                            $currentIndex = array_search($order->status, $sortedCodes);
+                            $thisIndex = array_search($status->code, $sortedCodes);
+                            $isDone = $currentIndex !== false && $thisIndex < $currentIndex;
+                            $isLast = $loop->last;
+                        @endphp
+
+                        <div class="flex flex-1 flex-col items-center gap-2 min-w-[80px]">
+                            <!-- Step line + circle -->
+                            <div class="relative flex w-full items-center">
+                                @if (! $loop->first)
+                                    <div class="h-0.5 flex-1 {{ $isDone || $isCurrent ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
+                                @else
+                                    <div class="flex-1"></div>
+                                @endif
+
+                                <button
+                                    type="button"
+                                    :disabled="loading"
+                                    @click="updateStatus('{{ $status->code }}')"
+                                    class="relative flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 transition-all
+                                        {{ $isCurrent ? 'border-violet-600 bg-violet-600 text-white' : ($isDone ? 'border-violet-600 bg-white text-violet-600 dark:bg-gray-900' : 'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-900') }}
+                                        disabled:opacity-60 hover:border-violet-500"
+                                    title="{{ $status->name }}"
+                                >
+                                    @if ($isCurrent || $isDone)
+                                        <span class="icon-done text-sm {{ $isCurrent ? 'text-white' : 'text-violet-600' }}"></span>
+                                    @else
+                                        <span class="icon-done text-sm text-gray-300 dark:text-gray-600"></span>
+                                    @endif
+                                </button>
+
+                                @if (! $isLast)
+                                    <div class="h-0.5 flex-1 {{ $isDone ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
+                                @else
+                                    <div class="flex-1"></div>
+                                @endif
+                            </div>
+
+                            <!-- Label -->
+                            <p class="text-center text-xs font-medium leading-tight
+                                {{ $isCurrent ? 'text-violet-600' : ($isDone ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500') }}">
+                                {{ $status->name }}
+                            </p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <!-- Order details -->
         <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
             <!-- Left Component -->

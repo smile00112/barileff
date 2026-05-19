@@ -37,6 +37,8 @@ Route::prefix('sales')->group(function () {
     Route::controller(OrderController::class)->prefix('orders')->group(function () {
         Route::get('', 'index')->name('admin.sales.orders.index');
 
+        Route::get('status-counts', 'statusCounts')->name('admin.sales.orders.status_counts');
+
         Route::get('create/{cartId}', 'create')->name('admin.sales.orders.create');
 
         Route::post('create/{cartId}', 'store')->name('admin.sales.orders.store');

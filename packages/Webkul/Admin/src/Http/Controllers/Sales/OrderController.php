@@ -18,6 +18,7 @@ use Webkul\Checkout\Repositories\CartRepository;
 use Webkul\Customer\Repositories\CustomerGroupRepository;
 use Webkul\Sales\Repositories\OrderCommentRepository;
 use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Sales\Repositories\OrderStatusRepository;
 use Webkul\Sales\Services\OrderStatusTransitionService;
 use Webkul\Sales\Services\TransitionContext;
 use Webkul\Sales\Transformers\OrderResource;
@@ -35,6 +36,7 @@ class OrderController extends Controller
         protected CartRepository $cartRepository,
         protected CustomerGroupRepository $customerGroupRepository,
         protected OrderStatusTransitionService $orderStatusTransitionService,
+        protected OrderStatusRepository $orderStatusRepository,
     ) {}
 
     /**
@@ -50,7 +52,30 @@ class OrderController extends Controller
 
         $groups = $this->customerGroupRepository->findWhere([['code', '<>', 'guest']]);
 
-        return view('admin::sales.orders.index', compact('groups'));
+        $orderStatuses = $this->orderStatusRepository->getActive();
+
+        return view('admin::sales.orders.index', compact('groups', 'orderStatuses'));
+    }
+
+    /**
+     * Return order counts grouped by status, enriched with status metadata.
+     */
+    public function statusCounts(): JsonResponse
+    {
+        $counts = DB::table('orders')
+            ->select('status', DB::raw('count(*) as cnt'))
+            ->groupBy('status')
+            ->pluck('cnt', 'status');
+
+        $statuses = $this->orderStatusRepository->getActive()->map(fn ($s) => [
+            'code' => $s->code,
+            'name' => $s->name,
+            'color' => $s->color ?? '#6b7280',
+            'icon' => $s->icon,
+            'count' => (int) $counts->get($s->code, 0),
+        ]);
+
+        return response()->json($statuses);
     }
 
     /**
@@ -129,7 +154,9 @@ class OrderController extends Controller
     {
         $order = $this->orderRepository->findOrFail($id);
 
-        return view('admin::sales.orders.view', compact('order'));
+        $orderStatuses = $this->orderStatusRepository->getActive();
+
+        return view('admin::sales.orders.view', compact('order', 'orderStatuses'));
     }
 
     /**

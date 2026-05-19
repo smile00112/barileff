@@ -134,6 +134,8 @@ return [
             'index' => [
                 'create-btn' => 'Create Order',
                 'title' => 'Orders',
+                'status-change-success' => 'Order status updated successfully.',
+                'status-change-error' => 'Failed to update order status.',
 
                 'search-customer' => [
                     'create-btn' => 'Create Customer',
@@ -352,6 +354,8 @@ return [
                 'cancel-msg' => 'Are your sure you want to cancel this order',
                 'cancel-success' => 'Order cancelled successfully',
                 'status-update-success' => 'Order status updated successfully.',
+                'status-update-fail' => 'Failed to update order status.',
+                'step-progress' => 'Step Progress',
                 'status-history' => 'Status History',
                 'canceled' => 'Canceled',
                 'channel' => 'Channel',
@@ -3100,6 +3104,24 @@ return [
                 'is-payment-required' => 'Payment Required',
                 'code-unique' => 'This status code is already taken.',
                 'code-alpha-dash' => 'The code may only contain letters, numbers, dashes, and underscores.',
+            ],
+            'icons' => [
+                'bag' => 'Shopping Bag',
+                'clock' => 'Clock',
+                'card' => 'Credit Card',
+                'cycle' => 'Cycle / Repeat',
+                'fire' => 'Fire',
+                'check' => 'Checkmark',
+                'shield-check' => 'Shield Check',
+                'x-circle' => 'Cancel Circle',
+                'lock' => 'Lock',
+                'alert' => 'Alert',
+                'truck' => 'Delivery Truck',
+                'ban' => 'Ban',
+                'eye' => 'Eye',
+                'info' => 'Info',
+                'star' => 'Star',
+                'gift' => 'Gift',
             ],
             'transitions' => [
                 'title' => 'Transition Rules',
