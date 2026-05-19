@@ -45,7 +45,7 @@ class OrderRepository extends Repository
      *
      * @return OrderContract
      */
-    public function createOrderIfNotThenRetry(array $data)
+    public function createOrderIfNotThenRetry(array $data, int $attempt = 1)
     {
         DB::beginTransaction();
 
@@ -95,11 +95,15 @@ class OrderRepository extends Repository
             /* storing log for errors */
             Log::error(
                 'OrderRepository:createOrderIfNotThenRetry: '.$e->getMessage(),
-                ['data' => $data]
+                ['data' => $data, 'attempt' => $attempt]
             );
 
+            if ($attempt >= 3) {
+                throw $e;
+            }
+
             /* recalling */
-            return $this->createOrderIfNotThenRetry($data);
+            return $this->createOrderIfNotThenRetry($data, $attempt + 1);
         } finally {
             /* commit in each case */
             DB::commit();

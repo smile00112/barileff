@@ -3,6 +3,7 @@
 namespace Webkul\PaymentConfirmation\Listeners;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Webkul\PaymentConfirmation\Models\OrderPaymentReceipt;
 use Webkul\PaymentConfirmation\Models\PaymentDetail;
 use Webkul\Sales\Models\Order;
@@ -15,18 +16,25 @@ class CreatePaymentConfirmationRecord
             return;
         }
 
-        // Already created (e.g. retry scenario)
-        if (OrderPaymentReceipt::where('order_id', $order->id)->exists()) {
-            return;
+        try {
+            // Already created (e.g. retry scenario)
+            if (OrderPaymentReceipt::where('order_id', $order->id)->exists()) {
+                return;
+            }
+
+            $detail = $this->selectDetail($order);
+
+            OrderPaymentReceipt::create([
+                'order_id' => $order->id,
+                'payment_detail_id' => $detail?->id,
+                'instructions_snapshot' => $detail?->instructions ?? '',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('CreatePaymentConfirmationRecord: failed to create receipt', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        $detail = $this->selectDetail($order);
-
-        OrderPaymentReceipt::create([
-            'order_id'              => $order->id,
-            'payment_detail_id'     => $detail?->id,
-            'instructions_snapshot' => $detail?->instructions ?? '',
-        ]);
     }
 
     private function selectDetail(Order $order): ?PaymentDetail
