@@ -110,7 +110,7 @@
                         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                             @{{ record.created_at }}
                         </p>
-
+                        
                         <v-order-status-select
                             :record="record"
                             update-url="{{ route('admin.sales.orders.update_status', ':id') }}"
@@ -258,7 +258,7 @@
 
                 <div
                     v-if="open"
-                    class="absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
+                    class="absolute left-0 top-full z-[3] mt-1 min-w-[160px] rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
                     v-click-outside="() => open = false"
                 >
                     <button
