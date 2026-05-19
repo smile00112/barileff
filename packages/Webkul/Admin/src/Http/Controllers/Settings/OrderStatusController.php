@@ -10,6 +10,7 @@ use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\Settings\StoreOrderStatusRequest;
 use Webkul\Admin\Http\Requests\Settings\StoreOrderStatusTransitionRequest;
 use Webkul\Admin\Http\Requests\Settings\UpdateOrderStatusRequest;
+use Webkul\Sales\Models\OrderStatus;
 use Webkul\Sales\Repositories\OrderStatusRepository;
 use Webkul\Sales\Repositories\OrderStatusTransitionRepository;
 use Webkul\Sales\Repositories\OrderWorkflowSettingRepository;
@@ -133,7 +134,7 @@ class OrderStatusController extends Controller
     /**
      * Store a new transition rule.
      */
-    public function storeTransition(StoreOrderStatusTransitionRequest $request): JsonResponse
+    public function storeTransition(StoreOrderStatusTransitionRequest $request): JsonResponse|RedirectResponse
     {
         $this->orderStatusTransitionRepository->create(
             $request->only([
@@ -143,9 +144,16 @@ class OrderStatusController extends Controller
             ])
         );
 
-        return new JsonResponse([
-            'message' => trans('admin::app.settings.order-statuses.transitions.create-success'),
-        ]);
+        if ($request->wantsJson()) {
+            return new JsonResponse([
+                'message' => trans('admin::app.settings.order-statuses.transitions.create-success'),
+            ]);
+        }
+
+        $status = OrderStatus::where('code', $request->from_status_code)->first();
+
+        return redirect()->route('admin.settings.order_statuses.edit', $status->id)
+            ->with('success', trans('admin::app.settings.order-statuses.transitions.create-success'));
     }
 
     /**
@@ -170,13 +178,24 @@ class OrderStatusController extends Controller
     /**
      * Remove a transition rule.
      */
-    public function destroyTransition(int $id): JsonResponse
+    public function destroyTransition(int $id): JsonResponse|RedirectResponse
     {
+        $transition = $this->orderStatusTransitionRepository->findOrFail($id);
+
+        $fromStatusCode = $transition->from_status_code;
+
         $this->orderStatusTransitionRepository->delete($id);
 
-        return new JsonResponse([
-            'message' => trans('admin::app.settings.order-statuses.transitions.delete-success'),
-        ]);
+        if (request()->wantsJson()) {
+            return new JsonResponse([
+                'message' => trans('admin::app.settings.order-statuses.transitions.delete-success'),
+            ]);
+        }
+
+        $status = OrderStatus::where('code', $fromStatusCode)->first();
+
+        return redirect()->route('admin.settings.order_statuses.edit', $status->id)
+            ->with('success', trans('admin::app.settings.order-statuses.transitions.delete-success'));
     }
 
     // -------------------------------------------------------------------------

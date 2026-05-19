@@ -266,12 +266,12 @@ return [
     [
         'key' => 'settings',
         'name' => 'admin::app.components.layouts.sidebar.settings',
-        'route' => 'admin.settings.locales.index',
+        'route' => 'admin.settings.inventory_sources.index',
         'sort' => 8,
         'icon' => 'icon-settings',
         'icon-class' => 'settings-icon',
     ],
-    [
+    /* [
         'key' => 'settings.locales',
         'name' => 'admin::app.components.layouts.sidebar.locales',
         'route' => 'admin.settings.locales.index',
@@ -292,7 +292,7 @@ return [
         'sort' => 3,
         'icon' => '',
     ],
-
+*/
     [
         'key' => 'settings.inventory_sources',
         'name' => 'admin::app.components.layouts.sidebar.inventory-sources',

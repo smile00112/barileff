@@ -258,7 +258,7 @@
 
                 <div
                     v-if="open"
-                    class="absolute left-0 top-full z-[3] mt-1 min-w-[160px] rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
+                    class="absolute left-0 top-full z-[3] mt-1 min-w-[160px] rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900 z-10"
                     v-click-outside="() => open = false"
                 >
                     <button

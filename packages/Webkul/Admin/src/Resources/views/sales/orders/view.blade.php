@@ -107,89 +107,110 @@
         <!-- Step Progress -->
         @if ($orderStatuses->isNotEmpty())
             <div
-                class="mt-3.5 bg-white rounded box-shadow dark:bg-gray-900"
+                class="mt-3.5 rounded-lg bg-white shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800"
                 x-data="{
                     loading: false,
-                    updateStatus(code) {
+                    pendingCode: null,
+                    requestUpdate(code) {
                         if (this.loading) return;
+                        this.pendingCode = code;
+                        this.$emitter.emit('open-confirm-modal', {
+                            message: '@lang('admin::app.sales.orders.view.status-update-confirm')',
+                            agree: () => this.doUpdate(),
+                        });
+                    },
+                    doUpdate() {
+                        if (! this.pendingCode || this.loading) return;
                         this.loading = true;
-                        fetch('{{ route('admin.sales.orders.update_status', $order->id) }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                            },
-                            body: JSON.stringify({ status: code }),
-                        })
-                        .then(r => r.json())
-                        .then(data => {
+                        window.axios.post(
+                            '{{ route('admin.sales.orders.update_status', $order->id) }}',
+                            { status: this.pendingCode }
+                        )
+                        .then(({ data }) => {
                             this.loading = false;
                             if (data.success) {
                                 window.location.reload();
                             } else {
-                                alert(data.message || '@lang('admin::app.sales.orders.view.status-update-fail')');
+                                this.$emitter.emit('add-flash', { type: 'error', message: data.message || '@lang('admin::app.sales.orders.view.status-update-fail')' });
                             }
                         })
-                        .catch(() => {
+                        .catch(err => {
                             this.loading = false;
-                            alert('@lang('admin::app.sales.orders.view.status-update-fail')');
+                            const msg = err?.response?.data?.message || '@lang('admin::app.sales.orders.view.status-update-fail')';
+                            this.$emitter.emit('add-flash', { type: 'error', message: msg });
                         });
                     }
                 }"
             >
-                <div class="flex items-center gap-2 p-4 border-b border-slate-100 dark:border-gray-800">
-                    <span class="icon-checkout-order text-xl text-gray-600 dark:text-gray-300"></span>
-                    <p class="text-base font-semibold text-gray-800 dark:text-white">
+                <!-- Header -->
+                <div class="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5 dark:border-gray-800">
+                    <span class="icon-checkout-order text-lg text-violet-500"></span>
+                    <p class="text-sm font-semibold text-gray-700 dark:text-white">
                         @lang('admin::app.sales.orders.view.step-progress')
                     </p>
+
+                    <template x-if="loading">
+                        <svg class="ml-auto h-4 w-4 animate-spin text-violet-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </template>
                 </div>
 
-                <div class="flex items-start justify-between gap-2 overflow-x-auto px-6 py-5">
-                    @foreach ($orderStatuses as $index => $status)
+                <!-- Steps -->
+                <div class="flex items-start overflow-x-auto px-6 py-5 gap-0">
+                    @foreach ($orderStatuses as $status)
                         @php
                             $isCurrent = $order->status === $status->code;
                             $sortedCodes = $orderStatuses->pluck('code')->toArray();
                             $currentIndex = array_search($order->status, $sortedCodes);
                             $thisIndex = array_search($status->code, $sortedCodes);
                             $isDone = $currentIndex !== false && $thisIndex < $currentIndex;
-                            $isLast = $loop->last;
                         @endphp
 
-                        <div class="flex flex-1 flex-col items-center gap-2 min-w-[80px]">
-                            <!-- Step line + circle -->
-                            <div class="relative flex w-full items-center">
-                                @if (! $loop->first)
-                                    <div class="h-0.5 flex-1 {{ $isDone || $isCurrent ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
-                                @else
+                        <div class="group flex flex-1 flex-col items-center min-w-[72px]">
+                            <!-- Connector + circle row -->
+                            <div class="flex w-full items-center">
+                                {{-- Left connector --}}
+                                @if ($loop->first)
                                     <div class="flex-1"></div>
+                                @else
+                                    <div class="h-[3px] flex-1 rounded-full transition-colors duration-300 {{ $isDone || $isCurrent ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
                                 @endif
 
+                                {{-- Circle --}}
                                 <button
                                     type="button"
                                     :disabled="loading"
-                                    @click="updateStatus('{{ $status->code }}')"
-                                    class="relative flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 transition-all
-                                        {{ $isCurrent ? 'border-violet-600 bg-violet-600 text-white' : ($isDone ? 'border-violet-600 bg-white text-violet-600 dark:bg-gray-900' : 'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-900') }}
-                                        disabled:opacity-60 hover:border-violet-500"
+                                    @click="requestUpdate('{{ $status->code }}')"
                                     title="{{ $status->name }}"
+                                    class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60
+                                        @if ($isCurrent) border-violet-600 bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-100 dark:shadow-violet-900/40 dark:ring-violet-900/50 hover:bg-violet-700
+                                        @elseif ($isDone) border-violet-500 bg-violet-50 text-violet-600 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/40
+                                        @else border-gray-200 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 hover:border-violet-400 hover:text-violet-500 @endif"
                                 >
-                                    @if ($isCurrent || $isDone)
-                                        <span class="icon-done text-sm {{ $isCurrent ? 'text-white' : 'text-violet-600' }}"></span>
+                                    @if ($isCurrent)
+                                        <span class="icon-done text-base text-white"></span>
+                                    @elseif ($isDone)
+                                        <span class="icon-done text-base text-violet-500"></span>
                                     @else
-                                        <span class="icon-done text-sm text-gray-300 dark:text-gray-600"></span>
+                                        <span class="text-xs font-semibold">{{ $loop->index + 1 }}</span>
                                     @endif
                                 </button>
 
-                                @if (! $isLast)
-                                    <div class="h-0.5 flex-1 {{ $isDone ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
-                                @else
+                                {{-- Right connector --}}
+                                @if ($loop->last)
                                     <div class="flex-1"></div>
+                                @else
+                                    <div class="h-[3px] flex-1 rounded-full transition-colors duration-300 {{ $isDone ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
                                 @endif
                             </div>
 
-                            <!-- Label -->
-                            <p class="text-center text-xs font-medium leading-tight
-                                {{ $isCurrent ? 'text-violet-600' : ($isDone ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500') }}">
+                            {{-- Label --}}
+                            <p class="mt-2 px-1 text-center text-[11px] font-medium leading-tight transition-colors duration-200
+                                @if ($isCurrent) text-violet-600 dark:text-violet-400
+                                @elseif ($isDone) text-gray-500 dark:text-gray-400
+                                @else text-gray-400 dark:text-gray-600 group-hover:text-gray-500 @endif">
                                 {{ $status->name }}
                             </p>
                         </div>
@@ -360,9 +381,12 @@
 
                             @if ($order->inventory_source_id && ! $item->qty_invoiced && ! $item->qty_shipped && ! $item->qty_canceled)
                                 <div
-                                    class="flex items-center gap-2 mt-2"
+                                    class="flex items-center gap-2 mt-3 pt-3 border-t border-dashed border-gray-200 dark:border-gray-700"
                                     x-data="{ qty: {{ $item->qty_ordered }}, loading: false }"
                                 >
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                                        @lang('admin::app.sales.orders.view.quantity'):
+                                    </span>
                                     <input
                                         type="number"
                                         min="1"
