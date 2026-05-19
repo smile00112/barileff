@@ -741,6 +741,26 @@ return [
         'route' => 'admin.settings.delivery_zones.delete',
         'sort' => 3,
     ], [
+        'key' => 'settings.order_statuses',
+        'name' => 'admin::app.acl.order-statuses',
+        'route' => 'admin.settings.order_statuses.index',
+        'sort' => 15,
+    ], [
+        'key' => 'settings.order_statuses.create',
+        'name' => 'admin::app.acl.create',
+        'route' => 'admin.settings.order_statuses.create',
+        'sort' => 1,
+    ], [
+        'key' => 'settings.order_statuses.edit',
+        'name' => 'admin::app.acl.edit',
+        'route' => 'admin.settings.order_statuses.edit',
+        'sort' => 2,
+    ], [
+        'key' => 'settings.order_statuses.delete',
+        'name' => 'admin::app.acl.delete',
+        'route' => 'admin.settings.order_statuses.destroy',
+        'sort' => 3,
+    ], [
         'key' => 'settings.channels',
         'name' => 'admin::app.acl.channels',
         'route' => 'admin.settings.channels.index',

@@ -40,4 +40,16 @@ return [
             ],
         ],
     ],
+
+    'shop' => [
+        'orders' => [
+            'payment-confirmation' => [
+                'title' => 'Payment Instructions',
+                'attach-label' => 'Attach Payment Receipt',
+                'submit-btn' => 'Submit Receipt',
+                'awaiting' => 'Receipt submitted. Your payment is awaiting confirmation.',
+                'confirmed' => 'Payment confirmed. Your order is being processed.',
+            ],
+        ],
+    ],
 ];

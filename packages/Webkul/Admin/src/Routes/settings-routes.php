@@ -6,6 +6,7 @@ use Webkul\Admin\Http\Controllers\Settings\CurrencyController;
 use Webkul\Admin\Http\Controllers\Settings\ExchangeRateController;
 use Webkul\Admin\Http\Controllers\Settings\InventorySourceController;
 use Webkul\Admin\Http\Controllers\Settings\LocaleController;
+use Webkul\Admin\Http\Controllers\Settings\OrderStatusController;
 use Webkul\Admin\Http\Controllers\Settings\PushNotificationController;
 use Webkul\Admin\Http\Controllers\Settings\RoleController;
 use Webkul\Admin\Http\Controllers\Settings\Tax\TaxCategoryController;
@@ -233,5 +234,32 @@ Route::prefix('settings')->group(function () {
         Route::post('vapid/generate', 'generateVapid')->name('admin.settings.push_notifications.vapid.generate');
 
         Route::put('vapid/update', 'updateVapid')->name('admin.settings.push_notifications.vapid.update');
+    });
+
+    /**
+     * Order statuses routes.
+     */
+    Route::controller(OrderStatusController::class)->prefix('order-statuses')->group(function () {
+        Route::get('', 'index')->name('admin.settings.order_statuses.index');
+
+        Route::get('create', 'create')->name('admin.settings.order_statuses.create');
+
+        Route::post('create', 'store')->name('admin.settings.order_statuses.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.settings.order_statuses.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.settings.order_statuses.update');
+
+        Route::delete('edit/{id}', 'destroy')->name('admin.settings.order_statuses.destroy');
+
+        Route::post('transitions', 'storeTransition')->name('admin.settings.order_statuses.transitions.store');
+
+        Route::put('transitions/{id}', 'updateTransition')->name('admin.settings.order_statuses.transitions.update');
+
+        Route::delete('transitions/{id}', 'destroyTransition')->name('admin.settings.order_statuses.transitions.destroy');
+
+        Route::get('workflow', 'workflowSettings')->name('admin.settings.order_statuses.workflow');
+
+        Route::put('workflow', 'updateWorkflowSettings')->name('admin.settings.order_statuses.workflow.update');
     });
 });

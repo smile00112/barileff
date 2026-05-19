@@ -360,6 +360,12 @@ return [
         'route' => 'admin.settings.push_notifications.index',
         'sort' => 13,
         'icon' => '',
+    ], [
+        'key' => 'settings.order_statuses',
+        'name' => 'admin::app.components.layouts.sidebar.order-statuses',
+        'route' => 'admin.settings.order_statuses.index',
+        'sort' => 14,
+        'icon' => '',
     ],
 
     /**

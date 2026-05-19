@@ -45,6 +45,8 @@ Route::prefix('sales')->group(function () {
 
         Route::post('cancel/{id}', 'cancel')->name('admin.sales.orders.cancel');
 
+        Route::post('update-status/{id}', 'updateStatus')->name('admin.sales.orders.update_status');
+
         Route::get('reorder/{id}', 'reorder')->name('admin.sales.orders.reorder');
 
         Route::post('comment/{order_id}', 'comment')->name('admin.sales.orders.comment');

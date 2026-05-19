@@ -514,6 +514,42 @@
                     </div>
                 </div>
 
+                <!-- Status History -->
+                @if ($order->statusHistory->isNotEmpty())
+                    <div class="bg-white rounded box-shadow dark:bg-gray-900">
+                        <p class="p-4 pb-0 text-base font-semibold text-gray-800 dark:text-white">
+                            @lang('admin::app.sales.orders.view.status-history')
+                        </p>
+
+                        <div class="p-4">
+                            @foreach ($order->statusHistory as $history)
+                                <div class="mb-3 flex items-start gap-3">
+                                    <div class="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800 dark:text-white">
+                                            @if ($history->old_status)
+                                                <span class="font-medium">{{ $history->old_status }}</span>
+                                                → <span class="font-medium">{{ $history->new_status }}</span>
+                                            @else
+                                                <span class="font-medium">{{ $history->new_status }}</span>
+                                            @endif
+                                        </p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $history->created_at->format('Y-m-d H:i:s') }}
+                                            @if ($history->user_name)
+                                                · {{ $history->user_name }}
+                                            @endif
+                                            @if ($history->source && $history->source !== 'system')
+                                                · {{ $history->source }}
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Customer's comment form -->
                 <div class="bg-white rounded box-shadow dark:bg-gray-900">
                     <p class="p-4 pb-0 text-base font-semibold text-gray-800 dark:text-white">

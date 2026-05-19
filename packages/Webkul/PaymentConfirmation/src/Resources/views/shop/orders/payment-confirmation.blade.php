@@ -5,7 +5,7 @@
 @if ($receipt)
     <div class="rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 mt-6 p-5">
         <h3 class="text-base font-semibold text-gray-800 dark:text-white mb-3">
-            Payment Instructions
+            @lang('paymentconfirmation::app.shop.orders.payment-confirmation.title')
         </h3>
 
         <div class="mb-4 rounded bg-gray-50 dark:bg-gray-800 p-4 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap border border-gray-100 dark:border-gray-700">
@@ -21,7 +21,7 @@
 
                 <div class="mb-3">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Attach Payment Receipt
+                        @lang('paymentconfirmation::app.shop.orders.payment-confirmation.attach-label')
                     </label>
                     <input type="file"
                            name="receipt"
@@ -38,7 +38,7 @@
 
                 <button type="submit"
                         class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                    Submit Receipt
+                    @lang('paymentconfirmation::app.shop.orders.payment-confirmation.submit-btn')
                 </button>
             </form>
 
@@ -47,7 +47,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Receipt submitted. Your payment is awaiting confirmation.
+                @lang('paymentconfirmation::app.shop.orders.payment-confirmation.awaiting')
             </div>
 
         @elseif (in_array($order->status, [
@@ -58,7 +58,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                Payment confirmed. Your order is being processed.
+                @lang('paymentconfirmation::app.shop.orders.payment-confirmation.confirmed')
             </div>
         @endif
     </div>

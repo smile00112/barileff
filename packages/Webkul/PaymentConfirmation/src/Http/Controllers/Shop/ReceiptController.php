@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Webkul\PaymentConfirmation\Models\OrderPaymentReceipt;
 use Webkul\Sales\Models\Order;
+use Webkul\Sales\Services\OrderStatusTransitionService;
+use Webkul\Sales\Services\TransitionContext;
 
 class ReceiptController extends Controller
 {
@@ -31,11 +33,15 @@ class ReceiptController extends Controller
         $path = $file->store('payment-receipts/'.$orderId);
 
         $receipt->update([
-            'receipt_path'          => $path,
+            'receipt_path' => $path,
             'receipt_original_name' => $file->getClientOriginalName(),
         ]);
 
-        $order->update(['status' => Order::STATUS_AWAITING_CONFIRMATION]);
+        app(OrderStatusTransitionService::class)->transition(
+            $order,
+            Order::STATUS_AWAITING_CONFIRMATION,
+            TransitionContext::forSystem('payment-receipt-upload')
+        );
 
         session()->flash('success', 'Receipt uploaded successfully. Awaiting confirmation.');
 

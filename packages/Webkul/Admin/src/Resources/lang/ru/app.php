@@ -351,6 +351,8 @@ return [
                 'cancel' => 'Отменить',
                 'cancel-msg' => 'Вы уверены, что хотите отменить этот заказ',
                 'cancel-success' => 'Заказ успешно отменен',
+                'status-update-success' => 'Статус заказа успешно обновлён.',
+                'status-history' => 'История статусов',
                 'canceled' => 'Отменен',
                 'channel' => 'Канал',
                 'closed' => 'Закрыт',
@@ -3753,6 +3755,77 @@ return [
             'update-success' => 'Роль успешно обновлена',
         ],
 
+        'order-statuses' => [
+            'index' => [
+                'title' => 'Статусы заказов',
+                'create-btn' => 'Создать статус',
+                'workflow-btn' => 'Настройки процесса',
+
+                'datagrid' => [
+                    'id' => 'ID',
+                    'code' => 'Код',
+                    'name' => 'Название',
+                    'sort-order' => 'Сортировка',
+                    'is-active' => 'Активен',
+                    'is-terminal' => 'Терминальный',
+                    'is-system' => 'Системный',
+                    'edit' => 'Редактировать',
+                    'delete' => 'Удалить',
+                ],
+            ],
+
+            'create' => [
+                'title' => 'Создать статус заказа',
+                'save-btn' => 'Сохранить',
+            ],
+
+            'edit' => [
+                'title' => 'Редактировать статус заказа',
+                'save-btn' => 'Сохранить',
+            ],
+
+            'form' => [
+                'code' => 'Код',
+                'name' => 'Название',
+                'color' => 'Цвет',
+                'sort-order' => 'Порядок сортировки',
+                'is-active' => 'Активен',
+                'is-terminal' => 'Терминальный (конечный)',
+                'is-cancel-state' => 'Состояние отмены',
+                'is-payment-required' => 'Требует оплаты',
+            ],
+
+            'transitions' => [
+                'title' => 'Переходы',
+                'add-btn' => 'Добавить переход',
+                'from' => 'Из статуса',
+                'to' => 'В статус',
+                'delivery-type' => 'Тип доставки',
+                'payment-type' => 'Тип оплаты',
+                'channel' => 'Канал',
+                'priority' => 'Приоритет',
+                'is-active' => 'Активен',
+                'actions' => 'Действия',
+                'delete' => 'Удалить',
+                'any' => 'Любой',
+                'create-success' => 'Переход успешно создан.',
+                'update-success' => 'Переход успешно обновлён.',
+                'destroy-success' => 'Переход успешно удалён.',
+            ],
+
+            'workflow' => [
+                'title' => 'Настройки процесса',
+                'new-order-status' => 'Статус нового заказа',
+                'save-btn' => 'Сохранить',
+                'update-success' => 'Настройки процесса обновлены.',
+            ],
+
+            'create-success' => 'Статус заказа успешно создан.',
+            'update-success' => 'Статус заказа успешно обновлён.',
+            'destroy-success' => 'Статус заказа успешно удалён.',
+            'system-delete-error' => 'Системные статусы нельзя удалить.',
+        ],
+
         'themes' => [
             'index' => [
                 'create-btn' => 'Создать Тему',
@@ -5034,13 +5107,14 @@ return [
                 'gdpr-data-requests' => 'Запросы данных GDPR',
                 'groups' => 'Группы',
                 'imports' => 'Импорт',
-                'inventory-sources' => 'Источники инвентаризации',
+                'inventory-sources' => 'Склады',
                 'invoices' => 'Счета',
                 'locales' => 'Локали',
                 'marketing' => 'Маркетинг',
                 'mode' => 'Темный режим',
                 'newsletter-subscriptions' => 'Подписки на новостную рассылку',
                 'orders' => 'Заказы',
+                'order-statuses' => 'Статусы заказов',
                 'products' => 'Продукты',
                 'promotions' => 'Акции',
                 'push-notifications' => 'Push-уведомления',
@@ -5308,6 +5382,7 @@ return [
         'newsletter-subscriptions' => 'Подписки на рассылку',
         'note' => 'Примечание',
         'orders' => 'Заказы',
+        'order-statuses' => 'Статусы заказов',
         'products' => 'Продукты',
         'promotions' => 'Акции',
         'refunds' => 'Возвраты',

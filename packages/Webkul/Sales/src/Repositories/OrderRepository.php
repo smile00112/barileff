@@ -12,6 +12,8 @@ use Webkul\Sales\Contracts\Order as OrderContract;
 use Webkul\Sales\Generators\OrderSequencer;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\Shipment;
+use Webkul\Sales\Services\OrderStatusTransitionService;
+use Webkul\Sales\Services\TransitionContext;
 
 class OrderRepository extends Repository
 {
@@ -50,7 +52,8 @@ class OrderRepository extends Repository
         try {
             Event::dispatch('checkout.order.save.before', [$data]);
 
-            $data['status'] = Order::STATUS_PENDING;
+            $data['status'] = app(OrderWorkflowSettingRepository::class)
+                ->getValue('new_order_status', Order::STATUS_PENDING);
 
             $order = $this->model->create(array_merge($data, ['increment_id' => $this->generateIncrementId()]));
 
@@ -317,11 +320,11 @@ class OrderRepository extends Repository
             }
         }
 
-        $order->status = $status;
-
-        $order->save();
-
-        Event::dispatch('sales.order.update-status.after', $order);
+        app(OrderStatusTransitionService::class)->transition(
+            $order,
+            $status,
+            TransitionContext::forSystem('order-lifecycle')
+        );
     }
 
     /**

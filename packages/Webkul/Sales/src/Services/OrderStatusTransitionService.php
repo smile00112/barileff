@@ -36,11 +36,11 @@ class OrderStatusTransitionService
             $message = "Transition from '{$order->status}' to '{$toStatus}' is not allowed.";
 
             Log::warning('OrderStatusTransitionService: invalid transition', [
-                'order_id'    => $order->id,
+                'order_id' => $order->id,
                 'from_status' => $order->status,
-                'to_status'   => $toStatus,
-                'source'      => $ctx->source,
-                'actor_id'    => $ctx->actorId,
+                'to_status' => $toStatus,
+                'source' => $ctx->source,
+                'actor_id' => $ctx->actorId,
             ]);
 
             return TransitionResult::failure($order, $message, ['status' => [$message]]);
@@ -57,22 +57,22 @@ class OrderStatusTransitionService
                 $order->save();
 
                 OrderStatusHistory::create([
-                    'order_id'  => $order->id,
+                    'order_id' => $order->id,
                     'old_status' => $oldStatus,
                     'new_status' => $toStatus,
-                    'user_type'  => $ctx->actorType,
-                    'user_id'    => $ctx->actorId,
-                    'user_name'  => $ctx->actorName,
-                    'source'     => $ctx->source,
+                    'user_type' => $ctx->actorType,
+                    'user_id' => $ctx->actorId,
+                    'user_name' => $ctx->actorName,
+                    'source' => $ctx->source,
                 ]);
 
                 Event::dispatch('sales.order.update-status.after', $order);
             });
         } catch (\Throwable $e) {
             Log::error('OrderStatusTransitionService: transition failed', [
-                'order_id'  => $order->id,
+                'order_id' => $order->id,
                 'to_status' => $toStatus,
-                'error'     => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return TransitionResult::failure($order, 'Transition failed: '.$e->getMessage());
@@ -103,17 +103,17 @@ class OrderStatusTransitionService
 
         if (! $current) {
             Log::warning('OrderStatusTransitionService: current order status not found in order_statuses', [
-                'order_id'    => $order->id,
+                'order_id' => $order->id,
                 'from_status' => $fromStatus,
-                'to_status'   => $toStatus,
+                'to_status' => $toStatus,
             ]);
 
             return true;
         }
 
-        // Terminal statuses block all outgoing transitions unless an explicit rule exists.
+        // Terminal statuses block all outgoing transitions unless an EXPLICIT (non-wildcard) rule exists.
         if ($current->is_terminal) {
-            return $this->transitionRuleExists($fromStatus, $toStatus, $ctx);
+            return $this->transitionRuleExists($fromStatus, $toStatus, $ctx, allowWildcard: false);
         }
 
         return $this->transitionRuleExists($fromStatus, $toStatus, $ctx);
@@ -174,13 +174,15 @@ class OrderStatusTransitionService
     private function transitionRuleExists(
         string $fromCode,
         string $toCode,
-        TransitionContext $ctx
+        TransitionContext $ctx,
+        bool $allowWildcard = true
     ): bool {
         return $this->getTransitionsForContext(
             $fromCode,
             $ctx->deliveryType,
             $ctx->paymentType,
-            $ctx->channel
+            $ctx->channel,
+            $allowWildcard
         )->contains('to_status_code', $toCode);
     }
 
@@ -193,7 +195,8 @@ class OrderStatusTransitionService
         string $fromCode,
         ?string $deliveryType,
         ?string $paymentType,
-        ?string $channel
+        ?string $channel,
+        bool $allowWildcard = true
     ): Collection {
         $all = Cache::remember(
             'order_status_transitions_all',
@@ -201,9 +204,12 @@ class OrderStatusTransitionService
             fn () => OrderStatusTransition::where('is_active', true)->orderBy('priority')->get()
         );
 
-        return $all->filter(function (OrderStatusTransition $t) use ($fromCode, $deliveryType, $paymentType, $channel) {
+        return $all->filter(function (OrderStatusTransition $t) use ($fromCode, $deliveryType, $paymentType, $channel, $allowWildcard) {
+            // Wildcard '*' matches any source status; otherwise must match exactly.
             if ($t->from_status_code !== $fromCode) {
-                return false;
+                if (! $allowWildcard || $t->from_status_code !== '*') {
+                    return false;
+                }
             }
 
             if ($t->delivery_type !== null && $t->delivery_type !== $deliveryType) {

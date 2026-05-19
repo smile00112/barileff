@@ -2,12 +2,15 @@
 
 namespace Webkul\Admin\Http\Controllers\Sales;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Sales\OrderDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Http\Requests\Sales\UpdateOrderStatusRequest;
 use Webkul\Admin\Http\Resources\AddressResource;
 use Webkul\Admin\Http\Resources\CartResource;
 use Webkul\Checkout\Facades\Cart;
@@ -15,6 +18,8 @@ use Webkul\Checkout\Repositories\CartRepository;
 use Webkul\Customer\Repositories\CustomerGroupRepository;
 use Webkul\Sales\Repositories\OrderCommentRepository;
 use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Sales\Services\OrderStatusTransitionService;
+use Webkul\Sales\Services\TransitionContext;
 use Webkul\Sales\Transformers\OrderResource;
 
 class OrderController extends Controller
@@ -29,12 +34,13 @@ class OrderController extends Controller
         protected OrderCommentRepository $orderCommentRepository,
         protected CartRepository $cartRepository,
         protected CustomerGroupRepository $customerGroupRepository,
+        protected OrderStatusTransitionService $orderStatusTransitionService,
     ) {}
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -50,7 +56,7 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function create(int $cartId)
     {
@@ -117,7 +123,7 @@ class OrderController extends Controller
     /**
      * Show the view for the specified resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function view(int $id)
     {
@@ -129,7 +135,7 @@ class OrderController extends Controller
     /**
      * Reorder action for the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function reorder(int $id)
     {
@@ -154,9 +160,46 @@ class OrderController extends Controller
     }
 
     /**
+     * Update the status of an order via the transition service.
+     */
+    public function updateStatus(int $id, UpdateOrderStatusRequest $request): JsonResponse
+    {
+        $order = $this->orderRepository->findOrFail($id);
+
+        $adminUser = auth()->guard('admin')->user();
+
+        $context = TransitionContext::forAdmin(
+            userId: $adminUser->id,
+            userName: $adminUser->name,
+            channel: $order->channel_name,
+        );
+
+        if ($request->comment) {
+            $context = new TransitionContext(
+                source: $context->source,
+                actorType: $context->actorType,
+                actorId: $context->actorId,
+                actorName: $context->actorName,
+                deliveryType: $context->deliveryType,
+                paymentType: $context->paymentType,
+                channel: $context->channel,
+                comment: $request->comment,
+            );
+        }
+
+        $result = $this->orderStatusTransitionService->transition($order, $request->status, $context);
+
+        if (! $result->success) {
+            return response()->json(['message' => $result->message, 'errors' => $result->errors], 422);
+        }
+
+        return response()->json(['success' => true, 'message' => trans('admin::app.sales.orders.view.status-update-success')]);
+    }
+
+    /**
      * Cancel action for the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function cancel(int $id)
     {
@@ -174,7 +217,7 @@ class OrderController extends Controller
     /**
      * Add comment to the order
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function comment(int $id)
     {
@@ -199,7 +242,7 @@ class OrderController extends Controller
     /**
      * Result of search product.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function search()
     {

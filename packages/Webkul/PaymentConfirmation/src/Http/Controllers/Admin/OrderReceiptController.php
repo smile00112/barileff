@@ -6,6 +6,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Webkul\PaymentConfirmation\Models\OrderPaymentReceipt;
 use Webkul\Sales\Models\Order;
+use Webkul\Sales\Services\OrderStatusTransitionService;
+use Webkul\Sales\Services\TransitionContext;
 
 class OrderReceiptController extends Controller
 {
@@ -23,7 +25,15 @@ class OrderReceiptController extends Controller
 
         abort_if(! $receipt->hasReceipt(), 403, 'No receipt uploaded yet.');
 
-        $order->update(['status' => Order::STATUS_PROCESSING]);
+        app(OrderStatusTransitionService::class)->transition(
+            $order,
+            Order::STATUS_PROCESSING,
+            TransitionContext::forAdmin(
+                auth('admin')->id(),
+                auth('admin')->user()->name ?? 'Admin',
+                null
+            )
+        );
 
         session()->flash('success', 'Payment approved. Order is now processing.');
 

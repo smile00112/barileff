@@ -56,5 +56,9 @@
 
 			{{ view_render_event('bagisto.shop.checkout.success.continue-shopping.after', ['order' => $order]) }}
 		</div>
+
+		@if ($order->payment?->method === 'paymentconfirmation')
+			@include('paymentconfirmation::shop.orders.payment-confirmation', ['order' => $order])
+		@endif
 	</div>
 </x-shop::layouts>
