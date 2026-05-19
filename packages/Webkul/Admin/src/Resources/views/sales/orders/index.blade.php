@@ -110,7 +110,7 @@
                         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                             @{{ record.created_at }}
                         </p>
-                        
+
                         <v-order-status-select
                             :record="record"
                             update-url="{{ route('admin.sales.orders.update_status', ':id') }}"
