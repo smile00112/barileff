@@ -979,8 +979,8 @@
                     </x-slot>
                 </x-admin::accordion>
 
-                <!-- Invoice Information-->
-                <x-admin::accordion>
+                {{-- Invoice Information (hidden) --}}
+                {{-- <x-admin::accordion>
                     <x-slot:header>
                         <p class="p-2.5 text-base font-semibold text-gray-600 dark:text-gray-300">
                             @lang('admin::app.sales.orders.view.invoices') ({{ count($order->invoices) }})
@@ -1026,10 +1026,10 @@
                             </p>
                         @endforelse
                     </x-slot>
-                </x-admin::accordion>
+                </x-admin::accordion> --}}
 
-                <!-- Shipment Information-->
-                <x-admin::accordion>
+                {{-- Shipment Information (hidden) --}}
+                {{-- <x-admin::accordion>
                     <x-slot:header>
                         <p class="p-2.5 text-base font-semibold text-gray-600 dark:text-gray-300">
                             @lang('admin::app.sales.orders.view.shipments') ({{ count($order->shipments) }})
@@ -1066,7 +1066,7 @@
                             </p>
                         @endforelse
                     </x-slot>
-                </x-admin::accordion>
+                </x-admin::accordion> --}}
 
                 <!-- Refund Information -->
                 <x-admin::accordion>
