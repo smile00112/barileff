@@ -56,10 +56,13 @@ return [
         'orders' => [
             'payment-confirmation' => [
                 'title' => 'Payment Instructions',
-                'attach-label' => 'Attach Payment Receipt',
-                'submit-btn' => 'Submit Receipt',
-                'awaiting' => 'Receipt submitted. Your payment is awaiting confirmation.',
-                'confirmed' => 'Payment confirmed. Your order is being processed.',
+                'attach-label'     => 'Attach Payment Receipt',
+                're-upload-label'   => 'Upload a different receipt (replaces current)',
+                'submit-btn'        => 'Submit Receipt',
+                're-upload-btn'     => 'Replace Receipt',
+                'receipt-preview'   => 'Uploaded Receipt',
+                'awaiting'          => 'Receipt submitted. Your payment is awaiting confirmation.',
+                'confirmed'         => 'Payment confirmed. Your order is being processed.',
             ],
         ],
     ],

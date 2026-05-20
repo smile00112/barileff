@@ -23,11 +23,21 @@ class ReceiptController extends Controller
         // Ensure the order belongs to the authenticated customer
         abort_if($order->customer_id !== auth('customer')->id(), 403);
 
-        // Ensure order is in pending state and uses this payment method
+        // Ensure order uses this payment method
         abort_if($order->payment?->method !== 'paymentconfirmation', 403);
-        abort_if($order->status !== Order::STATUS_PENDING, 403);
+
+        // Allow upload/re-upload for pending and awaiting-confirmation statuses
+        abort_if(
+            ! in_array($order->status, [Order::STATUS_PENDING, Order::STATUS_AWAITING_CONFIRMATION], true),
+            403
+        );
 
         $receipt = OrderPaymentReceipt::where('order_id', $orderId)->firstOrFail();
+
+        // Delete old file if replacing an existing receipt
+        if ($receipt->receipt_path) {
+            \Illuminate\Support\Facades\Storage::delete($receipt->receipt_path);
+        }
 
         $file = $request->file('receipt');
         $path = $file->store('payment-receipts/'.$orderId);
@@ -37,11 +47,14 @@ class ReceiptController extends Controller
             'receipt_original_name' => $file->getClientOriginalName(),
         ]);
 
-        app(OrderStatusTransitionService::class)->transition(
-            $order,
-            Order::STATUS_AWAITING_CONFIRMATION,
-            TransitionContext::forSystem('payment-receipt-upload')
-        );
+        // Transition to awaiting-confirmation only from pending
+        if ($order->status === Order::STATUS_PENDING) {
+            app(OrderStatusTransitionService::class)->transition(
+                $order,
+                Order::STATUS_AWAITING_CONFIRMATION,
+                TransitionContext::forSystem('payment-receipt-upload')
+            );
+        }
 
         session()->flash('success', 'Receipt uploaded successfully. Awaiting confirmation.');
 

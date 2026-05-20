@@ -15,7 +15,7 @@ class OrderStatusSeeder extends Seeder
         $statuses = [
             [
                 'code'                => 'pending',
-                'name'                => 'Pending',
+                'name'                => 'Не оплачен',
                 'icon'                => 'icon-pending',
                 'color'               => '#f59e0b',
                 'sort_order'          => 1,
@@ -27,7 +27,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'code'                => 'pending_payment',
-                'name'                => 'Pending Payment',
+                'name'                => 'Ожидает оплаты',
                 'icon'                => 'icon-pending-payment',
                 'color'               => '#f97316',
                 'sort_order'          => 2,
@@ -39,7 +39,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'code'                => 'awaiting_confirmation',
-                'name'                => 'Awaiting Confirmation',
+                'name'                => 'Ожидает проверки',
                 'icon'                => 'icon-info',
                 'color'               => '#3b82f6',
                 'sort_order'          => 3,
@@ -51,7 +51,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'code'                => 'processing',
-                'name'                => 'Processing',
+                'name'                => 'Обрабатывается',
                 'icon'                => 'icon-processing',
                 'color'               => '#8b5cf6',
                 'sort_order'          => 4,
@@ -63,7 +63,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'code'                => 'completed',
-                'name'                => 'Completed',
+                'name'                => 'Завершен',
                 'icon'                => 'icon-done',
                 'color'               => '#10b981',
                 'sort_order'          => 5,
@@ -75,7 +75,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'code'                => 'canceled',
-                'name'                => 'Canceled',
+                'name'                => 'Отменен',
                 'icon'                => 'icon-cancel',
                 'color'               => '#ef4444',
                 'sort_order'          => 6,
@@ -86,20 +86,8 @@ class OrderStatusSeeder extends Seeder
                 'is_payment_required' => false,
             ],
             [
-                'code'                => 'closed',
-                'name'                => 'Closed',
-                'icon'                => 'icon-lock',
-                'color'               => '#6b7280',
-                'sort_order'          => 7,
-                'is_system'           => true,
-                'is_active'           => true,
-                'is_terminal'         => true,
-                'is_cancel_state'     => false,
-                'is_payment_required' => false,
-            ],
-            [
                 'code'                => 'fraud',
-                'name'                => 'Fraud',
+                'name'                => 'Мошенничество',
                 'icon'                => 'icon-alert',
                 'color'               => '#dc2626',
                 'sort_order'          => 8,
