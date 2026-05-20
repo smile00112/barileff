@@ -63,16 +63,18 @@
                     <div class="flex items-center gap-2">
                         <input
                             type="color"
-                            x-model="color"
+                            value="{{ old('color', $orderStatus->color ?? '#6b7280') }}"
                             class="h-10 w-10 cursor-pointer rounded border border-gray-300 p-0.5 dark:border-gray-700"
+                            oninput="this.nextElementSibling.value = this.value"
                         />
 
                         <input
                             type="text"
                             name="color"
-                            x-model="color"
+                            value="{{ old('color', $orderStatus->color ?? '#6b7280') }}"
                             placeholder="#RRGGBB"
                             class="block w-full rounded-lg border bg-white px-3 py-2 text-sm leading-6 text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300"
+                            oninput="this.previousElementSibling.value = this.value"
                         />
                     </div>
 

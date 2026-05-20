@@ -53,18 +53,23 @@ class OrderStatusController extends Controller
     /**
      * Store a newly created order status.
      */
-    public function store(StoreOrderStatusRequest $request): JsonResponse
+    public function store(StoreOrderStatusRequest $request): JsonResponse|RedirectResponse
     {
-        $this->orderStatusRepository->create(
+        $orderStatus = $this->orderStatusRepository->create(
             $request->only([
                 'code', 'name', 'icon', 'color', 'sort_order',
                 'is_active', 'is_terminal', 'is_cancel_state', 'is_payment_required',
             ])
         );
 
-        return new JsonResponse([
-            'message' => trans('admin::app.settings.order-statuses.index.create-success'),
-        ]);
+        if ($request->wantsJson()) {
+            return new JsonResponse([
+                'message' => trans('admin::app.settings.order-statuses.index.create-success'),
+            ]);
+        }
+
+        return redirect()->route('admin.settings.order_statuses.edit', $orderStatus->id)
+            ->with('success', trans('admin::app.settings.order-statuses.index.create-success'));
     }
 
     /**

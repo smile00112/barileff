@@ -253,22 +253,14 @@
                 </button>
             </div>
 
-            <v-modal ref="sourcesModal">
-                <template #header="{ toggle }">
-                    <div class="flex w-full items-center justify-between gap-2.5 pr-2">
-                        <p class="text-lg font-bold text-gray-800 dark:text-white">
-                            @{{ labels.modalTitle }}
-                        </p>
+            <x-admin::modal ref="sourcesModal">
+                <x-slot:header>
+                    <p class="text-lg font-bold text-gray-800 dark:text-white">
+                        @{{ labels.modalTitle }}
+                    </p>
+                </x-slot>
 
-                        <span
-                            class="icon-cancel-1 cursor-pointer text-3xl hover:rounded-md hover:bg-gray-100 dark:hover:bg-gray-950"
-                            @click="toggle"
-                        >
-                        </span>
-                    </div>
-                </template>
-
-                <template #content>
+                <x-slot:content>
                     <div v-if="loadState === 'loading'" class="py-6 text-center text-sm text-gray-600 dark:text-gray-300">
                         @{{ labels.loading }}
                     </div>
@@ -306,28 +298,26 @@
                             </label>
                         </li>
                     </ul>
-                </template>
+                </x-slot>
 
-                <template #footer>
-                    <div class="flex w-full justify-end gap-2.5">
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            @click="cancelModal"
-                        >
-                            @{{ labels.cancel }}
-                        </button>
+                <x-slot:footer>
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        @click="cancelModal"
+                    >
+                        @{{ labels.cancel }}
+                    </button>
 
-                        <button
-                            type="button"
-                            class="primary-button"
-                            @click="confirmModal"
-                        >
-                            @{{ labels.apply }}
-                        </button>
-                    </div>
-                </template>
-            </v-modal>
+                    <button
+                        type="button"
+                        class="primary-button"
+                        @click="confirmModal"
+                    >
+                        @{{ labels.apply }}
+                    </button>
+                </x-slot>
+            </x-admin::modal>
         </div>
     </script>
 
