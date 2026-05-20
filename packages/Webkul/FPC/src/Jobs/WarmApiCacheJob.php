@@ -19,6 +19,8 @@ class WarmApiCacheJob implements ShouldQueue
 
     public int $tries = 1;
 
+    public int $timeout = 600;
+
     public function handle(CategoryRepository $categoryRepository): void
     {
         $lock = Cache::lock('warm-api-cache', 60);
@@ -68,6 +70,12 @@ class WarmApiCacheJob implements ShouldQueue
         } finally {
             $lock->release();
         }
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Cache::lock('warm-api-cache')->forceRelease();
+        Log::error('[FPC] WarmApiCacheJob failed: '.$exception->getMessage());
     }
 
     /**
