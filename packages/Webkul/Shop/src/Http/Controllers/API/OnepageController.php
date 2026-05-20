@@ -4,7 +4,9 @@ namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\DeliveryZones\Services\CartDeliveryZoneManager;
 use Webkul\Payment\Facades\Payment;
@@ -13,6 +15,7 @@ use Webkul\Sales\Transformers\OrderResource;
 use Webkul\Shipping\Facades\Shipping;
 use Webkul\Shop\Http\Requests\CartAddressRequest;
 use Webkul\Shop\Http\Resources\CartResource;
+use Webkul\Shop\Mail\Customer\AccountCreatedNotification;
 
 /**
  * One-page checkout: адреса, доставка, оплата, создание заказа.
@@ -242,6 +245,18 @@ class OnepageController extends APIController
         $order = $this->orderRepository->create($data);
 
         Cart::deActivateCart();
+
+        if (! auth()->guard('customer')->check()) {
+            $existingCustomer = Customer::where('email', $order->customer_email)->first();
+
+            if (! $existingCustomer) {
+                $result = $this->customerRepository->createFromGuestCheckout($order);
+
+                auth()->guard('customer')->login($result['customer']);
+
+                Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
+            }
+        }
 
         session()->flash('order_id', $order->id);
 

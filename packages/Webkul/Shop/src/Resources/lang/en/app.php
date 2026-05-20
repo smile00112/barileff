@@ -1241,6 +1241,16 @@ return [
         'thanks' => 'If you need any kind of help please contact us at <a href=":link" style=":style">:email</a>.<br/>Thanks!',
 
         'customers' => [
+            'account-created' => [
+                'credentials-description' => 'Your account credentials are below:',
+                'description' => 'An account has been automatically created for you based on your order. You can use the credentials below to sign in and manage your orders.',
+                'greeting' => 'Your account is ready!',
+                'password' => 'Password',
+                'sign-in' => 'Sign in',
+                'subject' => 'Your New Account',
+                'username-email' => 'Username/Email',
+            ],
+
             'registration' => [
                 'credentials-description' => 'Your account has been created. Your account details are below:',
                 'description' => 'Your account has now been created successfully and you can login using your email address and password credentials. Upon logging in, you will be able to access other services including reviewing past orders, wishlists and editing your account information.',
