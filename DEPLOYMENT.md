@@ -258,7 +258,7 @@ git clone https://github.com/your-username/my_bagisto.git
 cd my_bagisto
 
 # Переключение на production ветку
-git checkout add_product_import_add_fcm
+git checkout main
 ```
 
 ### 2. Создание директорий
@@ -703,7 +703,7 @@ cd ~/my_bagisto
 
 # 2. Получение изменений
 git fetch origin
-git pull origin add_product_import_add_fcm
+git pull origin main
 
 # 3. Пересборка образа
 docker compose -f docker-compose.prod.yml build app

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-This is a **customized fork of Bagisto** — an open-source Laravel e-commerce platform. The fork (branch `add_product_import_add_fcm`) adds custom modules on top of upstream Bagisto 2.3: delivery zones, supplier management, push notifications (FCM), markup scheduling, product tags, and various store-specific features.
+This is a **customized fork of Bagisto** — an open-source Laravel e-commerce platform. The fork (branch `main`) adds custom modules on top of upstream Bagisto 2.3: delivery zones, supplier management, push notifications (FCM), markup scheduling, product tags, and various store-specific features.
 
 - PHP 8.2+, Laravel 11, Vue.js (frontend components embedded in Blade)
 - MySQL database
@@ -169,7 +169,7 @@ Vue.js components are embedded within Blade views using `<v-*>` components regis
 
 ## Custom Additions in This Fork
 
-The `add_product_import_add_fcm` branch adds:
+The `main` branch adds:
 
 1. **FCM Push Notifications** (`PushNotification` package) — Firebase Cloud Messaging integration
 2. **Product Import enhancements** (`DataTransfer` package)

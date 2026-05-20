@@ -1,7 +1,7 @@
 # Design: Delivery City Selector — Map Fit-to-Zones
 
 **Date:** 2026-04-14  
-**Branch:** add_product_import_add_fcm  
+**Branch:** main  
 **Scope:** Frontend-only, single file
 
 ---

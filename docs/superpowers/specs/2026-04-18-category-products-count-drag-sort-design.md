@@ -1,7 +1,7 @@
 # Category List: Products Count Column + Drag-and-Drop Sorting
 
 **Date:** 2026-04-18  
-**Branch:** `add_product_import_add_fcm`
+**Branch:** `main`
 
 ---
 

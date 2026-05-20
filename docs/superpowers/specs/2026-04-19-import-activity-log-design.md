@@ -1,7 +1,7 @@
 # Import Activity Log — Design Spec
 
 **Date:** 2026-04-19  
-**Branch:** `add_product_import_add_fcm`  
+**Branch:** `main`  
 **Scope:** `packages/Webkul/ImportExport`, `packages/Webkul/DataTransfer`
 
 ---
