@@ -2,6 +2,17 @@
 
 return [
     'admin' => [
+        'orders' => [
+            'payment-confirmation' => [
+                'title'           => 'Payment Confirmation',
+                'instructions-sent' => 'Instructions sent to customer',
+                'receipt'         => 'Payment Receipt',
+                'not-uploaded'    => 'Not yet uploaded.',
+                'download'        => 'Download Receipt',
+                'approve-btn'     => 'Approve Payment',
+                'approve-confirm' => 'Approve this payment and move order to Processing?',
+            ],
+        ],
         'payment-details' => [
             'create-title' => 'Add Payment Detail',
             'edit-title' => 'Edit Payment Detail',

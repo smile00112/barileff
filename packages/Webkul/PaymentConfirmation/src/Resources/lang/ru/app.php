@@ -2,6 +2,17 @@
 
 return [
     'admin' => [
+        'orders' => [
+            'payment-confirmation' => [
+                'title'           => 'Подтверждение оплаты',
+                'instructions-sent' => 'Инструкция, отправленная клиенту',
+                'receipt'         => 'Чек об оплате',
+                'not-uploaded'    => 'Чек ещё не загружен.',
+                'download'        => 'Скачать чек',
+                'approve-btn'     => 'Подтвердить оплату',
+                'approve-confirm' => 'Подтвердить оплату и перевести заказ в обработку?',
+            ],
+        ],
         'payment-details' => [
             'create-title' => 'Добавить платёжные реквизиты',
             'edit-title' => 'Редактировать платёжные реквизиты',
