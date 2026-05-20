@@ -38,7 +38,7 @@
                         <a href="{{ $receipt->receipt_url }}"
                            target="_blank"
                            class="text-blue-600 text-sm underline">
-                            {{ $receipt->receipt_original_name }}
+                            Скачать чек
                         </a>
                     </div>
                 @else
