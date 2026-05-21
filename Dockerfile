@@ -9,6 +9,7 @@ COPY resources/ resources/
 COPY packages/Webkul/Admin/ packages/Webkul/Admin/
 COPY packages/Webkul/Shop/ packages/Webkul/Shop/
 COPY packages/Webkul/ManagerApp/ packages/Webkul/ManagerApp/
+COPY packages/Webkul/Installer/ packages/Webkul/Installer/
 
 # Root build → public/build
 RUN npm install --prefer-offline && npm run build
@@ -21,6 +22,9 @@ RUN cd packages/Webkul/Shop && npm install --prefer-offline && npm run build
 
 # ManagerApp → public/manager
 RUN cd packages/Webkul/ManagerApp && npm install --prefer-offline && npm run build
+
+# Installer theme → public/themes/installer/default/build
+RUN cd packages/Webkul/Installer && npm install --prefer-offline && npm run build
 
 # ─── Stage 2: PHP application ────────────────────────────────────────────────
 FROM php:8.4-cli-alpine AS base
