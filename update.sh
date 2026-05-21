@@ -83,13 +83,23 @@ rm -f bootstrap/cache/events.php
 info "Пересоздание контейнера app из нового образа..."
 docker compose -f docker-compose.prod.yml up -d --force-recreate app
 
+# Извлечение фронтенд-ассетов из нового образа на хост.
+# ВАЖНО: ./public смонтирован как том и скрывает файлы, собранные внутри образа
+# на frontend-стейдже. Нужно скопировать их отдельно через временный контейнер
+# без volume-маунтов, иначе Vite manifest не будет найден.
+info "Извлечение фронтенд-ассетов из нового образа на хост..."
+APP_IMAGE=$(docker inspect "$(docker compose -f docker-compose.prod.yml ps -q app)" --format '{{.Image}}')
+TEMP_NAME="_asset_extract_$$"
+docker create --name "$TEMP_NAME" "$APP_IMAGE" sh > /dev/null
+docker cp "$TEMP_NAME":/var/www/html/public/build ./public/build
+docker cp "$TEMP_NAME":/var/www/html/public/themes ./public/themes
+docker cp "$TEMP_NAME":/var/www/html/public/manager ./public/manager
+docker rm "$TEMP_NAME" > /dev/null
+info "Фронтенд-ассеты успешно скопированы."
+
 # Ожидание готовности нового контейнера
 info "Ожидание готовности нового контейнера..."
 sleep 10
-
-# Vite-ассеты собираются в frontend-стейдже Dockerfile (Node 20) и копируются
-# в PHP-образ через COPY --from=frontend. В git они не хранятся.
-info "Фронтенд собирается внутри Docker-образа (frontend stage)..."
 
 # Очистка FPC (ResponseCache) — чтобы HTML перегенерировался с новыми хешами ассетов
 info "Очистка кеша страниц (ResponseCache)..."
