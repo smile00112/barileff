@@ -170,8 +170,18 @@ class DeliveryZonesController
 
         $inventorySourceId = (int) $zone->inventory_sources->first()?->id;
         session(['selected_inventory_source_id' => $inventorySourceId]);
+        session(['selected_delivery_zone_id' => $zone->id]);
 
-        Cart::deActivateCart();
+        $cart = Cart::getCart();
+
+        if ($cart) {
+            app(\Webkul\DeliveryZones\Services\CartDeliveryZoneManager::class)->applySelection(
+                $cart,
+                $lat,
+                $lng,
+                $zone->id
+            );
+        }
 
         return new JsonResource([
             'data' => [

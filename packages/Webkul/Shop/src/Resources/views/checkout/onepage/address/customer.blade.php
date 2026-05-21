@@ -23,7 +23,7 @@
 
         <template v-else>
             <!-- Delivery Zone Summary -->
-            <template v-if="cart.delivery_zone">
+            <template v-if="cart.delivery_zone || deliverySelection">
                 <div class="mb-6 rounded-xl border border-zinc-200 bg-zinc-50 p-5">
                     <p class="text-sm font-semibold text-zinc-500">
                         @lang('shop::app.checkout.onepage.address.delivery-address')
@@ -32,7 +32,7 @@
                     <p class="mt-1 text-base font-medium text-zinc-900">@{{ deliveryStreetAddress }}</p>
 
                     <p class="text-sm text-zinc-500">
-                        @{{ cart.delivery_zone.name }}@{{ cart.delivery_zone.city_name ? ', ' + cart.delivery_zone.city_name : '' }}
+                        @{{ cart.delivery_zone ? cart.delivery_zone.name : deliverySelection.zone_name }}@{{ (cart.delivery_zone ? cart.delivery_zone.city_name : deliverySelection.city) ? ', ' + (cart.delivery_zone ? cart.delivery_zone.city_name : deliverySelection.city) : '' }}
                     </p>
                 </div>
             </template>
@@ -51,7 +51,7 @@
             </template>
 
             <!-- Personal Info Form -->
-            <template v-if="cart.delivery_zone">
+            <template v-if="cart.delivery_zone || deliverySelection">
                 <x-shop::form
                     v-slot="{ meta, errors, handleSubmit }"
                     as="div"

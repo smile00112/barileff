@@ -130,6 +130,7 @@ class Cart
             'channel_currency_code' => core()->getChannelBaseCurrencyCode(),
             'cart_currency_code' => core()->getCurrentCurrencyCode(),
             'inventory_source_id' => session('selected_inventory_source_id'),
+            'delivery_zone_id' => session('selected_delivery_zone_id'),
         ], $data);
 
         $customer = $data['customer'] ?? auth()->guard()->user();

@@ -1,0 +1,294 @@
+﻿
+  типтиптиптиптиптиптиптиптиптиптиптиптиптиптиптип
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\Checkout\DeliverтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+  тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА  
+   FAILED  Packages\Webkul\Shop\tests\Feature\API\DeliveryZoneтАж  PDOException   
+  could not find driver
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+     62тЦХ      */
+     63тЦХ     protected function createPdoConnection($dsn, $username, #[\SensitiveParameter] $password, $options)
+     64тЦХ     {
+     65тЦХ         return version_compare(phpversion(), '8.4.0', '<')
+  тЮЬ  66тЦХ             ? new PDO($dsn, $username, $password, $options)
+     67тЦХ             : PDO::connect($dsn, $username, $password, $options); /** @phpstan-ignore staticMethod.notFound (PHP 8.4) */
+     68тЦХ     }
+     69тЦХ 
+     70тЦХ     /**
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:66
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:44
+
+
+  Tests:    16 failed (0 assertions)
+  Duration: 1.11s
+
