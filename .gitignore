@@ -39,5 +39,7 @@ yarn-error.log
 /storage/app/public/category
 /storage/app/public/product
 /public/build/assets
+/public/themes/shop/default/build
+/public/themes/admin/default/build
 /tmp/*
 /test
