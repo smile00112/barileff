@@ -89,7 +89,7 @@ docker compose -f docker-compose.prod.yml up -d --force-recreate app
 # без volume-маунтов, иначе Vite manifest не будет найден.
 info "Извлечение фронтенд-ассетов из нового образа на хост..."
 APP_IMAGE=$(docker inspect "$(docker compose -f docker-compose.prod.yml ps -q app)" --format '{{.Image}}')
-TEMP_NAME="_asset_extract_$$"
+TEMP_NAME="asset-extract-$$"
 docker create --name "$TEMP_NAME" "$APP_IMAGE" sh > /dev/null
 docker cp "$TEMP_NAME":/var/www/html/public/build ./public/build
 docker cp "$TEMP_NAME":/var/www/html/public/themes ./public/themes
