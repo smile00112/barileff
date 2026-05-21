@@ -134,8 +134,6 @@ return [
             'index' => [
                 'create-btn' => 'Create Order',
                 'title' => 'Orders',
-                'status-change-success' => 'Order status updated successfully.',
-                'status-change-error' => 'Failed to update order status.',
 
                 'search-customer' => [
                     'create-btn' => 'Create Customer',
@@ -353,11 +351,6 @@ return [
                 'cancel' => 'Cancel',
                 'cancel-msg' => 'Are your sure you want to cancel this order',
                 'cancel-success' => 'Order cancelled successfully',
-                'status-update-success' => 'Order status updated successfully.',
-                'status-update-confirm' => 'Are you sure you want to change the order status?',
-                'status-update-fail' => 'Failed to update order status.',
-                'step-progress' => 'Step Progress',
-                'status-history' => 'Status History',
                 'canceled' => 'Canceled',
                 'channel' => 'Channel',
                 'closed' => 'Closed',
@@ -431,9 +424,6 @@ return [
                 'total-paid' => 'Total Paid',
                 'total-refund' => 'Total Refund',
                 'view' => 'View',
-                'save' => 'Save',
-                'delete' => 'Delete',
-                'confirm-delete-item' => 'Are you sure you want to delete this item?',
                 'write-your-comment' => 'Write your comment',
             ],
         ],
@@ -796,7 +786,6 @@ return [
                     'status' => 'Status',
                     'type' => 'Type',
                     'update-status' => 'Update Status',
-                    'view-on-site' => 'View on Site',
                 ],
             ],
 
@@ -1537,7 +1526,6 @@ return [
                     'position' => 'Position',
                     'status' => 'Visible In Menu',
                     'update-status' => 'Update Status',
-                    'view-on-site' => 'View on Site',
                 ],
             ],
 
@@ -1610,9 +1598,6 @@ return [
             'delete-category-root' => 'The Root category can not be deleted.',
             'delete-failed' => 'Error encountered while deleting category',
             'delete-success' => 'The category has been successfully deleted.',
-            'not-allowed' => 'You are not authorized to perform this action.',
-            'reorder-failed' => 'Failed to reorder categories. Please try again.',
-            'reorder-success' => 'Categories reordered successfully.',
             'update-success' => 'Category updated successfully.',
         ],
 
@@ -1749,14 +1734,10 @@ return [
                     'allow-insert-hint' => 'Create products whose SKU is not yet in the catalog.',
                     'allow-update' => 'Update existing products',
                     'allow-update-hint' => 'Update products whose SKU already exists in the catalog.',
-                    'new-products-active' => 'Make new products active',
-                    'new-products-active-hint' => 'New products (SKU not in catalog) will be imported with status Active. Uncheck to import them as Inactive.',
-                    'new-products-in-stock' => 'Import new products with stock quantity',
-                    'new-products-in-stock-hint' => 'New products will be imported with the quantity from the file. Uncheck to import them with qty=0 (out of stock).',
                     'create-categories' => 'Create missing categories',
-                    'create-categories-hint' => 'Automatically create categories that are listed in the CSV but do not exist yet. If you list several names separated by commas in one cell, they are treated as a path: the first is a child of the parent you select below, each next name is a child of the previous one.',
+                    'create-categories-hint' => 'Automatically create categories that are listed in the CSV but do not exist yet.',
                     'parent-category' => 'Parent category for new categories',
-                    'parent-category-hint' => 'The first name in a comma-separated path is created under this category; deeper segments are nested under each other.',
+                    'parent-category-hint' => 'New categories will be created as children of the selected category.',
                 ],
 
                 'validation' => [
@@ -1775,8 +1756,6 @@ return [
                 'batches-label' => 'Batches',
                 'completed-title' => 'Import completed successfully!',
                 'csv-column' => 'CSV Column',
-                'csv-preview' => 'Sample values',
-                'csv-preview-empty' => 'empty',
                 'failed-title' => 'Import failed.',
                 'mapping-hint' => 'Map each CSV column to the corresponding Sinica product field. Unmapped columns will be skipped.',
                 'mapping-title' => 'Column Mapping',
@@ -1806,7 +1785,6 @@ return [
                 'qty' => 'Quantity (stock)',
                 'related-skus' => 'Related SKUs',
                 'sku' => 'SKU',
-                'supplier' => 'Supplier',
                 'type' => 'Product Type',
                 'up-sell-skus' => 'Up-sell SKUs',
             ],
@@ -1840,12 +1818,6 @@ return [
                 'map-first' => 'Please save the column mapping before starting the import.',
                 'not-ready' => 'The import session is not ready to start.',
                 'validation-failed' => 'The import file failed validation.',
-            ],
-
-            'log' => [
-                'title' => 'Activity Log',
-                'empty' => 'No activity yet.',
-                'errors-title' => 'Import Errors',
             ],
         ],
     ],
@@ -3060,95 +3032,6 @@ return [
             'vapid-missing' => 'Please generate VAPID keys first.',
         ],
 
-        'order-statuses' => [
-            'index' => [
-                'title' => 'Order Statuses',
-                'create-btn' => 'Create Order Status',
-                'create-success' => 'Order status created successfully.',
-                'update-success' => 'Order status updated successfully.',
-                'delete-success' => 'Order status deleted successfully.',
-                'delete-system-error' => 'System order statuses cannot be deleted.',
-                'datagrid' => [
-                    'id' => 'ID',
-                    'code' => 'Code',
-                    'name' => 'Name',
-                    'sort-order' => 'Sort Order',
-                    'is-active' => 'Active',
-                    'is-terminal' => 'Terminal',
-                    'is-system' => 'System',
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                    'yes' => 'Yes',
-                    'no' => 'No',
-                    'system' => 'System',
-                    'custom' => 'Custom',
-                    'edit' => 'Edit',
-                    'delete' => 'Delete',
-                ],
-            ],
-            'create' => [
-                'title' => 'Create Order Status',
-                'back-btn' => 'Back',
-                'save-btn' => 'Save',
-            ],
-            'edit' => [
-                'title' => 'Edit Order Status',
-                'back-btn' => 'Back',
-                'save-btn' => 'Save',
-            ],
-            'form' => [
-                'code' => 'Code',
-                'name' => 'Name',
-                'icon' => 'Icon',
-                'color' => 'Color',
-                'sort-order' => 'Sort Order',
-                'is-active' => 'Active',
-                'is-terminal' => 'Terminal (final state)',
-                'is-cancel-state' => 'Cancel State',
-                'is-payment-required' => 'Payment Required',
-                'code-unique' => 'This status code is already taken.',
-                'code-alpha-dash' => 'The code may only contain letters, numbers, dashes, and underscores.',
-            ],
-            'icons' => [
-                'bag' => 'Shopping Bag',
-                'clock' => 'Clock',
-                'card' => 'Credit Card',
-                'cycle' => 'Cycle / Repeat',
-                'fire' => 'Fire',
-                'check' => 'Checkmark',
-                'shield-check' => 'Shield Check',
-                'x-circle' => 'Cancel Circle',
-                'lock' => 'Lock',
-                'alert' => 'Alert',
-                'truck' => 'Delivery Truck',
-                'ban' => 'Ban',
-                'eye' => 'Eye',
-                'info' => 'Info',
-                'star' => 'Star',
-                'gift' => 'Gift',
-            ],
-            'transitions' => [
-                'title' => 'Transition Rules',
-                'create-btn' => 'Add Transition',
-                'create-success' => 'Transition rule created successfully.',
-                'update-success' => 'Transition rule updated successfully.',
-                'delete-success' => 'Transition rule deleted successfully.',
-                'from-status' => 'From Status',
-                'to-status' => 'To Status',
-                'delivery-type' => 'Delivery Type (optional)',
-                'payment-type' => 'Payment Type (optional)',
-                'channel' => 'Channel (optional)',
-                'priority' => 'Priority',
-                'is-active' => 'Active',
-            ],
-            'workflow' => [
-                'title' => 'Workflow Settings',
-                'new-order-status' => 'Default status for new orders',
-                'save-btn' => 'Save',
-                'update-success' => 'Workflow settings saved successfully.',
-            ],
-        ],
-
         'data-transfer' => [
             'imports' => [
                 'create' => [
@@ -3397,7 +3280,6 @@ return [
                 'zone-polygon' => 'Zone Polygon (Yandex Map)',
                 'edit-mode' => 'Edit Mode',
                 'clear-polygon' => 'Clear Polygon',
-                'invert-coordinates' => 'Invert Coordinates',
                 'apply-polygon-json' => 'Apply JSON',
                 'polygon-json' => 'Polygon JSON',
                 'polygon-color' => 'Polygon Color',
@@ -3465,28 +3347,11 @@ return [
                 'title' => 'Delivery Zones',
                 'heading' => 'Delivery Zones',
                 'add-zone' => 'Add Zone',
-                'import-zones' => 'Import',
-                'export-zones' => 'Export',
             ],
 
             'zones-create' => [
                 'title' => 'Create Delivery Zone',
                 'heading' => 'Create Delivery Zone',
-            ],
-
-            'zones-import' => [
-                'title' => 'Import Delivery Zones',
-                'heading' => 'Import Delivery Zones',
-                'import-btn' => 'Import',
-                'back-btn' => 'Back',
-                'file' => 'GeoJSON File',
-                'default-city' => 'Default City (fallback)',
-                'select-city' => 'Select city (optional)',
-                'inventory-source' => 'Inventory Source',
-                'select-inventory-source' => 'Select inventory source',
-                'default-rate' => 'Default Rate',
-                'min-order-total' => 'Min Order Total',
-                'price' => 'Price',
             ],
 
             'datagrid' => [
@@ -3508,7 +3373,6 @@ return [
                     'code' => 'Code',
                     'zone' => 'Zone',
                     'city' => 'City',
-                    'inventory-source' => 'Inventory Source',
                     'delivery-time-min' => 'Delivery Time (min)',
                     'status' => 'Status',
                     'active' => 'Active',
@@ -3525,11 +3389,6 @@ return [
                 'zone-created' => 'Delivery zone created successfully.',
                 'zone-updated' => 'Delivery zone updated successfully.',
                 'zone-deleted' => 'Delivery zone deleted successfully.',
-                'zones-imported' => ':count zone(s) imported successfully.',
-                'import-invalid-json' => 'The file is not valid JSON.',
-                'import-invalid-geojson' => 'The file must be a GeoJSON FeatureCollection.',
-                'import-no-features' => 'The file contains no features.',
-                'import-failed' => 'Import failed: :error',
             ],
 
             'js' => [
@@ -3892,7 +3751,6 @@ return [
                 'type' => [
                     'category-carousel' => 'Category Carousel',
                     'category-grid' => 'Category Grid',
-                    'category-nested-grid' => 'Category Nested Grid',
                     'footer-links' => 'Footer Links',
                     'image-carousel' => 'Image Carousel',
                     'product-carousel' => 'Product Carousel',
@@ -3914,8 +3772,6 @@ return [
                 'category-carousel-description' => 'Display dynamic categories attractively using a responsive category carousel.',
                 'category-grid' => 'Category Grid',
                 'category-grid-description' => 'Display categories in a responsive grid with configurable columns and optional names.',
-                'category-nested-grid' => 'Category Nested Grid',
-                'category-nested-grid-description' => 'First-level categories appear as headings; their subcategories are shown in grids below.',
                 'category-id' => 'Category ID',
                 'channels' => 'Channels',
                 'column' => 'Column',
@@ -4415,8 +4271,6 @@ return [
 
                     'settings' => [
                         'compare-options' => 'Compare options',
-                        'filter-categories-by-stock' => 'Filter categories by product availability',
-                        'filter-categories-by-stock-info' => 'When enabled, only categories containing products in stock for the selected warehouse will be shown.',
                         'image-search-option' => 'Image Search Option',
                         'title' => 'Settings',
                         'title-info' => 'Settings refer to configurable choices that control how a system, application, or device behaves, tailored to user preferences and requirements.',
@@ -4499,12 +4353,6 @@ return [
                         'title' => 'Large image',
                         'title-info' => 'Large image represents a high-resolution picture providing enhanced detail and visual impact, often used for showcasing products or graphics.',
                         'width' => 'Width',
-                    ],
-
-                    'category-image' => [
-                        'auto-height' => 'Auto Height (preserve aspect ratio)',
-                        'title' => 'Category Image',
-                        'title-info' => 'When enabled, category images are scaled to width only with height calculated automatically to preserve the original aspect ratio.',
                     ],
 
                     'review' => [
@@ -4867,12 +4715,6 @@ return [
                             'title' => 'Type',
                         ],
                     ],
-
-                    'delivery-zones' => [
-                        'welcome-modal-active' => 'Show welcome city modal',
-                        'welcome-modal-text' => 'Welcome modal text',
-                        'detect-city-by-ip' => 'Detect city by visitor IP',
-                    ],
                 ],
 
                 'payment-methods' => [
@@ -4895,8 +4737,6 @@ return [
                     'mailing-address' => 'Send Check to',
                     'money-transfer' => 'Money Transfer',
                     'money-transfer-info' => 'Transfer of funds from one person or account to another, often electronically, for various purposes such as transactions or remittances.',
-                    'payment-with-confirmation' => 'Payment with Confirmation',
-                    'payment-with-confirmation-info' => 'Customers pay by bank transfer or other offline means and upload a receipt; the order is completed after staff approval.',
                     'page-title' => 'Payment Methods',
                     'paid' => 'Paid',
                     'paypal-smart-button' => 'PayPal',
@@ -5152,7 +4992,6 @@ return [
                 'products' => 'Products',
                 'promotions' => 'Promotions',
                 'push-notifications' => 'Push Notifications',
-                'order-statuses' => 'Order Statuses',
                 'refunds' => 'Refunds',
                 'reporting' => 'Reporting',
                 'reviews' => 'Reviews',
@@ -5406,7 +5245,6 @@ return [
         'email-templates' => 'Email Templates',
         'events' => 'Events',
         'exchange-rates' => 'Exchange Rates',
-        'order-statuses' => 'Order Statuses',
         'gdpr' => 'GDPR',
         'groups' => 'Groups',
         'import' => 'Import',

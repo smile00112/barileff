@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\MassDestroyRequest;
 use Webkul\Attribute\Repositories\AttributeRepository;
@@ -16,10 +17,8 @@ use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 use Webkul\DataTransfer\Repositories\ImportRepository;
 use Webkul\ImportExport\Events\CatalogImportCompleted;
 use Webkul\ImportExport\Http\Requests\Catalog\ImportUploadRequest;
-use Webkul\ImportExport\Models\CatalogImportLogEntry;
 use Webkul\ImportExport\Models\CatalogImportSession;
 use Webkul\Inventory\Models\InventorySource;
-use Webkul\Supplier\Models\Supplier;
 use Webkul\User\Models\Admin;
 
 class ImportController extends Controller
@@ -111,31 +110,8 @@ class ImportController extends Controller
         $session = CatalogImportSession::findOrFail($id);
         $bagistoFields = $this->getSinicaFields();
         $inventorySources = InventorySource::where('status', 1)->orderBy('name')->get(['id', 'name', 'code']);
-        $previewRows = $this->readPreviewRows($session);
 
-        $initialLogEntries = CatalogImportLogEntry::where('session_id', $session->id)
-            ->orderBy('id')
-            ->get(['id', 'level', 'entity_type', 'action', 'entity_id', 'message', 'created_at'])
-            ->toArray();
-
-        $dtImportErrors = [];
-
-        if ($session->import_ref_id) {
-            $dtImport = $this->importRepository->find($session->import_ref_id);
-
-            if ($dtImport && $dtImport->errors) {
-                $dtImportErrors = array_values($dtImport->errors);
-            }
-        }
-
-        return view('import_export::admin.catalog.imports.show', compact(
-            'session',
-            'bagistoFields',
-            'inventorySources',
-            'previewRows',
-            'initialLogEntries',
-            'dtImportErrors'
-        ));
+        return view('import_export::admin.catalog.imports.show', compact('session', 'bagistoFields', 'inventorySources'));
     }
 
     /**
@@ -168,43 +144,11 @@ class ImportController extends Controller
             ], 422);
         }
 
-        $categoryEvents = $session->create_categories
-            ? $this->createMissingCategories($session)
-            : [];
-
-        ['map' => $supplierNameToId, 'events' => $supplierEvents] = $this->resolveImportSuppliers($session);
-
-        // Write category and supplier log entries now (before validation so they persist
-        // even if the import fails later at the validation stage).
-        $logRows = [];
-
-        foreach ($categoryEvents as $event) {
-            $logRows[] = [
-                'session_id' => $session->id,
-                'level' => 'info',
-                'entity_type' => 'category',
-                'action' => 'created',
-                'entity_id' => $event['id'],
-                'message' => $event['name'],
-            ];
+        if ($session->create_categories) {
+            $this->createMissingCategories($session);
         }
 
-        foreach ($supplierEvents as $event) {
-            $logRows[] = [
-                'session_id' => $session->id,
-                'level' => 'info',
-                'entity_type' => 'supplier',
-                'action' => $event['action'],
-                'entity_id' => $event['id'],
-                'message' => $event['name'],
-            ];
-        }
-
-        if ($logRows !== []) {
-            CatalogImportLogEntry::insert($logRows);
-        }
-
-        $remappedPath = $this->createRemappedCsv($session, $supplierNameToId);
+        $remappedPath = $this->createRemappedCsv($session);
 
         if (! $remappedPath) {
             return new JsonResponse([
@@ -220,9 +164,6 @@ class ImportController extends Controller
             'allowed_errors' => 100,
             'field_separator' => ',',
             'file_path' => $remappedPath,
-            'summary' => [
-                'category_chain_anchor_id' => (int) ($session->parent_category_id ?? 1),
-            ],
         ]);
 
         $isValid = $this->importHelper->setImport($dtImport)->validate();
@@ -267,14 +208,6 @@ class ImportController extends Controller
     public function status(int $id): JsonResponse
     {
         $session = CatalogImportSession::findOrFail($id);
-        $afterLogId = (int) request()->query('after_log_id', 0);
-
-        $logEntries = CatalogImportLogEntry::where('session_id', $session->id)
-            ->where('id', '>', $afterLogId)
-            ->orderBy('id')
-            ->limit(500)
-            ->get(['id', 'level', 'entity_type', 'action', 'entity_id', 'message', 'created_at'])
-            ->toArray();
 
         if ($session->state !== CatalogImportSession::STATE_PROCESSING || ! $session->import_ref_id) {
             return new JsonResponse([
@@ -284,42 +217,21 @@ class ImportController extends Controller
                     'batches' => ['total' => 0, 'completed' => 0, 'remaining' => 0],
                     'summary' => ['created' => 0, 'updated' => 0, 'deleted' => 0],
                 ],
-                'log_entries' => $logEntries,
-                'errors' => [],
             ]);
         }
 
         $dtImport = $this->importRepository->find($session->import_ref_id);
 
         if (! $dtImport) {
-            return new JsonResponse([
-                'state' => $session->state,
-                'stats' => ['progress' => 0],
-                'log_entries' => $logEntries,
-                'errors' => [],
-            ]);
+            return new JsonResponse(['state' => $session->state, 'stats' => ['progress' => 0]]);
         }
 
         $this->importHelper->setImport($dtImport);
 
-        $statsState = match ($dtImport->state) {
-            ImportHelper::STATE_INDEXED,
-            ImportHelper::STATE_COMPLETED => ImportHelper::STATE_INDEXED,
-            ImportHelper::STATE_LINKED,
-            ImportHelper::STATE_INDEXING,
-            ImportHelper::STATE_LINKING => ImportHelper::STATE_LINKED,
-            default => ImportHelper::STATE_PROCESSED,
-        };
-
-        $stats = $this->importHelper->stats($statsState);
-        $errors = array_values($dtImport->errors ?? []);
+        $stats = $this->importHelper->stats(ImportHelper::STATE_PROCESSED);
 
         if ($dtImport->state === ImportHelper::STATE_COMPLETED) {
             $stats['progress'] = 100;
-            $stats['summary'] = array_merge(
-                ['created' => 0, 'updated' => 0, 'deleted' => 0],
-                $dtImport->summary ?? $stats['summary'] ?? []
-            );
 
             $session->update([
                 'state' => CatalogImportSession::STATE_COMPLETED,
@@ -341,8 +253,6 @@ class ImportController extends Controller
             'state' => $session->fresh()->state,
             'stats' => $stats,
             'import_state' => $dtImport->state,
-            'log_entries' => $logEntries,
-            'errors' => $errors,
         ]);
     }
 
@@ -367,7 +277,6 @@ class ImportController extends Controller
             'related_skus' => trans('admin::app.catalog.imports.fields.related-skus'),
             'cross_sell_skus' => trans('admin::app.catalog.imports.fields.cross-sell-skus'),
             'up_sell_skus' => trans('admin::app.catalog.imports.fields.up-sell-skus'),
-            'supplier' => trans('admin::app.catalog.imports.fields.supplier'),
         ];
 
         $attributeFields = $this->attributeRepository
@@ -383,7 +292,7 @@ class ImportController extends Controller
         $attributeFieldsByCode = collect($attributeFields)->keyBy('code');
 
         $groupCodes = [
-            'product-data' => ['sku', 'type', 'attribute_family_code', 'locale', 'supplier'],
+            'product-data' => ['sku', 'type', 'attribute_family_code', 'locale'],
             'prices-and-inventory' => ['qty', 'price', 'cost', 'special_price', 'special_price_from', 'special_price_to', 'inventories'],
             'content-and-media' => ['name', 'short_description', 'description', 'url_key', 'images', 'image_url', 'weight'],
             'categories-and-relations' => ['categories', 'parent_sku', 'related_skus', 'cross_sell_skus', 'up_sell_skus'],
@@ -447,86 +356,9 @@ class ImportController extends Controller
     }
 
     /**
-     * Scan the import CSV for supplier names, create missing ones, and return the
-     * resolved name→id map plus per-supplier log events.
-     *
-     * @return array{map: array<string, int>, events: array<int, array{action: string, id: int, name: string}>}
-     */
-    protected function resolveImportSuppliers(CatalogImportSession $session): array
-    {
-        $mapping = $session->column_mapping ?? [];
-
-        if (! in_array('supplier', $mapping, true)) {
-            return ['map' => [], 'events' => []];
-        }
-
-        $originalPath = Storage::disk('private')->path($session->file_path);
-        $delimiter = $session->delimiter;
-
-        $handle = fopen($originalPath, 'r');
-
-        if (! $handle) {
-            return ['map' => [], 'events' => []];
-        }
-
-        $originalHeaders = fgetcsv($handle, 4096, $delimiter) ?: [];
-        $supplierColIndex = null;
-
-        foreach ($originalHeaders as $idx => $header) {
-            if (($mapping[$header] ?? null) === 'supplier') {
-                $supplierColIndex = $idx;
-                break;
-            }
-        }
-
-        if ($supplierColIndex === null) {
-            fclose($handle);
-
-            return ['map' => [], 'events' => []];
-        }
-
-        $uniqueNames = [];
-
-        while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
-            $name = trim($row[$supplierColIndex] ?? '');
-
-            if ($name !== '') {
-                $uniqueNames[$name] = true;
-            }
-        }
-
-        fclose($handle);
-
-        if (empty($uniqueNames)) {
-            return ['map' => [], 'events' => []];
-        }
-
-        $existingMap = Supplier::all(['id', 'name'])
-            ->mapWithKeys(fn (Supplier $s) => [mb_strtolower($s->name) => $s->id])
-            ->all();
-
-        $supplierNameToId = $existingMap;
-        $events = [];
-
-        foreach (array_keys($uniqueNames) as $name) {
-            $lower = mb_strtolower($name);
-
-            if (isset($existingMap[$lower])) {
-                $events[] = ['action' => 'found', 'id' => $existingMap[$lower], 'name' => $name];
-            } else {
-                $new = Supplier::create(['name' => $name, 'status' => true]);
-                $supplierNameToId[$lower] = $new->id;
-                $events[] = ['action' => 'created', 'id' => $new->id, 'name' => $name];
-            }
-        }
-
-        return ['map' => $supplierNameToId, 'events' => $events];
-    }
-
-    /**
      * Reformat the uploaded CSV using the column mapping and save as a new file.
      */
-    protected function createRemappedCsv(CatalogImportSession $session, array $supplierNameToId = []): ?string
+    protected function createRemappedCsv(CatalogImportSession $session): ?string
     {
         $mapping = $session->column_mapping ?? [];
         $originalPath = Storage::disk('private')->path($session->file_path);
@@ -558,66 +390,34 @@ class ImportController extends Controller
             return null;
         }
 
-        // If the user selected an inventory source and mapped either:
-        //   a) a plain `qty` column → rename it to `inventories` and tag with source code, or
-        //   b) an `inventories` column directly (plain number) → tag with source code per-row.
-        // Both cases transform the raw value to the `{source_code}={qty}` format that
-        // the DataTransfer Importer expects.
+        // If the user mapped a plain `qty` column and selected an inventory source,
+        // rewrite that column as `inventories` with the format `{source_code}={qty}`
+        // that the DataTransfer Importer expects.  Skip this when there is already
+        // an explicit `inventories` column in the mapping.
         $inventorySourceCode = null;
 
-        if ($session->inventory_source_id) {
+        if (isset($columnMap['qty']) && ! isset($columnMap['inventories']) && $session->inventory_source_id) {
             $inventorySource = InventorySource::find($session->inventory_source_id);
 
             if ($inventorySource) {
-                if (isset($columnMap['qty']) && ! isset($columnMap['inventories'])) {
-                    // qty column mapped → rename to inventories and apply source code prefix
-                    $inventorySourceCode = $inventorySource->code;
-                    $qtyColumnIndex = $columnMap['qty'];
-                    unset($columnMap['qty']);
-                    $columnMap = array_merge(['inventories' => $qtyColumnIndex], $columnMap);
-                } elseif (isset($columnMap['inventories'])) {
-                    // inventories column mapped directly with a warehouse selected →
-                    // treat raw values as plain quantities and apply source code prefix per-row
-                    $inventorySourceCode = $inventorySource->code;
-                }
+                $inventorySourceCode = $inventorySource->code;
+                $qtyColumnIndex = $columnMap['qty'];
+                unset($columnMap['qty']);
+                $columnMap = array_merge(['inventories' => $qtyColumnIndex], $columnMap);
             }
-        }
-
-        // If the user mapped a `supplier` column, rename it to `supplier_id` so the
-        // DataTransfer importer recognises it as a base-table column.  Supplier names
-        // are resolved (and missing suppliers auto-created) before the main row loop.
-        $supplierColumnIndex = null;
-
-        if (isset($columnMap['supplier'])) {
-            $supplierColumnIndex = $columnMap['supplier'];
-            unset($columnMap['supplier']);
-            $columnMap = array_merge(['supplier_id' => $supplierColumnIndex], $columnMap);
         }
 
         $addLocaleColumn = ! isset($columnMap['locale']);
         $addTypeColumn = ! isset($columnMap['type']);
         $addFamilyColumn = ! isset($columnMap['attribute_family_code']);
 
-        // When new_products_active=false and status is not mapped, set status per-row
-        // (0 for new products, 1 for existing) instead of using a static column default.
-        $handleStatusPerRow = ! isset($columnMap['status']) && ! ($session->new_products_active ?? true);
-
-        // When new_products_in_stock=false, zero out inventory for new products per-row.
-        $handleInventoryPerRow = ! ($session->new_products_in_stock ?? true) && isset($columnMap['inventories']);
-
         // Required by the DataTransfer product importer — static defaults for boolean/numeric fields.
         $staticRequiredDefaults = [];
 
         foreach (['status' => '1', 'visible_individually' => '1', 'guest_checkout' => '1', 'weight' => '0'] as $field => $default) {
-            if (isset($columnMap[$field])) {
-                continue;
+            if (! isset($columnMap[$field])) {
+                $staticRequiredDefaults[$field] = $default;
             }
-
-            if ($field === 'status' && $handleStatusPerRow) {
-                continue; // handled per-row below
-            }
-
-            $staticRequiredDefaults[$field] = $default;
         }
 
         // url_key: auto-generated per row from the mapped SKU value.
@@ -660,10 +460,6 @@ class ImportController extends Controller
             $newHeaders[] = 'description';
         }
 
-        if ($handleStatusPerRow) {
-            $newHeaders[] = 'status';
-        }
-
         $remappedName = 'catalog-imports/remapped_'.basename($session->file_path);
         $remappedFullPath = Storage::disk('private')->path($remappedName);
         $dir = dirname($remappedFullPath);
@@ -682,10 +478,10 @@ class ImportController extends Controller
 
         fputcsv($writeHandle, $newHeaders);
 
-        // Pre-load existing SKUs for insert/update filtering and per-row flag handling.
+        // Pre-load existing SKUs for insert/update filtering when needed.
         $existingSkus = null;
 
-        if (! $session->allow_insert || ! $session->allow_update || $handleStatusPerRow || $handleInventoryPerRow) {
+        if (! $session->allow_insert || ! $session->allow_update) {
             $existingSkus = DB::table('products')->pluck('sku', 'sku')->all();
         }
 
@@ -712,23 +508,6 @@ class ImportController extends Controller
                 // Wrap the qty value in `source_code=qty` format for the inventories column.
                 if ($field === 'inventories' && $inventorySourceCode !== null) {
                     $rawValue = $rawValue !== '' ? $inventorySourceCode.'='.$rawValue : '';
-                }
-
-                // Zero out inventory for new products when new_products_in_stock=false.
-                if ($field === 'inventories' && $handleInventoryPerRow) {
-                    $skuIsNew = $existingSkus !== null && ! isset($existingSkus[$skuValue]);
-
-                    if ($skuIsNew) {
-                        $rawValue = '';
-                    }
-                }
-
-                // Resolve supplier name → supplier_id (empty string when name not found/blank).
-                if ($field === 'supplier_id' && $supplierColumnIndex !== null) {
-                    $supplierName = trim($rawValue);
-                    $rawValue = $supplierName !== ''
-                        ? (string) ($supplierNameToId[mb_strtolower($supplierName)] ?? '')
-                        : '';
                 }
 
                 $newRow[] = $rawValue;
@@ -763,11 +542,6 @@ class ImportController extends Controller
                 $newRow[] = $nameColumnIndex !== null ? ($row[$nameColumnIndex] ?? '-') : '-';
             }
 
-            // Per-row status: 0 for new products when new_products_active=false, 1 for existing.
-            if ($handleStatusPerRow) {
-                $newRow[] = ($existingSkus !== null && isset($existingSkus[$skuValue])) ? '1' : '0';
-            }
-
             fputcsv($writeHandle, $newRow);
         }
 
@@ -780,17 +554,16 @@ class ImportController extends Controller
     /**
      * Create missing categories referenced in the import file.
      *
-     * Returns an array of ['id' => int, 'name' => string] for each category that
-     * was newly created (pre-existing ones are not included).
-     *
-     * @return array<int, array{id: int, name: string}>
+     * Reads the original CSV, collects all category names from the mapped
+     * `categories` column and creates any that do not yet exist under the
+     * configured parent category.
      */
-    protected function createMissingCategories(CatalogImportSession $session): array
+    protected function createMissingCategories(CatalogImportSession $session): void
     {
         $mapping = $session->column_mapping ?? [];
         $originalPath = Storage::disk('private')->path($session->file_path);
         $delimiter = $session->delimiter;
-        $anchorId = (int) ($session->parent_category_id ?? 1);
+        $parentId = $session->parent_category_id ?? 1;
         $locale = $session->locale;
 
         // Find which original CSV header is mapped to `categories`.
@@ -805,13 +578,13 @@ class ImportController extends Controller
         }
 
         if ($categoriesHeader === null) {
-            return [];
+            return;
         }
 
         $handle = fopen($originalPath, 'r');
 
         if (! $handle) {
-            return [];
+            return;
         }
 
         $originalHeaders = fgetcsv($handle, 4096, $delimiter) ?: [];
@@ -820,13 +593,10 @@ class ImportController extends Controller
         if ($categoriesColIndex === false) {
             fclose($handle);
 
-            return [];
+            return;
         }
 
-        // Snapshot of existing category IDs before we create anything.
-        $preExistingIds = DB::table('categories')->pluck('id', 'id')->all();
-        $allReturnedIds = [];
-        $seenChains = [];
+        $allNames = [];
 
         while (($row = fgetcsv($handle, 4096, $delimiter)) !== false) {
             $cell = trim($row[$categoriesColIndex] ?? '');
@@ -835,52 +605,48 @@ class ImportController extends Controller
                 continue;
             }
 
-            $segments = array_values(array_filter(array_map('trim', explode(',', $cell))));
+            foreach (explode(',', $cell) as $name) {
+                $name = trim($name);
 
-            if ($segments === []) {
-                continue;
-            }
-
-            $chainKey = implode("\0", $segments);
-
-            if (isset($seenChains[$chainKey])) {
-                continue;
-            }
-
-            $seenChains[$chainKey] = true;
-
-            $returnedIds = $this->categoryRepository->ensureCategoryChainUnderParent($anchorId, $segments, $locale);
-
-            foreach ($returnedIds as $catId) {
-                $allReturnedIds[$catId] = true;
+                if ($name !== '') {
+                    $allNames[$name] = true;
+                }
             }
         }
 
         fclose($handle);
 
-        // New categories = returned IDs that were not in the pre-existing snapshot.
-        $newCategoryIds = array_keys(array_diff_key($allReturnedIds, $preExistingIds));
+        foreach (array_keys($allNames) as $name) {
+            $exists = $this->categoryRepository
+                ->whereTranslation('name', $name)
+                ->exists();
 
-        if (empty($newCategoryIds)) {
-            return [];
+            if ($exists) {
+                continue;
+            }
+
+            $slug = Str::slug($name);
+
+            if ($slug === '' || DB::table('category_translations')->where('slug', $slug)->exists()) {
+                $slug = Str::slug($name).'-'.substr(md5($name.microtime()), 0, 6);
+            }
+
+            $this->categoryRepository->create([
+                'locale' => 'all',
+                $locale => [
+                    'name' => $name,
+                    'description' => '',
+                    'meta_title' => '',
+                    'meta_description' => '',
+                    'meta_keywords' => '',
+                    'slug' => $slug,
+                ],
+                'position' => 1,
+                'status' => 1,
+                'display_mode' => 'products_and_description',
+                'parent_id' => $parentId,
+            ]);
         }
-
-        // Batch-fetch their translated names (preferred locale first, any locale as fallback).
-        $categoryNames = DB::table('category_translations')
-            ->whereIn('category_id', $newCategoryIds)
-            ->orderByRaw('CASE WHEN locale = ? THEN 0 ELSE 1 END', [$locale])
-            ->get(['category_id', 'name'])
-            ->unique('category_id')
-            ->pluck('name', 'category_id')
-            ->all();
-
-        return array_map(
-            fn (int $id): array => [
-                'id' => $id,
-                'name' => $categoryNames[$id] ?? "Category #{$id}",
-            ],
-            $newCategoryIds
-        );
     }
 
     /**
@@ -900,7 +666,7 @@ class ImportController extends Controller
                 $join->on('ct.category_id', '=', 'c.id')
                     ->where('ct.locale', $localeCode);
             })
-            ->select('c.id', 'c.parent_id', DB::raw('COALESCE(ct.name, CAST(c.id AS CHAR)) as name'))
+            ->select('c.id', 'c.parent_id', DB::raw("COALESCE(ct.name, CAST(c.id AS CHAR)) as name"))
             ->where('c.status', 1)
             ->orderBy('c.parent_id')
             ->orderBy('c.position')
@@ -943,51 +709,6 @@ class ImportController extends Controller
     }
 
     /**
-     * Read the first few data rows from the session CSV for preview.
-     *
-     * Returns an array keyed by header name, where each value is an array
-     * of up to PREVIEW_ROW_COUNT non-empty sample values from that column.
-     *
-     * @return array<string, list<string>>
-     */
-    protected function readPreviewRows(CatalogImportSession $session, int $maxRows = 5): array
-    {
-        $headers = $session->headers ?? [];
-
-        if (empty($headers)) {
-            return [];
-        }
-
-        $originalPath = Storage::disk('private')->path($session->file_path);
-        $handle = @fopen($originalPath, 'r');
-
-        if (! $handle) {
-            return [];
-        }
-
-        fgetcsv($handle, 4096, $session->delimiter); // skip header row
-
-        $preview = array_fill_keys($headers, []);
-        $rowsRead = 0;
-
-        while ($rowsRead < $maxRows && ($row = fgetcsv($handle, 4096, $session->delimiter)) !== false) {
-            foreach ($headers as $idx => $header) {
-                $value = trim($row[$idx] ?? '');
-
-                if ($value !== '') {
-                    $preview[$header][] = $value;
-                }
-            }
-
-            $rowsRead++;
-        }
-
-        fclose($handle);
-
-        return $preview;
-    }
-
-    /**
      * Remove a catalog import session owned by the current admin.
      */
     public function destroy(int $id): JsonResponse
@@ -1000,6 +721,12 @@ class ImportController extends Controller
             ->where('created_by', auth()->guard('admin')->id())
             ->whereKey($id)
             ->firstOrFail();
+
+        if ($session->state === CatalogImportSession::STATE_PROCESSING) {
+            return new JsonResponse([
+                'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
+            ], 422);
+        }
 
         try {
             $this->deleteCatalogImportSession($session);
@@ -1033,6 +760,12 @@ class ImportController extends Controller
 
             if (! $session) {
                 continue;
+            }
+
+            if ($session->state === CatalogImportSession::STATE_PROCESSING) {
+                return new JsonResponse([
+                    'message' => trans('admin::app.catalog.imports.index.delete-processing-not-allowed'),
+                ], 422);
             }
 
             try {
