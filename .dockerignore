@@ -2,6 +2,7 @@ node_modules
 packages/Webkul/Shop/node_modules
 packages/Webkul/Admin/node_modules
 packages/Webkul/Installer/node_modules
+packages/Webkul/ManagerApp/node_modules
 
 # Не нужны в образе — bind-монтируются с хоста при запуске
 storage/app
@@ -20,5 +21,7 @@ storage/framework/views
 docker/nginx/logs
 *.log
 
-# Скомпилированные ассеты (собираются отдельно или уже в публичной папке)
+# Скомпилированные ассеты (собираются в frontend-стейдже Dockerfile)
 public/build
+public/themes
+public/manager

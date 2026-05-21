@@ -1,3 +1,28 @@
+# ─── Stage 1: Frontend build ────────────────────────────────────────────────
+FROM node:20-alpine AS frontend
+
+WORKDIR /app
+
+# Исходники для всех Vite-сборок (node_modules исключены в .dockerignore)
+COPY package.json package-lock.json* vite.config.js ./
+COPY resources/ resources/
+COPY packages/Webkul/Admin/ packages/Webkul/Admin/
+COPY packages/Webkul/Shop/ packages/Webkul/Shop/
+COPY packages/Webkul/ManagerApp/ packages/Webkul/ManagerApp/
+
+# Root build → public/build
+RUN npm ci --prefer-offline && npm run build
+
+# Admin theme → public/themes/admin/default/build
+RUN cd packages/Webkul/Admin && npm ci --prefer-offline && npm run build
+
+# Shop theme → public/themes/shop/default/build
+RUN cd packages/Webkul/Shop && npm ci --prefer-offline && npm run build
+
+# ManagerApp → public/manager
+RUN cd packages/Webkul/ManagerApp && npm ci --prefer-offline && npm run build
+
+# ─── Stage 2: PHP application ────────────────────────────────────────────────
 FROM php:8.4-cli-alpine AS base
 
 # Установка системных зависимостей (БЕЗ изменения /etc/resolv.conf)
@@ -93,6 +118,11 @@ RUN set -eux; \
     find /tmp -maxdepth 3 -name 'rr' -type f | head -1 | xargs -I{} mv {} /usr/local/bin/rr; \
     chmod +x /usr/local/bin/rr; \
     rm -rf /tmp/rr*
+
+# Копируем собранный фронтенд из Node-стейджа (перезаписывает всё из COPY . .)
+COPY --from=frontend /app/public/build public/build
+COPY --from=frontend /app/public/themes public/themes
+COPY --from=frontend /app/public/manager public/manager
 
 # Настройка прав
 RUN chown -R www-data:www-data /var/www/html \

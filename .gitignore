@@ -41,5 +41,6 @@ yarn-error.log
 /public/build/assets
 /public/themes/shop/default/build
 /public/themes/admin/default/build
+/public/manager
 /tmp/*
 /test

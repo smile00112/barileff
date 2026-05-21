@@ -87,8 +87,9 @@ docker compose -f docker-compose.prod.yml up -d --force-recreate app
 info "Ожидание готовности нового контейнера..."
 sleep 10
 
-# Vite ассеты собираются на этапе docker build в Dockerfile
-info "Пропуск runtime-сборки фронтенда (Vite собирается в Dockerfile)..."
+# Vite-ассеты собираются в frontend-стейдже Dockerfile (Node 20) и копируются
+# в PHP-образ через COPY --from=frontend. В git они не хранятся.
+info "Фронтенд собирается внутри Docker-образа (frontend stage)..."
 
 # Очистка FPC (ResponseCache) — чтобы HTML перегенерировался с новыми хешами ассетов
 info "Очистка кеша страниц (ResponseCache)..."
