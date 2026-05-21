@@ -117,9 +117,15 @@ info "Прогрев кеша catalog-v2..."
 
 # Перезапуск Nginx (если нужно)
 if git diff HEAD@{1} HEAD --name-only | grep -q "docker/nginx/"; then
-    info "Обнаружены изменения в конфигурации Nginx. Перезапуск..."
-    docker compose -f docker-compose.prod.yml exec nginx nginx -t
-    docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
+    info "Обнаружены изменения в конфигурации Nginx. Проверка и перезагрузка..."
+    if docker compose -f docker-compose.prod.yml exec nginx nginx -t; then
+        docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
+        info "Nginx успешно перезагружен."
+    else
+        warn "nginx -t завершился с ошибкой. Nginx НЕ перезагружен — работает на старом конфиге."
+        warn "Исправьте ошибку вручную и выполните:"
+        warn "  docker exec \$(docker compose -f docker-compose.prod.yml ps -q nginx) nginx -s reload"
+    fi
 fi
 
 # Проверка статуса
