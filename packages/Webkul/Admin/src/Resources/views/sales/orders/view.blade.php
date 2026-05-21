@@ -106,117 +106,12 @@
 
         <!-- Step Progress -->
         @if ($orderStatuses->isNotEmpty())
-            <div
-                class="mt-3.5 rounded-lg bg-white shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800"
-                x-data="{
-                    loading: false,
-                    pendingCode: null,
-                    requestUpdate(code) {
-                        if (this.loading) return;
-                        this.pendingCode = code;
-                        this.$emitter.emit('open-confirm-modal', {
-                            message: '@lang('admin::app.sales.orders.view.status-update-confirm')',
-                            agree: () => this.doUpdate(),
-                        });
-                    },
-                    doUpdate() {
-                        if (! this.pendingCode || this.loading) return;
-                        this.loading = true;
-                        window.axios.post(
-                            '{{ route('admin.sales.orders.update_status', $order->id) }}',
-                            { status: this.pendingCode }
-                        )
-                        .then(({ data }) => {
-                            this.loading = false;
-                            if (data.success) {
-                                window.location.reload();
-                            } else {
-                                this.$emitter.emit('add-flash', { type: 'error', message: data.message || '@lang('admin::app.sales.orders.view.status-update-fail')' });
-                            }
-                        })
-                        .catch(err => {
-                            this.loading = false;
-                            const msg = err?.response?.data?.message || '@lang('admin::app.sales.orders.view.status-update-fail')';
-                            this.$emitter.emit('add-flash', { type: 'error', message: msg });
-                        });
-                    }
-                }"
-            >
-                <!-- Header -->
-                <div class="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5 dark:border-gray-800">
-                    <span class="icon-checkout-order text-lg text-violet-500"></span>
-                    <p class="text-sm font-semibold text-gray-700 dark:text-white">
-                        @lang('admin::app.sales.orders.view.step-progress')
-                    </p>
-
-                    <template x-if="loading">
-                        <svg class="ml-auto h-4 w-4 animate-spin text-violet-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>
-                    </template>
-                </div>
-
-                <!-- Steps -->
-                <div class="flex items-start overflow-x-auto px-6 py-5 gap-0">
-                    @foreach ($orderStatuses as $status)
-                        @php
-                            $isCurrent = $order->status === $status->code;
-                            $sortedCodes = $orderStatuses->pluck('code')->toArray();
-                            $currentIndex = array_search($order->status, $sortedCodes);
-                            $thisIndex = array_search($status->code, $sortedCodes);
-                            $isDone = $currentIndex !== false && $thisIndex < $currentIndex;
-                        @endphp
-
-                        <div class="group flex flex-1 flex-col items-center min-w-[72px]">
-                            <!-- Connector + circle row -->
-                            <div class="flex w-full items-center">
-                                {{-- Left connector --}}
-                                @if ($loop->first)
-                                    <div class="flex-1"></div>
-                                @else
-                                    <div class="h-[3px] flex-1 rounded-full transition-colors duration-300 {{ $isDone || $isCurrent ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
-                                @endif
-
-                                {{-- Circle --}}
-                                <button
-                                    type="button"
-                                    :disabled="loading"
-                                    @click="requestUpdate('{{ $status->code }}')"
-                                    title="{{ $status->name }}"
-                                    class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60
-                                        @if ($isCurrent) border-violet-600 bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-100 dark:shadow-violet-900/40 dark:ring-violet-900/50 hover:bg-violet-700
-                                        @elseif ($isDone) border-violet-500 bg-violet-50 text-violet-600 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/40
-                                        @else border-gray-200 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 hover:border-violet-400 hover:text-violet-500 @endif"
-                                >
-                                    @if ($isCurrent)
-                                        <span class="icon-done text-base text-white"></span>
-                                    @elseif ($isDone)
-                                        <span class="icon-done text-base text-violet-500"></span>
-                                    @else
-                                        <span class="text-xs font-semibold">{{ $loop->index + 1 }}</span>
-                                    @endif
-                                </button>
-
-                                {{-- Right connector --}}
-                                @if ($loop->last)
-                                    <div class="flex-1"></div>
-                                @else
-                                    <div class="h-[3px] flex-1 rounded-full transition-colors duration-300 {{ $isDone ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
-                                @endif
-                            </div>
-
-                            {{-- Label --}}
-                            <p class="mt-2 px-1 text-center text-[11px] font-medium leading-tight transition-colors duration-200
-                                @if ($isCurrent) text-violet-600 dark:text-violet-400
-                                @elseif ($isDone) text-gray-500 dark:text-gray-400
-                                @else text-gray-400 dark:text-gray-600 group-hover:text-gray-500 @endif">
-                                {{ $status->name }}
-                            </p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+            <v-order-status-stepper
+                :order-id="{{ $order->id }}"
+                current-status="{{ $order->status }}"
+                update-url="{{ route('admin.sales.orders.update_status', $order->id) }}"
+                :statuses="{{ json_encode($orderStatuses->map(fn ($s) => ['code' => $s->code, 'name' => $s->name])->values()) }}"
+            ></v-order-status-stepper>
         @endif
 
         <!-- Order details -->
@@ -1133,4 +1028,182 @@
             </div>
         </div>
     </div>
+
+    <script type="text/x-template" id="v-order-status-stepper-template">
+        <div class="mt-3.5 rounded-lg bg-white shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800">
+            <!-- Header -->
+            <div class="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5 dark:border-gray-800">
+                <span class="icon-checkout-order text-lg text-violet-500"></span>
+
+                <p class="text-sm font-semibold text-gray-700 dark:text-white">
+                    @lang('admin::app.sales.orders.view.step-progress')
+                </p>
+
+                <svg
+                    v-if="loading"
+                    class="ml-auto h-4 w-4 animate-spin text-violet-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            </div>
+
+            <!-- Steps -->
+            <div class="flex items-start overflow-x-auto px-6 py-5 gap-0">
+                <div
+                    v-for="(status, index) in statuses"
+                    :key="status.code"
+                    class="group flex flex-1 flex-col items-center min-w-[72px]"
+                >
+                    <div class="flex w-full items-center">
+                        <!-- Left connector -->
+                        <div
+                            class="h-[3px] flex-1 rounded-full transition-colors duration-300"
+                            :class="index === 0 ? '' : (isDone(status.code) || isCurrent(status.code) ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700')"
+                        ></div>
+
+                        <!-- Circle button -->
+                        <button
+                            type="button"
+                            :disabled="loading"
+                            :title="status.name"
+                            class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                            :class="{
+                                'border-violet-600 bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-100 dark:shadow-violet-900/40 dark:ring-violet-900/50 hover:bg-violet-700': isCurrent(status.code),
+                                'border-violet-500 bg-violet-50 text-violet-600 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/40': isDone(status.code) && ! isCurrent(status.code),
+                                'border-gray-200 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 hover:border-violet-400 hover:text-violet-500': ! isCurrent(status.code) && ! isDone(status.code)
+                            }"
+                            @click="requestUpdate(status.code)"
+                        >
+                            <span v-if="isCurrent(status.code)" class="icon-done text-base text-white"></span>
+                            <span v-else-if="isDone(status.code)" class="icon-done text-base text-violet-500"></span>
+                            <span v-else class="text-xs font-semibold">@{{ index + 1 }}</span>
+                        </button>
+
+                        <!-- Right connector -->
+                        <div
+                            class="h-[3px] flex-1 rounded-full transition-colors duration-300"
+                            :class="index === statuses.length - 1 ? '' : (isDone(status.code) ? 'bg-violet-500' : 'bg-gray-200 dark:bg-gray-700')"
+                        ></div>
+                    </div>
+
+                    <!-- Label -->
+                    <p
+                        class="mt-2 px-1 text-center text-[11px] font-medium leading-tight transition-colors duration-200"
+                        :class="{
+                            'text-violet-600 dark:text-violet-400': isCurrent(status.code),
+                            'text-gray-500 dark:text-gray-400': isDone(status.code) && ! isCurrent(status.code),
+                            'text-gray-400 dark:text-gray-600 group-hover:text-gray-500': ! isCurrent(status.code) && ! isDone(status.code)
+                        }"
+                    >
+                        @{{ status.name }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="module">
+        app.component('v-order-status-stepper', {
+            template: '#v-order-status-stepper-template',
+
+            props: {
+                orderId: {
+                    type: Number,
+                    required: true,
+                },
+
+                currentStatus: {
+                    type: String,
+                    required: true,
+                },
+
+                updateUrl: {
+                    type: String,
+                    required: true,
+                },
+
+                statuses: {
+                    type: Array,
+                    required: true,
+                },
+            },
+
+            data() {
+                return {
+                    loading: false,
+                    pendingCode: null,
+                };
+            },
+
+            computed: {
+                sortedCodes() {
+                    return this.statuses.map(s => s.code);
+                },
+
+                currentIndex() {
+                    return this.sortedCodes.indexOf(this.currentStatus);
+                },
+            },
+
+            methods: {
+                isDone(code) {
+                    const idx = this.sortedCodes.indexOf(code);
+
+                    return this.currentIndex !== -1 && idx < this.currentIndex;
+                },
+
+                isCurrent(code) {
+                    return this.currentStatus === code;
+                },
+
+                requestUpdate(code) {
+                    if (this.loading) {
+                        return;
+                    }
+
+                    this.pendingCode = code;
+
+                    this.$emitter.emit('open-confirm-modal', {
+                        message: '@lang('admin::app.sales.orders.view.status-update-confirm')',
+                        agree: () => this.doUpdate(),
+                    });
+                },
+
+                doUpdate() {
+                    if (! this.pendingCode || this.loading) {
+                        return;
+                    }
+
+                    this.loading = true;
+
+                    this.$axios
+                        .post(this.updateUrl, { status: this.pendingCode })
+                        .then(({ data }) => {
+                            this.loading = false;
+
+                            if (data.success) {
+                                window.location.reload();
+                            } else {
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: data.message || '@lang('admin::app.sales.orders.view.status-update-fail')',
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            this.loading = false;
+
+                            const msg = err?.response?.data?.message
+                                || '@lang('admin::app.sales.orders.view.status-update-fail')';
+
+                            this.$emitter.emit('add-flash', { type: 'error', message: msg });
+                        });
+                },
+            },
+        });
+    </script>
 </x-admin::layouts>
