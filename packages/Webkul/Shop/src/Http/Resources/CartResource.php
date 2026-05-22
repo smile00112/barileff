@@ -67,6 +67,11 @@ class CartResource extends JsonResource
             'items' => CartItemResource::collection($this->items),
             'billing_address' => new AddressResource($this->billing_address),
             'shipping_address' => new AddressResource($this->shipping_address),
+            'customer_profile' => $this->customer ? [
+                'full_name' => trim($this->customer->first_name.' '.$this->customer->last_name),
+                'email' => $this->customer->email,
+                'phone' => $this->customer->phone,
+            ] : null,
             'have_stockable_items' => $this->haveStockableItems(),
             'payment_method' => $this->payment?->method,
             'payment_method_title' => core()->getConfigData('sales.payment_methods.'.$this->payment?->method.'.title'),

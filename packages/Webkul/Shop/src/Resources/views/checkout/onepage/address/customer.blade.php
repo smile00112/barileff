@@ -105,13 +105,14 @@
             computed: {
                 prefillAddress() {
                     const b = this.cart.billing_address;
+                    const p = this.cart.customer_profile;
 
                     return {
                         id: b?.id ?? 0,
                         company_name: b?.company_name ?? '',
-                        full_name: [b?.first_name, b?.last_name].filter(Boolean).join(' '),
-                        email: b?.email ?? '',
-                        phone: b?.phone ?? '',
+                        full_name: [b?.first_name, b?.last_name].filter(Boolean).join(' ') || p?.full_name || '',
+                        email: b?.email || p?.email || '',
+                        phone: b?.phone || p?.phone || '',
                         address: this.deliverySelection?.label ? [this.deliverySelection.label] : (b?.address ?? []),
                         city: this.cart.delivery_zone?.city_name || this.deliverySelection?.city || b?.city || '',
                         country: this.cart.delivery_zone?.city_country || this.deliverySelection?.country || b?.country || '',
