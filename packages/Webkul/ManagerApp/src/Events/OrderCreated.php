@@ -5,11 +5,11 @@ namespace Webkul\ManagerApp\Events;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Webkul\ManagerApp\Http\Resources\OrderResource;
 use Webkul\Sales\Models\Order;
 
-class OrderCreated implements ShouldBroadcastNow
+class OrderCreated implements ShouldBroadcast
 {
     use InteractsWithSockets;
 
