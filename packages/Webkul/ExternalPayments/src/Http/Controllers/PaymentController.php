@@ -84,6 +84,12 @@ class PaymentController extends Controller
             $result = $apiClient->createPayment($payload);
 
         } catch (\RuntimeException $e) {
+            \Illuminate\Support\Facades\Log::error('ExternalPayments: createPayment failed', [
+                'order_id' => $order->id,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ]);
+
             session()->flash('error', $e->getMessage());
 
             return redirect()->route('shop.checkout.cart.index');
