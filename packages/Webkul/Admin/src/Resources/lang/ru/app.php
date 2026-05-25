@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 return [
     'users' => [
@@ -3006,6 +3006,94 @@ return [
             ],
         ],
 
+        'push-notifications' => [
+            'index' => [
+                'title'             => 'Push-уведомления',
+                'vapid-section'     => 'VAPID-ключи',
+                'vapid-description' => 'VAPID-ключи необходимы для отправки Web Push-уведомлений. Сгенерируйте их один раз и не меняйте.',
+                'public-key'        => 'Публичный ключ',
+                'subject'           => 'Subject (mailto или URL)',
+                'generate-btn'      => 'Сгенерировать новые ключи',
+                'save-subject-btn'  => 'Сохранить Subject',
+                'admin-events-tab'  => 'События администратора',
+                'shop-events-tab'   => 'События магазина',
+                'event-col'         => 'Событие',
+                'title-col'         => 'Заголовок',
+                'body-col'          => 'Текст сообщения',
+                'target-col'        => 'Получатель',
+                'active-col'        => 'Активно',
+                'save-btn'          => 'Сохранить',
+                'placeholders-hint' => 'Доступные переменные',
+                'no-vapid-warning'  => 'VAPID-ключи не настроены. Web Push не будет работать до их генерации.',
+            ],
+            'update-success'   => 'Настройка push-уведомления сохранена.',
+            'vapid-generated'  => 'VAPID-ключи успешно сгенерированы.',
+            'vapid-updated'    => 'VAPID Subject успешно обновлён.',
+            'vapid-missing'    => 'Сначала сгенерируйте VAPID-ключи.',
+        ],
+
+
+        'order-statuses' => [
+            'index' => [
+                'title'      => 'Статусы заказов',
+                'create-btn' => 'Создать статус заказа',
+                'datagrid'   => [
+                    'delete' => 'Удалить',
+                ],
+            ],
+            'create' => [
+                'title'    => 'Создать статус заказа',
+                'save-btn' => 'Сохранить',
+            ],
+            'edit' => [
+                'title'    => 'Редактировать статус заказа',
+                'save-btn' => 'Сохранить',
+            ],
+            'form' => [
+                'name'                => 'Название',
+                'code'                => 'Код',
+                'color'               => 'Цвет',
+                'icon'                => 'Иконка',
+                'sort-order'          => 'Порядок сортировки',
+                'is-active'           => 'Активен',
+                'is-terminal'         => 'Финальное состояние',
+                'is-cancel-state'     => 'Состояние отмены',
+                'is-payment-required' => 'Требуется оплата',
+            ],
+            'transitions' => [
+                'title'         => 'Переходы',
+                'create-btn'    => 'Добавить переход',
+                'to-status'     => 'В статус',
+                'channel'       => 'Канал',
+                'payment-type'  => 'Тип оплаты',
+                'delivery-type' => 'Тип доставки',
+                'priority'      => 'Приоритет',
+                'is-active'     => 'Активен',
+            ],
+            'workflow' => [
+                'title'            => 'Рабочий процесс',
+                'save-btn'         => 'Сохранить',
+                'new-order-status' => 'Новый статус заказа',
+            ],
+            'icons' => [
+                'alert'        => 'Предупреждение',
+                'bag'          => 'Сумка',
+                'ban'          => 'Запрет',
+                'card'         => 'Карта',
+                'check'        => 'Галочка',
+                'clock'        => 'Часы',
+                'cycle'        => 'Цикл',
+                'eye'          => 'Глаз',
+                'fire'         => 'Огонь',
+                'gift'         => 'Подарок',
+                'info'         => 'Информация',
+                'lock'         => 'Замок',
+                'shield-check' => 'Щит',
+                'star'         => 'Звезда',
+                'truck'        => 'Грузовик',
+                'x-circle'     => 'Отклонено',
+            ],
+        ],
         'data-transfer' => [
             'imports' => [
                 'create' => [

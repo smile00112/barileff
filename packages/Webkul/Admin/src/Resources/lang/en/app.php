@@ -3032,6 +3032,68 @@ return [
             'vapid-missing' => 'Please generate VAPID keys first.',
         ],
 
+        'order-statuses' => [
+            'index' => [
+                'title'      => 'Order Statuses',
+                'create-btn' => 'Create Order Status',
+                'datagrid'   => [
+                    'delete' => 'Delete',
+                ],
+            ],
+            'create' => [
+                'title'    => 'Create Order Status',
+                'save-btn' => 'Save',
+            ],
+            'edit' => [
+                'title'    => 'Edit Order Status',
+                'save-btn' => 'Save',
+            ],
+            'form' => [
+                'name'               => 'Name',
+                'code'               => 'Code',
+                'color'              => 'Color',
+                'icon'               => 'Icon',
+                'sort-order'         => 'Sort Order',
+                'is-active'          => 'Active',
+                'is-terminal'        => 'Terminal State',
+                'is-cancel-state'    => 'Cancel State',
+                'is-payment-required'=> 'Payment Required',
+            ],
+            'transitions' => [
+                'title'         => 'Transitions',
+                'create-btn'    => 'Add Transition',
+                'to-status'     => 'To Status',
+                'channel'       => 'Channel',
+                'payment-type'  => 'Payment Type',
+                'delivery-type' => 'Delivery Type',
+                'priority'      => 'Priority',
+                'is-active'     => 'Active',
+            ],
+            'workflow' => [
+                'title'            => 'Workflow',
+                'save-btn'         => 'Save Workflow',
+                'new-order-status' => 'New Order Status',
+            ],
+            'icons' => [
+                'alert'        => 'Alert',
+                'bag'          => 'Bag',
+                'ban'          => 'Ban',
+                'card'         => 'Card',
+                'check'        => 'Check',
+                'clock'        => 'Clock',
+                'cycle'        => 'Cycle',
+                'eye'          => 'Eye',
+                'fire'         => 'Fire',
+                'gift'         => 'Gift',
+                'info'         => 'Info',
+                'lock'         => 'Lock',
+                'shield-check' => 'Shield Check',
+                'star'         => 'Star',
+                'truck'        => 'Truck',
+                'x-circle'     => 'X Circle',
+            ],
+        ],
+
         'data-transfer' => [
             'imports' => [
                 'create' => [
