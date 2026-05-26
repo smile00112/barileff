@@ -2263,6 +2263,20 @@ return [
             ],
         ],
     ], [
+        'key' => 'sales.order_settings.status_transitions',
+        'name' => 'admin::app.configuration.index.sales.order-settings.status-transitions.title',
+        'info' => 'admin::app.configuration.index.sales.order-settings.status-transitions.info',
+        'sort' => 3,
+        'fields' => [
+            [
+                'name' => 'enable_transition_rules',
+                'title' => 'admin::app.configuration.index.sales.order-settings.status-transitions.enable',
+                'info' => 'admin::app.configuration.index.sales.order-settings.status-transitions.enable-info',
+                'type' => 'boolean',
+                'default' => true,
+            ],
+        ],
+    ], [
         'key' => 'sales.invoice_settings',
         'name' => 'admin::app.configuration.index.sales.invoice-settings.title',
         'info' => 'admin::app.configuration.index.sales.invoice-settings.info',

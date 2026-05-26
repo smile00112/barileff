@@ -51,46 +51,14 @@
                 <div style="font-size: 16px;font-weight: 400;color: #384860;">
                     {{ $order->shipping_title }}
                 </div>
-            </div>
-        @endif
 
-        @if ($order->billing_address)
-            <div style="line-height: 25px;">
-                <div style="font-size: 16px;font-weight: 600;color: #121A26;">
-                    @lang('shop::app.emails.orders.billing-address')
-                </div>
+                @if ($order->inventory_source)
+                    <div style="font-size: 16px;font-weight: 600;color: #121A26;margin-top: 15px;">
+                        Склад
+                    </div>
 
-                <div style="font-size: 16px;font-weight: 400;color: #384860;margin-bottom: 40px;">
-                    {{ $order->billing_address->company_name ?? '' }}<br/>
-
-                    {{ $order->billing_address->name }}<br/>
-
-                    {{ $order->billing_address->address }}<br/>
-
-                    {{ $order->billing_address->postcode . " " . $order->billing_address->city }}<br/>
-
-                    {{ $order->billing_address->state }}<br/>
-
-                    ---<br/>
-
-                    @lang('shop::app.emails.orders.contact') : {{ $order->billing_address->phone }}
-                </div>
-
-                <div style="font-size: 16px;font-weight: 600;color: #121A26;">
-                    @lang('shop::app.emails.orders.payment')
-                </div>
-
-                <div style="font-size: 16px;font-weight: 400;color: #384860;">
-                    {{ core()->getConfigData('sales.payment_methods.' . $order->payment->method . '.title') }}
-                </div>
-
-                @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($order->payment->method); @endphp
-
-                @if (! empty($additionalDetails))
-                    <div style="font-size: 16px; color: #384860;">
-                        <div>{{ $additionalDetails['title'] }}</div>
-
-                        <div>{{ $additionalDetails['value'] }}</div>
+                    <div style="font-size: 16px;font-weight: 400;color: #384860;">
+                        {{ $order->inventory_source->name }}
                     </div>
                 @endif
             </div>

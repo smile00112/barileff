@@ -95,6 +95,11 @@ class OrderStatusTransitionService
             return false;
         }
 
+        // If transition rule enforcement is globally disabled, allow any transition to an active status.
+        if (! $this->isEnforced()) {
+            return true;
+        }
+
         $fromStatus = $order->status;
 
         // If the current status is not known in the DB (legacy data), allow transition
@@ -160,11 +165,22 @@ class OrderStatusTransitionService
     {
         Cache::forget('order_statuses_all');
         Cache::forget('order_status_transitions_all');
+        Cache::forget('order_transition_enforcement');
     }
 
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
+
+    private function isEnforced(): bool
+    {
+        return Cache::remember('order_transition_enforcement', self::CACHE_TTL, function () {
+            $value = core()->getConfigData('sales.order_settings.status_transitions.enable_transition_rules');
+
+            // null means not saved yet — default is true (enforced).
+            return $value === null || (bool) $value;
+        });
+    }
 
     private function getStatusByCode(string $code): ?OrderStatus
     {
