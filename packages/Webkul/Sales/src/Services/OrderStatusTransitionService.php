@@ -212,15 +212,15 @@ class OrderStatusTransitionService
                 }
             }
 
-            if ($t->delivery_type !== null && $t->delivery_type !== $deliveryType) {
+            if (! empty($t->delivery_type) && $t->delivery_type !== $deliveryType) {
                 return false;
             }
 
-            if ($t->payment_type !== null && $t->payment_type !== $paymentType) {
+            if (! empty($t->payment_type) && $t->payment_type !== $paymentType) {
                 return false;
             }
 
-            if ($t->channel !== null && $t->channel !== $channel) {
+            if (! empty($t->channel) && $t->channel !== $channel) {
                 return false;
             }
 

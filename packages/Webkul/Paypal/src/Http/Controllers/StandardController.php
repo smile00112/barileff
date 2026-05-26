@@ -2,10 +2,16 @@
 
 namespace Webkul\Paypal\Http\Controllers;
 
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Customer\Models\Customer;
+use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Paypal\Helpers\Ipn;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
+use Webkul\Shop\Mail\Customer\AccountCreatedNotification;
 
 class StandardController extends Controller
 {
@@ -16,13 +22,14 @@ class StandardController extends Controller
      */
     public function __construct(
         protected OrderRepository $orderRepository,
-        protected Ipn $ipnHelper
+        protected Ipn $ipnHelper,
+        protected CustomerRepository $customerRepository
     ) {}
 
     /**
      * Redirects to the paypal.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function redirect()
     {
@@ -32,7 +39,7 @@ class StandardController extends Controller
     /**
      * Cancel payment from paypal.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function cancel()
     {
@@ -44,7 +51,7 @@ class StandardController extends Controller
     /**
      * Success payment.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function success()
     {
@@ -56,6 +63,16 @@ class StandardController extends Controller
 
         Cart::deActivateCart();
 
+        if (! auth()->guard('customer')->check()) {
+            if (! Customer::where('email', $order->customer_email)->exists()) {
+                $result = $this->customerRepository->createFromGuestCheckout($order);
+
+                auth()->guard('customer')->login($result['customer']);
+
+                Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
+            }
+        }
+
         session()->flash('order_id', $order->id);
 
         return redirect()->route('shop.checkout.onepage.success');
@@ -64,7 +81,7 @@ class StandardController extends Controller
     /**
      * Paypal IPN listener.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function ipn()
     {

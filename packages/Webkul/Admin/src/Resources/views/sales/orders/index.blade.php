@@ -143,7 +143,7 @@
                         </p>
 
                         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                            @{{ record.location }}
+                            @{{ record.customer_phone }}
                         </p>
                     </div>
 

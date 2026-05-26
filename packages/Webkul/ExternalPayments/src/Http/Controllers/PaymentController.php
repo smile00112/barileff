@@ -3,12 +3,17 @@
 namespace Webkul\ExternalPayments\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Customer\Models\Customer;
+use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\ExternalPayments\Models\InventorySourceConfig;
 use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\ExternalPayments\Services\ApiClient;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
+use Webkul\Shop\Mail\Customer\AccountCreatedNotification;
 
 class PaymentController extends Controller
 {
@@ -18,6 +23,7 @@ class PaymentController extends Controller
     public function __construct(
         protected OrderRepository $orderRepository,
         protected InventorySourceConfigRepository $configRepository,
+        protected CustomerRepository $customerRepository,
     ) {}
 
     /**
@@ -84,7 +90,7 @@ class PaymentController extends Controller
             $result = $apiClient->createPayment($payload);
 
         } catch (\RuntimeException $e) {
-            \Illuminate\Support\Facades\Log::error('ExternalPayments: createPayment failed', [
+            Log::error('ExternalPayments: createPayment failed', [
                 'order_id' => $order->id,
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
@@ -119,6 +125,18 @@ class PaymentController extends Controller
 
         if ($orderId) {
             session()->flash('order_id', $orderId);
+
+            if (! auth()->guard('customer')->check()) {
+                $order = $this->orderRepository->find($orderId);
+
+                if ($order && ! Customer::where('email', $order->customer_email)->exists()) {
+                    $result = $this->customerRepository->createFromGuestCheckout($order);
+
+                    auth()->guard('customer')->login($result['customer']);
+
+                    Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
+                }
+            }
         }
 
         return redirect()->route('shop.checkout.onepage.success');

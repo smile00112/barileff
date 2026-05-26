@@ -15,6 +15,23 @@ class StoreOrderStatusTransitionRequest extends FormRequest
     }
 
     /**
+     * Normalize empty strings to null for optional context fields.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'delivery_type' => $this->nullify($this->delivery_type),
+            'payment_type' => $this->nullify($this->payment_type),
+            'channel' => $this->nullify($this->channel),
+        ]);
+    }
+
+    private function nullify(mixed $value): ?string
+    {
+        return ($value === '' || $value === null) ? null : $value;
+    }
+
+    /**
      * Get the validation rules.
      *
      * @return array<string, mixed>

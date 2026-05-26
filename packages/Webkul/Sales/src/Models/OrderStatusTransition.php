@@ -21,9 +21,24 @@ class OrderStatusTransition extends Model implements OrderStatusTransitionContra
     protected function casts(): array
     {
         return [
-            'is_active'  => 'boolean',
-            'priority'   => 'integer',
+            'is_active' => 'boolean',
+            'priority' => 'integer',
             'conditions' => 'array',
         ];
+    }
+
+    public function setDeliveryTypeAttribute(?string $value): void
+    {
+        $this->attributes['delivery_type'] = $value !== '' ? $value : null;
+    }
+
+    public function setPaymentTypeAttribute(?string $value): void
+    {
+        $this->attributes['payment_type'] = $value !== '' ? $value : null;
+    }
+
+    public function setChannelAttribute(?string $value): void
+    {
+        $this->attributes['channel'] = $value !== '' ? $value : null;
     }
 }

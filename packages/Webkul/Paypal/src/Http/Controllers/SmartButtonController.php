@@ -2,11 +2,18 @@
 
 namespace Webkul\Paypal\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Customer\Models\Customer;
+use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Paypal\Payment\SmartButton;
+use Webkul\Sales\Models\Order;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
+use Webkul\Shop\Mail\Customer\AccountCreatedNotification;
 
 class SmartButtonController extends Controller
 {
@@ -18,13 +25,14 @@ class SmartButtonController extends Controller
     public function __construct(
         protected SmartButton $smartButton,
         protected OrderRepository $orderRepository,
-        protected InvoiceRepository $invoiceRepository
+        protected InvoiceRepository $invoiceRepository,
+        protected CustomerRepository $customerRepository
     ) {}
 
     /**
      * Paypal order creation for approval of client.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function createOrder()
     {
@@ -38,7 +46,7 @@ class SmartButtonController extends Controller
     /**
      * Capturing paypal order after approval.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function captureOrder()
     {
@@ -204,7 +212,7 @@ class SmartButtonController extends Controller
     /**
      * Saving order once captured and all formalities done.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     protected function saveOrder()
     {
@@ -231,6 +239,16 @@ class SmartButtonController extends Controller
 
             Cart::deActivateCart();
 
+            if (! auth()->guard('customer')->check()) {
+                if (! Customer::where('email', $order->customer_email)->exists()) {
+                    $result = $this->customerRepository->createFromGuestCheckout($order);
+
+                    auth()->guard('customer')->login($result['customer']);
+
+                    Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
+                }
+            }
+
             session()->flash('order_id', $order->id);
 
             return response()->json([
@@ -246,7 +264,7 @@ class SmartButtonController extends Controller
     /**
      * Prepares order's invoice data for creation.
      *
-     * @param  \Webkul\Sales\Models\Order  $order
+     * @param  Order  $order
      * @return array
      */
     protected function prepareInvoiceData($order)
