@@ -106,7 +106,7 @@
 
         <!-- Step Progress -->
         @php
-            dump($orderStatuse);
+            dump($orderStatuses);
         @endphp
         @if ($orderStatuses->isNotEmpty())
             <v-order-status-stepper
