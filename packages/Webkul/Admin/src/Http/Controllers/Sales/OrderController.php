@@ -22,6 +22,7 @@ use Webkul\Sales\Repositories\OrderStatusRepository;
 use Webkul\Sales\Services\OrderStatusTransitionService;
 use Webkul\Sales\Services\TransitionContext;
 use Webkul\Sales\Transformers\OrderResource;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -155,6 +156,8 @@ class OrderController extends Controller
         $order = $this->orderRepository->findOrFail($id);
 
         $orderStatuses = $this->orderStatusRepository->getActive();
+
+        Log::info('Viewing order', ['order_id' => $order->id, 'orderStatuses' => $orderStatuses]);
 
         return view('admin::sales.orders.view', compact('order', 'orderStatuses'));
     }
