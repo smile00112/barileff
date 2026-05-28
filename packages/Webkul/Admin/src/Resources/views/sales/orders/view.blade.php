@@ -105,6 +105,9 @@
         </div>
 
         <!-- Step Progress -->
+        @php
+            dump($orderStatuse);
+        @endphp
         @if ($orderStatuses->isNotEmpty())
             <v-order-status-stepper
                 :order-id="{{ $order->id }}"

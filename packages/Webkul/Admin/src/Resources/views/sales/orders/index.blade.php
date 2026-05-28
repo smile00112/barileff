@@ -185,7 +185,7 @@
         >
             <div
                 v-if="statuses.length"
-                class="mb-4 flex gap-3 overflow-x-auto pb-2"
+                class="mb-4 flex gap-3 overflow-x-auto pb-2 p-10"
             >
                 <div
                     v-for="status in statuses"
@@ -236,7 +236,7 @@
             <div class="relative" v-if="currentStatus">
                 <button
                     type="button"
-                    class="flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-opacity hover:opacity-80"
+                    class="flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-opacity hover:opacity-80 border border-solid border-gray-400"
                     :style="{ backgroundColor: currentStatus.color + '22', color: currentStatus.color }"
                     @click.stop="open = !open"
                 >
