@@ -3,6 +3,7 @@
 namespace Webkul\ExternalPayments\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Webkul\Checkout\Facades\Cart;
@@ -11,6 +12,7 @@ use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\ExternalPayments\Models\InventorySourceConfig;
 use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\ExternalPayments\Services\ApiClient;
+use Webkul\Sales\Models\Order;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
 use Webkul\Shop\Mail\Customer\AccountCreatedNotification;
@@ -55,6 +57,8 @@ class PaymentController extends Controller
         $order = $this->orderRepository->create($data);
 
         Cart::deActivateCart();
+
+        $this->registerGuestCustomer($order);
 
         try {
             $apiClient = $this->makeApiClient($sourceConfig);
@@ -126,16 +130,10 @@ class PaymentController extends Controller
         if ($orderId) {
             session()->flash('order_id', $orderId);
 
-            if (! auth()->guard('customer')->check()) {
-                $order = $this->orderRepository->find($orderId);
+            $order = $this->orderRepository->find($orderId);
 
-                if ($order && ! Customer::where('email', $order->customer_email)->exists()) {
-                    $result = $this->customerRepository->createFromGuestCheckout($order);
-
-                    auth()->guard('customer')->login($result['customer']);
-
-                    Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
-                }
+            if ($order) {
+                $this->registerGuestCustomer($order);
             }
         }
 
@@ -158,5 +156,26 @@ class PaymentController extends Controller
     private function makeApiClient(InventorySourceConfig $sourceConfig): ApiClient
     {
         return new ApiClient($sourceConfig->api_server_url, $sourceConfig->api_token);
+    }
+
+    /**
+     * Create and authenticate a customer account for a new guest order.
+     */
+    private function registerGuestCustomer(Order $order): void
+    {
+        if (
+            auth()->guard('customer')->check()
+            || Customer::where('email', $order->customer_email)->exists()
+        ) {
+            return;
+        }
+
+        $result = $this->customerRepository->createFromGuestCheckout($order);
+
+        auth()->guard('customer')->login($result['customer']);
+
+        Event::dispatch('customer.after.login', $result['customer']);
+
+        Mail::queue(new AccountCreatedNotification($result['customer'], $result['password']));
     }
 }

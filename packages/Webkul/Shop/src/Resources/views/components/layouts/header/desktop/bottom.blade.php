@@ -34,6 +34,7 @@
                 width="131"
                 height="29"
                 alt="{{ config('app.name') }}"
+                class="rounded-50"
             >
         </a>
 
