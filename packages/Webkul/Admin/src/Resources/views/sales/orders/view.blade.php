@@ -110,7 +110,7 @@
                 :order-id="{{ $order->id }}"
                 current-status="{{ $order->status }}"
                 update-url="{{ route('admin.sales.orders.update_status', $order->id) }}"
-                :statuses="{{ json_encode($orderStatuses->map(fn ($s) => ['code' => $s->code, 'name' => $s->name])->values()) }}"
+                :statuses='@json($orderStatuses->map(fn ($status) => ['code' => $status->code, 'name' => $status->name])->values())'
             ></v-order-status-stepper>
         @endif
 
@@ -1029,7 +1029,8 @@
         </div>
     </div>
 
-    <script type="text/x-template" id="v-order-status-stepper-template">
+    @pushOnce('scripts')
+        <script type="text/x-template" id="v-order-status-stepper-template">
         <div class="mt-3.5 rounded-lg bg-white shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800">
             <!-- Header -->
             <div class="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5 dark:border-gray-800">
@@ -1104,9 +1105,9 @@
                 </div>
             </div>
         </div>
-    </script>
+        </script>
 
-    <script type="module">
+        <script type="module">
         app.component('v-order-status-stepper', {
             template: '#v-order-status-stepper-template',
 
@@ -1205,5 +1206,6 @@
                 },
             },
         });
-    </script>
+        </script>
+    @endPushOnce
 </x-admin::layouts>

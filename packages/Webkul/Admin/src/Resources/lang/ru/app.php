@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'users' => [
@@ -408,6 +408,10 @@ return [
                 'shipping-price' => 'Стоимость доставки',
                 'sku' => 'Артикул - :sku',
                 'status' => 'Статус',
+                'status-update-confirm' => 'Вы уверены, что хотите изменить статус заказа?',
+                'status-update-fail' => 'Не удалось изменить статус заказа.',
+                'status-update-success' => 'Статус заказа успешно изменен.',
+                'step-progress' => 'Быстрая смена статуса',
                 'sub-total' => 'Подитог - :sub_total',
                 'sub-total-excl-tax' => 'Подитог (без учета налогов) - :sub_total',
                 'sub-total-incl-tax' => 'Подитог (с учетом налогов) - :sub_total',
@@ -428,6 +432,7 @@ return [
                 'save' => 'Сохранить',
                 'delete' => 'Удалить',
                 'status-history' => 'История статусов',
+                'confirm-delete-item' => 'Вы уверены, что хотите удалить эту позицию?',
             ],
         ],
 

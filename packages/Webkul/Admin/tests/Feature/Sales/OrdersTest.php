@@ -11,11 +11,13 @@ use Webkul\Core\Models\CoreConfig;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Models\CustomerAddress;
 use Webkul\Faker\Helpers\Product as ProductFaker;
+use Webkul\Inventory\Models\InventorySource;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Models\OrderComment;
 use Webkul\Sales\Models\OrderItem;
 use Webkul\Sales\Models\OrderPayment;
+use Webkul\Sales\Models\OrderStatus;
 use Webkul\Shop\Mail\Order\CanceledNotification as ShopOrderCanceledNotification;
 use Webkul\Shop\Mail\Order\CommentedNotification;
 
@@ -147,6 +149,30 @@ it('should return the view page of order', function () {
         'order_id' => $order->id,
     ]);
 
+    $inventorySource = InventorySource::factory()->create();
+
+    $order->update(['inventory_source_id' => $inventorySource->id]);
+
+    OrderStatus::query()->updateOrCreate(
+        ['code' => 'pending'],
+        [
+            'name' => 'Pending',
+            'sort_order' => 1,
+            'is_system' => true,
+            'is_active' => true,
+        ],
+    );
+
+    OrderStatus::query()->updateOrCreate(
+        ['code' => 'processing'],
+        [
+            'name' => 'Processing',
+            'sort_order' => 2,
+            'is_system' => true,
+            'is_active' => true,
+        ],
+    );
+
     // Act and Assert.
     $this->loginAsAdmin();
 
@@ -156,7 +182,13 @@ it('should return the view page of order', function () {
         ->assertSeeText(trans('admin::app.sales.orders.view.title', ['order_id' => $order->increment_id]))
         ->assertSeeText(trans('admin::app.sales.orders.view.summary-tax'))
         ->assertSeeText(trans('admin::app.sales.orders.view.summary-grand-total'))
-        ->assertSeeText(trans('admin::app.sales.orders.view.comments'));
+        ->assertSeeText(trans('admin::app.sales.orders.view.comments'))
+        ->assertSee('v-order-status-stepper', false)
+        ->assertSee(':statuses=\'[{"code":"pending","name":"Pending"}', false)
+        ->assertSeeText(trans('admin::app.sales.orders.view.save'))
+        ->assertSeeText(trans('admin::app.sales.orders.view.delete'))
+        ->assertDontSeeText('admin::app.sales.orders.view.save')
+        ->assertDontSeeText('admin::app.sales.orders.view.delete');
 
     $cart->refresh();
 
