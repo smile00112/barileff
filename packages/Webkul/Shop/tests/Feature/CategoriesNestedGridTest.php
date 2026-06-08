@@ -11,6 +11,13 @@ it('loads nested grid sections from the cached category tree endpoint', function
         ->not->toContain("route('shop.api.categories.index')");
 });
 
+it('falls back to categories already filtered under the configured parent id', function () {
+    $source = file_get_contents(base_path('packages/Webkul/Shop/src/Resources/views/components/categories/nested-grid.blade.php'));
+
+    expect($source)
+        ->toContain('parents = anchor?.children ?? categories.filter(category => Number(category.parent_id ?? 0) === anchorId);');
+});
+
 it('includes category logos in tree resources for nested grid cards', function () {
     $category = new Category;
     $category->setAttribute('id', 1);

@@ -178,7 +178,9 @@
                     let parents = categories;
 
                     if (anchorId > 0) {
-                        parents = this.findCategory(categories, anchorId)?.children ?? [];
+                        const anchor = this.findCategory(categories, anchorId);
+
+                        parents = anchor?.children ?? categories.filter(category => Number(category.parent_id ?? 0) === anchorId);
                     } else if (categories.length === 1 && Number(categories[0].parent_id ?? 0) === 0) {
                         parents = categories[0].children ?? [];
                     }
