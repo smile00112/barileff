@@ -1,0 +1,31 @@
+<?php
+
+use Symfony\Component\Yaml\Yaml;
+
+$projectRoot = dirname(__DIR__, 2);
+
+test('production compose keeps built public assets from the image available to app and nginx', function () use ($projectRoot): void {
+    $compose = Yaml::parseFile($projectRoot.'/docker-compose.prod.yml');
+
+    expect($compose['volumes'])->toHaveKey('public_assets');
+
+    $appVolumes = $compose['services']['app']['volumes'];
+    $nginxVolumes = $compose['services']['nginx']['volumes'];
+
+    expect($appVolumes)
+        ->toContain('public_assets:/var/www/html/public')
+        ->not->toContain('./public:/var/www/html/public');
+
+    expect($nginxVolumes)
+        ->toContain('public_assets:/var/www/html/public:ro')
+        ->not->toContain('./public:/var/www/html/public:ro');
+});
+
+test('production image syncs built public assets into the shared public volume on startup', function () use ($projectRoot): void {
+    $dockerfile = file_get_contents($projectRoot.'/Dockerfile');
+    $entrypoint = file_get_contents($projectRoot.'/docker/php/entrypoint.sh');
+
+    expect($dockerfile)->toContain('RUN cp -a public public-image');
+    expect($entrypoint)->toContain('sync_public_assets');
+    expect($entrypoint)->toContain('cp -a /var/www/html/public-image/. /var/www/html/public/');
+});

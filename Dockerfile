@@ -127,6 +127,7 @@ RUN set -eux; \
 COPY --from=frontend /app/public/build public/build
 COPY --from=frontend /app/public/themes public/themes
 COPY --from=frontend /app/public/manager public/manager
+RUN cp -a public public-image
 
 # Настройка прав
 RUN chown -R www-data:www-data /var/www/html \

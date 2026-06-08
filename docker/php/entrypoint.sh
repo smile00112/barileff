@@ -28,11 +28,21 @@ run_artisan_optional() {
     fi
 }
 
+# Copy frontend assets built into the image into the shared public volume.
+sync_public_assets() {
+    if [ -d /var/www/html/public-image ]; then
+        mkdir -p /var/www/html/public
+        cp -a /var/www/html/public-image/. /var/www/html/public/
+    fi
+}
+
 # Ожидание готовности MySQL
 wait_for_port mysql 3306 "MySQL"
 
 # Ожидание готовности Redis
 wait_for_port redis 6379 "Redis"
+
+sync_public_assets
 
 # Установка прав доступа
 chown -R www-data:www-data /var/www/html

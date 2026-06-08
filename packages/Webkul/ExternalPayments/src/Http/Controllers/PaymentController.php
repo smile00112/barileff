@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Repositories\CustomerRepository;
+use Webkul\ExternalPayments\Exceptions\ApiRequestException;
 use Webkul\ExternalPayments\Models\InventorySourceConfig;
 use Webkul\ExternalPayments\Repositories\InventorySourceConfigRepository;
 use Webkul\ExternalPayments\Services\ApiClient;
@@ -93,11 +94,24 @@ class PaymentController extends Controller
 
             $result = $apiClient->createPayment($payload);
 
+        } catch (ApiRequestException $e) {
+            Log::error('ExternalPayments: createPayment failed', array_merge([
+                'order_id' => $order->id,
+                'inventory_source_id' => $sourceId,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ], $e->context()));
+
+            session()->flash('error', $e->getMessage());
+
+            return redirect()->route('shop.checkout.cart.index');
         } catch (\RuntimeException $e) {
             Log::error('ExternalPayments: createPayment failed', [
                 'order_id' => $order->id,
+                'inventory_source_id' => $sourceId,
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
+                'exception' => $e::class,
             ]);
 
             session()->flash('error', $e->getMessage());
