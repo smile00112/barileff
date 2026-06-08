@@ -23,6 +23,12 @@ class CategoryTreeResource extends JsonResource
             'slug' => $this->slug,
             'url' => $this->url,
             'status' => $this->status,
+            'logo' => $this->when($this->logo_path, [
+                'small_image_url' => url('cache/small/'.$this->logo_path),
+                'medium_image_url' => url('cache/medium/'.$this->logo_path),
+                'large_image_url' => url('cache/large/'.$this->logo_path),
+                'original_image_url' => url('cache/original/'.$this->logo_path),
+            ]),
             'additional' => $this->normalizedAdditional(),
             'children' => self::collection($this->children),
         ];

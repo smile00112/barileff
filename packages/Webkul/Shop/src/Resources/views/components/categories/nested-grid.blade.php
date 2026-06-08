@@ -144,10 +144,8 @@
             },
 
             methods: {
-                childQueryParams(parentId) {
+                treeQueryParams() {
                     const params = {
-                        ...this.filterParams,
-                        parent_id: parentId,
                     };
 
                     if (this.inventorySourceId) {
@@ -157,26 +155,67 @@
                     return params;
                 },
 
+                findCategory(categories, categoryId) {
+                    for (const category of categories) {
+                        if (Number(category.id) === categoryId) {
+                            return category;
+                        }
+
+                        const match = this.findCategory(category.children ?? [], categoryId);
+
+                        if (match) {
+                            return match;
+                        }
+                    }
+
+                    return null;
+                },
+
+                topLevelCategories(categories) {
+                    const parentId = Number.parseInt(this.filterParams.parent_id ?? 0, 10);
+                    const anchorId = Number.isNaN(parentId) ? 0 : parentId;
+
+                    let parents = categories;
+
+                    if (anchorId > 0) {
+                        parents = this.findCategory(categories, anchorId)?.children ?? [];
+                    } else if (categories.length === 1 && Number(categories[0].parent_id ?? 0) === 0) {
+                        parents = categories[0].children ?? [];
+                    }
+
+                    if (this.filterParams.name) {
+                        const name = String(this.filterParams.name).toLocaleLowerCase();
+
+                        parents = parents.filter(parent => String(parent.name ?? '').toLocaleLowerCase().includes(name));
+                    }
+
+                    if (this.filterParams.sort === 'desc') {
+                        parents = [...parents].reverse();
+                    }
+
+                    const limit = Number.parseInt(this.filterParams.limit ?? 0, 10);
+
+                    if (! Number.isNaN(limit) && limit > 0) {
+                        return parents.slice(0, limit);
+                    }
+
+                    return parents;
+                },
+
                 async loadSections() {
                     this.isLoading = true;
                     this.sections = [];
 
                     try {
-                        const level1Res = await this.$axios.get(
-                            '{{ route('shop.api.categories.index') }}',
-                            { params: this.filterParams },
+                        const treeRes = await this.$axios.get(
+                            '{{ route('shop.api.categories.tree') }}',
+                            { params: this.treeQueryParams() },
                         );
 
-                        const parents = level1Res.data?.data ?? [];
+                        const parents = this.topLevelCategories(treeRes.data?.data ?? []);
 
                         for (const parent of parents) {
-                            const res = await this.$axios.get(
-                                '{{ route('shop.api.categories.index') }}',
-                                { params: this.childQueryParams(parent.id) },
-                            );
-
-                            const children = res.data?.data ?? [];
-
+                            const children = parent.children ?? [];
                             if (children.length > 0) {
                                 this.sections.push({ parent, children });
 

@@ -12,7 +12,9 @@ class CategoryMenuCacheService
     /**
      * How long to keep the category menu tree in cache (seconds).
      */
-    private const TTL = 86400; // 24 hours
+    private const FRESH_TTL = 86400; // 24 hours
+
+    private const STALE_TTL = 172800; // 48 hours
 
     public function __construct(
         private readonly CategoryRepository $categoryRepository,
@@ -28,23 +30,18 @@ class CategoryMenuCacheService
      */
     public function get(int $rootCategoryId, ?int $inventorySourceId, string $channelCode, string $locale): Collection
     {
-        if (! core()->getConfigData('catalog.products.settings.filter_categories_by_stock')) {
+        if (! $this->core->getConfigData('catalog.products.settings.filter_categories_by_stock')) {
             $inventorySourceId = null;
         }
 
         $key = $this->cacheKey($channelCode, $locale, $inventorySourceId);
 
-        return Cache::remember($key, self::TTL, function () use ($rootCategoryId, $inventorySourceId) {
-            $tree = $this->categoryRepository->getVisibleCategoryTree($rootCategoryId);
-
-            if ($inventorySourceId === null) {
-                return $tree;
-            }
-
-            $stockedIds = $this->categoryRepository->getCategoryIdsWithStockForSource($inventorySourceId);
-
-            return $this->pruneTree($tree, $stockedIds);
-        });
+        return Cache::flexible(
+            $key,
+            [self::FRESH_TTL, self::STALE_TTL],
+            fn () => $this->buildTree($rootCategoryId, $inventorySourceId),
+            ['seconds' => 60],
+        );
     }
 
     /**
@@ -64,14 +61,14 @@ class CategoryMenuCacheService
                 // Cache unfiltered tree (used when no source is selected)
                 $this->forgetKey($channelCode, $locale->code, null);
                 $tree = $this->categoryRepository->getVisibleCategoryTree($rootId);
-                Cache::put($this->cacheKey($channelCode, $locale->code, null), $tree, self::TTL);
+                $this->putFlexibleValue($this->cacheKey($channelCode, $locale->code, null), $tree);
 
                 foreach ($sources as $source) {
                     $key = $this->cacheKey($channelCode, $locale->code, $source->id);
                     $stockedIds = $this->categoryRepository->getCategoryIdsWithStockForSource($source->id);
                     $sourceTree = $this->categoryRepository->getVisibleCategoryTree($rootId);
                     $filtered = $this->pruneTree($sourceTree, $stockedIds);
-                    Cache::put($key, $filtered, self::TTL);
+                    $this->putFlexibleValue($key, $filtered);
                 }
             }
         }
@@ -119,7 +116,36 @@ class CategoryMenuCacheService
 
     private function forgetKey(string $channelCode, string $locale, ?int $inventorySourceId): void
     {
-        Cache::forget($this->cacheKey($channelCode, $locale, $inventorySourceId));
+        $key = $this->cacheKey($channelCode, $locale, $inventorySourceId);
+
+        Cache::forget($key);
+        Cache::forget($this->createdCacheKey($key));
+    }
+
+    private function buildTree(int $rootCategoryId, ?int $inventorySourceId): Collection
+    {
+        $tree = $this->categoryRepository->getVisibleCategoryTree($rootCategoryId);
+
+        if ($inventorySourceId === null) {
+            return $tree;
+        }
+
+        $stockedIds = $this->categoryRepository->getCategoryIdsWithStockForSource($inventorySourceId);
+
+        return $this->pruneTree($tree, $stockedIds);
+    }
+
+    private function putFlexibleValue(string $key, Collection $tree): void
+    {
+        Cache::putMany([
+            $key => $tree,
+            $this->createdCacheKey($key) => now()->getTimestamp(),
+        ], self::STALE_TTL);
+    }
+
+    private function createdCacheKey(string $key): string
+    {
+        return "illuminate:cache:flexible:created:{$key}";
     }
 
     /**
