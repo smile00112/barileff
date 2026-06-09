@@ -44,6 +44,8 @@ wait_for_port redis 6379 "Redis"
 
 sync_public_assets
 
+run_artisan_optional responsecache:clear
+
 # Установка прав доступа
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html

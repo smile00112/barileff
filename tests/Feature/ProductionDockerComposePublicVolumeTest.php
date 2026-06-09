@@ -29,3 +29,14 @@ test('production image syncs built public assets into the shared public volume o
     expect($entrypoint)->toContain('sync_public_assets');
     expect($entrypoint)->toContain('cp -a /var/www/html/public-image/. /var/www/html/public/');
 });
+
+test('production startup clears cached html after public asset hashes change', function () use ($projectRoot): void {
+    $entrypoint = file_get_contents($projectRoot.'/docker/php/entrypoint.sh');
+
+    $syncPosition = strpos($entrypoint, 'sync_public_assets');
+    $clearPosition = strpos($entrypoint, 'run_artisan_optional responsecache:clear');
+
+    expect($clearPosition)
+        ->not->toBeFalse()
+        ->and($clearPosition)->toBeGreaterThan($syncPosition);
+});
