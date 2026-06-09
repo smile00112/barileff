@@ -105,6 +105,10 @@ sleep 10
 info "Очистка кеша страниц (ResponseCache)..."
 docker compose -f docker-compose.prod.yml exec app php artisan responsecache:clear
 
+# Octane keeps the application and Vite manifest in worker memory.
+info "Reloading Octane workers..."
+docker compose -f docker-compose.prod.yml exec app php artisan octane:reload
+
 # Миграции в работающем новом контейнере
 info "Запуск миграций базы данных..."
 docker compose -f docker-compose.prod.yml exec app php artisan migrate --force

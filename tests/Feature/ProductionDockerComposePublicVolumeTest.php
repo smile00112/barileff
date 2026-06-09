@@ -40,3 +40,14 @@ test('production startup clears cached html after public asset hashes change', f
         ->not->toBeFalse()
         ->and($clearPosition)->toBeGreaterThan($syncPosition);
 });
+
+test('production update reloads octane workers after clearing cached html', function () use ($projectRoot): void {
+    $updateScript = file_get_contents($projectRoot.'/update.sh');
+
+    $clearPosition = strpos($updateScript, 'php artisan responsecache:clear');
+    $reloadPosition = strpos($updateScript, 'php artisan octane:reload');
+
+    expect($reloadPosition)
+        ->not->toBeFalse()
+        ->and($reloadPosition)->toBeGreaterThan($clearPosition);
+});
