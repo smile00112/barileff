@@ -41,13 +41,16 @@ test('production startup clears cached html after public asset hashes change', f
         ->and($clearPosition)->toBeGreaterThan($syncPosition);
 });
 
-test('production update reloads octane workers after clearing cached html', function () use ($projectRoot): void {
+test('production update restarts octane workers after clearing cached html', function () use ($projectRoot): void {
     $updateScript = file_get_contents($projectRoot.'/update.sh');
 
     $clearPosition = strpos($updateScript, 'php artisan responsecache:clear');
     $reloadPosition = strpos($updateScript, 'php artisan octane:reload');
+    $recreateFallbackPosition = strpos($updateScript, 'docker compose -f docker-compose.prod.yml up -d --force-recreate app', $reloadPosition);
 
     expect($reloadPosition)
         ->not->toBeFalse()
-        ->and($reloadPosition)->toBeGreaterThan($clearPosition);
+        ->and($reloadPosition)->toBeGreaterThan($clearPosition)
+        ->and($recreateFallbackPosition)->not->toBeFalse()
+        ->and($recreateFallbackPosition)->toBeGreaterThan($reloadPosition);
 });

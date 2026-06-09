@@ -107,7 +107,11 @@ docker compose -f docker-compose.prod.yml exec app php artisan responsecache:cle
 
 # Octane keeps the application and Vite manifest in worker memory.
 info "Reloading Octane workers..."
-docker compose -f docker-compose.prod.yml exec app php artisan octane:reload
+if ! docker compose -f docker-compose.prod.yml exec app php artisan octane:reload; then
+    warn "Octane reload недоступен. Пересоздаю app контейнер..."
+    docker compose -f docker-compose.prod.yml up -d --force-recreate app
+    sleep 10
+fi
 
 # Миграции в работающем новом контейнере
 info "Запуск миграций базы данных..."
